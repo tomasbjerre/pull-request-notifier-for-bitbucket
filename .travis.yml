@@ -1,0 +1,19 @@
+language: java
+jdk:
+  - oraclejdk8
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install apt-transport-https
+  - echo "deb https://sdkrepo.atlassian.com/debian/ stable contrib" | sudo tee -a /etc/apt/sources.list
+  - sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys B07804338C015B73
+  - sudo apt-get update
+  - sudo apt-get install atlassian-plugin-sdk
+install:
+  #Install Atlassian libs in local Maven repo
+  - atlas-mvn -q install -Dstash.version=2.12.0 -Dstash.data.version=2.12.0 -Damps.version=5.0.4
+  - atlas-mvn -q install
+script:
+  - atlas-package -q -Dstash.version=2.12.0 -Dstash.data.version=2.12.0 -Damps.version=5.0.4
+  - atlas-package -q
+notifications:
+  email: false

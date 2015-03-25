@@ -1,0 +1,27 @@
+.trigger {
+ border: 1px;
+ border-color: black;
+ border-style: dotted;
+}
+
+.trigger {
+ width: 400px;
+ padding: 5px 15px;
+}
+
+fieldset {
+ border: 1px;
+ padding: 5px 15px;
+}
+
+legend {
+ font-weight: bold;
+}
+
+.left {
+ float: left;
+}
+
+.right {
+ float: right;
+}

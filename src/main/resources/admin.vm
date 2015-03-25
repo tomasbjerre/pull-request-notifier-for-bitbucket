@@ -1,0 +1,67 @@
+<html>
+  <head>
+    <title>Pull Request Notifier for Stash Admin</title>
+    <meta name="decorator" content="atl.admin">
+    $webResourceManager.requireResource("se.bjurr.prnfs.prnfs:resources")
+  </head>
+  <body>
+      <form class="trigger">
+        <div>
+          <fieldset>
+            <legend>Triggers</legend>
+            <div class="left">
+              <input type="checkbox" name="events" id="APPROVED_1" value="APPROVED">
+              <label for="APPROVED_1">APPROVED</label><br/>
+              <input type="checkbox" name="events" id="COMMENTED_1" value="COMMENTED">
+              <label for="COMMENTED_1">COMMENTED</label><br/>
+              <input type="checkbox" name="events" id="DECLINED_1" value="DECLINED">
+              <label for="DECLINED_1">DECLINED</label><br/>
+              <input type="checkbox" name="events" id="MERGED_1" value="MERGED">
+              <label for="MERGED_1">MERGED</label><br/>
+              <input type="checkbox" name="events" id="OPENED_1" value="OPENED">
+              <label for="OPENED_1">OPENED</label><br/>
+            </div>
+            <div class="right">
+              <input type="checkbox" name="events" id="REOPENED_1" value="REOPENED">
+              <label for="REOPENED_1">REOPENED</label><br/>
+              <input type="checkbox" name="events" id="RESCOPED_1" value="RESCOPED">
+              <label for="RESCOPED_1">RESCOPED</label><br/>
+              <input type="checkbox" name="events" id="UNAPPROVED_1" value="UNAPPROVED">
+              <label for="UNAPPROVED_1">UNAPPROVED</label><br/>
+              <input type="checkbox" name="events" id="UPDATED_1" value="UPDATED">
+              <label for="UPDATED_1">UPDATED</label><br/>
+            </div>
+          </fieldset>
+        </div>
+        <div>
+          <fieldset>
+            <legend>Basic authentication</legend>
+            <label for="user">User</label>
+            <input type="text" name="user"><br/>
+            <label for="password">Password</label>
+            <input type="text" name="password">
+          </fieldset>
+        </div>
+        <div>
+          <fieldset>
+            <legend>Invoke URL</legend>
+            <div class="description">
+             You can use variables:
+             <ul>
+              <li><b>${ID}</b> - Pull Request ID</li>
+              <li><b>${FROM_REPO}</b> - From repository</li>
+              <li><b>${FROM_COMMIT}</b> - From commit</li>
+              <li><b>${TO_REPO}</b> - To repository</li>
+              <li><b>${TO_COMMIT}</b> - To commit</li>
+             </ul>
+            </div>
+            <label for="user">URL</label>
+            <input type="text" name="url" size="50">
+          </fieldset>
+        </div>
+        <div>
+          <input type="submit" name="save"/>
+        </div>
+      </form>
+  </body>
+</html>
