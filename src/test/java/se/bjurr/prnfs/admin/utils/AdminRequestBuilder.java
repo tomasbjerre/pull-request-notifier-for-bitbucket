@@ -23,13 +23,13 @@ import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.mockito.Mockito;
+import org.mockito.Matchers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import se.bjurr.prnfs.admin.AdminFormError;
 import se.bjurr.prnfs.admin.AdminFormValues;
 import se.bjurr.prnfs.admin.ConfigResource;
-import se.bjurr.prnfs.admin.AdminFormError;
 import se.bjurr.prnfs.admin.data.PluginSettingsImpl;
 
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
@@ -114,7 +114,7 @@ public class AdminRequestBuilder {
  }
 
  public AdminRequestBuilder hasFieldValueAt(String field, String value, String id) {
-  for (Map<String, String> fieldValue : getAdminFormFields().get(id)) {
+  for (final Map<String, String> fieldValue : getAdminFormFields().get(id)) {
    if (fieldValue.get(NAME).equals(field) && fieldValue.get(VALUE).equals(value)) {
     return this;
    }
@@ -124,9 +124,9 @@ public class AdminRequestBuilder {
  }
 
  public AdminRequestBuilder hasNoneEmptyFieldAt(String field, String id) {
-  for (Map<String, String> fieldValue : getAdminFormFields().get(id)) {
+  for (final Map<String, String> fieldValue : getAdminFormFields().get(id)) {
    if (fieldValue.get(NAME).equals(field)) {
-    if (fieldValue.get(VALUE).isEmpty()) {
+    if (fieldValue.get(VALUE).trim().isEmpty()) {
      fail(field + " was empty");
     } else {
      return this;
@@ -144,7 +144,7 @@ public class AdminRequestBuilder {
 
  public void hasValidationError(String field, String value) {
   logger.info("Looking for " + field + "=" + value);
-  for (AdminFormError e : postResponses) {
+  for (final AdminFormError e : postResponses) {
    if (e.getField().equals(field) && e.getValue().equals(value)) {
     return;
    }
@@ -155,8 +155,8 @@ public class AdminRequestBuilder {
 
  public AdminRequestBuilder isLoggedInAsAdmin() {
   when(userProfile.getUserKey()).thenReturn(userKey);
-  when(userManager.isSystemAdmin(Mockito.any(UserKey.class))).thenReturn(TRUE);
-  when(userManager.getRemoteUser(Mockito.any(HttpServletRequest.class))).thenReturn(userProfile);
+  when(userManager.isSystemAdmin(Matchers.any(UserKey.class))).thenReturn(TRUE);
+  when(userManager.getRemoteUser(Matchers.any(HttpServletRequest.class))).thenReturn(userProfile);
   return this;
  }
 
@@ -167,8 +167,8 @@ public class AdminRequestBuilder {
 
  public AdminRequestBuilder store() {
   postResponses = newArrayList();
-  for (AdminFormValues adminFormValues : adminFormValuesMap.values()) {
-   Optional<Object> postResponseOpt = fromNullable(configResource.post(adminFormValues, request).getEntity());
+  for (final AdminFormValues adminFormValues : adminFormValuesMap.values()) {
+   final Optional<Object> postResponseOpt = fromNullable(configResource.post(adminFormValues, request).getEntity());
    if (postResponseOpt.isPresent()) {
     postResponses.add((AdminFormError) postResponseOpt.get());
    }
@@ -177,7 +177,7 @@ public class AdminRequestBuilder {
  }
 
  public AdminRequestBuilder withNotification(AdminFormValues adminFormValues) {
-  Optional<Map<String, String>> existing = tryFind(adminFormValues, predicate(FORM_IDENTIFIER_NAME));
+  final Optional<Map<String, String>> existing = tryFind(adminFormValues, predicate(FORM_IDENTIFIER_NAME));
   if (existing.isPresent()) {
    this.adminFormValuesMap.put(existing.get().get(VALUE), adminFormValues);
   } else {

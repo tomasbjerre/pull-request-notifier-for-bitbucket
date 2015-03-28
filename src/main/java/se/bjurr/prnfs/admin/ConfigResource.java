@@ -22,6 +22,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import se.bjurr.prnfs.settings.ValidationException;
 
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
@@ -34,7 +37,7 @@ import com.atlassian.sal.api.user.UserProfile;
 public class ConfigResource {
  private final PluginSettingsFactory pluginSettingsFactory;
  private final TransactionTemplate transactionTemplate;
-
+ private static final Logger logger = LoggerFactory.getLogger(ConfigResource.class);
  private final UserManager userManager;
 
  public ConfigResource(UserManager userManager, PluginSettingsFactory pluginSettingsFactory,
@@ -92,7 +95,7 @@ public class ConfigResource {
  }
 
  private boolean isAdminLoggedIn(HttpServletRequest request) {
-  UserProfile user = userManager.getRemoteUser(request);
+  final UserProfile user = userManager.getRemoteUser(request);
   if (user == null) {
    return false;
   }
@@ -115,14 +118,18 @@ public class ConfigResource {
    */
   try {
    getPrnfsNotification(config);
-  } catch (ValidationException e) {
+  } catch (final ValidationException e) {
    return status(BAD_REQUEST).entity(new AdminFormError(e.getField(), e.getError())).build();
   }
 
   transactionTemplate.execute(new TransactionCallback<Object>() {
    @Override
    public Object doInTransaction() {
-    storeSettings(pluginSettingsFactory.createGlobalSettings(), config);
+    try {
+     storeSettings(pluginSettingsFactory.createGlobalSettings(), config);
+    } catch (final ValidationException e) {
+     logger.error("", e);
+    }
     return null;
    }
   });

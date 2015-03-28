@@ -18,17 +18,17 @@ public class PrnfsNotification {
 
  public PrnfsNotification(List<PullRequestAction> triggers, String password, String url, String user)
    throws ValidationException {
-  this.password = password;
-  if (nullToEmpty(url).isEmpty()) {
+  this.password = nullToEmpty(password).trim();
+  if (nullToEmpty(url).trim().isEmpty()) {
    throw new ValidationException("url", "URL not set!");
   }
   try {
    new URL(url);
-  } catch (Exception e) {
+  } catch (final Exception e) {
    throw new ValidationException("url", "URL not valid!");
   }
   this.url = url;
-  this.user = user;
+  this.user = nullToEmpty(user).trim();
   this.triggers = checkNotNull(triggers);
  }
 

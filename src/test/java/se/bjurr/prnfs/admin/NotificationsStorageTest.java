@@ -20,6 +20,17 @@ public class NotificationsStorageTest {
  }
 
  @Test
+ public void testThatANewNotificationCanBeStoredWithWhiteSpaceInFormIdentifier() {
+  adminRequestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder().withFieldValue("url", "http://bjurr.se/").withFieldValue("events", OPENED.name())
+        .withFieldValue(FORM_IDENTIFIER_NAME, " ").build()).store() //
+    .hasNotifications(1) //
+    .hasFieldValueAt("url", "http://bjurr.se/", "0").hasNoneEmptyFieldAt(FORM_IDENTIFIER_NAME, "0");
+ }
+
+ @Test
  public void testThatTwoNewNotificationsCanBeStored() {
   adminRequestBuilder()
     .isLoggedInAsAdmin()

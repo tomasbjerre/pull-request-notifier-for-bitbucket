@@ -25,3 +25,20 @@ legend {
 .right {
  float: right;
 }
+
+.error {
+ font-weight: bold;
+ color: red;
+}
+
+input[type="text"] {
+ width: 100%;
+}
+
+.prnfs > form {
+ margin: 10px 0 0 0;
+}
+
+.prnfs-template {
+ display:none;
+}

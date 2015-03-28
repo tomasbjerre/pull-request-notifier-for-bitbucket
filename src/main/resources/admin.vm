@@ -2,10 +2,28 @@
   <head>
     <title>Pull Request Notifier for Stash Admin</title>
     <meta name="decorator" content="atl.admin">
-    $webResourceManager.requireResource("se.bjurr.prnfs.prnfs:resources")
+    $webResourceManager.requireResource("se.bjurr.prnfs.pull-request-notifier-for-stash:resources")
   </head>
   <body>
+    <div>
+      <div class="description">
+        You can use variables when invoking the URL.
+        <ul>
+          <li><b>${ID}</b> - Pull Request ID</li>
+          <li><b>${FROM_REPO}</b> - From repository</li>
+          <li><b>${FROM_COMMIT}</b> - From commit</li>
+          <li><b>${TO_REPO}</b> - To repository</li>
+          <li><b>${TO_COMMIT}</b> - To commit</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="prnfs">
+    </div>
+    
+    <div class="prnfs-template">
       <form class="trigger">
+        <input type="hidden" name="FORM_IDENTIFIER">
         <div>
           <fieldset>
             <legend>Triggers</legend>
@@ -45,23 +63,19 @@
         <div>
           <fieldset>
             <legend>Invoke URL</legend>
-            <div class="description">
-             You can use variables:
-             <ul>
-              <li><b>${ID}</b> - Pull Request ID</li>
-              <li><b>${FROM_REPO}</b> - From repository</li>
-              <li><b>${FROM_COMMIT}</b> - From commit</li>
-              <li><b>${TO_REPO}</b> - To repository</li>
-              <li><b>${TO_COMMIT}</b> - To commit</li>
-             </ul>
-            </div>
             <label for="user">URL</label>
-            <input type="text" name="url" size="50">
+            <input type="text" name="url">
+            <div class="error url"></div>
           </fieldset>
         </div>
         <div>
-          <input type="submit" name="save"/>
+          <fieldset>
+            <input type="button" name="save" value="Save"/>
+            <input type="button" name="delete" value="Remove"/>
+            <span class="post"></span>
+          </fieldset>
         </div>
       </form>
+    </div>
   </body>
 </html>
