@@ -1,5 +1,10 @@
 # Pull Request Notifier for Stash [![Build Status](https://travis-ci.org/tomasbjerre/pull-request-notifier-for-stash.svg?branch=master)](https://travis-ci.org/tomasbjerre/pull-request-notifier-for-stash)
-A plugin for Atlassian Stash that can notfy other systems on events regarding pull requests. It can, for example, trigger a build in Jenkins.
+A plugin for Atlassian Stash that can notfy other systems on events regarding pull requests.
+
+It can, for example, trigger a build in Jenkins. Parameterized Jenkins jobs can be triggered remotely via:
+```
+http://server/job/theJob/buildWithParameters?token=TOKEN&PARAMETER=Value
+```
 
 ## Features
 The Pull Request Notifier for Stash can

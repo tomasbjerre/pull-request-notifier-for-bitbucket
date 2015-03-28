@@ -9,19 +9,19 @@
       <div class="description">
         You can use variables when invoking the URL.
         <ul>
-        <li><b>${PULL_REQUEST_ID</b></li>
-        <li><b>${PULL_REQUEST_FROM_ID</b></li>
-        <li><b>${PULL_REQUEST_FROM_REPO_ID</b></li>
-        <li><b>${PULL_REQUEST_FROM_REPO_NAME</b></li>
-        <li><b>${PULL_REQUEST_FROM_REPO_SLUG</b></li>
-        <li><b>${PULL_REQUEST_FROM_REPO_PROJECT_ID</b></li>
-        <li><b>${PULL_REQUEST_FROM_REPO_PROJECT_KEY</b></li>
-        <li><b>${PULL_REQUEST_TO_ID</b></li>
-        <li><b>${PULL_REQUEST_TO_REPO_ID</b></li>
-        <li><b>${PULL_REQUEST_TO_REPO_NAME</b></li>
-        <li><b>${PULL_REQUEST_TO_REPO_SLUG</b></li>
-        <li><b>${PULL_REQUEST_TO_REPO_PROJECT_ID</b></li>
-        <li><b>${PULL_REQUEST_TO_REPO_PROJECT_KEY</b></li>
+        <li><b>${PULL_REQUEST_ID}</b></li>
+        <li><b>${PULL_REQUEST_FROM_ID}</b></li>
+        <li><b>${PULL_REQUEST_FROM_REPO_ID}</b></li>
+        <li><b>${PULL_REQUEST_FROM_REPO_NAME}</b></li>
+        <li><b>${PULL_REQUEST_FROM_REPO_SLUG}</b></li>
+        <li><b>${PULL_REQUEST_FROM_REPO_PROJECT_ID}</b></li>
+        <li><b>${PULL_REQUEST_FROM_REPO_PROJECT_KEY}</b></li>
+        <li><b>${PULL_REQUEST_TO_ID}</b></li>
+        <li><b>${PULL_REQUEST_TO_REPO_ID}</b></li>
+        <li><b>${PULL_REQUEST_TO_REPO_NAME}</b></li>
+        <li><b>${PULL_REQUEST_TO_REPO_SLUG}</b></li>
+        <li><b>${PULL_REQUEST_TO_REPO_PROJECT_ID}</b></li>
+        <li><b>${PULL_REQUEST_TO_REPO_PROJECT_KEY}</b></li>
         </ul>
       </div>
     </div>

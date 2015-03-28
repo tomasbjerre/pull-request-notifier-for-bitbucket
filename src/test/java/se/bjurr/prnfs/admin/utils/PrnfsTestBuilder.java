@@ -8,6 +8,7 @@ import static com.google.common.collect.Maps.newTreeMap;
 import static com.google.common.collect.Maps.uniqueIndex;
 import static java.lang.Boolean.TRUE;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -197,34 +198,44 @@ public class PrnfsTestBuilder {
  }
 
  public PrnfsTestBuilder invokedUrl(String url) {
-  assertEquals(gson.toJson(pluginSettings), url, invokedUrl);
+  assertTrue(gson.toJson(pluginSettings), invokedUrl.contains(url));
   return this;
  }
 
  public PrnfsTestBuilder invokedUser(String user) {
-  assertEquals(user, this.usedUser.get());
+  assertTrue(this.usedUser.contains(user));
   return this;
  }
 
  public PrnfsTestBuilder invokedPassword(String password) {
-  assertEquals(password, this.usedPassword.get());
+  assertTrue(this.usedPassword.contains(password));
   return this;
  }
 
- private String invokedUrl;
- private Optional<String> usedUser;
- private Optional<String> usedPassword;
+ private final List<String> invokedUrl = newArrayList();
+ private final List<String> usedUser = newArrayList();
+ private final List<String> usedPassword = newArrayList();
 
  public PrnfsTestBuilder trigger(PullRequestEvent event) {
   listener.setUrlInvoker(new UrlInvoker() {
    @Override
    public void ivoke(String url, Optional<String> userParam, Optional<String> passwordParam) {
-    invokedUrl = url;
-    usedUser = userParam;
-    usedPassword = passwordParam;
+    invokedUrl.add(url);
+    usedUser.add(userParam.or(""));
+    usedPassword.add(passwordParam.or(""));
    }
   });
   listener.anEvent(event);
   return this;
+ }
+
+ public PrnfsTestBuilder invokedNoUrl() {
+  assertEquals(0, invokedUrl.size());
+  return this;
+ }
+
+ public void invokedOnlyUrl(String url) {
+  assertEquals(1, invokedUrl.size());
+  assertTrue(invokedUrl.get(0).equals(url));
  }
 }

@@ -30,6 +30,11 @@ public class PullRequestEventBuilder {
   return new PullRequestEventBuilder();
  }
 
+ public PullRequestEventBuilder withPullRequestAction(PullRequestAction pullRequestAction) {
+  this.pullRequestAction = pullRequestAction;
+  return this;
+ }
+
  public PullRequestEvent build() {
   final PullRequestEvent pullRequestEvent = mock(PullRequestEvent.class);
   final PullRequest pullRequest = mock(PullRequest.class);

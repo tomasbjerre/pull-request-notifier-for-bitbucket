@@ -1,5 +1,6 @@
 package se.bjurr.prnfs.admin;
 
+import static com.atlassian.stash.pull.PullRequestAction.MERGED;
 import static com.atlassian.stash.pull.PullRequestAction.OPENED;
 import static se.bjurr.prnfs.admin.utils.NotificationBuilder.notificationBuilder;
 import static se.bjurr.prnfs.admin.utils.PrnfsTestBuilder.prnfsTestBuilder;
@@ -21,7 +22,7 @@ public class PrnfsPullRequestEventListenerTest {
     .isLoggedInAsAdmin()
     .withNotification(
       notificationBuilder().withFieldValue("url", "http://bjurr.se/").withFieldValue("events", OPENED.name()).build())
-    .store().trigger(pullRequestEventBuilder().build()).invokedUrl("http://bjurr.se/");
+    .store().trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build()).invokedUrl("http://bjurr.se/");
  }
 
  @Test
@@ -42,7 +43,7 @@ public class PrnfsPullRequestEventListenerTest {
          .withFromRef(
            pullRequestRefBuilder().withHash("10").withId("10").withProjectId(10).withProjectKey("10")
              .withRepositoryId(10).withRepositoryName("10").withRepositorySlug("10")) //
-         .withId(10L).build()).invokedUrl("http://bjurr.se/10");
+         .withId(10L).withPullRequestAction(OPENED).build()).invokedUrl("http://bjurr.se/10");
   }
  }
 
@@ -63,7 +64,31 @@ public class PrnfsPullRequestEventListenerTest {
          .withToRef(
            pullRequestRefBuilder().withHash("10").withId("10").withProjectId(10).withProjectKey("10")
              .withRepositoryId(10).withRepositoryName("10").withRepositorySlug("10")) //
-         .withId(10L).build()).invokedUrl("http://bjurr.se/10");
+         .withId(10L).withPullRequestAction(OPENED).build()).invokedUrl("http://bjurr.se/10");
   }
+ }
+
+ @Test
+ public void testThatAUrlIsOnlyInvokedForConfiguredEvents() {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder().withFieldValue("url", "http://bjurr.se/").withFieldValue("events", OPENED.name()).build())
+    .store().trigger(pullRequestEventBuilder() //
+      .withToRef(pullRequestRefBuilder()) //
+      .withId(10L).withPullRequestAction(MERGED).build()).invokedNoUrl();
+ }
+
+ @Test
+ public void testThatMultipleUrlsCanBeInvoked() {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder().withFieldValue("url", "http://merged.se/").withFieldValue("events", MERGED.name()).build())
+    .withNotification(
+      notificationBuilder().withFieldValue("url", "http://opened.se/").withFieldValue("events", OPENED.name()).build())
+    .store().trigger(pullRequestEventBuilder() //
+      .withToRef(pullRequestRefBuilder()) //
+      .withId(10L).withPullRequestAction(MERGED).build()).invokedOnlyUrl("http://merged.se/");
  }
 }

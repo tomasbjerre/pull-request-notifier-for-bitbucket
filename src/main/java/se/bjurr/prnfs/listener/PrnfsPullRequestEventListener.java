@@ -34,7 +34,9 @@ public class PrnfsPullRequestEventListener {
   try {
    final PrnfsSettings settings = getPrnfsSettings(pluginSettingsFactory.createGlobalSettings());
    for (final PrnfsNotification n : settings.getNotifications()) {
-    urlInvoker.ivoke(new PrnfsRenderer(o).render(n.getUrl()), n.getUser(), n.getPassword());
+    if (n.getTriggers().contains(o.getAction())) {
+     urlInvoker.ivoke(new PrnfsRenderer(o).render(n.getUrl()), n.getUser(), n.getPassword());
+    }
    }
   } catch (final ValidationException e) {
    logger.error("", e);
