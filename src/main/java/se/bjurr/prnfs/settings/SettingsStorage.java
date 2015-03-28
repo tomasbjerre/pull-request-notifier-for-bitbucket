@@ -16,6 +16,7 @@ import static se.bjurr.prnfs.settings.PrnfsSettingsBuilder.prnfsSettingsBuilder;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 
 import org.slf4j.Logger;
@@ -28,7 +29,6 @@ import com.atlassian.stash.pull.PullRequestAction;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
 import com.google.gson.Gson;
 
 public class SettingsStorage {
@@ -74,12 +74,22 @@ public class SettingsStorage {
  }
 
  public static PrnfsNotification getPrnfsNotification(AdminFormValues a) throws ValidationException {
-  final Optional<Map<String, String>> urlOpt = Iterables.tryFind(a, predicate("url"));
+  for (final Map<String, String> m : a) {
+   for (final Entry<String, String> entry : m.entrySet()) {
+    if (entry.getKey().equals(NAME)) {
+     if (AdminFormValues.FIELDS.valueOf(entry.getValue()) == null) {
+      throw new ValidationException(entry.getValue(), "Field not recognized!");
+     }
+    } else if (!entry.getKey().equals(VALUE)) {
+     throw new ValidationException(entry.getKey(), "Key not recognized!");
+    }
+   }
+  }
+  final Optional<Map<String, String>> urlOpt = tryFind(a, predicate(AdminFormValues.FIELDS.url.name()));
   if (!urlOpt.isPresent()) {
    throw new ValidationException("url", "URL not set");
   }
-  final PrnfsNotificationBuilder prnfsNotificationBuilder = prnfsNotificationBuilder().withUser("").withPassword("")
-    .withUrl(urlOpt.get().get(VALUE));
+  final PrnfsNotificationBuilder prnfsNotificationBuilder = prnfsNotificationBuilder().withUrl(urlOpt.get().get(VALUE));
   final Iterable<Map<String, String>> events = filter(a, predicate("events"));
   for (final Map<String, String> event : events) {
    prnfsNotificationBuilder.withTrigger(PullRequestAction.valueOf(event.get(VALUE)));

@@ -1,7 +1,7 @@
 package se.bjurr.prnfs.admin;
 
 import static com.atlassian.stash.pull.PullRequestAction.OPENED;
-import static se.bjurr.prnfs.admin.utils.AdminRequestBuilder.adminRequestBuilder;
+import static se.bjurr.prnfs.admin.utils.PrnfsTestBuilder.prnfsTestBuilder;
 import static se.bjurr.prnfs.admin.utils.NotificationBuilder.notificationBuilder;
 import static se.bjurr.prnfs.settings.SettingsStorage.FORM_IDENTIFIER_NAME;
 
@@ -10,7 +10,7 @@ import org.junit.Test;
 public class NotificationsStorageTest {
  @Test
  public void testThatANewNotificationCanBeStored() {
-  adminRequestBuilder()
+  prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
       notificationBuilder().withFieldValue("url", "http://bjurr.se/").withFieldValue("events", OPENED.name()).build())
@@ -21,7 +21,7 @@ public class NotificationsStorageTest {
 
  @Test
  public void testThatANewNotificationCanBeStoredWithWhiteSpaceInFormIdentifier() {
-  adminRequestBuilder()
+  prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
       notificationBuilder().withFieldValue("url", "http://bjurr.se/").withFieldValue("events", OPENED.name())
@@ -32,7 +32,7 @@ public class NotificationsStorageTest {
 
  @Test
  public void testThatTwoNewNotificationsCanBeStored() {
-  adminRequestBuilder()
+  prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
       notificationBuilder().withFieldValue("url", "http://bjurr.se/").withFieldValue("events", OPENED.name()).build())
@@ -46,7 +46,7 @@ public class NotificationsStorageTest {
 
  @Test
  public void testThatTwoNewNotificationsCanBeStoredAndThenOneDeleted() {
-  adminRequestBuilder()
+  prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
       notificationBuilder().withFieldValue("url", "http://bjurr.se/").withFieldValue("events", OPENED.name()).build())
@@ -65,7 +65,7 @@ public class NotificationsStorageTest {
 
  @Test
  public void testThatTwoNewNotificationsCanBeStoredAndThenOneUpdated() {
-  adminRequestBuilder()
+  prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
       notificationBuilder().withFieldValue("url", "http://bjurr.se/").withFieldValue("events", OPENED.name()).build())
@@ -94,14 +94,14 @@ public class NotificationsStorageTest {
 
  @Test
  public void testThatUrlMustBeSet() {
-  adminRequestBuilder().isLoggedInAsAdmin()
+  prnfsTestBuilder().isLoggedInAsAdmin()
     .withNotification(notificationBuilder().withFieldValue("events", OPENED.name()).build()).store()
     .hasValidationError("url", "URL not set");
  }
 
  @Test
  public void testThatUrlMustBeValid() {
-  adminRequestBuilder()
+  prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
       notificationBuilder().withFieldValue("events", OPENED.name()).withFieldValue("url", "notcorrect").build())
@@ -110,7 +110,7 @@ public class NotificationsStorageTest {
 
  @Test
  public void testThatValuesMustBeSet() {
-  adminRequestBuilder().isLoggedInAsAdmin().withNotification(notificationBuilder().build()).store()
+  prnfsTestBuilder().isLoggedInAsAdmin().withNotification(notificationBuilder().build()).store()
     .hasValidationError("url", "URL not set");
  }
 }

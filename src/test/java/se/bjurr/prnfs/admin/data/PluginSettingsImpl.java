@@ -10,6 +10,10 @@ import com.atlassian.sal.api.pluginsettings.PluginSettings;
 public class PluginSettingsImpl implements PluginSettings {
  private final Map<String, List<String>> map = newTreeMap();
 
+ public PluginSettingsImpl() {
+
+ }
+
  @Override
  public Object get(String key) {
   return map.get(key);

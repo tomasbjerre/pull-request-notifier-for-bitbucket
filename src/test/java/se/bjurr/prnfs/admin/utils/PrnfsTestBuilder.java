@@ -31,6 +31,8 @@ import se.bjurr.prnfs.admin.AdminFormError;
 import se.bjurr.prnfs.admin.AdminFormValues;
 import se.bjurr.prnfs.admin.ConfigResource;
 import se.bjurr.prnfs.admin.data.PluginSettingsImpl;
+import se.bjurr.prnfs.listener.PrnfsPullRequestEventListener;
+import se.bjurr.prnfs.listener.UrlInvoker;
 
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
@@ -39,10 +41,13 @@ import com.atlassian.sal.api.transaction.TransactionTemplate;
 import com.atlassian.sal.api.user.UserKey;
 import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.sal.api.user.UserProfile;
+import com.atlassian.stash.event.pull.PullRequestEvent;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
-public class AdminRequestBuilder {
+public class PrnfsTestBuilder {
  public class FakeRandom extends Random {
   private static final long serialVersionUID = 8653569936232699363L;
 
@@ -54,10 +59,10 @@ public class AdminRequestBuilder {
 
  private static Long fakeRandomCounter = null;
 
- private static final Logger logger = LoggerFactory.getLogger(AdminRequestBuilder.class);
+ private static final Logger logger = LoggerFactory.getLogger(PrnfsTestBuilder.class);
 
- public static AdminRequestBuilder adminRequestBuilder() {
-  return new AdminRequestBuilder();
+ public static PrnfsTestBuilder prnfsTestBuilder() {
+  return new PrnfsTestBuilder();
  }
 
  private final Map<String, AdminFormValues> adminFormValuesMap = newTreeMap();
@@ -79,7 +84,11 @@ public class AdminRequestBuilder {
 
  private final UserProfile userProfile;
 
- private AdminRequestBuilder() {
+ private PrnfsPullRequestEventListener listener;
+
+ private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+ private PrnfsTestBuilder() {
   fakeRandomCounter = 0L;
   fakeRandom(new FakeRandom());
   pluginSettings = new PluginSettingsImpl();
@@ -95,9 +104,10 @@ public class AdminRequestBuilder {
   };
   when(pluginSettingsFactory.createGlobalSettings()).thenReturn(pluginSettings);
   configResource = new ConfigResource(userManager, pluginSettingsFactory, transactionTemplate);
+  listener = new PrnfsPullRequestEventListener(pluginSettingsFactory);
  }
 
- public AdminRequestBuilder delete(String id) {
+ public PrnfsTestBuilder delete(String id) {
   configResource.delete(id, request);
   return this;
  }
@@ -113,7 +123,7 @@ public class AdminRequestBuilder {
     });
  }
 
- public AdminRequestBuilder hasFieldValueAt(String field, String value, String id) {
+ public PrnfsTestBuilder hasFieldValueAt(String field, String value, String id) {
   for (final Map<String, String> fieldValue : getAdminFormFields().get(id)) {
    if (fieldValue.get(NAME).equals(field) && fieldValue.get(VALUE).equals(value)) {
     return this;
@@ -123,7 +133,7 @@ public class AdminRequestBuilder {
   return this;
  }
 
- public AdminRequestBuilder hasNoneEmptyFieldAt(String field, String id) {
+ public PrnfsTestBuilder hasNoneEmptyFieldAt(String field, String id) {
   for (final Map<String, String> fieldValue : getAdminFormFields().get(id)) {
    if (fieldValue.get(NAME).equals(field)) {
     if (fieldValue.get(VALUE).trim().isEmpty()) {
@@ -137,7 +147,7 @@ public class AdminRequestBuilder {
   return this;
  }
 
- public AdminRequestBuilder hasNotifications(int num) {
+ public PrnfsTestBuilder hasNotifications(int num) {
   assertEquals(num, getAdminFormFields().size());
   return this;
  }
@@ -153,19 +163,19 @@ public class AdminRequestBuilder {
   fail(field + " " + value + " not found");
  }
 
- public AdminRequestBuilder isLoggedInAsAdmin() {
+ public PrnfsTestBuilder isLoggedInAsAdmin() {
   when(userProfile.getUserKey()).thenReturn(userKey);
   when(userManager.isSystemAdmin(Matchers.any(UserKey.class))).thenReturn(TRUE);
   when(userManager.getRemoteUser(Matchers.any(HttpServletRequest.class))).thenReturn(userProfile);
   return this;
  }
 
- public AdminRequestBuilder isNotLoggedInAsAdmin() {
+ public PrnfsTestBuilder isNotLoggedInAsAdmin() {
   when(userProfile.getUserKey()).thenReturn(null);
   return this;
  }
 
- public AdminRequestBuilder store() {
+ public PrnfsTestBuilder store() {
   postResponses = newArrayList();
   for (final AdminFormValues adminFormValues : adminFormValuesMap.values()) {
    final Optional<Object> postResponseOpt = fromNullable(configResource.post(adminFormValues, request).getEntity());
@@ -176,13 +186,45 @@ public class AdminRequestBuilder {
   return this;
  }
 
- public AdminRequestBuilder withNotification(AdminFormValues adminFormValues) {
+ public PrnfsTestBuilder withNotification(AdminFormValues adminFormValues) {
   final Optional<Map<String, String>> existing = tryFind(adminFormValues, predicate(FORM_IDENTIFIER_NAME));
   if (existing.isPresent()) {
    this.adminFormValuesMap.put(existing.get().get(VALUE), adminFormValues);
   } else {
    this.adminFormValuesMap.put((adminFormValuesMapCounter++) + "", adminFormValues);
   }
+  return this;
+ }
+
+ public PrnfsTestBuilder invokedUrl(String url) {
+  assertEquals(gson.toJson(pluginSettings), url, invokedUrl);
+  return this;
+ }
+
+ public PrnfsTestBuilder invokedUser(String user) {
+  assertEquals(user, this.usedUser.get());
+  return this;
+ }
+
+ public PrnfsTestBuilder invokedPassword(String password) {
+  assertEquals(password, this.usedPassword.get());
+  return this;
+ }
+
+ private String invokedUrl;
+ private Optional<String> usedUser;
+ private Optional<String> usedPassword;
+
+ public PrnfsTestBuilder trigger(PullRequestEvent event) {
+  listener.setUrlInvoker(new UrlInvoker() {
+   @Override
+   public void ivoke(String url, Optional<String> userParam, Optional<String> passwordParam) {
+    invokedUrl = url;
+    usedUser = userParam;
+    usedPassword = passwordParam;
+   }
+  });
+  listener.anEvent(event);
   return this;
  }
 }
