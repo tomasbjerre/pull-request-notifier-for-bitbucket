@@ -6,6 +6,8 @@ It can, for example, trigger a build in Jenkins. Parameterized Jenkins jobs can 
 http://server/job/theJob/buildWithParameters?token=TOKEN&PARAMETER=Value
 ```
 
+[Here](https://raw.githubusercontent.com/tomasbjerre/pull-request-notifier-for-stash/master/sandbox/all.png) is a screenshot of the admin GUI.
+
 ## Features
 The Pull Request Notifier for Stash can
 
