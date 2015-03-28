@@ -1,11 +1,17 @@
 package se.bjurr.prnfs.admin;
 
+import static com.atlassian.stash.pull.PullRequestAction.APPROVED;
 import static com.atlassian.stash.pull.PullRequestAction.MERGED;
 import static com.atlassian.stash.pull.PullRequestAction.OPENED;
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+import static java.lang.Thread.sleep;
+import static org.junit.Assert.assertEquals;
 import static se.bjurr.prnfs.admin.utils.NotificationBuilder.notificationBuilder;
 import static se.bjurr.prnfs.admin.utils.PrnfsTestBuilder.prnfsTestBuilder;
 import static se.bjurr.prnfs.admin.utils.PullRequestEventBuilder.pullRequestEventBuilder;
 import static se.bjurr.prnfs.admin.utils.PullRequestRefBuilder.pullRequestRefBuilder;
+import static se.bjurr.prnfs.listener.PrnfsPullRequestEventListener.dublicateEventBug;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -90,5 +96,19 @@ public class PrnfsPullRequestEventListenerTest {
     .store().trigger(pullRequestEventBuilder() //
       .withToRef(pullRequestRefBuilder()) //
       .withId(10L).withPullRequestAction(MERGED).build()).invokedOnlyUrl("http://merged.se/");
+ }
+
+ @Test
+ public void testThatDuplicateEventsFiredInStashAreIgnored() throws InterruptedException {
+  assertEquals(FALSE, dublicateEventBug(pullRequestEventBuilder().withId(100L).withPullRequestAction(APPROVED).build()));
+  assertEquals(TRUE, dublicateEventBug(pullRequestEventBuilder().withId(100L).withPullRequestAction(APPROVED).build()));
+  assertEquals(FALSE, dublicateEventBug(pullRequestEventBuilder().withId(100L).withPullRequestAction(OPENED).build()));
+  assertEquals(FALSE, dublicateEventBug(pullRequestEventBuilder().withId(101L).withPullRequestAction(APPROVED).build()));
+  assertEquals(TRUE, dublicateEventBug(pullRequestEventBuilder().withId(100L).withPullRequestAction(OPENED).build()));
+  assertEquals(TRUE, dublicateEventBug(pullRequestEventBuilder().withId(101L).withPullRequestAction(APPROVED).build()));
+  sleep(20);
+  assertEquals(TRUE, dublicateEventBug(pullRequestEventBuilder().withId(100L).withPullRequestAction(APPROVED).build()));
+  sleep(100);
+  assertEquals(FALSE, dublicateEventBug(pullRequestEventBuilder().withId(100L).withPullRequestAction(APPROVED).build()));
  }
 }
