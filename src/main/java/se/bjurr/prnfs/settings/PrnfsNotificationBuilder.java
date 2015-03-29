@@ -16,16 +16,28 @@ public class PrnfsNotificationBuilder {
  private final List<PullRequestAction> triggers = newArrayList();
  private String url;
  private String user;
+ private String filterRegexp;
+ private String filterString;
 
  private PrnfsNotificationBuilder() {
  }
 
  public PrnfsNotification build() throws ValidationException {
-  return new PrnfsNotification(triggers, password, url, user);
+  return new PrnfsNotification(triggers, url, user, password, filterString, filterRegexp);
  }
 
  public PrnfsNotificationBuilder withPassword(String password) {
   this.password = checkNotNull(password);
+  return this;
+ }
+
+ public PrnfsNotificationBuilder withFilterRegexp(String filterRegexp) {
+  this.filterRegexp = checkNotNull(filterRegexp);
+  return this;
+ }
+
+ public PrnfsNotificationBuilder withFilterString(String filterString) {
+  this.filterString = checkNotNull(filterString);
   return this;
  }
 

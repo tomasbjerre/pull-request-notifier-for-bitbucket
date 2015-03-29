@@ -1,14 +1,20 @@
 package se.bjurr.prnfs.listener;
 
 import static com.google.common.cache.CacheBuilder.newBuilder;
+import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
+import static java.util.Collections.sort;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.regex.Pattern.compile;
 import static se.bjurr.prnfs.settings.SettingsStorage.getPrnfsSettings;
+
+import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable;
 import se.bjurr.prnfs.settings.PrnfsNotification;
 import se.bjurr.prnfs.settings.PrnfsSettings;
 import se.bjurr.prnfs.settings.ValidationException;
@@ -41,16 +47,32 @@ public class PrnfsPullRequestEventListener {
   if (dublicateEventBug(o)) {
    return;
   }
+  final PrnfsRenderer renderer = new PrnfsRenderer(o);
+  logEvent(renderer, o);
   try {
    final PrnfsSettings settings = getPrnfsSettings(pluginSettingsFactory.createGlobalSettings());
    for (final PrnfsNotification n : settings.getNotifications()) {
+    if (n.getFilterRegexp().isPresent() && n.getFilterString().isPresent()
+      && !compile(n.getFilterRegexp().get()).matcher(renderer.render(n.getFilterString().get())).find()) {
+     continue;
+    }
     if (n.getTriggers().contains(o.getAction())) {
-     urlInvoker.ivoke(new PrnfsRenderer(o).render(n.getUrl()), n.getUser(), n.getPassword());
+     urlInvoker.ivoke(renderer.render(n.getUrl()), n.getUser(), n.getPassword());
     }
    }
   } catch (final ValidationException e) {
    logger.error("", e);
   }
+ }
+
+ private void logEvent(PrnfsRenderer renderer, PullRequestEvent o) {
+  final StringBuilder renderString = new StringBuilder();
+  final ArrayList<PrnfsVariable> variables = newArrayList(PrnfsRenderer.PrnfsVariable.values());
+  sort(variables);
+  for (final PrnfsRenderer.PrnfsVariable variable : variables) {
+   renderString.append(" " + variable.name() + ": ${" + variable.name() + "}");
+  }
+  logger.info(renderer.render(renderString.toString().trim()));
  }
 
  /**

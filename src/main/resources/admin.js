@@ -31,10 +31,8 @@
       data: JSON.stringify($form.serializeArray(), null, 2),
       processData: false,
       error: function(xhr, data, error) {
-       $.each(xhr.responseJSON, function(field,errorString) {
-        $(".error."+field,$form).html(errorString);
-        $(".post",$form).html("There were errors, form not saved!");
-       });
+       $(".error."+xhr.responseJSON.field,$form).html(xhr.responseJSON.error);
+       $(".post",$form).html("There were errors, form not saved!");
       },
       success: function(data, text, xhr) {
        getAll();

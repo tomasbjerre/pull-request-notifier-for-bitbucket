@@ -35,9 +35,9 @@ import com.atlassian.sal.api.user.UserProfile;
 
 @Path("/")
 public class ConfigResource {
+ private static final Logger logger = LoggerFactory.getLogger(ConfigResource.class);
  private final PluginSettingsFactory pluginSettingsFactory;
  private final TransactionTemplate transactionTemplate;
- private static final Logger logger = LoggerFactory.getLogger(ConfigResource.class);
  private final UserManager userManager;
 
  public ConfigResource(UserManager userManager, PluginSettingsFactory pluginSettingsFactory,

@@ -1,5 +1,6 @@
 package se.bjurr.prnfs.admin.utils;
 
+import static com.google.common.base.Joiner.on;
 import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.collect.Iterables.find;
 import static com.google.common.collect.Iterables.tryFind;
@@ -60,6 +61,8 @@ public class PrnfsTestBuilder {
 
  private static Long fakeRandomCounter = null;
 
+ private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
  private static final Logger logger = LoggerFactory.getLogger(PrnfsTestBuilder.class);
 
  public static PrnfsTestBuilder prnfsTestBuilder() {
@@ -67,27 +70,32 @@ public class PrnfsTestBuilder {
  }
 
  private final Map<String, AdminFormValues> adminFormValuesMap = newTreeMap();
+
  private long adminFormValuesMapCounter = 0;
 
  private final ConfigResource configResource;
 
- private final PluginSettings pluginSettings;
-
- private final PluginSettingsFactory pluginSettingsFactory;
-
- private List<AdminFormError> postResponses;
-
- private HttpServletRequest request;
- private TransactionTemplate transactionTemplate;
-
- private final UserKey userKey;
- private final UserManager userManager;
-
- private final UserProfile userProfile;
+ private final List<String> invokedUrl = newArrayList();
 
  private PrnfsPullRequestEventListener listener;
 
- private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
+ private final PluginSettings pluginSettings;
+ private final PluginSettingsFactory pluginSettingsFactory;
+
+ private List<AdminFormError> postResponses;
+ private HttpServletRequest request;
+
+ private TransactionTemplate transactionTemplate;
+
+ private final List<String> usedPassword = newArrayList();
+
+ private final List<String> usedUser = newArrayList();
+
+ private final UserKey userKey;
+
+ private final UserManager userManager;
+
+ private final UserProfile userProfile;
 
  private PrnfsTestBuilder() {
   fakeRandomCounter = 0L;
@@ -113,6 +121,13 @@ public class PrnfsTestBuilder {
   return this;
  }
 
+ public void didNotUseBasicAuth() {
+  for (int i = 0; i < usedUser.size(); i++) {
+   assertTrue("user" + i, usedUser.get(i).isEmpty());
+   assertTrue("password" + i, usedPassword.get(i).isEmpty());
+  }
+ }
+
  @SuppressWarnings("unchecked")
  private Map<String, AdminFormValues> getAdminFormFields() {
   return uniqueIndex((List<AdminFormValues>) configResource.get(request).getEntity(),
@@ -124,9 +139,9 @@ public class PrnfsTestBuilder {
     });
  }
 
- public PrnfsTestBuilder hasFieldValueAt(String field, String value, String id) {
+ public PrnfsTestBuilder hasFieldValueAt(AdminFormValues.FIELDS field, String value, String id) {
   for (final Map<String, String> fieldValue : getAdminFormFields().get(id)) {
-   if (fieldValue.get(NAME).equals(field) && fieldValue.get(VALUE).equals(value)) {
+   if (fieldValue.get(NAME).equals(field.name()) && fieldValue.get(VALUE).equals(value)) {
     return this;
    }
   }
@@ -134,9 +149,9 @@ public class PrnfsTestBuilder {
   return this;
  }
 
- public PrnfsTestBuilder hasNoneEmptyFieldAt(String field, String id) {
+ public PrnfsTestBuilder hasNoneEmptyFieldAt(AdminFormValues.FIELDS field, String id) {
   for (final Map<String, String> fieldValue : getAdminFormFields().get(id)) {
-   if (fieldValue.get(NAME).equals(field)) {
+   if (fieldValue.get(NAME).equals(field.name())) {
     if (fieldValue.get(VALUE).trim().isEmpty()) {
      fail(field + " was empty");
     } else {
@@ -153,15 +168,42 @@ public class PrnfsTestBuilder {
   return this;
  }
 
- public void hasValidationError(String field, String value) {
+ public void hasValidationError(AdminFormValues.FIELDS field, String value) {
   logger.info("Looking for " + field + "=" + value);
   for (final AdminFormError e : postResponses) {
-   if (e.getField().equals(field) && e.getValue().equals(value)) {
+   if (e.getField().equals(field.name())) {
+    assertEquals(value, e.getValue());
     return;
    }
    logger.info(e.getField() + " " + e.getValue());
   }
   fail(field + " " + value + " not found");
+ }
+
+ public PrnfsTestBuilder invokedNoUrl() {
+  assertEquals(0, invokedUrl.size());
+  return this;
+ }
+
+ public PrnfsTestBuilder invokedOnlyUrl(String url) {
+  assertEquals(1, invokedUrl.size());
+  assertTrue(invokedUrl.get(0).equals(url));
+  return this;
+ }
+
+ public PrnfsTestBuilder invokedPassword(String password) {
+  assertTrue(on(" ").join(usedPassword), this.usedPassword.contains(password));
+  return this;
+ }
+
+ public PrnfsTestBuilder invokedUrl(String url) {
+  assertTrue(gson.toJson(pluginSettings), invokedUrl.contains(url));
+  return this;
+ }
+
+ public PrnfsTestBuilder invokedUser(String user) {
+  assertTrue(on(" ").join(usedUser), this.usedUser.contains(user));
+  return this;
  }
 
  public PrnfsTestBuilder isLoggedInAsAdmin() {
@@ -187,35 +229,6 @@ public class PrnfsTestBuilder {
   return this;
  }
 
- public PrnfsTestBuilder withNotification(AdminFormValues adminFormValues) {
-  final Optional<Map<String, String>> existing = tryFind(adminFormValues, predicate(FORM_IDENTIFIER_NAME));
-  if (existing.isPresent()) {
-   this.adminFormValuesMap.put(existing.get().get(VALUE), adminFormValues);
-  } else {
-   this.adminFormValuesMap.put((adminFormValuesMapCounter++) + "", adminFormValues);
-  }
-  return this;
- }
-
- public PrnfsTestBuilder invokedUrl(String url) {
-  assertTrue(gson.toJson(pluginSettings), invokedUrl.contains(url));
-  return this;
- }
-
- public PrnfsTestBuilder invokedUser(String user) {
-  assertTrue(this.usedUser.contains(user));
-  return this;
- }
-
- public PrnfsTestBuilder invokedPassword(String password) {
-  assertTrue(this.usedPassword.contains(password));
-  return this;
- }
-
- private final List<String> invokedUrl = newArrayList();
- private final List<String> usedUser = newArrayList();
- private final List<String> usedPassword = newArrayList();
-
  public PrnfsTestBuilder trigger(PullRequestEvent event) {
   listener.setUrlInvoker(new UrlInvoker() {
    @Override
@@ -229,13 +242,13 @@ public class PrnfsTestBuilder {
   return this;
  }
 
- public PrnfsTestBuilder invokedNoUrl() {
-  assertEquals(0, invokedUrl.size());
+ public PrnfsTestBuilder withNotification(AdminFormValues adminFormValues) {
+  final Optional<Map<String, String>> existing = tryFind(adminFormValues, predicate(FORM_IDENTIFIER_NAME));
+  if (existing.isPresent()) {
+   this.adminFormValuesMap.put(existing.get().get(VALUE), adminFormValues);
+  } else {
+   this.adminFormValuesMap.put((adminFormValuesMapCounter++) + "", adminFormValues);
+  }
   return this;
- }
-
- public void invokedOnlyUrl(String url) {
-  assertEquals(1, invokedUrl.size());
-  assertTrue(invokedUrl.get(0).equals(url));
  }
 }

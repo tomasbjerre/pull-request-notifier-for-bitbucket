@@ -7,21 +7,23 @@
   <body>
     <div>
       <div class="description">
-        You can use variables when invoking the URL.
+        You can use variables when invoking the URL or when forming the filter string.
         <ul>
-        <li><b>${PULL_REQUEST_ID}</b></li>
-        <li><b>${PULL_REQUEST_FROM_ID}</b></li>
-        <li><b>${PULL_REQUEST_FROM_REPO_ID}</b></li>
-        <li><b>${PULL_REQUEST_FROM_REPO_NAME}</b></li>
-        <li><b>${PULL_REQUEST_FROM_REPO_SLUG}</b></li>
-        <li><b>${PULL_REQUEST_FROM_REPO_PROJECT_ID}</b></li>
-        <li><b>${PULL_REQUEST_FROM_REPO_PROJECT_KEY}</b></li>
-        <li><b>${PULL_REQUEST_TO_ID}</b></li>
-        <li><b>${PULL_REQUEST_TO_REPO_ID}</b></li>
-        <li><b>${PULL_REQUEST_TO_REPO_NAME}</b></li>
-        <li><b>${PULL_REQUEST_TO_REPO_SLUG}</b></li>
-        <li><b>${PULL_REQUEST_TO_REPO_PROJECT_ID}</b></li>
-        <li><b>${PULL_REQUEST_TO_REPO_PROJECT_KEY}</b></li>
+        <li><b>${PULL_REQUEST_ID}</b> Example: 1</li>
+        <li><b>${PULL_REQUEST_FROM_HASH}</b> Example: 6053a1eaa1c009dd11092d09a72f3c41af1b59ad</li>
+        <li><b>${PULL_REQUEST_FROM_ID}</b> Example: refs/heads/branch_mod_merge</li>
+        <li><b>${PULL_REQUEST_FROM_REPO_ID}</b> Example: 1</li>
+        <li><b>${PULL_REQUEST_FROM_REPO_NAME}</b> Example: rep_1</li>
+        <li><b>${PULL_REQUEST_FROM_REPO_PROJECT_ID}</b> Example: 1</li>
+        <li><b>${PULL_REQUEST_FROM_REPO_PROJECT_KEY}</b> Example: PROJECT_1</li>
+        <li><b>${PULL_REQUEST_FROM_REPO_SLUG}</b> Example: rep_1</li>
+        <li><b>${PULL_REQUEST_TO_HASH}</b> Example: d6edcbf924697ab811a867421dab60d954ccad99</li>
+        <li><b>${PULL_REQUEST_TO_ID}</b> Example: refs/heads/basic_branching</li>
+        <li><b>${PULL_REQUEST_TO_REPO_ID}</b> Example: 1</li>
+        <li><b>${PULL_REQUEST_TO_REPO_NAME}</b> Example: rep_1</li>
+        <li><b>${PULL_REQUEST_TO_REPO_PROJECT_ID}</b> Example: 1</li>
+        <li><b>${PULL_REQUEST_TO_REPO_PROJECT_KEY}</b> Example: PROJECT_1</li>
+        <li><b>${PULL_REQUEST_TO_REPO_SLUG}</b> Example: rep_1</li>
         </ul>
       </div>
     </div>
@@ -32,6 +34,18 @@
     <div class="prnfs-template">
       <form class="trigger">
         <input type="hidden" name="FORM_IDENTIFIER">
+        <div>
+          <fieldset>
+            <legend>Filter (Optional). Variables above are available.</legend>
+            <label for="filter_string">Filter string</label>
+            <input type="text" name="filter_string"><br/>
+            <div class="error filter_string"></div>
+            <label for="filter_regexp">Filter regexp</label>
+            <input type="text" name="filter_regexp"><br>
+            <div class="error filter_regexp"></div>
+            You can use <a target="_blank" href="http://jex.im/regulex/">http://jex.im/regulex/</a> to fiddle with regular expressions.
+          </fieldset>
+        </div>
         <div>
           <fieldset>
             <legend>Triggers</legend>
@@ -61,7 +75,7 @@
         </div>
         <div>
           <fieldset>
-            <legend>Basic authentication</legend>
+            <legend>Basic authentication (Optional)</legend>
             <label for="user">User</label>
             <input type="text" name="user"><br/>
             <label for="password">Password</label>

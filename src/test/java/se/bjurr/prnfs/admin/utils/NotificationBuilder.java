@@ -22,8 +22,8 @@ public class NotificationBuilder {
   return adminFormValues;
  }
 
- public NotificationBuilder withFieldValue(String field, String value) {
-  adminFormValues.add(new ImmutableMap.Builder<String, String>().put(NAME, field).put(VALUE, value).build());
+ public NotificationBuilder withFieldValue(AdminFormValues.FIELDS field, String value) {
+  adminFormValues.add(new ImmutableMap.Builder<String, String>().put(NAME, field.name()).put(VALUE, value).build());
   return this;
  }
 }

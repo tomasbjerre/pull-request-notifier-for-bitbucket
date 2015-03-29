@@ -40,9 +40,9 @@ public class SettingsStorage {
  private static final Gson gson = new Gson();
  private static final Logger logger = LoggerFactory.getLogger(SettingsStorage.class);
 
- private static final String STORAGE_KEY = AdminFormValues.class.getName() + "_2";
-
  private static Random random = new Random(currentTimeMillis());
+
+ private static final String STORAGE_KEY = AdminFormValues.class.getName() + "_2";
 
  public static void deleteSettings(PluginSettings pluginSettings, String id) {
   final Map<String, AdminFormValues> map = getNotificationsMap(pluginSettings);
@@ -93,6 +93,20 @@ public class SettingsStorage {
   final Iterable<Map<String, String>> events = filter(a, predicate("events"));
   for (final Map<String, String> event : events) {
    prnfsNotificationBuilder.withTrigger(PullRequestAction.valueOf(event.get(VALUE)));
+  }
+  if (tryFind(a, predicate(AdminFormValues.FIELDS.user.name())).isPresent()) {
+   prnfsNotificationBuilder.withUser(find(a, predicate(AdminFormValues.FIELDS.user.name())).get(VALUE));
+  }
+  if (tryFind(a, predicate(AdminFormValues.FIELDS.password.name())).isPresent()) {
+   prnfsNotificationBuilder.withPassword(find(a, predicate(AdminFormValues.FIELDS.password.name())).get(VALUE));
+  }
+  if (tryFind(a, predicate(AdminFormValues.FIELDS.filter_string.name())).isPresent()) {
+   prnfsNotificationBuilder
+     .withFilterString(find(a, predicate(AdminFormValues.FIELDS.filter_string.name())).get(VALUE));
+  }
+  if (tryFind(a, predicate(AdminFormValues.FIELDS.filter_regexp.name())).isPresent()) {
+   prnfsNotificationBuilder
+     .withFilterRegexp(find(a, predicate(AdminFormValues.FIELDS.filter_regexp.name())).get(VALUE));
   }
   return prnfsNotificationBuilder.build();
  }
