@@ -22,7 +22,7 @@ The Pull Request Notifier for Stash can
 ## Developer instructions
 ### Prerequisites
 - Atlas SDK [(installation instructions)](https://developer.atlassian.com/docs/getting-started/set-up-the-atlassian-plugin-sdk-and-build-a-project).
-- JDK 1.8
+- JDK 1.7
 
 Generate Eclipse project:
 ```

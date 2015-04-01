@@ -2,6 +2,9 @@
 
 Changelog of Pull Request Notifier for Stash.
 
+## 1.2
+* Compatible with Java 7, was compatible with Java 8
+
 ## 1.1
 
 * Adding support for filters
