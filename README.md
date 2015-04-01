@@ -20,9 +20,10 @@ The Pull Request Notifier for Stash can
 * Authenticate with HTTP BASIC authentication.
 
 ## Developer instructions
-### Prerequisites
-- Atlas SDK [(installation instructions)](https://developer.atlassian.com/docs/getting-started/set-up-the-atlassian-plugin-sdk-and-build-a-project).
-- JDK 1.7
+Prerequisites:
+
+* Atlas SDK [(installation instructions)](https://developer.atlassian.com/docs/getting-started/set-up-the-atlassian-plugin-sdk-and-build-a-project).
+* JDK 1.7 or newer
 
 Generate Eclipse project:
 ```
