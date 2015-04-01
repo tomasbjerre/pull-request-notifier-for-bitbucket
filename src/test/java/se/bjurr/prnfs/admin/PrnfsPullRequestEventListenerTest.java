@@ -25,8 +25,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import se.bjurr.prnfs.admin.AdminFormValues.FIELDS;
 import se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable;
@@ -34,7 +32,34 @@ import se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable;
 import com.google.common.io.Resources;
 
 public class PrnfsPullRequestEventListenerTest {
- private static final Logger logger = LoggerFactory.getLogger(PrnfsPullRequestEventListenerTest.class);
+
+ @Test
+ public void testThatAdminFormFieldsAreUsedInAdminGUI() throws IOException {
+  final URL resource = getResource("admin.vm");
+  final String adminVmContent = Resources.toString(resource, UTF_8);
+  for (final AdminFormValues.FIELDS field : AdminFormValues.FIELDS.values()) {
+   assertTrue(field.name() + " in " + resource.toString(), adminVmContent.contains("name=\"" + field.name() + "\""));
+  }
+ }
+
+ @Test
+ public void testThatAUrlCanHaveSeveralVariables() {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder()
+        .withFieldValue(
+          AdminFormValues.FIELDS.url,
+          "http://bjurr.se/?PULL_REQUEST_FROM_HASH=${PULL_REQUEST_FROM_HASH}&PULL_REQUEST_TO_HASH=${PULL_REQUEST_TO_HASH}&PULL_REQUEST_FROM_REPO_SLUG=${PULL_REQUEST_FROM_REPO_SLUG}&PULL_REQUEST_TO_REPO_SLUG=${PULL_REQUEST_TO_REPO_SLUG}")
+        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).build())
+    .store()
+    .trigger(pullRequestEventBuilder() //
+      .withFromRef(pullRequestRefBuilder().withHash("cde456").withRepositorySlug("fromslug")) //
+      .withToRef(pullRequestRefBuilder().withHash("asd123").withRepositorySlug("toslug")) //
+      .withId(10L).withPullRequestAction(OPENED).build())
+    .invokedUrl(
+      "http://bjurr.se/?PULL_REQUEST_FROM_HASH=cde456&PULL_REQUEST_TO_HASH=asd123&PULL_REQUEST_FROM_REPO_SLUG=fromslug&PULL_REQUEST_TO_REPO_SLUG=toslug");
+ }
 
  @Test
  public void testThatAUrlIsOnlyInvokedForConfiguredEvents() {
@@ -103,54 +128,6 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatAUrlCanHaveSeveralVariables() {
-  prnfsTestBuilder()
-    .isLoggedInAsAdmin()
-    .withNotification(
-      notificationBuilder()
-        .withFieldValue(
-          AdminFormValues.FIELDS.url,
-          "http://bjurr.se/?PULL_REQUEST_FROM_HASH=${PULL_REQUEST_FROM_HASH}&PULL_REQUEST_TO_HASH=${PULL_REQUEST_TO_HASH}&PULL_REQUEST_FROM_REPO_SLUG=${PULL_REQUEST_FROM_REPO_SLUG}&PULL_REQUEST_TO_REPO_SLUG=${PULL_REQUEST_TO_REPO_SLUG}")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).build())
-    .store()
-    .trigger(pullRequestEventBuilder() //
-      .withFromRef(pullRequestRefBuilder().withHash("cde456").withRepositorySlug("fromslug")) //
-      .withToRef(pullRequestRefBuilder().withHash("asd123").withRepositorySlug("toslug")) //
-      .withId(10L).withPullRequestAction(OPENED).build())
-    .invokedUrl(
-      "http://bjurr.se/?PULL_REQUEST_FROM_HASH=cde456&PULL_REQUEST_TO_HASH=asd123&PULL_REQUEST_FROM_REPO_SLUG=fromslug&PULL_REQUEST_TO_REPO_SLUG=toslug");
- }
-
- @Test
- public void testThatDuplicateEventsFiredInStashAreIgnored() throws InterruptedException {
-  assertEquals(FALSE, dublicateEventBug(pullRequestEventBuilder().withId(100L).withPullRequestAction(APPROVED).build()));
-  assertEquals(TRUE, dublicateEventBug(pullRequestEventBuilder().withId(100L).withPullRequestAction(APPROVED).build()));
-  assertEquals(FALSE, dublicateEventBug(pullRequestEventBuilder().withId(100L).withPullRequestAction(OPENED).build()));
-  assertEquals(FALSE, dublicateEventBug(pullRequestEventBuilder().withId(101L).withPullRequestAction(APPROVED).build()));
-  assertEquals(TRUE, dublicateEventBug(pullRequestEventBuilder().withId(100L).withPullRequestAction(OPENED).build()));
-  assertEquals(TRUE, dublicateEventBug(pullRequestEventBuilder().withId(101L).withPullRequestAction(APPROVED).build()));
-  sleep(5);
-  assertEquals(TRUE, dublicateEventBug(pullRequestEventBuilder().withId(100L).withPullRequestAction(APPROVED).build()));
-  sleep(100);
-  assertEquals(FALSE, dublicateEventBug(pullRequestEventBuilder().withId(100L).withPullRequestAction(APPROVED).build()));
- }
-
- @Test
- public void testThatMultipleUrlsCanBeInvoked() {
-  prnfsTestBuilder()
-    .isLoggedInAsAdmin()
-    .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://merged.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, MERGED.name()).build())
-    .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://opened.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).build()).store()
-    .trigger(pullRequestEventBuilder() //
-      .withToRef(pullRequestRefBuilder()) //
-      .withId(10L).withPullRequestAction(MERGED).build()).invokedOnlyUrl("http://merged.se/").didNotUseBasicAuth();
- }
-
- @Test
  public void testThatBasicAuthenticationHeaderIsSentIfThereIsAUser() {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
@@ -161,6 +138,24 @@ public class PrnfsPullRequestEventListenerTest {
         .withFieldValue(AdminFormValues.FIELDS.password, "thepassword").build()).store()
     .trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build()).invokedUrl("http://bjurr.se/")
     .invokedUser("theuser").invokedPassword("thepassword");
+ }
+
+ @Test
+ public void testThatDuplicateEventsFiredInStashAreIgnored() throws InterruptedException {
+  assertEquals(FALSE, dublicateEventBug(pullRequestEventBuilder().withId(100L).withPullRequestAction(APPROVED).build()));
+  assertEquals(TRUE, dublicateEventBug(pullRequestEventBuilder().withId(100L).withPullRequestAction(APPROVED).build()));
+  sleep(100);
+  assertEquals(FALSE, dublicateEventBug(pullRequestEventBuilder().withId(100L).withPullRequestAction(APPROVED).build()));
+ }
+
+ @Test
+ public void testThatFieldsUsedInAdminGUIArePresentInAdminFormFields() throws IOException {
+  final URL resource = getResource("admin.vm");
+  final String adminVmContent = Resources.toString(resource, UTF_8);
+  final java.util.regex.Matcher m = Pattern.compile("<input [^n]*name=\"([^\\\"]*)\"").matcher(adminVmContent);
+  while (m.find()) {
+   assertTrue(m.group(1) + " found at " + resource.toString(), AdminFormValues.FIELDS.valueOf(m.group(1)) != null);
+  }
  }
 
  @Test
@@ -190,6 +185,19 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
+ public void testThatFilterCanBeUsedToTriggerEventsThatAreOnAnotherProject() {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
+        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name())
+        .withFieldValue(FIELDS.filter_string, "${PULL_REQUEST_FROM_REPO_PROJECT_KEY}")
+        .withFieldValue(FIELDS.filter_regexp, "EXP").build()).store().trigger(pullRequestEventBuilder() //
+      .withFromRef(pullRequestRefBuilder().withProjectKey("EXP")) //
+      .withId(10L).withPullRequestAction(OPENED).build()).invokedUrl("http://bjurr.se/");
+ }
+
+ @Test
  public void testThatFilterCanBeUsedToTriggerOnEventsThatAreOnAnotherProjectAnBranch() {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
@@ -203,16 +211,18 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatFilterCanBeUsedToTriggerEventsThatAreOnAnotherProject() {
+ public void testThatMultipleUrlsCanBeInvoked() {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name())
-        .withFieldValue(FIELDS.filter_string, "${PULL_REQUEST_FROM_REPO_PROJECT_KEY}")
-        .withFieldValue(FIELDS.filter_regexp, "EXP").build()).store().trigger(pullRequestEventBuilder() //
-      .withFromRef(pullRequestRefBuilder().withProjectKey("EXP")) //
-      .withId(10L).withPullRequestAction(OPENED).build()).invokedUrl("http://bjurr.se/");
+      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://merged.se/")
+        .withFieldValue(AdminFormValues.FIELDS.events, MERGED.name()).build())
+    .withNotification(
+      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://opened.se/")
+        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).build()).store()
+    .trigger(pullRequestEventBuilder() //
+      .withToRef(pullRequestRefBuilder()) //
+      .withId(10L).withPullRequestAction(MERGED).build()).invokedOnlyUrl("http://merged.se/").didNotUseBasicAuth();
  }
 
  @Test
@@ -237,25 +247,6 @@ public class PrnfsPullRequestEventListenerTest {
   final String adminVmContent = Resources.toString(resource, UTF_8);
   for (final PrnfsVariable prnfsVariable : PrnfsVariable.values()) {
    assertTrue(prnfsVariable.name() + " in " + resource.toString(), adminVmContent.contains(prnfsVariable.name()));
-  }
- }
-
- @Test
- public void testThatAdminFormFieldsAreUsedInAdminGUI() throws IOException {
-  final URL resource = getResource("admin.vm");
-  final String adminVmContent = Resources.toString(resource, UTF_8);
-  for (final AdminFormValues.FIELDS field : AdminFormValues.FIELDS.values()) {
-   assertTrue(field.name() + " in " + resource.toString(), adminVmContent.contains("name=\"" + field.name() + "\""));
-  }
- }
-
- @Test
- public void testThatFieldsUsedInAdminGUIArePresentInAdminFormFields() throws IOException {
-  final URL resource = getResource("admin.vm");
-  final String adminVmContent = Resources.toString(resource, UTF_8);
-  final java.util.regex.Matcher m = Pattern.compile("<input [^n]*name=\"([^\\\"]*)\"").matcher(adminVmContent);
-  while (m.find()) {
-   assertTrue(m.group(1) + " found at " + resource.toString(), AdminFormValues.FIELDS.valueOf(m.group(1)) != null);
   }
  }
 }
