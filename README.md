@@ -1,5 +1,5 @@
 # Pull Request Notifier for Stash [![Build Status](https://travis-ci.org/tomasbjerre/pull-request-notifier-for-stash.svg?branch=master)](https://travis-ci.org/tomasbjerre/pull-request-notifier-for-stash)
-A plugin for Atlassian Stash that can notfy other systems on events regarding pull requests.
+A plugin for Atlassian Stash that can notify other systems on events regarding pull requests.
 
 It can, for example, trigger a build in Jenkins. Parameterized Jenkins jobs can be triggered remotely via:
 ```
@@ -20,11 +20,11 @@ The Pull Request Notifier for Stash can
 * Authenticate with HTTP BASIC authentication.
 
 ## Developer instructions
-You will need Atlas SDK to compile the code.
+### Prerequisites
+- Atlas SDK [(installation instructions)](https://developer.atlassian.com/docs/getting-started/set-up-the-atlassian-plugin-sdk-and-build-a-project).
+- JDK 1.8
 
-https://developer.atlassian.com/docs/getting-started/set-up-the-atlassian-plugin-sdk-and-build-a-project
-
-You can generate Eclipse project:
+Generate Eclipse project:
 ```
 atlas-compile eclipse:eclipse
 ```
@@ -40,9 +40,7 @@ export MAVEN_OPTS=-Dplugin.resource.directories=`pwd`/src/main/resources
 atlas-run
 ```
 
-Make a release:
-
-https://developer.atlassian.com/docs/common-coding-tasks/development-cycle/packaging-and-releasing-your-plugin
+Make a release [(detailed instructions)](https://developer.atlassian.com/docs/common-coding-tasks/development-cycle/packaging-and-releasing-your-plugin):
 ```
 mvn release:prepare
 mvn release:perform
