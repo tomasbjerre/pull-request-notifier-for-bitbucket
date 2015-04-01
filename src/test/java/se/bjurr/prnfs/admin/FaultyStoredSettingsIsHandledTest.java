@@ -8,14 +8,24 @@ import static se.bjurr.prnfs.settings.SettingsStorage.getSettingsAsFormValues;
 
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.slf4j.Logger;
+
+import se.bjurr.prnfs.settings.SettingsStorage;
 
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
 
 public class FaultyStoredSettingsIsHandledTest {
+ private Logger beforeLogger;
  private PluginSettings settings;
+
+ @After
+ public void after() {
+  SettingsStorage.setLogger(beforeLogger);
+ }
 
  private void assertEmpty() {
   List<AdminFormValues> adminFormValues = getSettingsAsFormValues(settings);
@@ -28,6 +38,9 @@ public class FaultyStoredSettingsIsHandledTest {
 
  @Before
  public void before() {
+  beforeLogger = SettingsStorage.getLogger();
+  Logger mockLogger = mock(Logger.class);
+  SettingsStorage.setLogger(mockLogger);
   this.settings = mock(PluginSettings.class);
  }
 

@@ -38,7 +38,7 @@ public class SettingsStorage {
  public static final String FORM_IDENTIFIER_NAME = "FORM_IDENTIFIER";
 
  private static final Gson gson = new Gson();
- private static final Logger logger = LoggerFactory.getLogger(SettingsStorage.class);
+ private static Logger logger = LoggerFactory.getLogger(SettingsStorage.class);
 
  private static Random random = new Random(currentTimeMillis());
 
@@ -61,6 +61,11 @@ public class SettingsStorage {
 
  public static String formIdentifierGnerator() {
   return random.nextLong() + "";
+ }
+
+ @VisibleForTesting
+ public static Logger getLogger() {
+  return logger;
  }
 
  private static Map<String, AdminFormValues> getNotificationsMap(PluginSettings pluginSettings) {
@@ -134,6 +139,11 @@ public class SettingsStorage {
    logger.error("Unable to deserialize settings", e);
   }
   return toReturn;
+ }
+
+ @VisibleForTesting
+ public static void setLogger(Logger loggerParam) {
+  logger = loggerParam;
  }
 
  private static void storeNotificationsMap(PluginSettings pluginSettings,
