@@ -3,7 +3,7 @@
 Changelog of Pull Request Notifier for Stash.
 
 ## 1.2
-* Compatible with Java 7, was compatible with Java 8
+* Compatible with Java 7, was compatible with Java 8 since java.util.Base64 was accidently used.
 
 ## 1.1
 
