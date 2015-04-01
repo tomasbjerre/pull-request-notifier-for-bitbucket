@@ -9,7 +9,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Base64;
+
+import javax.xml.bind.DatatypeConverter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ public class UrlInvoker {
    final URLConnection uc = url.openConnection();
    if (user.isPresent() && password.isPresent()) {
     final String userpass = user.get() + ":" + password.get();
-    final String basicAuth = "Basic " + new String(Base64.getEncoder().encode(userpass.getBytes()));
+    final String basicAuth = "Basic " + new String(DatatypeConverter.printBase64Binary(userpass.getBytes("UTF-8")));
     uc.setRequestProperty("Authorization", basicAuth);
    }
    ir = new InputStreamReader(uc.getInputStream(), UTF_8);
