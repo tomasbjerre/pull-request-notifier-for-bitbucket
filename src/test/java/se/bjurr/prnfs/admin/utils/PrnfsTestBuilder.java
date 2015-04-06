@@ -238,7 +238,7 @@ public class PrnfsTestBuilder {
     usedPassword.add(passwordParam.or(""));
    }
   });
-  listener.anEvent(event);
+  listener.handleEvent(event);
   return this;
  }
 

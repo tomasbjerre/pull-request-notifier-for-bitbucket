@@ -2,6 +2,9 @@
 
 Changelog of Pull Request Notifier for Stash.
 
+## 1.4
+* Bugfix: Avoiding multiple notifications being sent from same event.
+
 ## 1.3
 Same as version 1.2 but with different version number. When version 1.2 was initially rejected I fixed the issue and created a new 1.2. But a new version number was needed for a resubmission to Atlassian Marketplace.
 

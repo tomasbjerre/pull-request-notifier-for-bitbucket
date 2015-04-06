@@ -1,15 +1,11 @@
 package se.bjurr.prnfs.admin;
 
-import static com.atlassian.stash.pull.PullRequestAction.APPROVED;
 import static com.atlassian.stash.pull.PullRequestAction.MERGED;
 import static com.atlassian.stash.pull.PullRequestAction.OPENED;
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Joiner.on;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.io.Resources.getResource;
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
-import static java.lang.Thread.sleep;
 import static java.util.Collections.sort;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -17,7 +13,6 @@ import static se.bjurr.prnfs.admin.utils.NotificationBuilder.notificationBuilder
 import static se.bjurr.prnfs.admin.utils.PrnfsTestBuilder.prnfsTestBuilder;
 import static se.bjurr.prnfs.admin.utils.PullRequestEventBuilder.pullRequestEventBuilder;
 import static se.bjurr.prnfs.admin.utils.PullRequestRefBuilder.pullRequestRefBuilder;
-import static se.bjurr.prnfs.listener.PrnfsPullRequestEventListener.dublicateEventBug;
 
 import java.io.IOException;
 import java.net.URL;
@@ -138,14 +133,6 @@ public class PrnfsPullRequestEventListenerTest {
         .withFieldValue(AdminFormValues.FIELDS.password, "thepassword").build()).store()
     .trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build()).invokedUrl("http://bjurr.se/")
     .invokedUser("theuser").invokedPassword("thepassword");
- }
-
- @Test
- public void testThatDuplicateEventsFiredInStashAreIgnored() throws InterruptedException {
-  assertEquals(FALSE, dublicateEventBug(pullRequestEventBuilder().withId(100L).withPullRequestAction(APPROVED).build()));
-  assertEquals(TRUE, dublicateEventBug(pullRequestEventBuilder().withId(100L).withPullRequestAction(APPROVED).build()));
-  sleep(100);
-  assertEquals(FALSE, dublicateEventBug(pullRequestEventBuilder().withId(100L).withPullRequestAction(APPROVED).build()));
  }
 
  @Test

@@ -1,40 +1,37 @@
 package se.bjurr.prnfs.listener;
 
-import static com.google.common.cache.CacheBuilder.newBuilder;
-import static com.google.common.collect.Lists.newArrayList;
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
-import static java.util.Collections.sort;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.regex.Pattern.compile;
 import static se.bjurr.prnfs.settings.SettingsStorage.getPrnfsSettings;
-
-import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable;
 import se.bjurr.prnfs.settings.PrnfsNotification;
 import se.bjurr.prnfs.settings.PrnfsSettings;
 import se.bjurr.prnfs.settings.ValidationException;
 
 import com.atlassian.event.api.EventListener;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
+import com.atlassian.stash.event.pull.PullRequestApprovedEvent;
+import com.atlassian.stash.event.pull.PullRequestCommentAddedEvent;
+import com.atlassian.stash.event.pull.PullRequestDeclinedEvent;
 import com.atlassian.stash.event.pull.PullRequestEvent;
+import com.atlassian.stash.event.pull.PullRequestMergedEvent;
+import com.atlassian.stash.event.pull.PullRequestOpenedEvent;
+import com.atlassian.stash.event.pull.PullRequestReopenedEvent;
+import com.atlassian.stash.event.pull.PullRequestRescopedEvent;
+import com.atlassian.stash.event.pull.PullRequestUnapprovedEvent;
+import com.atlassian.stash.event.pull.PullRequestUpdatedEvent;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.cache.Cache;
 
 public class PrnfsPullRequestEventListener {
 
  private UrlInvoker urlInvoker = new UrlInvoker();
  private final PluginSettingsFactory pluginSettingsFactory;
  private static final Logger logger = LoggerFactory.getLogger(PrnfsPullRequestEventListener.class);
- private static Cache<Object, Object> duplicateEventCache;
 
  public PrnfsPullRequestEventListener(PluginSettingsFactory pluginSettingsFactory) {
   this.pluginSettingsFactory = pluginSettingsFactory;
-  duplicateEventCache = newBuilder().maximumSize(1000).expireAfterWrite(50, MILLISECONDS).build();
  }
 
  @VisibleForTesting
@@ -43,12 +40,53 @@ public class PrnfsPullRequestEventListener {
  }
 
  @EventListener
- public void anEvent(PullRequestEvent o) {
-  if (dublicateEventBug(o)) {
-   return;
-  }
+ public void onEvent(PullRequestApprovedEvent e) {
+  handleEvent(e);
+ }
+
+ @EventListener
+ public void onEvent(PullRequestCommentAddedEvent e) {
+  handleEvent(e);
+ }
+
+ @EventListener
+ public void onEvent(PullRequestDeclinedEvent e) {
+  handleEvent(e);
+ }
+
+ @EventListener
+ public void onEvent(PullRequestMergedEvent e) {
+  handleEvent(e);
+ }
+
+ @EventListener
+ public void onEvent(PullRequestOpenedEvent e) {
+  handleEvent(e);
+ }
+
+ @EventListener
+ public void onEvent(PullRequestReopenedEvent e) {
+  handleEvent(e);
+ }
+
+ @EventListener
+ public void onEvent(PullRequestRescopedEvent e) {
+  handleEvent(e);
+ }
+
+ @EventListener
+ public void onEvent(PullRequestUnapprovedEvent e) {
+  handleEvent(e);
+ }
+
+ @EventListener
+ public void onEvent(PullRequestUpdatedEvent e) {
+  handleEvent(e);
+ }
+
+ @VisibleForTesting
+ public void handleEvent(PullRequestEvent o) {
   final PrnfsRenderer renderer = new PrnfsRenderer(o);
-  logEvent(renderer, o);
   try {
    final PrnfsSettings settings = getPrnfsSettings(pluginSettingsFactory.createGlobalSettings());
    for (final PrnfsNotification n : settings.getNotifications()) {
@@ -63,27 +101,5 @@ public class PrnfsPullRequestEventListener {
   } catch (final ValidationException e) {
    logger.error("", e);
   }
- }
-
- private void logEvent(PrnfsRenderer renderer, PullRequestEvent o) {
-  final StringBuilder renderString = new StringBuilder();
-  final ArrayList<PrnfsVariable> variables = newArrayList(PrnfsRenderer.PrnfsVariable.values());
-  sort(variables);
-  for (final PrnfsRenderer.PrnfsVariable variable : variables) {
-   renderString.append(" " + variable.name() + ": ${" + variable.name() + "}");
-  }
-  logger.info(renderer.render(renderString.toString().trim()));
- }
-
- /**
-  * Looks like there is a bug in Stash that causes events to be fired twice.
-  */
- public static boolean dublicateEventBug(PullRequestEvent o) {
-  final String footprint = o.getPullRequest().getId() + "_" + o.getAction().name();
-  if (duplicateEventCache.asMap().containsKey(footprint)) {
-   return TRUE;
-  }
-  duplicateEventCache.put(footprint, TRUE);
-  return FALSE;
  }
 }
