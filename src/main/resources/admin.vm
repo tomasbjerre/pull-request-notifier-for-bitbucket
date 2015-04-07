@@ -9,7 +9,6 @@
       <div class="description">
         You can use variables when invoking the URL or when forming the filter string.
         <ul>
-        http://bjurr.se/?COMMENTED&Administrator&admin@example.com&1&admin&admin 
         <li><b>${PULL_REQUEST_ID}</b> Example: 1</li>
         <li><b>${PULL_REQUEST_ACTION}</b> Example: OPENED</li>
         <li><b>${PULL_REQUEST_AUTHOR_DISPLAY_NAME}</b> Example: Administrator</li>
