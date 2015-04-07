@@ -10,6 +10,7 @@ import static java.util.Collections.sort;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static se.bjurr.prnfs.admin.utils.NotificationBuilder.notificationBuilder;
+import static se.bjurr.prnfs.admin.utils.PrnfsParticipantBuilder.prnfsParticipantBuilder;
 import static se.bjurr.prnfs.admin.utils.PrnfsTestBuilder.prnfsTestBuilder;
 import static se.bjurr.prnfs.admin.utils.PullRequestEventBuilder.pullRequestEventBuilder;
 import static se.bjurr.prnfs.admin.utils.PullRequestRefBuilder.pullRequestRefBuilder;
@@ -79,9 +80,9 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatAUrlWithVariablesCanBeInvokedFrom() {
+ public void testThatAUrlWithVariablesFromCanBeInvoked() {
   for (final PrnfsVariable prnfsVariable : PrnfsVariable.values()) {
-   if (prnfsVariable.name().contains("_TO_")) {
+   if (!prnfsVariable.name().contains("_FROM_")) {
     continue;
    }
    prnfsTestBuilder()
@@ -101,9 +102,9 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatAUrlWithVariablesCanBeInvokedTo() {
+ public void testThatAUrlWithVariablesToCanBeInvoked() {
   for (final PrnfsVariable prnfsVariable : PrnfsVariable.values()) {
-   if (prnfsVariable.name().contains("_FROM_")) {
+   if (!prnfsVariable.name().contains("_TO_")) {
     continue;
    }
    prnfsTestBuilder()
@@ -120,6 +121,34 @@ public class PrnfsPullRequestEventListenerTest {
              .withRepositoryId(10).withRepositoryName("10").withRepositorySlug("10")) //
          .withId(10L).withPullRequestAction(OPENED).build()).invokedUrl("http://bjurr.se/10");
   }
+ }
+
+ @Test
+ public void testThatAUrlWithVariablesExceptFromAndToCanBeInvoked() {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder()
+        .withFieldValue(
+          AdminFormValues.FIELDS.url,
+          "http://bjurr.se/id=${" + PrnfsVariable.PULL_REQUEST_ID.name() + "}&action=${"
+            + PrnfsVariable.PULL_REQUEST_ACTION.name() + "}&displayName=${"
+            + PrnfsVariable.PULL_REQUEST_AUTHOR_DISPLAY_NAME.name() + "}&authorEmail=${"
+            + PrnfsVariable.PULL_REQUEST_AUTHOR_EMAIL.name() + "}&authorId=${"
+            + PrnfsVariable.PULL_REQUEST_AUTHOR_ID.name() + "}&authorName=${"
+            + PrnfsVariable.PULL_REQUEST_AUTHOR_NAME.name() + "}&authorSlug=${"
+            + PrnfsVariable.PULL_REQUEST_AUTHOR_SLUG.name() + "}")
+        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).build())
+    .store()
+    .trigger(
+      pullRequestEventBuilder()
+        .withId(10L)
+        .withPullRequestAction(OPENED)
+        .withAuthor(
+          prnfsParticipantBuilder().withDisplayName("authorDisplayName").withEmail("authorEmail").withId(100)
+            .withName("authorName").withSlug("authorSlug").build()).build())
+    .invokedUrl(
+      "http://bjurr.se/id=10&action=OPENED&displayName=authorDisplayName&authorEmail=authorEmail&authorId=100&authorName=authorName&authorSlug=authorSlug");
  }
 
  @Test

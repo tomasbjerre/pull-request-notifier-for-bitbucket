@@ -197,7 +197,11 @@ public class PrnfsTestBuilder {
  }
 
  public PrnfsTestBuilder invokedUrl(String url) {
-  assertTrue(gson.toJson(pluginSettings), invokedUrl.contains(url));
+  if (invokedUrl.size() == 1) {
+   assertEquals(url, invokedUrl.get(0));
+  } else {
+   assertTrue(gson.toJson(invokedUrl), invokedUrl.contains(url));
+  }
   return this;
  }
 

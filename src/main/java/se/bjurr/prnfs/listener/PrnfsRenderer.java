@@ -1,6 +1,7 @@
 package se.bjurr.prnfs.listener;
 
 import com.atlassian.stash.event.pull.PullRequestEvent;
+import com.atlassian.stash.pull.PullRequestAction;
 
 public class PrnfsRenderer {
 
@@ -40,10 +41,40 @@ public class PrnfsRenderer {
    public String resolve(PullRequestEvent pullRequestEvent) {
     return pullRequestEvent.getPullRequest().getFromRef().getRepository().getSlug() + "";
    }
+  }), PULL_REQUEST_ACTION(new Resolver() {
+   @Override
+   public String resolve(PullRequestEvent pullRequestEvent) {
+    return PullRequestAction.fromId(pullRequestEvent.getAction().getId()).name();
+   }
   }), PULL_REQUEST_ID(new Resolver() {
    @Override
    public String resolve(PullRequestEvent pullRequestEvent) {
     return pullRequestEvent.getPullRequest().getId() + "";
+   }
+  }), PULL_REQUEST_AUTHOR_ID(new Resolver() {
+   @Override
+   public String resolve(PullRequestEvent pullRequestEvent) {
+    return pullRequestEvent.getPullRequest().getAuthor().getUser().getId() + "";
+   }
+  }), PULL_REQUEST_AUTHOR_DISPLAY_NAME(new Resolver() {
+   @Override
+   public String resolve(PullRequestEvent pullRequestEvent) {
+    return pullRequestEvent.getPullRequest().getAuthor().getUser().getDisplayName();
+   }
+  }), PULL_REQUEST_AUTHOR_NAME(new Resolver() {
+   @Override
+   public String resolve(PullRequestEvent pullRequestEvent) {
+    return pullRequestEvent.getPullRequest().getAuthor().getUser().getName();
+   }
+  }), PULL_REQUEST_AUTHOR_EMAIL(new Resolver() {
+   @Override
+   public String resolve(PullRequestEvent pullRequestEvent) {
+    return pullRequestEvent.getPullRequest().getAuthor().getUser().getEmailAddress();
+   }
+  }), PULL_REQUEST_AUTHOR_SLUG(new Resolver() {
+   @Override
+   public String resolve(PullRequestEvent pullRequestEvent) {
+    return pullRequestEvent.getPullRequest().getAuthor().getUser().getSlug();
    }
   }), PULL_REQUEST_TO_HASH(new Resolver() {
    @Override

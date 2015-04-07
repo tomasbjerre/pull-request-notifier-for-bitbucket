@@ -2,6 +2,16 @@
 
 Changelog of Pull Request Notifier for Stash.
 
+## 1.5
+* Using password type on password-field in admin GUI
+* Some new variables added
+ * ${PULL_REQUEST_ACTION} Example: OPENED
+ * ${PULL_REQUEST_AUTHOR_DISPLAY_NAME} Example: Administrator
+ * ${PULL_REQUEST_AUTHOR_EMAIL} Example: admin@example.com
+ * ${PULL_REQUEST_AUTHOR_ID} Example: 1
+ * ${PULL_REQUEST_AUTHOR_NAME} Example: admin
+ * ${PULL_REQUEST_AUTHOR_SLUG} Example: admin
+
 ## 1.4
 * Bugfix: Avoiding multiple notifications being sent from same event.
 

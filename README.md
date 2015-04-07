@@ -26,6 +26,12 @@ The Pull Request Notifier for Stash can:
 The filter text as well as the URL support variables. These are:
 
 * ${PULL_REQUEST_ID} Example: 1
+* ${PULL_REQUEST_ACTION} Example: OPENED
+* ${PULL_REQUEST_AUTHOR_DISPLAY_NAME} Example: Administrator
+* ${PULL_REQUEST_AUTHOR_EMAIL} Example: admin@example.com
+* ${PULL_REQUEST_AUTHOR_ID} Example: 1
+* ${PULL_REQUEST_AUTHOR_NAME} Example: admin
+* ${PULL_REQUEST_AUTHOR_SLUG} Example: admin
 * ${PULL_REQUEST_FROM_HASH} Example: 6053a1eaa1c009dd11092d09a72f3c41af1b59ad
 * ${PULL_REQUEST_FROM_ID} Example: refs/heads/branchmodmerge
 * ${PULL_REQUEST_FROM_REPO_ID} Example: 1

@@ -9,7 +9,14 @@
       <div class="description">
         You can use variables when invoking the URL or when forming the filter string.
         <ul>
+        http://bjurr.se/?COMMENTED&Administrator&admin@example.com&1&admin&admin 
         <li><b>${PULL_REQUEST_ID}</b> Example: 1</li>
+        <li><b>${PULL_REQUEST_ACTION}</b> Example: OPENED</li>
+        <li><b>${PULL_REQUEST_AUTHOR_DISPLAY_NAME}</b> Example: Administrator</li>
+        <li><b>${PULL_REQUEST_AUTHOR_EMAIL}</b> Example: admin@example.com</li>
+        <li><b>${PULL_REQUEST_AUTHOR_ID}</b> Example: 1</li>
+        <li><b>${PULL_REQUEST_AUTHOR_NAME}</b> Example: admin</li>
+        <li><b>${PULL_REQUEST_AUTHOR_SLUG}</b> Example: admin</li>
         <li><b>${PULL_REQUEST_FROM_HASH}</b> Example: 6053a1eaa1c009dd11092d09a72f3c41af1b59ad</li>
         <li><b>${PULL_REQUEST_FROM_ID}</b> Example: refs/heads/branch_mod_merge</li>
         <li><b>${PULL_REQUEST_FROM_REPO_ID}</b> Example: 1</li>
