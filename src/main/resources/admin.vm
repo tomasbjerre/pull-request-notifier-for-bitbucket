@@ -79,7 +79,7 @@
             <label for="user">User</label>
             <input type="text" name="user"><br/>
             <label for="password">Password</label>
-            <input type="text" name="password">
+            <input type="password" name="password">
           </fieldset>
         </div>
         <div>
