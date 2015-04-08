@@ -2,6 +2,10 @@
 
 Changelog of Pull Request Notifier for Stash.
 
+## 1.6
+* Correcting design with CSS for password field in admin view
+* Removing accidently added text from admin view
+
 ## 1.5
 * Using password type on password-field in admin GUI
 * Some new variables added
