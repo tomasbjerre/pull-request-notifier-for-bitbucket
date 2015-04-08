@@ -138,12 +138,7 @@ public class PrnfsRenderer {
   for (final PrnfsVariable variable : PrnfsVariable.values()) {
    final String regExpStr = "\\$\\{" + variable.name() + "\\}";
    if (string.contains(regExpStr.replaceAll("\\\\", ""))) {
-    try {
-     string = string.replaceAll(regExpStr, variable.resolve(pullRequestEvent));
-    } catch (final NullPointerException e) {
-     // So that all values does not need to be set for all test cases
-     return string;
-    }
+    string = string.replaceAll(regExpStr, variable.resolve(pullRequestEvent));
    }
   }
   return string;
