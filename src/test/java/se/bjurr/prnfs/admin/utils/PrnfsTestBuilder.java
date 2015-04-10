@@ -16,6 +16,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static se.bjurr.prnfs.admin.AdminFormValues.NAME;
 import static se.bjurr.prnfs.admin.AdminFormValues.VALUE;
+import static se.bjurr.prnfs.listener.PrnfsPullRequestAction.fromPullRequestEvent;
 import static se.bjurr.prnfs.listener.UrlInvoker.shouldUseBasicAuth;
 import static se.bjurr.prnfs.settings.PrnfsPredicates.predicate;
 import static se.bjurr.prnfs.settings.SettingsStorage.FORM_IDENTIFIER_NAME;
@@ -254,7 +255,7 @@ public class PrnfsTestBuilder {
     usedPassword.add(passwordParam);
    }
   });
-  listener.handleEvent(event);
+  listener.handleEvent(event, fromPullRequestEvent(event));
   return this;
  }
 

@@ -23,9 +23,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import se.bjurr.prnfs.admin.AdminFormValues;
+import se.bjurr.prnfs.listener.PrnfsPullRequestAction;
 
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
-import com.atlassian.stash.pull.PullRequestAction;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
@@ -97,7 +97,7 @@ public class SettingsStorage {
   final PrnfsNotificationBuilder prnfsNotificationBuilder = prnfsNotificationBuilder().withUrl(urlOpt.get().get(VALUE));
   final Iterable<Map<String, String>> events = filter(a, predicate("events"));
   for (final Map<String, String> event : events) {
-   prnfsNotificationBuilder.withTrigger(PullRequestAction.valueOf(event.get(VALUE)));
+   prnfsNotificationBuilder.withTrigger(PrnfsPullRequestAction.valueOf(event.get(VALUE)));
   }
   if (tryFind(a, predicate(AdminFormValues.FIELDS.user.name())).isPresent()) {
    prnfsNotificationBuilder.withUser(find(a, predicate(AdminFormValues.FIELDS.user.name())).get(VALUE));

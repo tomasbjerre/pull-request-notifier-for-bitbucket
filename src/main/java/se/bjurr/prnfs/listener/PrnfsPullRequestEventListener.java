@@ -1,6 +1,7 @@
 package se.bjurr.prnfs.listener;
 
 import static java.util.regex.Pattern.compile;
+import static se.bjurr.prnfs.listener.PrnfsPullRequestAction.fromPullRequestEvent;
 import static se.bjurr.prnfs.settings.SettingsStorage.getPrnfsSettings;
 
 import org.slf4j.Logger;
@@ -41,51 +42,51 @@ public class PrnfsPullRequestEventListener {
 
  @EventListener
  public void onEvent(PullRequestApprovedEvent e) {
-  handleEvent(e);
+  handleEvent(e, fromPullRequestEvent(e));
  }
 
  @EventListener
  public void onEvent(PullRequestCommentAddedEvent e) {
-  handleEvent(e);
+  handleEvent(e, fromPullRequestEvent(e));
  }
 
  @EventListener
  public void onEvent(PullRequestDeclinedEvent e) {
-  handleEvent(e);
+  handleEvent(e, fromPullRequestEvent(e));
  }
 
  @EventListener
  public void onEvent(PullRequestMergedEvent e) {
-  handleEvent(e);
+  handleEvent(e, fromPullRequestEvent(e));
  }
 
  @EventListener
  public void onEvent(PullRequestOpenedEvent e) {
-  handleEvent(e);
+  handleEvent(e, fromPullRequestEvent(e));
  }
 
  @EventListener
  public void onEvent(PullRequestReopenedEvent e) {
-  handleEvent(e);
+  handleEvent(e, fromPullRequestEvent(e));
  }
 
  @EventListener
- public void onEvent(PullRequestRescopedEvent e) {
-  handleEvent(e);
+ public void onEvent(final PullRequestRescopedEvent e) {
+  handleEvent(e, fromPullRequestEvent(e));
  }
 
  @EventListener
  public void onEvent(PullRequestUnapprovedEvent e) {
-  handleEvent(e);
+  handleEvent(e, fromPullRequestEvent(e));
  }
 
  @EventListener
  public void onEvent(PullRequestUpdatedEvent e) {
-  handleEvent(e);
+  handleEvent(e, fromPullRequestEvent(e));
  }
 
  @VisibleForTesting
- public void handleEvent(PullRequestEvent o) {
+ public void handleEvent(PullRequestEvent o, PrnfsPullRequestAction action) {
   final PrnfsRenderer renderer = new PrnfsRenderer(o);
   try {
    final PrnfsSettings settings = getPrnfsSettings(pluginSettingsFactory.createGlobalSettings());
@@ -94,7 +95,7 @@ public class PrnfsPullRequestEventListener {
       && !compile(n.getFilterRegexp().get()).matcher(renderer.render(n.getFilterString().get())).find()) {
      continue;
     }
-    if (n.getTriggers().contains(o.getAction())) {
+    if (n.getTriggers().contains(action)) {
      urlInvoker.ivoke(renderer.render(n.getUrl()), n.getUser(), n.getPassword());
     }
    }

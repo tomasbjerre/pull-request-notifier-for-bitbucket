@@ -5,7 +5,7 @@ import static com.google.common.collect.Lists.newArrayList;
 
 import java.util.List;
 
-import com.atlassian.stash.pull.PullRequestAction;
+import se.bjurr.prnfs.listener.PrnfsPullRequestAction;
 
 public class PrnfsNotificationBuilder {
  public static PrnfsNotificationBuilder prnfsNotificationBuilder() {
@@ -13,7 +13,7 @@ public class PrnfsNotificationBuilder {
  }
 
  private String password;
- private final List<PullRequestAction> triggers = newArrayList();
+ private final List<PrnfsPullRequestAction> triggers = newArrayList();
  private String url;
  private String user;
  private String filterRegexp;
@@ -41,7 +41,7 @@ public class PrnfsNotificationBuilder {
   return this;
  }
 
- public PrnfsNotificationBuilder withTrigger(PullRequestAction trigger) {
+ public PrnfsNotificationBuilder withTrigger(PrnfsPullRequestAction trigger) {
   this.triggers.add(checkNotNull(trigger));
   return this;
  }

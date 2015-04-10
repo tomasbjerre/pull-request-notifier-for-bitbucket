@@ -10,19 +10,19 @@ import java.net.URL;
 import java.util.List;
 
 import se.bjurr.prnfs.admin.AdminFormValues;
+import se.bjurr.prnfs.listener.PrnfsPullRequestAction;
 
-import com.atlassian.stash.pull.PullRequestAction;
 import com.google.common.base.Optional;
 
 public class PrnfsNotification {
  private final String filterRegexp;
  private final String filterString;
  private final String password;
- private final List<PullRequestAction> triggers;
+ private final List<PrnfsPullRequestAction> triggers;
  private final String url;
  private final String user;
 
- public PrnfsNotification(List<PullRequestAction> triggers, String url, String user, String password,
+ public PrnfsNotification(List<PrnfsPullRequestAction> triggers, String url, String user, String password,
    String filterString, String filterRegexp) throws ValidationException {
   this.password = emptyToNull(nullToEmpty(password).trim());
   if (nullToEmpty(url).trim().isEmpty()) {
@@ -64,7 +64,7 @@ public class PrnfsNotification {
   return fromNullable(password);
  }
 
- public List<PullRequestAction> getTriggers() {
+ public List<PrnfsPullRequestAction> getTriggers() {
   return triggers;
  }
 

@@ -4,6 +4,7 @@ Changelog of Pull Request Notifier for Stash.
 
 ## 1.7
 * Not sending authentication headers when user and/or password is not set
+* Adding RESCOPED_FROM and RESCOPED_TO event types
 
 ## 1.6
 * Correcting design with CSS for password field in admin view

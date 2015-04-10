@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 import org.junit.Test;
 
 import se.bjurr.prnfs.admin.AdminFormValues.FIELDS;
+import se.bjurr.prnfs.listener.PrnfsPullRequestAction;
 import se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable;
 
 import com.google.common.io.Resources;
@@ -311,6 +312,15 @@ public class PrnfsPullRequestEventListenerTest {
   final String adminVmContent = Resources.toString(resource, UTF_8);
   for (final PrnfsVariable prnfsVariable : PrnfsVariable.values()) {
    assertTrue(prnfsVariable.name() + " in " + resource.toString(), adminVmContent.contains(prnfsVariable.name()));
+  }
+ }
+
+ @Test
+ public void testThatEventsAreMentionedInAdminGUI() throws IOException {
+  final URL resource = getResource("admin.vm");
+  final String adminVmContent = Resources.toString(resource, UTF_8);
+  for (final PrnfsPullRequestAction prnfsAction : PrnfsPullRequestAction.values()) {
+   assertTrue(prnfsAction.getName() + " in " + resource.toString(), adminVmContent.contains(prnfsAction.getName()));
   }
  }
 }
