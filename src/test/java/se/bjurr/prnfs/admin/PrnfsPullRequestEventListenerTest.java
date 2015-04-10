@@ -165,6 +165,54 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
+ public void testThatBasicAuthenticationHeaderIsNotSentIfThereIsNoUser() {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
+        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).withFieldValue(AdminFormValues.FIELDS.user, "")
+        .withFieldValue(AdminFormValues.FIELDS.password, "thepassword").build()).store()
+    .trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build()).invokedUrl("http://bjurr.se/")
+    .didNotUseBasicAuth();
+ }
+
+ @Test
+ public void testThatBasicAuthenticationHeaderIsNotSentIfThereIsNoPassword() {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
+        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name())
+        .withFieldValue(AdminFormValues.FIELDS.user, "theuser").withFieldValue(AdminFormValues.FIELDS.password, "")
+        .build()).store().trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build())
+    .invokedUrl("http://bjurr.se/").didNotUseBasicAuth();
+ }
+
+ @Test
+ public void testThatBasicAuthenticationHeaderIsNotSentIfTheUserContainsOnlySpace() {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
+        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).withFieldValue(AdminFormValues.FIELDS.user, " ")
+        .withFieldValue(AdminFormValues.FIELDS.password, "thepassword").build()).store()
+    .trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build()).invokedUrl("http://bjurr.se/")
+    .didNotUseBasicAuth();
+ }
+
+ @Test
+ public void testThatBasicAuthenticationHeaderIsNotSentIfThePasswordContainsOnlySpace() {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
+        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name())
+        .withFieldValue(AdminFormValues.FIELDS.user, "theuser").withFieldValue(AdminFormValues.FIELDS.password, " ")
+        .build()).store().trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build())
+    .invokedUrl("http://bjurr.se/").didNotUseBasicAuth();
+ }
+
+ @Test
  public void testThatFieldsUsedInAdminGUIArePresentInAdminFormFields() throws IOException {
   final URL resource = getResource("admin.vm");
   final String adminVmContent = Resources.toString(resource, UTF_8);

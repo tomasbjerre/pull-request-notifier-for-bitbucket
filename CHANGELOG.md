@@ -2,6 +2,9 @@
 
 Changelog of Pull Request Notifier for Stash.
 
+## 1.7
+* Not sending authentication headers when user and/or password is not set
+
 ## 1.6
 * Correcting design with CSS for password field in admin view
 * Removing accidently added text from admin view

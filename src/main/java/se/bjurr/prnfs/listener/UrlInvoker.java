@@ -26,7 +26,7 @@ public class UrlInvoker {
  public void ivoke(String urlParam, Optional<String> user, Optional<String> password) {
   InputStreamReader ir = null;
   try {
-   logger.info("Url: \"" + urlParam + "\" user: \"" + user.or("") + "\" password: \"" + password.or("") + "\"");
+   logger.info("Url: \"" + urlParam + "\"");
    final URL url = new URL(urlParam);
    final URLConnection uc = url.openConnection();
    setAuthorization(uc, user, password);
@@ -44,11 +44,17 @@ public class UrlInvoker {
  @VisibleForTesting
  void setAuthorization(URLConnection uc, Optional<String> user, Optional<String> password)
    throws UnsupportedEncodingException {
-  if (user.isPresent() && password.isPresent()) {
+  if (shouldUseBasicAuth(user, password)) {
+   logger.info("user: \"" + user.or("") + "\" password: \"" + password.or("") + "\"");
    final String userpass = user.get() + ":" + password.get();
    final String basicAuth = "Basic " + new String(printBase64Binary(userpass.getBytes(UTF_8)));
    uc.setRequestProperty(AUTHORIZATION, basicAuth);
   }
 
+ }
+
+ @VisibleForTesting
+ public static boolean shouldUseBasicAuth(Optional<String> user, Optional<String> password) {
+  return user.isPresent() && password.isPresent();
  }
 }

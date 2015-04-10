@@ -9,12 +9,14 @@ import static com.google.common.collect.Maps.newTreeMap;
 import static com.google.common.collect.Maps.uniqueIndex;
 import static java.lang.Boolean.TRUE;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static se.bjurr.prnfs.admin.AdminFormValues.NAME;
 import static se.bjurr.prnfs.admin.AdminFormValues.VALUE;
+import static se.bjurr.prnfs.listener.UrlInvoker.shouldUseBasicAuth;
 import static se.bjurr.prnfs.settings.PrnfsPredicates.predicate;
 import static se.bjurr.prnfs.settings.SettingsStorage.FORM_IDENTIFIER_NAME;
 import static se.bjurr.prnfs.settings.SettingsStorage.fakeRandom;
@@ -87,9 +89,9 @@ public class PrnfsTestBuilder {
 
  private TransactionTemplate transactionTemplate;
 
- private final List<String> usedPassword = newArrayList();
+ private final List<Optional<String>> usedPassword = newArrayList();
 
- private final List<String> usedUser = newArrayList();
+ private final List<Optional<String>> usedUser = newArrayList();
 
  private final UserKey userKey;
 
@@ -123,8 +125,8 @@ public class PrnfsTestBuilder {
 
  public void didNotUseBasicAuth() {
   for (int i = 0; i < usedUser.size(); i++) {
-   assertTrue("user" + i, usedUser.get(i).isEmpty());
-   assertTrue("password" + i, usedPassword.get(i).isEmpty());
+   assertFalse("user" + i + " \"" + usedUser.get(i).orNull() + "\" password" + i + " \"" + usedUser.get(i).orNull()
+     + "\"", shouldUseBasicAuth(usedUser.get(i), usedPassword.get(i)));
   }
  }
 
@@ -192,7 +194,12 @@ public class PrnfsTestBuilder {
  }
 
  public PrnfsTestBuilder invokedPassword(String password) {
-  assertTrue(on(" ").join(usedPassword), this.usedPassword.contains(password));
+  for (Optional<String> opt : usedPassword) {
+   if (password.equals(opt.orNull())) {
+    return this;
+   }
+  }
+  fail("Found: " + on(" ").join(usedPassword));
   return this;
  }
 
@@ -206,7 +213,12 @@ public class PrnfsTestBuilder {
  }
 
  public PrnfsTestBuilder invokedUser(String user) {
-  assertTrue(on(" ").join(usedUser), this.usedUser.contains(user));
+  for (Optional<String> opt : usedUser) {
+   if (user.equals(opt.orNull())) {
+    return this;
+   }
+  }
+  fail("Found: " + on(" ").join(usedPassword));
   return this;
  }
 
@@ -238,8 +250,8 @@ public class PrnfsTestBuilder {
    @Override
    public void ivoke(String url, Optional<String> userParam, Optional<String> passwordParam) {
     invokedUrl.add(url);
-    usedUser.add(userParam.or(""));
-    usedPassword.add(passwordParam.or(""));
+    usedUser.add(userParam);
+    usedPassword.add(passwordParam);
    }
   });
   listener.handleEvent(event);
