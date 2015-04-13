@@ -17,6 +17,7 @@ import static org.mockito.Mockito.when;
 import static se.bjurr.prnfs.admin.AdminFormValues.NAME;
 import static se.bjurr.prnfs.admin.AdminFormValues.VALUE;
 import static se.bjurr.prnfs.listener.PrnfsPullRequestAction.fromPullRequestEvent;
+import static se.bjurr.prnfs.listener.UrlInvoker.shouldPostContent;
 import static se.bjurr.prnfs.listener.UrlInvoker.shouldUseBasicAuth;
 import static se.bjurr.prnfs.settings.PrnfsPredicates.predicate;
 import static se.bjurr.prnfs.settings.SettingsStorage.FORM_IDENTIFIER_NAME;
@@ -93,6 +94,10 @@ public class PrnfsTestBuilder {
  private final List<Optional<String>> usedPassword = newArrayList();
 
  private final List<Optional<String>> usedUser = newArrayList();
+
+ private final List<String> method = newArrayList();
+
+ private final List<Optional<String>> postContent = newArrayList();
 
  private final UserKey userKey;
 
@@ -219,7 +224,17 @@ public class PrnfsTestBuilder {
     return this;
    }
   }
-  fail("Found: " + on(" ").join(usedPassword));
+  fail("Found: " + on(" ").join(usedUser));
+  return this;
+ }
+
+ public PrnfsTestBuilder invokedMethod(String method) {
+  for (String m : this.method) {
+   if (method.equals(m)) {
+    return this;
+   }
+  }
+  fail("Found: " + on(" ").join(this.method));
   return this;
  }
 
@@ -249,10 +264,13 @@ public class PrnfsTestBuilder {
  public PrnfsTestBuilder trigger(PullRequestEvent event) {
   listener.setUrlInvoker(new UrlInvoker() {
    @Override
-   public void ivoke(String url, Optional<String> userParam, Optional<String> passwordParam) {
+   public void ivoke(String url, Optional<String> userParam, Optional<String> passwordParam, String methodParam,
+     Optional<String> postContentParam) {
     invokedUrl.add(url);
     usedUser.add(userParam);
     usedPassword.add(passwordParam);
+    method.add(methodParam);
+    postContent.add(postContentParam);
    }
   });
   listener.handleEvent(event, fromPullRequestEvent(event));
@@ -267,5 +285,13 @@ public class PrnfsTestBuilder {
    this.adminFormValuesMap.put((adminFormValuesMapCounter++) + "", adminFormValues);
   }
   return this;
+ }
+
+ public void didNotSendPostContentAt(int i) {
+  assertFalse(shouldPostContent(method.get(i), postContent.get(i)));
+ }
+
+ public void didSendPostContentAt(int i, String string) {
+  assertEquals(string, postContent.get(i).get());
  }
 }

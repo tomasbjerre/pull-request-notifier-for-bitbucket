@@ -2,6 +2,7 @@ package se.bjurr.prnfs.admin;
 
 import static com.atlassian.stash.pull.PullRequestAction.MERGED;
 import static com.atlassian.stash.pull.PullRequestAction.OPENED;
+import static com.atlassian.stash.pull.PullRequestAction.RESCOPED;
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Joiner.on;
 import static com.google.common.collect.Lists.newArrayList;
@@ -14,6 +15,7 @@ import static se.bjurr.prnfs.admin.utils.PrnfsParticipantBuilder.prnfsParticipan
 import static se.bjurr.prnfs.admin.utils.PrnfsTestBuilder.prnfsTestBuilder;
 import static se.bjurr.prnfs.admin.utils.PullRequestEventBuilder.pullRequestEventBuilder;
 import static se.bjurr.prnfs.admin.utils.PullRequestRefBuilder.pullRequestRefBuilder;
+import static se.bjurr.prnfs.listener.PrnfsPullRequestAction.RESCOPED_FROM;
 
 import java.io.IOException;
 import java.net.URL;
@@ -24,6 +26,7 @@ import org.junit.Test;
 
 import se.bjurr.prnfs.admin.AdminFormValues.FIELDS;
 import se.bjurr.prnfs.listener.PrnfsPullRequestAction;
+import se.bjurr.prnfs.listener.PrnfsRenderer;
 import se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable;
 
 import com.google.common.io.Resources;
@@ -55,7 +58,8 @@ public class PrnfsPullRequestEventListenerTest {
       .withToRef(pullRequestRefBuilder().withHash("asd123").withRepositorySlug("toslug")) //
       .withId(10L).withPullRequestAction(OPENED).build())
     .invokedUrl(
-      "http://bjurr.se/?PULL_REQUEST_FROM_HASH=cde456&PULL_REQUEST_TO_HASH=asd123&PULL_REQUEST_FROM_REPO_SLUG=fromslug&PULL_REQUEST_TO_REPO_SLUG=toslug");
+      "http://bjurr.se/?PULL_REQUEST_FROM_HASH=cde456&PULL_REQUEST_TO_HASH=asd123&PULL_REQUEST_FROM_REPO_SLUG=fromslug&PULL_REQUEST_TO_REPO_SLUG=toslug")
+    .invokedMethod("GET");
  }
 
  @Test
@@ -153,6 +157,72 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
+ public void testThatPostContentIsNotSentIfMethodIsNotSet() {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
+        .withFieldValue(AdminFormValues.FIELDS.post_content, "should not be sent") //
+        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()) //
+        .build()).store().trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build())
+    .invokedUrl("http://bjurr.se/").invokedMethod("GET").didNotSendPostContentAt(0);
+ }
+
+ @Test
+ public void testThatPostContentIsNotSentIfMethodIsPOSTButThereIsNotPostContent() {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
+        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()) //
+        .withFieldValue(AdminFormValues.FIELDS.post_content, " ") //
+        .withFieldValue(AdminFormValues.FIELDS.method, "POST") //
+        .build()).store().trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build())
+    .invokedUrl("http://bjurr.se/").invokedMethod("POST").didNotSendPostContentAt(0);
+ }
+
+ @Test
+ public void testThatPostContentIsNotSentIfMethodIsGETAndThereIsPostContent() {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
+        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()) //
+        .withFieldValue(AdminFormValues.FIELDS.post_content, "some content") //
+        .withFieldValue(AdminFormValues.FIELDS.method, "GET") //
+        .build()).store().trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build())
+    .invokedUrl("http://bjurr.se/").invokedMethod("GET").didNotSendPostContentAt(0);
+ }
+
+ @Test
+ public void testThatPostContentIsSentIfMethodIsPOSTAndThereIsPostContent() {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
+        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()) //
+        .withFieldValue(AdminFormValues.FIELDS.post_content, "some content") //
+        .withFieldValue(AdminFormValues.FIELDS.method, "POST") //
+        .build()).store().trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build())
+    .invokedUrl("http://bjurr.se/").didSendPostContentAt(0, "some content");
+ }
+
+ @Test
+ public void testThatPostContentIsSentAndRenderedIfMethodIsPOSTAndThereIsPostContent() {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder()
+        .withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
+        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name())
+        .withFieldValue(AdminFormValues.FIELDS.post_content,
+          "some ${" + PrnfsVariable.PULL_REQUEST_ACTION.name() + "} content") //
+        .withFieldValue(AdminFormValues.FIELDS.method, "POST") //
+        .build()).store().trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build())
+    .invokedUrl("http://bjurr.se/").didSendPostContentAt(0, "some OPENED content");
+ }
+
+ @Test
  public void testThatBasicAuthenticationHeaderIsSentIfThereIsAUser() {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
@@ -234,6 +304,35 @@ public class PrnfsPullRequestEventListenerTest {
         .withFieldValue(FIELDS.filter_regexp, "EXP").build()).store().trigger(pullRequestEventBuilder() //
       .withFromRef(pullRequestRefBuilder().withProjectKey("ABC")) //
       .withId(10L).withPullRequestAction(OPENED).build()).invokedNoUrl();
+ }
+
+ @Test
+ public void testThatFilterCanIncludeRescopedFrom() {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
+        .withFieldValue(AdminFormValues.FIELDS.events, RESCOPED_FROM)
+        .withFieldValue(FIELDS.filter_string, "${" + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_ACTION.name() + "}")
+        .withFieldValue(FIELDS.filter_regexp, RESCOPED_FROM).build()).store().trigger(pullRequestEventBuilder() //
+      .withFromRef(pullRequestRefBuilder().withHash("from")) //
+      .withToRef(pullRequestRefBuilder().withHash("previousToHash")) //
+      .withId(10L).withPullRequestAction(RESCOPED).build()).invokedUrl("http://bjurr.se/");
+ }
+
+ @Test
+ public void testThatURLCanIncludeRescopedFrom() {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder()
+        .withFieldValue(AdminFormValues.FIELDS.url,
+          "http://bjurr.se/${" + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_ACTION.name() + "}")
+        .withFieldValue(AdminFormValues.FIELDS.events, RESCOPED_FROM).build()).store()
+    .trigger(pullRequestEventBuilder() //
+      .withFromRef(pullRequestRefBuilder().withHash("from")) //
+      .withToRef(pullRequestRefBuilder().withHash("previousToHash")) //
+      .withPullRequestAction(RESCOPED).build()).invokedUrl("http://bjurr.se/RESCOPED_FROM");
  }
 
  @Test

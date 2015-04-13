@@ -1,7 +1,8 @@
 package se.bjurr.prnfs.listener;
 
+import static se.bjurr.prnfs.listener.PrnfsPullRequestAction.fromPullRequestEvent;
+
 import com.atlassian.stash.event.pull.PullRequestEvent;
-import com.atlassian.stash.pull.PullRequestAction;
 
 public class PrnfsRenderer {
 
@@ -44,7 +45,7 @@ public class PrnfsRenderer {
   }), PULL_REQUEST_ACTION(new Resolver() {
    @Override
    public String resolve(PullRequestEvent pullRequestEvent) {
-    return PullRequestAction.fromId(pullRequestEvent.getAction().getId()).name();
+    return fromPullRequestEvent(pullRequestEvent).getName();
    }
   }), PULL_REQUEST_ID(new Resolver() {
    @Override

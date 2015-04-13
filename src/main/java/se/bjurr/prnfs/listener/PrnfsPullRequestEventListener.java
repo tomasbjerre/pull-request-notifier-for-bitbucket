@@ -1,5 +1,6 @@
 package se.bjurr.prnfs.listener;
 
+import static com.google.common.base.Optional.absent;
 import static java.util.regex.Pattern.compile;
 import static se.bjurr.prnfs.listener.PrnfsPullRequestAction.fromPullRequestEvent;
 import static se.bjurr.prnfs.settings.SettingsStorage.getPrnfsSettings;
@@ -24,6 +25,7 @@ import com.atlassian.stash.event.pull.PullRequestRescopedEvent;
 import com.atlassian.stash.event.pull.PullRequestUnapprovedEvent;
 import com.atlassian.stash.event.pull.PullRequestUpdatedEvent;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Optional;
 
 public class PrnfsPullRequestEventListener {
 
@@ -96,7 +98,11 @@ public class PrnfsPullRequestEventListener {
      continue;
     }
     if (n.getTriggers().contains(action)) {
-     urlInvoker.ivoke(renderer.render(n.getUrl()), n.getUser(), n.getPassword());
+     Optional<String> postContent = absent();
+     if (n.getPostContent().isPresent()) {
+      postContent = Optional.of(renderer.render(n.getPostContent().get()));
+     }
+     urlInvoker.ivoke(renderer.render(n.getUrl()), n.getUser(), n.getPassword(), n.getMethod(), postContent);
     }
    }
   } catch (final ValidationException e) {

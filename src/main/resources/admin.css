@@ -43,3 +43,7 @@ input[type="password"] {
 .prnfs-template {
  display:none;
 }
+
+.visibleif {
+ display:none;
+}

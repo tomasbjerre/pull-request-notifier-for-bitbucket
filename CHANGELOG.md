@@ -2,6 +2,10 @@
 
 Changelog of Pull Request Notifier for Stash.
 
+## 1.8
+* Support for HTTP POST requests, with content that is rendered with variables
+* Letting variable ${PULL_REQUEST_ACTION} return RESCOPED_FROM or RESCOPED_TO instead of just RESCOPED
+
 ## 1.7
 * Not sending authentication headers when user and/or password is not set
 * Adding RESCOPED_FROM and RESCOPED_TO event types

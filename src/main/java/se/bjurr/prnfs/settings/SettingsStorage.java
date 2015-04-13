@@ -113,6 +113,12 @@ public class SettingsStorage {
    prnfsNotificationBuilder
      .withFilterRegexp(find(a, predicate(AdminFormValues.FIELDS.filter_regexp.name())).get(VALUE));
   }
+  if (tryFind(a, predicate(AdminFormValues.FIELDS.method.name())).isPresent()) {
+   prnfsNotificationBuilder.withMethod(find(a, predicate(AdminFormValues.FIELDS.method.name())).get(VALUE));
+  }
+  if (tryFind(a, predicate(AdminFormValues.FIELDS.post_content.name())).isPresent()) {
+   prnfsNotificationBuilder.withPostContent(find(a, predicate(AdminFormValues.FIELDS.post_content.name())).get(VALUE));
+  }
   return prnfsNotificationBuilder.build();
  }
 

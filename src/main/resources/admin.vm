@@ -7,7 +7,7 @@
   <body>
     <div>
       <div class="description">
-        You can use variables when invoking the URL or when forming the filter string.
+        You can use variables when invoking the URL, when forming the filter string or in POST content.
         <ul>
         <li><b>${PULL_REQUEST_ID}</b> Example: 1</li>
         <li><b>${PULL_REQUEST_ACTION}</b> Example: OPENED</li>
@@ -98,6 +98,21 @@
             <label for="url">URL</label>
             <input type="text" name="url">
             <div class="error url"></div>
+          </fieldset>
+        </div>
+        <div>
+          <fieldset>
+            <legend>HTTP method</legend>
+            <label for="GET">GET</label>
+            <input type="radio" name="method" value="GET" onClick="jQuery('.method_post').hide()">
+            <label for="post">POST</label>
+            <input type="radio" name="method" value="POST" onClick="jQuery('.method_post').show()">
+          </fieldset>
+        </div>
+        <div class="visibleif method_POST">
+          <fieldset>
+            <legend>POST content</legend>
+            <textarea name="post_content" rows="10" cols="40"></textarea>
           </fieldset>
         </div>
         <div>

@@ -1,9 +1,11 @@
 package se.bjurr.prnfs.admin.utils;
 
+import static com.atlassian.stash.pull.PullRequestAction.RESCOPED;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.atlassian.stash.event.pull.PullRequestEvent;
+import com.atlassian.stash.event.pull.PullRequestRescopedEvent;
 import com.atlassian.stash.pull.PullRequest;
 import com.atlassian.stash.pull.PullRequestAction;
 import com.atlassian.stash.pull.PullRequestParticipant;
@@ -48,7 +50,13 @@ public class PullRequestEventBuilder {
  }
 
  public PullRequestEvent build() {
-  final PullRequestEvent pullRequestEvent = mock(PullRequestEvent.class);
+  PullRequestEvent pullRequestEvent = mock(PullRequestEvent.class);
+  if (pullRequestAction == RESCOPED) {
+   PullRequestRescopedEvent event = mock(PullRequestRescopedEvent.class);
+   when(event.getPreviousFromHash()).thenReturn("previousFromHash");
+   when(event.getPreviousToHash()).thenReturn("previousToHash");
+   pullRequestEvent = event;
+  }
   final PullRequest pullRequest = mock(PullRequest.class);
   when(pullRequestEvent.getAction()).thenReturn(pullRequestAction);
   when(pullRequestEvent.getPullRequest()).thenReturn(pullRequest);

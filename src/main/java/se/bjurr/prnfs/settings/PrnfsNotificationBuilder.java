@@ -18,12 +18,14 @@ public class PrnfsNotificationBuilder {
  private String user;
  private String filterRegexp;
  private String filterString;
+ private String method;
+ private String postContent;
 
  private PrnfsNotificationBuilder() {
  }
 
  public PrnfsNotification build() throws ValidationException {
-  return new PrnfsNotification(triggers, url, user, password, filterString, filterRegexp);
+  return new PrnfsNotification(triggers, url, user, password, filterString, filterRegexp, method, postContent);
  }
 
  public PrnfsNotificationBuilder withPassword(String password) {
@@ -53,6 +55,16 @@ public class PrnfsNotificationBuilder {
 
  public PrnfsNotificationBuilder withUser(String user) {
   this.user = checkNotNull(user);
+  return this;
+ }
+
+ public PrnfsNotificationBuilder withMethod(String method) {
+  this.method = checkNotNull(method);
+  return this;
+ }
+
+ public PrnfsNotificationBuilder withPostContent(String postContent) {
+  this.postContent = checkNotNull(postContent);
   return this;
  }
 }

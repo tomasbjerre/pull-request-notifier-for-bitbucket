@@ -44,6 +44,7 @@
   function addNewForm() {
    var $template = $(".prnfs-template").clone();
    $('input[name="delete"]',$template).remove();
+   $('input[name=method][value=GET]', $template).attr('checked','checked');
    $(".prnfs").append($template.html());
   }
 
@@ -57,9 +58,15 @@
      var $template = $(".prnfs-template").clone();
      $.each(config, function(fieldIndex,field_map) {
       $('input[type="text"][name="'+field_map.name+'"]', $template).attr('value', field_map.value);
+      $('textarea[name="'+field_map.name+'"]', $template).text(field_map.value);
       $('input[type="hidden"][name="'+field_map.name+'"]', $template).attr('value', field_map.value);
       $('input[type="checkbox"][name="'+field_map.name+'"][value="'+field_map.value+'"]', $template).attr('checked','checked');
+      $('input[type="radio"][name="'+field_map.name+'"][value="'+field_map.value+'"]', $template).attr('checked','checked');
+      $('.visibleif.'+field_map.name+'_'+field_map.value.replace(/[^a-zA-Z]/g,''), $template).show();
      });
+     if (!$('input[name=method]:checked', $template).val()) {
+      $('input[name=method][value=GET]', $template).attr('checked','checked');
+     }
      $(".prnfs").append($template.html());
     });
     addNewForm();

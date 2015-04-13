@@ -1,5 +1,6 @@
 package se.bjurr.prnfs.settings;
 
+import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.emptyToNull;
@@ -21,10 +22,14 @@ public class PrnfsNotification {
  private final List<PrnfsPullRequestAction> triggers;
  private final String url;
  private final String user;
+ private final String method;
+ private final String postContent;
 
  public PrnfsNotification(List<PrnfsPullRequestAction> triggers, String url, String user, String password,
-   String filterString, String filterRegexp) throws ValidationException {
+   String filterString, String filterRegexp, String method, String postContent) throws ValidationException {
   this.password = emptyToNull(nullToEmpty(password).trim());
+  this.postContent = emptyToNull(nullToEmpty(postContent).trim());
+  this.method = firstNonNull(emptyToNull(nullToEmpty(method).trim()), "GET");
   if (nullToEmpty(url).trim().isEmpty()) {
    throw new ValidationException(AdminFormValues.FIELDS.url.name(), "URL not set!");
   }
@@ -74,5 +79,13 @@ public class PrnfsNotification {
 
  public Optional<String> getUser() {
   return fromNullable(user);
+ }
+
+ public String getMethod() {
+  return method;
+ }
+
+ public Optional<String> getPostContent() {
+  return fromNullable(postContent);
  }
 }
