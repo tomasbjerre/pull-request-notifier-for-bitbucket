@@ -195,6 +195,19 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
+ public void testThatPostContentIsNotSentIfMethodIsDELETEAndThereIsPostContent() {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
+        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()) //
+        .withFieldValue(AdminFormValues.FIELDS.post_content, "some content") //
+        .withFieldValue(AdminFormValues.FIELDS.method, "DELETE") //
+        .build()).store().trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build())
+    .invokedUrl("http://bjurr.se/").invokedMethod("DELETE").didNotSendPostContentAt(0);
+ }
+
+ @Test
  public void testThatPostContentIsSentIfMethodIsPOSTAndThereIsPostContent() {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
@@ -203,6 +216,19 @@ public class PrnfsPullRequestEventListenerTest {
         .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()) //
         .withFieldValue(AdminFormValues.FIELDS.post_content, "some content") //
         .withFieldValue(AdminFormValues.FIELDS.method, "POST") //
+        .build()).store().trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build())
+    .invokedUrl("http://bjurr.se/").didSendPostContentAt(0, "some content");
+ }
+
+ @Test
+ public void testThatPostContentIsSentIfMethodIsPUTAndThereIsPostContent() {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
+        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()) //
+        .withFieldValue(AdminFormValues.FIELDS.post_content, "some content") //
+        .withFieldValue(AdminFormValues.FIELDS.method, "PUT") //
         .build()).store().trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build())
     .invokedUrl("http://bjurr.se/").didSendPostContentAt(0, "some content");
  }

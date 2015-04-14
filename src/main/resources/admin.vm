@@ -103,16 +103,20 @@
         <div>
           <fieldset>
             <legend>HTTP method</legend>
-            <label for="GET">GET</label>
-            <input type="radio" name="method" value="GET" onClick="jQuery('.method_post').hide()">
-            <label for="post">POST</label>
-            <input type="radio" name="method" value="POST" onClick="jQuery('.method_post').show()">
+            <input type="radio" name="method" value="GET" onClick="jQuery('.method_POST').hide()">
+            <label for="GET">GET</label><br>
+            <input type="radio" name="method" value="POST" onClick="jQuery('.method_POST').show()">
+            <label for="post">POST</label><br>
+            <input type="radio" name="method" value="PUT" onClick="jQuery('.method_POST').show()">
+            <label for="post">PUT</label><br>
+            <input type="radio" name="method" value="DELETE" onClick="jQuery('.method_POST').hide()">
+            <label for="post">DELETE</label>
           </fieldset>
         </div>
-        <div class="visibleif method_POST">
+        <div class="visibleif method_POST method_PUT">
           <fieldset>
             <legend>POST content</legend>
-            <textarea name="post_content" rows="10" cols="40"></textarea>
+            <textarea name="post_content" rows="6" cols="40"></textarea>
           </fieldset>
         </div>
         <div>

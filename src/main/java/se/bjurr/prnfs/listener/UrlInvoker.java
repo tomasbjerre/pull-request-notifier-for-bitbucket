@@ -37,7 +37,7 @@ public class UrlInvoker {
    setAuthorization(uc, user, password);
    uc.setDoOutput(true);
    if (shouldPostContent(method, postContent)) {
-    logger.debug("POST >\n" + postContent.get());
+    logger.debug(method + " >\n" + postContent.get());
     uc.setDoInput(true);
     uc.setRequestProperty("Content-Length", postContent.get().length() + "");
     wr = new DataOutputStream(uc.getOutputStream());
@@ -71,7 +71,7 @@ public class UrlInvoker {
 
  @VisibleForTesting
  public static boolean shouldPostContent(String method, Optional<String> postContent) {
-  return method.equals("POST") && postContent.isPresent();
+  return (method.equals("POST") || method.equals("PUT")) && postContent.isPresent();
  }
 
  @VisibleForTesting

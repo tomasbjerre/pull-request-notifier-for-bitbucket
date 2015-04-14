@@ -2,6 +2,9 @@
 
 Changelog of Pull Request Notifier for Stash.
 
+## 1.9
+* Adding support for PUT and DELETE
+
 ## 1.8
 * Support for HTTP POST requests, with content that is rendered with variables
 * Letting variable ${PULL_REQUEST_ACTION} return RESCOPED_FROM or RESCOPED_TO instead of just RESCOPED
