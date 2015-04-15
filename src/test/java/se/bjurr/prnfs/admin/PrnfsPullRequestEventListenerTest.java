@@ -129,6 +129,34 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
+ public void testThatAUrlWithVariableFromBranchCanBeInvokedWhenBranchIdContainsSlashes() {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder()
+        .withFieldValue(AdminFormValues.FIELDS.url,
+          "http://bjurr.se/${" + PrnfsVariable.PULL_REQUEST_FROM_BRANCH.name() + "}")
+        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).build()).store()
+    .trigger(pullRequestEventBuilder() //
+      .withFromRef(pullRequestRefBuilder().withId("refs/heads/branchmodmerge")) //
+      .withId(10L).withPullRequestAction(OPENED).build()).invokedUrl("http://bjurr.se/branchmodmerge");
+ }
+
+ @Test
+ public void testThatAUrlWithVariableFromBranchCanBeInvokedWhenBranchIdContainsOnlyName() {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder()
+        .withFieldValue(AdminFormValues.FIELDS.url,
+          "http://bjurr.se/${" + PrnfsVariable.PULL_REQUEST_FROM_BRANCH.name() + "}")
+        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).build()).store()
+    .trigger(pullRequestEventBuilder() //
+      .withFromRef(pullRequestRefBuilder().withId("branchmodmerge")) //
+      .withId(10L).withPullRequestAction(OPENED).build()).invokedUrl("http://bjurr.se/branchmodmerge");
+ }
+
+ @Test
  public void testThatAUrlWithVariablesExceptFromAndToCanBeInvoked() {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()

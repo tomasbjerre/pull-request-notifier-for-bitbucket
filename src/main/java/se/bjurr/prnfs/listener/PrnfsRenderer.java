@@ -3,6 +3,7 @@ package se.bjurr.prnfs.listener;
 import static se.bjurr.prnfs.listener.PrnfsPullRequestAction.fromPullRequestEvent;
 
 import com.atlassian.stash.event.pull.PullRequestEvent;
+import com.atlassian.stash.pull.PullRequestRef;
 
 public class PrnfsRenderer {
 
@@ -16,6 +17,11 @@ public class PrnfsRenderer {
    @Override
    public String resolve(PullRequestEvent pullRequestEvent) {
     return pullRequestEvent.getPullRequest().getFromRef().getId();
+   }
+  }), PULL_REQUEST_FROM_BRANCH(new Resolver() {
+   @Override
+   public String resolve(PullRequestEvent pullRequestEvent) {
+    return branchNameFromId(pullRequestEvent.getPullRequest().getFromRef());
    }
   }), PULL_REQUEST_FROM_REPO_ID(new Resolver() {
    @Override
@@ -87,6 +93,11 @@ public class PrnfsRenderer {
    public String resolve(PullRequestEvent pullRequestEvent) {
     return pullRequestEvent.getPullRequest().getToRef().getId();
    }
+  }), PULL_REQUEST_TO_BRANCH(new Resolver() {
+   @Override
+   public String resolve(PullRequestEvent pullRequestEvent) {
+    return branchNameFromId(pullRequestEvent.getPullRequest().getToRef());
+   }
   }), PULL_REQUEST_TO_REPO_ID(new Resolver() {
    @Override
    public String resolve(PullRequestEvent pullRequestEvent) {
@@ -115,6 +126,12 @@ public class PrnfsRenderer {
   });
 
   private Resolver resolver;
+
+  private static String branchNameFromId(PullRequestRef pullRequestRef) {
+   String branchId = pullRequestRef.getId();
+   int lastSlash = branchId.lastIndexOf('/');
+   return branchId.substring(lastSlash + 1);
+  }
 
   private PrnfsVariable(Resolver resolver) {
    this.resolver = resolver;

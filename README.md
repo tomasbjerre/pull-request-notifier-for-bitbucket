@@ -35,6 +35,7 @@ The filter text as well as the URL support variables. These are:
 * ${PULL_REQUEST_AUTHOR_SLUG} Example: admin
 * ${PULL_REQUEST_FROM_HASH} Example: 6053a1eaa1c009dd11092d09a72f3c41af1b59ad
 * ${PULL_REQUEST_FROM_ID} Example: refs/heads/branchmodmerge
+* ${PULL_REQUEST_FROM_BRANCH} Example: branchmodmerge
 * ${PULL_REQUEST_FROM_REPO_ID} Example: 1
 * ${PULL_REQUEST_FROM_REPO_NAME} Example: rep_1
 * ${PULL_REQUEST_FROM_REPO_PROJECT_ID} Example: 1
