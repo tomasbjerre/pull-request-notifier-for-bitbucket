@@ -1,6 +1,5 @@
 package se.bjurr.prnfs.admin.utils;
 
-import static com.google.common.base.Joiner.on;
 import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.collect.Iterables.find;
 import static com.google.common.collect.Iterables.tryFind;
@@ -17,8 +16,8 @@ import static org.mockito.Mockito.when;
 import static se.bjurr.prnfs.admin.AdminFormValues.NAME;
 import static se.bjurr.prnfs.admin.AdminFormValues.VALUE;
 import static se.bjurr.prnfs.listener.PrnfsPullRequestAction.fromPullRequestEvent;
-import static se.bjurr.prnfs.listener.UrlInvoker.shouldPostContent;
-import static se.bjurr.prnfs.listener.UrlInvoker.shouldUseBasicAuth;
+import static se.bjurr.prnfs.listener.PrnfsPullRequestEventListener.setInvoker;
+import static se.bjurr.prnfs.listener.UrlInvoker.getHeaderValue;
 import static se.bjurr.prnfs.settings.PrnfsPredicates.predicate;
 import static se.bjurr.prnfs.settings.SettingsStorage.FORM_IDENTIFIER_NAME;
 import static se.bjurr.prnfs.settings.SettingsStorage.fakeRandom;
@@ -38,7 +37,9 @@ import se.bjurr.prnfs.admin.AdminFormValues;
 import se.bjurr.prnfs.admin.ConfigResource;
 import se.bjurr.prnfs.admin.data.PluginSettingsImpl;
 import se.bjurr.prnfs.listener.PrnfsPullRequestEventListener;
+import se.bjurr.prnfs.listener.PrnfsPullRequestEventListener.Invoker;
 import se.bjurr.prnfs.listener.UrlInvoker;
+import se.bjurr.prnfs.settings.Header;
 
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
@@ -49,9 +50,8 @@ import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.sal.api.user.UserProfile;
 import com.atlassian.stash.event.pull.PullRequestEvent;
 import com.google.common.base.Function;
+import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 public class PrnfsTestBuilder {
  public class FakeRandom extends Random {
@@ -65,8 +65,6 @@ public class PrnfsTestBuilder {
 
  private static Long fakeRandomCounter = null;
 
- private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
  private static final Logger logger = LoggerFactory.getLogger(PrnfsTestBuilder.class);
 
  public static PrnfsTestBuilder prnfsTestBuilder() {
@@ -79,31 +77,25 @@ public class PrnfsTestBuilder {
 
  private final ConfigResource configResource;
 
- private final List<String> invokedUrl = newArrayList();
-
  private PrnfsPullRequestEventListener listener;
 
  private final PluginSettings pluginSettings;
+
  private final PluginSettingsFactory pluginSettingsFactory;
 
- private List<AdminFormError> postResponses;
  private HttpServletRequest request;
 
  private TransactionTemplate transactionTemplate;
 
- private final List<Optional<String>> usedPassword = newArrayList();
-
- private final List<Optional<String>> usedUser = newArrayList();
-
- private final List<String> method = newArrayList();
-
- private final List<Optional<String>> postContent = newArrayList();
+ private final List<UrlInvoker> urlInvokers = newArrayList();
 
  private final UserKey userKey;
 
  private final UserManager userManager;
 
  private final UserProfile userProfile;
+
+ private List<AdminFormError> postResponses;
 
  private PrnfsTestBuilder() {
   fakeRandomCounter = 0L;
@@ -129,11 +121,35 @@ public class PrnfsTestBuilder {
   return this;
  }
 
- public void didNotUseBasicAuth() {
-  for (int i = 0; i < usedUser.size(); i++) {
-   assertFalse("user" + i + " \"" + usedUser.get(i).orNull() + "\" password" + i + " \"" + usedUser.get(i).orNull()
-     + "\"", shouldUseBasicAuth(usedUser.get(i), usedPassword.get(i)));
+ public PrnfsTestBuilder didNotSendHeaders() {
+  for (UrlInvoker u : urlInvokers) {
+   assertTrue(toMap(u.getHeaders()).isEmpty());
   }
+  return this;
+ }
+
+ public PrnfsTestBuilder didNotSendHeader(int index, String name) {
+  assertFalse(index + " " + name, toMap(urlInvokers.get(index).getHeaders()).containsKey(name));
+  return this;
+ }
+
+ public PrnfsTestBuilder usedHeader(int index, String name, String value) {
+  Map<String, Header> headerMap = toMap(urlInvokers.get(index).getHeaders());
+  if (headerMap.containsKey(name)) {
+   assertEquals(index + " " + name, value, getHeaderValue(headerMap.get(name)));
+  } else {
+   fail(Joiner.on(", ").join(headerMap.keySet()));
+  }
+  return this;
+ }
+
+ private Map<String, Header> toMap(List<Header> headers) {
+  return uniqueIndex(headers, new Function<Header, String>() {
+   @Override
+   public String apply(Header input) {
+    return input.getName();
+   }
+  });
  }
 
  @SuppressWarnings("unchecked")
@@ -189,52 +205,28 @@ public class PrnfsTestBuilder {
  }
 
  public PrnfsTestBuilder invokedNoUrl() {
-  assertEquals(0, invokedUrl.size());
+  assertEquals(0, urlInvokers.size());
   return this;
  }
 
  public PrnfsTestBuilder invokedOnlyUrl(String url) {
-  assertEquals(1, invokedUrl.size());
-  assertTrue(invokedUrl.get(0).equals(url));
+  assertEquals(1, urlInvokers.size());
+  assertTrue(urlInvokers.get(0).getUrlParam().equals(url));
   return this;
  }
 
- public PrnfsTestBuilder invokedPassword(String password) {
-  for (Optional<String> opt : usedPassword) {
-   if (password.equals(opt.orNull())) {
-    return this;
-   }
-  }
-  fail("Found: " + on(" ").join(usedPassword));
-  return this;
- }
-
- public PrnfsTestBuilder invokedUrl(String url) {
-  if (invokedUrl.size() == 1) {
-   assertEquals(url, invokedUrl.get(0));
-  } else {
-   assertTrue(gson.toJson(invokedUrl), invokedUrl.contains(url));
-  }
-  return this;
- }
-
- public PrnfsTestBuilder invokedUser(String user) {
-  for (Optional<String> opt : usedUser) {
-   if (user.equals(opt.orNull())) {
-    return this;
-   }
-  }
-  fail("Found: " + on(" ").join(usedUser));
+ public PrnfsTestBuilder invokedUrl(int index, String url) {
+  assertEquals(url, urlInvokers.get(index).getUrlParam());
   return this;
  }
 
  public PrnfsTestBuilder invokedMethod(String method) {
-  for (String m : this.method) {
-   if (method.equals(m)) {
+  for (UrlInvoker u : urlInvokers) {
+   if (method.equals(u.getMethod())) {
     return this;
    }
   }
-  fail("Found: " + on(" ").join(this.method));
+  fail(method);
   return this;
  }
 
@@ -262,15 +254,10 @@ public class PrnfsTestBuilder {
  }
 
  public PrnfsTestBuilder trigger(PullRequestEvent event) {
-  listener.setUrlInvoker(new UrlInvoker() {
+  setInvoker(new Invoker() {
    @Override
-   public void ivoke(String url, Optional<String> userParam, Optional<String> passwordParam, String methodParam,
-     Optional<String> postContentParam) {
-    invokedUrl.add(url);
-    usedUser.add(userParam);
-    usedPassword.add(passwordParam);
-    method.add(methodParam);
-    postContent.add(postContentParam);
+   public void invoke(UrlInvoker urlInvoker) {
+    urlInvokers.add(urlInvoker);
    }
   });
   listener.handleEvent(event, fromPullRequestEvent(event));
@@ -288,10 +275,54 @@ public class PrnfsTestBuilder {
  }
 
  public void didNotSendPostContentAt(int i) {
-  assertFalse(shouldPostContent(method.get(i), postContent.get(i)));
+  assertFalse(urlInvokers.get(i).shouldPostContent());
  }
 
  public void didSendPostContentAt(int i, String string) {
-  assertEquals(string, postContent.get(i).get());
+  assertEquals(string, urlInvokers.get(i).getPostContent().get());
+ }
+
+ public PrnfsTestBuilder usedNoProxy(int index) {
+  assertFalse(urlInvokers.get(index).shouldUseProxy());
+  return this;
+ }
+
+ public PrnfsTestBuilder usedNoProxyUser(int index) {
+  assertFalse(urlInvokers.get(index).getProxyUser().isPresent());
+  assertFalse(urlInvokers.get(index).shouldAuthenticateProxy());
+  return this;
+ }
+
+ public PrnfsTestBuilder usedNoProxyPassword(int index) {
+  assertFalse(urlInvokers.get(index).getProxyPassword().isPresent());
+  assertFalse(urlInvokers.get(index).shouldAuthenticateProxy());
+  return this;
+ }
+
+ public PrnfsTestBuilder usedNoProxyAuthentication(int index) {
+  assertFalse(urlInvokers.get(index).shouldAuthenticateProxy());
+  return this;
+ }
+
+ public PrnfsTestBuilder usedProxyHost(int index, String host) {
+  assertEquals(host, urlInvokers.get(index).getProxyHost().get());
+  return this;
+ }
+
+ public PrnfsTestBuilder usedProxyPort(int index, Integer port) {
+  assertEquals(port, urlInvokers.get(index).getProxyPort());
+  return this;
+ }
+
+ public PrnfsTestBuilder usedProxyUser(int i, String user) {
+  assertEquals(user, urlInvokers.get(i).getProxyUser().get());
+  assertTrue(urlInvokers.get(i).shouldAuthenticateProxy());
+  return this;
+ }
+
+ public PrnfsTestBuilder usedProxyPassword(int i, String password) {
+  assertEquals(password, urlInvokers.get(i).getProxyPassword().get());
+  assertTrue(urlInvokers.get(i).shouldAuthenticateProxy());
+  return this;
  }
 }

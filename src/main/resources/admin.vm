@@ -7,7 +7,7 @@
   <body>
     <div>
       <div class="description">
-        You can use variables when invoking the URL, when forming the filter string or in POST content.
+        You can use variables when invoking the URL, when forming the filter string, custom header values or in POST content.
         <ul>
         <li><b>${PULL_REQUEST_ID}</b> Example: 1</li>
         <li><b>${PULL_REQUEST_ACTION}</b> Example: OPENED</li>
@@ -26,12 +26,14 @@
         <li><b>${PULL_REQUEST_FROM_REPO_SLUG}</b> Example: rep_1</li>
         <li><b>${PULL_REQUEST_TO_HASH}</b> Example: d6edcbf924697ab811a867421dab60d954ccad99</li>
         <li><b>${PULL_REQUEST_TO_ID}</b> Example: refs/heads/basic_branching</li>
+        <li><b>${PULL_REQUEST_VERSION}</b> Example: 1</li>
         <li><b>${PULL_REQUEST_TO_BRANCH}</b> Example: basic_branching</li>
         <li><b>${PULL_REQUEST_TO_REPO_ID}</b> Example: 1</li>
         <li><b>${PULL_REQUEST_TO_REPO_NAME}</b> Example: rep_1</li>
         <li><b>${PULL_REQUEST_TO_REPO_PROJECT_ID}</b> Example: 1</li>
         <li><b>${PULL_REQUEST_TO_REPO_PROJECT_KEY}</b> Example: PROJECT_1</li>
         <li><b>${PULL_REQUEST_TO_REPO_SLUG}</b> Example: rep_1</li>
+        <li><b>${PULL_REQUEST_COMMENT_TEXT}</b> Example: A comment</li>
         </ul>
       </div>
     </div>
@@ -90,8 +92,51 @@
             <legend>Basic authentication (Optional)</legend>
             <label for="user">User</label>
             <input type="text" name="user"><br/>
+            <div class="error user"></div>
             <label for="password">Password</label>
             <input type="password" name="password">
+            <div class="error password"></div>
+          </fieldset>
+        </div>
+        <div>
+          <fieldset>
+            <legend>Proxy (Optional)</legend>
+            <label for="proxy_user">User (Optional)</label>
+            <input type="text" name="proxy_user"><br/>
+            <div class="error proxy_user"></div>
+            <label for="proxy_password">Password (Optional)</label>
+            <input type="password" name="proxy_password">
+            <div class="error proxy_password"></div>
+            <label for="proxy_server">Server, IP or hostname</label>
+            <input type="text" name="proxy_server">
+            <div class="error proxy_server"></div>
+            <label for="proxy_port">Server port</label>
+            <input type="text" name="proxy_port">
+            <div class="error proxy_port"></div>
+          </fieldset>
+        </div>
+        <div>
+          <fieldset>
+            <legend>Headers (Optional)</legend>
+            <table class="headers">
+             <tr>
+              <th>
+               Name
+              </th>
+              <th>
+               Value
+              </th>
+             </tr>
+             <tr class="header">
+              <td>
+               <input type="text" name="header_name">
+              </td>
+              <td>
+               <input type="text" name="header_value">
+              </td>
+             </tr>
+            </table>
+            <div class="error header_name header_value"></div>
           </fieldset>
         </div>
         <div>

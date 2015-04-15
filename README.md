@@ -23,10 +23,14 @@ The Pull Request Notifier for Stash can:
 * Be configured to trigger on any pull request event. Including source branch change (RESCOPED_FROM) and target branch change (RESCOPED_TO).
 * Be configured to only trigger if the pull request mathches a filter. A filter text is constructed with any combination of the variables and then a regexp is constructed to match that text.
 * Authenticate with HTTP basic authentication.
+* Send custom HTTP headers
+* Can optionally use proxy to connect
 
 The filter text as well as the URL support variables. These are:
 
 * ${PULL_REQUEST_ID} Example: 1
+* ${PULL_REQUEST_VERSION} Example: 1
+* ${PULL_REQUEST_COMMENT_TEXT} Example: A comment
 * ${PULL_REQUEST_ACTION} Example: OPENED
 * ${PULL_REQUEST_AUTHOR_DISPLAY_NAME} Example: Administrator
 * ${PULL_REQUEST_AUTHOR_EMAIL} Example: admin@example.com

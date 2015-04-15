@@ -1,9 +1,12 @@
 package se.bjurr.prnfs.admin.utils;
 
+import static com.atlassian.stash.pull.PullRequestAction.COMMENTED;
 import static com.atlassian.stash.pull.PullRequestAction.RESCOPED;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.atlassian.stash.comment.Comment;
+import com.atlassian.stash.event.pull.PullRequestCommentAddedEvent;
 import com.atlassian.stash.event.pull.PullRequestEvent;
 import com.atlassian.stash.event.pull.PullRequestRescopedEvent;
 import com.atlassian.stash.pull.PullRequest;
@@ -16,6 +19,7 @@ public class PullRequestEventBuilder {
  private PullRequestRefBuilder fromRef;
  private Long id;
  private PullRequestParticipant author;
+ private String commentText;
 
  private PullRequestEventBuilder() {
  }
@@ -49,12 +53,23 @@ public class PullRequestEventBuilder {
   return this;
  }
 
+ public PullRequestEventBuilder withCommentText(String commentText) {
+  this.commentText = commentText;
+  return this;
+ }
+
  public PullRequestEvent build() {
   PullRequestEvent pullRequestEvent = mock(PullRequestEvent.class);
   if (pullRequestAction == RESCOPED) {
    PullRequestRescopedEvent event = mock(PullRequestRescopedEvent.class);
    when(event.getPreviousFromHash()).thenReturn("previousFromHash");
    when(event.getPreviousToHash()).thenReturn("previousToHash");
+   pullRequestEvent = event;
+  } else if (pullRequestAction == COMMENTED) {
+   PullRequestCommentAddedEvent event = mock(PullRequestCommentAddedEvent.class);
+   Comment comment = mock(Comment.class);
+   when(event.getComment()).thenReturn(comment);
+   when(event.getComment().getText()).thenReturn(commentText);
    pullRequestEvent = event;
   }
   final PullRequest pullRequest = mock(PullRequest.class);

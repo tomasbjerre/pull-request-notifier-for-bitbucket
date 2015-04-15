@@ -15,6 +15,6 @@ public final class AdminFormValues extends ArrayList<Map<String, String>> {
  public static final String VALUE = "value";
 
  public enum FIELDS {
-  user, password, events, FORM_IDENTIFIER, url, filter_string, filter_regexp, method, post_content
+  user, password, events, FORM_IDENTIFIER, url, filter_string, filter_regexp, method, post_content, proxy_user, proxy_password, proxy_server, proxy_port, header_name, header_value
  }
 }

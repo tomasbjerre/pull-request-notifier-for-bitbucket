@@ -1,13 +1,18 @@
 package se.bjurr.prnfs.listener;
 
+import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Optional.absent;
 import static java.util.regex.Pattern.compile;
+import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
+import static javax.xml.bind.DatatypeConverter.printBase64Binary;
 import static se.bjurr.prnfs.listener.PrnfsPullRequestAction.fromPullRequestEvent;
+import static se.bjurr.prnfs.listener.UrlInvoker.urlInvoker;
 import static se.bjurr.prnfs.settings.SettingsStorage.getPrnfsSettings;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import se.bjurr.prnfs.settings.Header;
 import se.bjurr.prnfs.settings.PrnfsNotification;
 import se.bjurr.prnfs.settings.PrnfsSettings;
 import se.bjurr.prnfs.settings.ValidationException;
@@ -29,17 +34,27 @@ import com.google.common.base.Optional;
 
 public class PrnfsPullRequestEventListener {
 
- private UrlInvoker urlInvoker = new UrlInvoker();
+ public interface Invoker {
+  void invoke(UrlInvoker urlInvoker);
+ }
+
  private final PluginSettingsFactory pluginSettingsFactory;
  private static final Logger logger = LoggerFactory.getLogger(PrnfsPullRequestEventListener.class);
 
- public PrnfsPullRequestEventListener(PluginSettingsFactory pluginSettingsFactory) {
-  this.pluginSettingsFactory = pluginSettingsFactory;
- }
+ private static Invoker invoker = new Invoker() {
+  @Override
+  public void invoke(UrlInvoker urlInvoker) {
+   urlInvoker.invoke();
+  }
+ };
 
  @VisibleForTesting
- public void setUrlInvoker(UrlInvoker urlInvoker) {
-  this.urlInvoker = urlInvoker;
+ public static void setInvoker(Invoker invoker) {
+  PrnfsPullRequestEventListener.invoker = invoker;
+ }
+
+ public PrnfsPullRequestEventListener(PluginSettingsFactory pluginSettingsFactory) {
+  this.pluginSettingsFactory = pluginSettingsFactory;
  }
 
  @EventListener
@@ -102,7 +117,21 @@ public class PrnfsPullRequestEventListener {
      if (n.getPostContent().isPresent()) {
       postContent = Optional.of(renderer.render(n.getPostContent().get()));
      }
-     urlInvoker.ivoke(renderer.render(n.getUrl()), n.getUser(), n.getPassword(), n.getMethod(), postContent);
+     UrlInvoker urlInvoker = urlInvoker().withUrlParam(renderer.render(n.getUrl())).withMethod(n.getMethod())
+       .withPostContent(postContent);
+     if (n.getUser().isPresent() && n.getPassword().isPresent()) {
+      final String userpass = n.getUser().get() + ":" + n.getPassword().get();
+      final String basicAuth = "Basic " + new String(printBase64Binary(userpass.getBytes(UTF_8)));
+      urlInvoker.withHeader(AUTHORIZATION, basicAuth);
+     }
+     for (Header header : n.getHeaders()) {
+      urlInvoker.withHeader(header.getName(), renderer.render(header.getValue()));
+     }
+     urlInvoker.withProxyServer(n.getProxyServer());
+     urlInvoker.withProxyPort(n.getProxyPort());
+     urlInvoker.withProxyUser(n.getProxyUser());
+     urlInvoker.withProxyPassword(n.getProxyPassword());
+     invoker.invoke(urlInvoker);
     }
    }
   } catch (final ValidationException e) {

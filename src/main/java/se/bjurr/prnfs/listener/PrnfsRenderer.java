@@ -2,6 +2,7 @@ package se.bjurr.prnfs.listener;
 
 import static se.bjurr.prnfs.listener.PrnfsPullRequestAction.fromPullRequestEvent;
 
+import com.atlassian.stash.event.pull.PullRequestCommentAddedEvent;
 import com.atlassian.stash.event.pull.PullRequestEvent;
 import com.atlassian.stash.pull.PullRequestRef;
 
@@ -57,6 +58,11 @@ public class PrnfsRenderer {
    @Override
    public String resolve(PullRequestEvent pullRequestEvent) {
     return pullRequestEvent.getPullRequest().getId() + "";
+   }
+  }), PULL_REQUEST_VERSION(new Resolver() {
+   @Override
+   public String resolve(PullRequestEvent pullRequestEvent) {
+    return pullRequestEvent.getPullRequest().getVersion() + "";
    }
   }), PULL_REQUEST_AUTHOR_ID(new Resolver() {
    @Override
@@ -122,6 +128,15 @@ public class PrnfsRenderer {
    @Override
    public String resolve(PullRequestEvent pullRequestEvent) {
     return pullRequestEvent.getPullRequest().getToRef().getRepository().getSlug() + "";
+   }
+  }), PULL_REQUEST_COMMENT_TEXT(new Resolver() {
+   @Override
+   public String resolve(PullRequestEvent pullRequestEvent) {
+    if (pullRequestEvent instanceof PullRequestCommentAddedEvent) {
+     return ((PullRequestCommentAddedEvent) pullRequestEvent).getComment().getText();
+    } else {
+     return "";
+    }
    }
   });
 

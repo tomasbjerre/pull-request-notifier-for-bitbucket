@@ -24,10 +24,20 @@ public class PrnfsNotification {
  private final String user;
  private final String method;
  private final String postContent;
+ private final List<Header> headers;
+ private final String proxyUser;
+ private final String proxyPassword;
+ private final String proxyServer;
+ private final Integer proxyPort;
 
  public PrnfsNotification(List<PrnfsPullRequestAction> triggers, String url, String user, String password,
-   String filterString, String filterRegexp, String method, String postContent) throws ValidationException {
-  this.password = emptyToNull(nullToEmpty(password).trim());
+   String filterString, String filterRegexp, String method, String postContent, List<Header> headers, String proxyUser,
+   String proxyPassword, String proxyServer, String proxyPort) throws ValidationException {
+  this.proxyUser = emptyToNull(nullToEmpty(proxyUser).trim());
+  this.proxyPassword = emptyToNull(nullToEmpty(proxyPassword).trim());
+  this.proxyServer = emptyToNull(nullToEmpty(proxyServer).trim());
+  this.proxyPort = Integer.valueOf(firstNonNull(emptyToNull(nullToEmpty(proxyPort).trim()), "-1"));
+  this.headers = checkNotNull(headers);
   this.postContent = emptyToNull(nullToEmpty(postContent).trim());
   this.method = firstNonNull(emptyToNull(nullToEmpty(method).trim()), "GET");
   if (nullToEmpty(url).trim().isEmpty()) {
@@ -52,6 +62,7 @@ public class PrnfsNotification {
   }
   this.url = url;
   this.user = emptyToNull(nullToEmpty(user).trim());
+  this.password = emptyToNull(nullToEmpty(password).trim());
   this.triggers = checkNotNull(triggers);
   this.filterString = filterString;
   this.filterRegexp = filterRegexp;
@@ -67,6 +78,22 @@ public class PrnfsNotification {
 
  public Optional<String> getPassword() {
   return fromNullable(password);
+ }
+
+ public Optional<String> getProxyPassword() {
+  return fromNullable(proxyPassword);
+ }
+
+ public Integer getProxyPort() {
+  return proxyPort;
+ }
+
+ public Optional<String> getProxyServer() {
+  return fromNullable(proxyServer);
+ }
+
+ public Optional<String> getProxyUser() {
+  return fromNullable(proxyUser);
  }
 
  public List<PrnfsPullRequestAction> getTriggers() {
@@ -87,5 +114,9 @@ public class PrnfsNotification {
 
  public Optional<String> getPostContent() {
   return fromNullable(postContent);
+ }
+
+ public List<Header> getHeaders() {
+  return headers;
  }
 }

@@ -2,6 +2,12 @@
 
 Changelog of Pull Request Notifier for Stash.
 
+## 1.11
+* Custom HTTP headers
+* Proxy support
+* Stash Data Center compatibility
+* Adding PULL_REQUEST_COMMENT_TEXT and PULL_REQUEST_VERSION variables
+
 ## 1.10
 * Adding PULL_REQUEST_FROM_BRANCH and PULL_REQUEST_TO_BRANCH variables to make branch names available
 

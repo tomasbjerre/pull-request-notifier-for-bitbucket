@@ -1,6 +1,7 @@
 package se.bjurr.prnfs.settings;
 
 import static com.google.common.base.Optional.fromNullable;
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.find;
 import static com.google.common.collect.Iterables.removeIf;
@@ -14,6 +15,7 @@ import static se.bjurr.prnfs.settings.PrnfsNotificationBuilder.prnfsNotification
 import static se.bjurr.prnfs.settings.PrnfsPredicates.predicate;
 import static se.bjurr.prnfs.settings.PrnfsSettingsBuilder.prnfsSettingsBuilder;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -78,8 +80,8 @@ public class SettingsStorage {
   return allNotificationsMap;
  }
 
- public static PrnfsNotification getPrnfsNotification(AdminFormValues a) throws ValidationException {
-  for (final Map<String, String> m : a) {
+ public static PrnfsNotification getPrnfsNotification(AdminFormValues adminFormValues) throws ValidationException {
+  for (final Map<String, String> m : adminFormValues) {
    for (final Entry<String, String> entry : m.entrySet()) {
     if (entry.getKey().equals(NAME)) {
      if (AdminFormValues.FIELDS.valueOf(entry.getValue()) == null) {
@@ -90,34 +92,65 @@ public class SettingsStorage {
     }
    }
   }
-  final Optional<Map<String, String>> urlOpt = tryFind(a, predicate(AdminFormValues.FIELDS.url.name()));
+  final Optional<Map<String, String>> urlOpt = tryFind(adminFormValues, predicate(AdminFormValues.FIELDS.url.name()));
   if (!urlOpt.isPresent()) {
    throw new ValidationException("url", "URL not set");
   }
   final PrnfsNotificationBuilder prnfsNotificationBuilder = prnfsNotificationBuilder().withUrl(urlOpt.get().get(VALUE));
-  final Iterable<Map<String, String>> events = filter(a, predicate("events"));
-  for (final Map<String, String> event : events) {
+  for (final Map<String, String> event : filter(adminFormValues, predicate(AdminFormValues.FIELDS.events.name()))) {
    prnfsNotificationBuilder.withTrigger(PrnfsPullRequestAction.valueOf(event.get(VALUE)));
   }
-  if (tryFind(a, predicate(AdminFormValues.FIELDS.user.name())).isPresent()) {
-   prnfsNotificationBuilder.withUser(find(a, predicate(AdminFormValues.FIELDS.user.name())).get(VALUE));
+  Iterator<Map<String, String>> headerValues = filter(adminFormValues,
+    predicate(AdminFormValues.FIELDS.header_value.name())).iterator();
+  for (final Map<String, String> headerName : filter(adminFormValues,
+    predicate(AdminFormValues.FIELDS.header_name.name()))) {
+   if (headerName.get(VALUE).trim().isEmpty()) {
+    continue;
+   }
+   String headerValue = headerValues.next().get(VALUE);
+   if (isNullOrEmpty(headerValue)) {
+    throw new ValidationException(AdminFormValues.FIELDS.header_value.name(), "Value cannot be null");
+   }
+   prnfsNotificationBuilder.withHeader(headerName.get(VALUE), headerValue);
   }
-  if (tryFind(a, predicate(AdminFormValues.FIELDS.password.name())).isPresent()) {
-   prnfsNotificationBuilder.withPassword(find(a, predicate(AdminFormValues.FIELDS.password.name())).get(VALUE));
-  }
-  if (tryFind(a, predicate(AdminFormValues.FIELDS.filter_string.name())).isPresent()) {
+  if (tryFind(adminFormValues, predicate(AdminFormValues.FIELDS.proxy_server.name())).isPresent()) {
    prnfsNotificationBuilder
-     .withFilterString(find(a, predicate(AdminFormValues.FIELDS.filter_string.name())).get(VALUE));
+     .withProxyServer(find(adminFormValues, predicate(AdminFormValues.FIELDS.proxy_server.name())).get(VALUE));
   }
-  if (tryFind(a, predicate(AdminFormValues.FIELDS.filter_regexp.name())).isPresent()) {
+  if (tryFind(adminFormValues, predicate(AdminFormValues.FIELDS.proxy_port.name())).isPresent()) {
+   prnfsNotificationBuilder.withProxyPort(find(adminFormValues, predicate(AdminFormValues.FIELDS.proxy_port.name()))
+     .get(VALUE));
+  }
+  if (tryFind(adminFormValues, predicate(AdminFormValues.FIELDS.proxy_user.name())).isPresent()) {
+   prnfsNotificationBuilder.withProxyUser(find(adminFormValues, predicate(AdminFormValues.FIELDS.proxy_user.name()))
+     .get(VALUE));
+  }
+  if (tryFind(adminFormValues, predicate(AdminFormValues.FIELDS.proxy_password.name())).isPresent()) {
+   prnfsNotificationBuilder.withProxyPassword(find(adminFormValues,
+     predicate(AdminFormValues.FIELDS.proxy_password.name())).get(VALUE));
+  }
+  if (tryFind(adminFormValues, predicate(AdminFormValues.FIELDS.user.name())).isPresent()) {
+   prnfsNotificationBuilder.withUser(find(adminFormValues, predicate(AdminFormValues.FIELDS.user.name())).get(VALUE));
+  }
+  if (tryFind(adminFormValues, predicate(AdminFormValues.FIELDS.password.name())).isPresent()) {
+   prnfsNotificationBuilder.withPassword(find(adminFormValues, predicate(AdminFormValues.FIELDS.password.name())).get(
+     VALUE));
+  }
+  if (tryFind(adminFormValues, predicate(AdminFormValues.FIELDS.filter_string.name())).isPresent()) {
+   prnfsNotificationBuilder.withFilterString(find(adminFormValues,
+     predicate(AdminFormValues.FIELDS.filter_string.name())).get(VALUE));
+  }
+  if (tryFind(adminFormValues, predicate(AdminFormValues.FIELDS.filter_regexp.name())).isPresent()) {
+   prnfsNotificationBuilder.withFilterRegexp(find(adminFormValues,
+     predicate(AdminFormValues.FIELDS.filter_regexp.name())).get(VALUE));
+  }
+  if (tryFind(adminFormValues, predicate(AdminFormValues.FIELDS.method.name())).isPresent()) {
+   prnfsNotificationBuilder.withMethod(find(adminFormValues, predicate(AdminFormValues.FIELDS.method.name()))
+     .get(VALUE));
+  }
+  if (tryFind(adminFormValues, predicate(AdminFormValues.FIELDS.post_content.name())).isPresent()) {
    prnfsNotificationBuilder
-     .withFilterRegexp(find(a, predicate(AdminFormValues.FIELDS.filter_regexp.name())).get(VALUE));
-  }
-  if (tryFind(a, predicate(AdminFormValues.FIELDS.method.name())).isPresent()) {
-   prnfsNotificationBuilder.withMethod(find(a, predicate(AdminFormValues.FIELDS.method.name())).get(VALUE));
-  }
-  if (tryFind(a, predicate(AdminFormValues.FIELDS.post_content.name())).isPresent()) {
-   prnfsNotificationBuilder.withPostContent(find(a, predicate(AdminFormValues.FIELDS.post_content.name())).get(VALUE));
+     .withPostContent(find(adminFormValues, predicate(AdminFormValues.FIELDS.post_content.name())).get(VALUE));
   }
   return prnfsNotificationBuilder.build();
  }

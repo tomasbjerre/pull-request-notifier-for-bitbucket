@@ -45,7 +45,6 @@ public class PrnfsPullRequestActionTest {
   }
  }
 
- @SuppressWarnings("deprecation")
  @Test
  public void testThatRescopedEventsAreCalculatedCorrectlyWhenFromAndToChanges() {
   when(event.getPreviousFromHash()).thenReturn("FROM");
@@ -55,7 +54,6 @@ public class PrnfsPullRequestActionTest {
   assertEquals(RESCOPED.name(), fromPullRequestEvent(event).getName());
  }
 
- @SuppressWarnings("deprecation")
  @Test
  public void testThatRescopedEventsAreCalculatedCorrectlyWhenOnlyFromChanges() {
   when(event.getPreviousFromHash()).thenReturn("FROM");
@@ -65,7 +63,6 @@ public class PrnfsPullRequestActionTest {
   assertEquals(RESCOPED_FROM, fromPullRequestEvent(event).getName());
  }
 
- @SuppressWarnings("deprecation")
  @Test
  public void testThatRescopedEventsAreCalculatedCorrectlyWhenOnlyToChanges() {
   when(event.getPreviousFromHash()).thenReturn("FROM");
