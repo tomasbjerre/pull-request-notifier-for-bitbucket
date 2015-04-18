@@ -90,7 +90,7 @@ public class PrnfsPullRequestEventListenerTest {
  @Test
  public void testThatAUrlWithVariablesFromCanBeInvoked() {
   for (final PrnfsVariable prnfsVariable : PrnfsVariable.values()) {
-   if (!prnfsVariable.name().contains("_FROM_")) {
+   if (!prnfsVariable.name().contains("_FROM_") || prnfsVariable.name().equals(PrnfsVariable.PULL_REQUEST_FROM_SSH_CLONE_URL.name()) || prnfsVariable.name().equals(PrnfsVariable.PULL_REQUEST_FROM_HTTP_CLONE_URL.name())) {
     continue;
    }
    prnfsTestBuilder()
@@ -112,7 +112,7 @@ public class PrnfsPullRequestEventListenerTest {
  @Test
  public void testThatAUrlWithVariablesToCanBeInvoked() {
   for (final PrnfsVariable prnfsVariable : PrnfsVariable.values()) {
-   if (!prnfsVariable.name().contains("_TO_")) {
+   if (!prnfsVariable.name().contains("_TO_") || prnfsVariable.name().equals(PrnfsVariable.PULL_REQUEST_TO_SSH_CLONE_URL.name()) || prnfsVariable.name().equals(PrnfsVariable.PULL_REQUEST_TO_HTTP_CLONE_URL.name())) {
     continue;
    }
    prnfsTestBuilder()

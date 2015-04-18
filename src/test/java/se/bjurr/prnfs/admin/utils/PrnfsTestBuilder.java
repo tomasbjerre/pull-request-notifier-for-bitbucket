@@ -28,6 +28,7 @@ import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.atlassian.stash.repository.RepositoryService;
 import org.mockito.Matchers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,6 +84,8 @@ public class PrnfsTestBuilder {
 
  private final PluginSettingsFactory pluginSettingsFactory;
 
+ private final RepositoryService repositoryService;
+
  private HttpServletRequest request;
 
  private TransactionTemplate transactionTemplate;
@@ -105,6 +108,7 @@ public class PrnfsTestBuilder {
   userKey = new UserKey("asd");
   userManager = mock(UserManager.class);
   pluginSettingsFactory = mock(PluginSettingsFactory.class);
+  repositoryService = mock(RepositoryService.class);
   transactionTemplate = new TransactionTemplate() {
    @Override
    public <T> T execute(TransactionCallback<T> action) {
@@ -113,7 +117,7 @@ public class PrnfsTestBuilder {
   };
   when(pluginSettingsFactory.createGlobalSettings()).thenReturn(pluginSettings);
   configResource = new ConfigResource(userManager, pluginSettingsFactory, transactionTemplate);
-  listener = new PrnfsPullRequestEventListener(pluginSettingsFactory);
+  listener = new PrnfsPullRequestEventListener(pluginSettingsFactory, repositoryService);
  }
 
  public PrnfsTestBuilder delete(String id) {

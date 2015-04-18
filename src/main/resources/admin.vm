@@ -16,6 +16,8 @@
         <li><b>${PULL_REQUEST_AUTHOR_ID}</b> Example: 1</li>
         <li><b>${PULL_REQUEST_AUTHOR_NAME}</b> Example: admin</li>
         <li><b>${PULL_REQUEST_AUTHOR_SLUG}</b> Example: admin</li>
+        <li><b>${PULL_REQUEST_FROM_SSH_CLONE_URL}</b> Example: ssh://git@localhost:7999/project_1/rep_1</li>
+        <li><b>${PULL_REQUEST_FROM_HTTP_CLONE_URL}</b> Example: http://admin@localhost:7990/stash/scm/project_1/rep_1.git</li>
         <li><b>${PULL_REQUEST_FROM_HASH}</b> Example: 6053a1eaa1c009dd11092d09a72f3c41af1b59ad</li>
         <li><b>${PULL_REQUEST_FROM_ID}</b> Example: refs/heads/branch_mod_merge</li>
         <li><b>${PULL_REQUEST_FROM_BRANCH}</b> Example: branch_mod_merge</li>
@@ -24,6 +26,8 @@
         <li><b>${PULL_REQUEST_FROM_REPO_PROJECT_ID}</b> Example: 1</li>
         <li><b>${PULL_REQUEST_FROM_REPO_PROJECT_KEY}</b> Example: PROJECT_1</li>
         <li><b>${PULL_REQUEST_FROM_REPO_SLUG}</b> Example: rep_1</li>
+        <li><b>${PULL_REQUEST_TO_SSH_CLONE_URL}</b> Example: ssh://git@localhost:7999/project_1/rep_1</li>
+        <li><b>${PULL_REQUEST_TO_HTTP_CLONE_URL}</b> Example: http://admin@localhost:7990/stash/scm/project_1/rep_1.git</li>
         <li><b>${PULL_REQUEST_TO_HASH}</b> Example: d6edcbf924697ab811a867421dab60d954ccad99</li>
         <li><b>${PULL_REQUEST_TO_ID}</b> Example: refs/heads/basic_branching</li>
         <li><b>${PULL_REQUEST_VERSION}</b> Example: 1</li>
