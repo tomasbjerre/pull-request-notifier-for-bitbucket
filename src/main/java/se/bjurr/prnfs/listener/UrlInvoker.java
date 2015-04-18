@@ -136,10 +136,6 @@ public class UrlInvoker {
   return urlParam;
  }
 
- public static Logger getLogger() {
-  return logger;
- }
-
  @VisibleForTesting
  public boolean shouldPostContent() {
   return (method.equals("POST") || method.equals("PUT")) && postContent.isPresent();

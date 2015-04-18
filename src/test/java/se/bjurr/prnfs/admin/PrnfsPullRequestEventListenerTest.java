@@ -453,6 +453,84 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
+ public void testThatFilterCanBeUsedWithComments() {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder()
+        .withFieldValue(
+          AdminFormValues.FIELDS.url,
+          "http://bjurr.se/?comment=${" + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_COMMENT_TEXT + "}&version=${"
+            + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_VERSION + "}")
+        .withFieldValue(AdminFormValues.FIELDS.events, COMMENTED.name())
+        .withFieldValue(
+          FIELDS.filter_string,
+          "${" + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_TO_ID.name() + "}:${"
+            + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_COMMENT_TEXT.name() + "}:")
+        .withFieldValue(FIELDS.filter_regexp, ".*:.*?keyword.*?:.*").build()).store().trigger(pullRequestEventBuilder() //
+      .withFromRef(pullRequestRefBuilder().withHash("from")) //
+      .withToRef(pullRequestRefBuilder().withId("123")) //
+      .withCommentText("keyword A nice comment").withId(10L).withPullRequestAction(COMMENTED).build())
+    .invokedUrl(0, "http://bjurr.se/?comment=keyword%20A%20nice%20comment&version=0");
+ }
+
+ @Test
+ public void testThatFilterCanBeUsedWithCommentsAndSpecialEscapedChars() {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder()
+        .withFieldValue(
+          AdminFormValues.FIELDS.url,
+          "http://bjurr.se/?comment=${" + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_COMMENT_TEXT + "}&version=${"
+            + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_VERSION + "}")
+        .withFieldValue(AdminFormValues.FIELDS.events, COMMENTED.name())
+        .withFieldValue(
+          FIELDS.filter_string,
+          "${" + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_TO_ID.name() + "}:${"
+            + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_COMMENT_TEXT.name() + "}:")
+        .withFieldValue(FIELDS.filter_regexp, ".*:\\skeyword\\s:.*").build()).store().trigger(pullRequestEventBuilder() //
+      .withFromRef(pullRequestRefBuilder().withHash("from")) //
+      .withToRef(pullRequestRefBuilder().withId("123")) //
+      .withCommentText(" keyword ").withId(10L).withPullRequestAction(COMMENTED).build())
+    .invokedUrl(0, "http://bjurr.se/?comment=%20keyword%20&version=0");
+ }
+
+ @Test
+ public void testThatFilterCanBeUsedWithCommentsIgnore() {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder()
+        .withFieldValue(
+          AdminFormValues.FIELDS.url,
+          "http://bjurr.se/?comment=${" + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_COMMENT_TEXT + "}&version=${"
+            + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_VERSION + "}")
+        .withFieldValue(AdminFormValues.FIELDS.events, COMMENTED.name())
+        .withFieldValue(
+          FIELDS.filter_string,
+          "${" + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_TO_ID.name() + "}:${"
+            + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_COMMENT_TEXT.name() + "}:")
+        .withFieldValue(FIELDS.filter_regexp, ".*:.*?keyword.*?:.*").build()).store().trigger(pullRequestEventBuilder() //
+      .withFromRef(pullRequestRefBuilder().withHash("from")) //
+      .withToRef(pullRequestRefBuilder().withId("123")) //
+      .withCommentText("notkw A nice comment").withId(10L).withPullRequestAction(COMMENTED).build()).invokedNoUrl();
+ }
+
+ @Test
+ public void testThatStringWithVariableCommentIsEmptyIfNotACommentEvent() {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder()
+        .withFieldValue(AdminFormValues.FIELDS.url,
+          "http://bjurr.se/?comment=${" + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_COMMENT_TEXT + "}")
+        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).build()).store()
+    .trigger(pullRequestEventBuilder() //
+      .withId(10L).withPullRequestAction(OPENED).build()).invokedUrl(0, "http://bjurr.se/?comment=");
+ }
+
+ @Test
  public void testThatURLCanIncludeRescopedFrom() {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
