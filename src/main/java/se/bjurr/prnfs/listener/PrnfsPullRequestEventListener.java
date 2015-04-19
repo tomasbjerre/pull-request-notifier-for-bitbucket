@@ -9,6 +9,7 @@ import static se.bjurr.prnfs.listener.PrnfsPullRequestAction.fromPullRequestEven
 import static se.bjurr.prnfs.listener.UrlInvoker.urlInvoker;
 import static se.bjurr.prnfs.settings.SettingsStorage.getPrnfsSettings;
 
+import com.atlassian.stash.repository.RepositoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +40,7 @@ public class PrnfsPullRequestEventListener {
  }
 
  private final PluginSettingsFactory pluginSettingsFactory;
+ private final RepositoryService repositoryService;
  private static final Logger logger = LoggerFactory.getLogger(PrnfsPullRequestEventListener.class);
 
  private static Invoker invoker = new Invoker() {
@@ -53,8 +55,9 @@ public class PrnfsPullRequestEventListener {
   PrnfsPullRequestEventListener.invoker = invoker;
  }
 
- public PrnfsPullRequestEventListener(PluginSettingsFactory pluginSettingsFactory) {
+ public PrnfsPullRequestEventListener(PluginSettingsFactory pluginSettingsFactory, RepositoryService repositoryService) {
   this.pluginSettingsFactory = pluginSettingsFactory;
+  this.repositoryService = repositoryService;
  }
 
  @EventListener
@@ -104,7 +107,7 @@ public class PrnfsPullRequestEventListener {
 
  @VisibleForTesting
  public void handleEvent(PullRequestEvent o, PrnfsPullRequestAction action) {
-  final PrnfsRenderer renderer = new PrnfsRenderer(o);
+  final PrnfsRenderer renderer = new PrnfsRenderer(o, repositoryService);
   try {
    final PrnfsSettings settings = getPrnfsSettings(pluginSettingsFactory.createGlobalSettings());
    for (final PrnfsNotification n : settings.getNotifications()) {
