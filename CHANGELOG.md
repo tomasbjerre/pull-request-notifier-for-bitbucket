@@ -2,6 +2,11 @@
 
 Changelog of Pull Request Notifier for Stash.
 
+## 1.12
+* Adding clone URL variables
+ * ${PULL_REQUEST_FROM_HTTP_CLONE_URL} Example: http://admin@localhost:7990/stash/scm/project_1/rep_1.git
+ * ${PULL_REQUEST_FROM_SSH_CLONE_URL}</b> Example: ssh://git@localhost:7999/project_1/rep_1
+
 ## 1.11
 * Custom HTTP headers
 * Proxy support

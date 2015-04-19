@@ -1,6 +1,10 @@
 package se.bjurr.prnfs.listener;
 
 import static se.bjurr.prnfs.listener.PrnfsPullRequestAction.fromPullRequestEvent;
+import static se.bjurr.prnfs.listener.PrnfsRenderer.REPO_PROTOCOL.http;
+import static se.bjurr.prnfs.listener.PrnfsRenderer.REPO_PROTOCOL.ssh;
+
+import java.util.Set;
 
 import com.atlassian.stash.event.pull.PullRequestCommentAddedEvent;
 import com.atlassian.stash.event.pull.PullRequestEvent;
@@ -10,9 +14,11 @@ import com.atlassian.stash.repository.RepositoryCloneLinksRequest;
 import com.atlassian.stash.repository.RepositoryService;
 import com.atlassian.stash.util.NamedLink;
 
-import java.util.Set;
-
 public class PrnfsRenderer {
+
+ public enum REPO_PROTOCOL {
+  ssh, http
+ }
 
  public enum PrnfsVariable {
   PULL_REQUEST_FROM_HASH(new Resolver() {
@@ -58,12 +64,14 @@ public class PrnfsRenderer {
   }), PULL_REQUEST_FROM_SSH_CLONE_URL(new Resolver() {
    @Override
    public String resolve(PullRequestEvent pullRequestEvent, RepositoryService repositoryService) {
-    return cloneUrlFromRepository("ssh", pullRequestEvent.getPullRequest().getFromRef().getRepository(), repositoryService);
+    return cloneUrlFromRepository(ssh, pullRequestEvent.getPullRequest().getFromRef().getRepository(),
+      repositoryService);
    }
   }), PULL_REQUEST_FROM_HTTP_CLONE_URL(new Resolver() {
    @Override
    public String resolve(PullRequestEvent pullRequestEvent, RepositoryService repositoryService) {
-    return cloneUrlFromRepository("http", pullRequestEvent.getPullRequest().getFromRef().getRepository(), repositoryService);
+    return cloneUrlFromRepository(http, pullRequestEvent.getPullRequest().getFromRef().getRepository(),
+      repositoryService);
    }
   }), PULL_REQUEST_ACTION(new Resolver() {
    @Override
@@ -148,12 +156,12 @@ public class PrnfsRenderer {
   }), PULL_REQUEST_TO_SSH_CLONE_URL(new Resolver() {
    @Override
    public String resolve(PullRequestEvent pullRequestEvent, RepositoryService repositoryService) {
-    return cloneUrlFromRepository("ssh", pullRequestEvent.getPullRequest().getToRef().getRepository(), repositoryService);
+    return cloneUrlFromRepository(ssh, pullRequestEvent.getPullRequest().getToRef().getRepository(), repositoryService);
    }
-  }) , PULL_REQUEST_TO_HTTP_CLONE_URL(new Resolver() {
+  }), PULL_REQUEST_TO_HTTP_CLONE_URL(new Resolver() {
    @Override
    public String resolve(PullRequestEvent pullRequestEvent, RepositoryService repositoryService) {
-    return cloneUrlFromRepository("http", pullRequestEvent.getPullRequest().getToRef().getRepository(), repositoryService);
+    return cloneUrlFromRepository(http, pullRequestEvent.getPullRequest().getToRef().getRepository(), repositoryService);
    }
   }), PULL_REQUEST_COMMENT_TEXT(new Resolver() {
    @Override
@@ -174,11 +182,12 @@ public class PrnfsRenderer {
    return branchId.substring(lastSlash + 1);
   }
 
-  private static String cloneUrlFromRepository(String protocol, Repository repository, RepositoryService repositoryService) {
-   RepositoryCloneLinksRequest request = new RepositoryCloneLinksRequest.Builder().protocol(protocol).repository(repository).build();
+  private static String cloneUrlFromRepository(REPO_PROTOCOL protocol, Repository repository,
+    RepositoryService repositoryService) {
+   RepositoryCloneLinksRequest request = new RepositoryCloneLinksRequest.Builder().protocol(protocol.name())
+     .repository(repository).build();
    final Set<NamedLink> cloneLinks = repositoryService.getCloneLinks(request);
    return cloneLinks.iterator().hasNext() ? cloneLinks.iterator().next().getHref() : "";
-
   }
 
   PrnfsVariable(Resolver resolver) {

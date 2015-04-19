@@ -15,6 +15,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static se.bjurr.prnfs.admin.AdminFormValues.NAME;
 import static se.bjurr.prnfs.admin.AdminFormValues.VALUE;
+import static se.bjurr.prnfs.admin.utils.PullRequestEventBuilder.pullRequestEventBuilder;
 import static se.bjurr.prnfs.listener.PrnfsPullRequestAction.fromPullRequestEvent;
 import static se.bjurr.prnfs.listener.PrnfsPullRequestEventListener.setInvoker;
 import static se.bjurr.prnfs.listener.UrlInvoker.getHeaderValue;
@@ -28,7 +29,6 @@ import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.atlassian.stash.repository.RepositoryService;
 import org.mockito.Matchers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +50,7 @@ import com.atlassian.sal.api.user.UserKey;
 import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.sal.api.user.UserProfile;
 import com.atlassian.stash.event.pull.PullRequestEvent;
+import com.atlassian.stash.repository.RepositoryService;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
@@ -268,6 +269,10 @@ public class PrnfsTestBuilder {
   return this;
  }
 
+ public PullRequestEventBuilder triggerPullRequestEventBuilder() {
+  return pullRequestEventBuilder(this);
+ }
+
  public PrnfsTestBuilder withNotification(AdminFormValues adminFormValues) {
   final Optional<Map<String, String>> existing = tryFind(adminFormValues, predicate(FORM_IDENTIFIER_NAME));
   if (existing.isPresent()) {
@@ -328,5 +333,9 @@ public class PrnfsTestBuilder {
   assertEquals(password, urlInvokers.get(i).getProxyPassword().get());
   assertTrue(urlInvokers.get(i).shouldAuthenticateProxy());
   return this;
+ }
+
+ public RepositoryService getRepositoryService() {
+  return repositoryService;
  }
 }

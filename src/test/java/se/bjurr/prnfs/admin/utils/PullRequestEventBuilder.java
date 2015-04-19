@@ -4,6 +4,7 @@ import static com.atlassian.stash.pull.PullRequestAction.COMMENTED;
 import static com.atlassian.stash.pull.PullRequestAction.RESCOPED;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static se.bjurr.prnfs.admin.utils.PullRequestRefBuilder.pullRequestRefBuilder;
 
 import com.atlassian.stash.comment.Comment;
 import com.atlassian.stash.event.pull.PullRequestCommentAddedEvent;
@@ -20,8 +21,10 @@ public class PullRequestEventBuilder {
  private Long id;
  private PullRequestParticipant author;
  private String commentText;
+ private final PrnfsTestBuilder prnfsTestBuilder;
 
- private PullRequestEventBuilder() {
+ private PullRequestEventBuilder(PrnfsTestBuilder prnfsTestBuilder) {
+  this.prnfsTestBuilder = prnfsTestBuilder;
  }
 
  public PullRequestEventBuilder withFromRef(PullRequestRefBuilder fromRef) {
@@ -35,7 +38,27 @@ public class PullRequestEventBuilder {
  }
 
  public static PullRequestEventBuilder pullRequestEventBuilder() {
-  return new PullRequestEventBuilder();
+  return new PullRequestEventBuilder(null);
+ }
+
+ public static PullRequestEventBuilder pullRequestEventBuilder(PrnfsTestBuilder prnfsTestBuilder) {
+  return new PullRequestEventBuilder(prnfsTestBuilder);
+ }
+
+ public PrnfsTestBuilder getPrnfsTestBuilder() {
+  return prnfsTestBuilder;
+ }
+
+ public PullRequestRefBuilder withFromRefPullRequestRefBuilder() {
+  PullRequestRefBuilder ref = pullRequestRefBuilder(this);
+  this.withFromRef(ref);
+  return ref;
+ }
+
+ public PullRequestRefBuilder withToRefPullRequestRefBuilder() {
+  PullRequestRefBuilder ref = pullRequestRefBuilder(this);
+  this.withToRef(ref);
+  return ref;
  }
 
  public PullRequestEventBuilder withPullRequestAction(PullRequestAction pullRequestAction) {
@@ -80,5 +103,9 @@ public class PullRequestEventBuilder {
   when(pullRequestEvent.getPullRequest().getFromRef()).thenReturn(fromRef);
   when(pullRequestEvent.getPullRequest().getToRef()).thenReturn(toRef);
   return pullRequestEvent;
+ }
+
+ public PrnfsTestBuilder triggerEvent() {
+  return prnfsTestBuilder.trigger(build());
  }
 }

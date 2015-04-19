@@ -11,6 +11,8 @@
         <ul>
         <li><b>${PULL_REQUEST_ID}</b> Example: 1</li>
         <li><b>${PULL_REQUEST_ACTION}</b> Example: OPENED</li>
+        <li><b>${PULL_REQUEST_VERSION}</b> Example: 1</li>
+        <li><b>${PULL_REQUEST_COMMENT_TEXT}</b> Example: A comment</li>
         <li><b>${PULL_REQUEST_AUTHOR_DISPLAY_NAME}</b> Example: Administrator</li>
         <li><b>${PULL_REQUEST_AUTHOR_EMAIL}</b> Example: admin@example.com</li>
         <li><b>${PULL_REQUEST_AUTHOR_ID}</b> Example: 1</li>
@@ -30,14 +32,12 @@
         <li><b>${PULL_REQUEST_TO_HTTP_CLONE_URL}</b> Example: http://admin@localhost:7990/stash/scm/project_1/rep_1.git</li>
         <li><b>${PULL_REQUEST_TO_HASH}</b> Example: d6edcbf924697ab811a867421dab60d954ccad99</li>
         <li><b>${PULL_REQUEST_TO_ID}</b> Example: refs/heads/basic_branching</li>
-        <li><b>${PULL_REQUEST_VERSION}</b> Example: 1</li>
         <li><b>${PULL_REQUEST_TO_BRANCH}</b> Example: basic_branching</li>
         <li><b>${PULL_REQUEST_TO_REPO_ID}</b> Example: 1</li>
         <li><b>${PULL_REQUEST_TO_REPO_NAME}</b> Example: rep_1</li>
         <li><b>${PULL_REQUEST_TO_REPO_PROJECT_ID}</b> Example: 1</li>
         <li><b>${PULL_REQUEST_TO_REPO_PROJECT_KEY}</b> Example: PROJECT_1</li>
         <li><b>${PULL_REQUEST_TO_REPO_SLUG}</b> Example: rep_1</li>
-        <li><b>${PULL_REQUEST_COMMENT_TEXT}</b> Example: A comment</li>
         </ul>
       </div>
     </div>

@@ -9,7 +9,6 @@ import static se.bjurr.prnfs.listener.PrnfsPullRequestAction.fromPullRequestEven
 import static se.bjurr.prnfs.listener.UrlInvoker.urlInvoker;
 import static se.bjurr.prnfs.settings.SettingsStorage.getPrnfsSettings;
 
-import com.atlassian.stash.repository.RepositoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +29,7 @@ import com.atlassian.stash.event.pull.PullRequestReopenedEvent;
 import com.atlassian.stash.event.pull.PullRequestRescopedEvent;
 import com.atlassian.stash.event.pull.PullRequestUnapprovedEvent;
 import com.atlassian.stash.event.pull.PullRequestUpdatedEvent;
+import com.atlassian.stash.repository.RepositoryService;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 
@@ -106,34 +106,36 @@ public class PrnfsPullRequestEventListener {
  }
 
  @VisibleForTesting
- public void handleEvent(PullRequestEvent o, PrnfsPullRequestAction action) {
-  final PrnfsRenderer renderer = new PrnfsRenderer(o, repositoryService);
+ public void handleEvent(PullRequestEvent pullRequestEvent, PrnfsPullRequestAction action) {
+  final PrnfsRenderer renderer = new PrnfsRenderer(pullRequestEvent, repositoryService);
   try {
    final PrnfsSettings settings = getPrnfsSettings(pluginSettingsFactory.createGlobalSettings());
-   for (final PrnfsNotification n : settings.getNotifications()) {
-    if (n.getFilterRegexp().isPresent() && n.getFilterString().isPresent()
-      && !compile(n.getFilterRegexp().get()).matcher(renderer.render(n.getFilterString().get())).find()) {
+   for (final PrnfsNotification notification : settings.getNotifications()) {
+    if (notification.getFilterRegexp().isPresent()
+      && notification.getFilterString().isPresent()
+      && !compile(notification.getFilterRegexp().get()).matcher(renderer.render(notification.getFilterString().get()))
+        .find()) {
      continue;
     }
-    if (n.getTriggers().contains(action)) {
+    if (notification.getTriggers().contains(action)) {
      Optional<String> postContent = absent();
-     if (n.getPostContent().isPresent()) {
-      postContent = Optional.of(renderer.render(n.getPostContent().get()));
+     if (notification.getPostContent().isPresent()) {
+      postContent = Optional.of(renderer.render(notification.getPostContent().get()));
      }
-     UrlInvoker urlInvoker = urlInvoker().withUrlParam(renderer.render(n.getUrl())).withMethod(n.getMethod())
-       .withPostContent(postContent);
-     if (n.getUser().isPresent() && n.getPassword().isPresent()) {
-      final String userpass = n.getUser().get() + ":" + n.getPassword().get();
+     UrlInvoker urlInvoker = urlInvoker().withUrlParam(renderer.render(notification.getUrl()))
+       .withMethod(notification.getMethod()).withPostContent(postContent);
+     if (notification.getUser().isPresent() && notification.getPassword().isPresent()) {
+      final String userpass = notification.getUser().get() + ":" + notification.getPassword().get();
       final String basicAuth = "Basic " + new String(printBase64Binary(userpass.getBytes(UTF_8)));
       urlInvoker.withHeader(AUTHORIZATION, basicAuth);
      }
-     for (Header header : n.getHeaders()) {
+     for (Header header : notification.getHeaders()) {
       urlInvoker.withHeader(header.getName(), renderer.render(header.getValue()));
      }
-     urlInvoker.withProxyServer(n.getProxyServer());
-     urlInvoker.withProxyPort(n.getProxyPort());
-     urlInvoker.withProxyUser(n.getProxyUser());
-     urlInvoker.withProxyPassword(n.getProxyPassword());
+     urlInvoker.withProxyServer(notification.getProxyServer());
+     urlInvoker.withProxyPort(notification.getProxyPort());
+     urlInvoker.withProxyUser(notification.getProxyUser());
+     urlInvoker.withProxyPassword(notification.getProxyPassword());
      invoker.invoke(urlInvoker);
     }
    }

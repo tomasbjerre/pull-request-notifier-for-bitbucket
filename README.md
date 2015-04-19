@@ -37,6 +37,8 @@ The filter text as well as the URL support variables. These are:
 * ${PULL_REQUEST_AUTHOR_ID} Example: 1
 * ${PULL_REQUEST_AUTHOR_NAME} Example: admin
 * ${PULL_REQUEST_AUTHOR_SLUG} Example: admin
+* ${PULL_REQUEST_FROM_SSH_CLONE_URL} Example: ssh://git@localhost:7999/project_1/rep_1
+* ${PULL_REQUEST_FROM_HTTP_CLONE_URL} Example: http://admin@localhost:7990/stash/scm/project_1/rep_1.git
 * ${PULL_REQUEST_FROM_HASH} Example: 6053a1eaa1c009dd11092d09a72f3c41af1b59ad
 * ${PULL_REQUEST_FROM_ID} Example: refs/heads/branchmodmerge
 * ${PULL_REQUEST_FROM_BRANCH} Example: branchmodmerge

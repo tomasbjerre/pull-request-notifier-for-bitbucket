@@ -27,6 +27,8 @@ import java.util.regex.Pattern;
 import org.junit.Test;
 
 import se.bjurr.prnfs.admin.AdminFormValues.FIELDS;
+import se.bjurr.prnfs.admin.utils.PullRequestEventBuilder;
+import se.bjurr.prnfs.admin.utils.PullRequestRefBuilder;
 import se.bjurr.prnfs.listener.PrnfsPullRequestAction;
 import se.bjurr.prnfs.listener.PrnfsRenderer;
 import se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable;
@@ -90,45 +92,43 @@ public class PrnfsPullRequestEventListenerTest {
  @Test
  public void testThatAUrlWithVariablesFromCanBeInvoked() {
   for (final PrnfsVariable prnfsVariable : PrnfsVariable.values()) {
-   if (!prnfsVariable.name().contains("_FROM_") || prnfsVariable.name().equals(PrnfsVariable.PULL_REQUEST_FROM_SSH_CLONE_URL.name()) || prnfsVariable.name().equals(PrnfsVariable.PULL_REQUEST_FROM_HTTP_CLONE_URL.name())) {
+   if (!prnfsVariable.name().contains("_FROM_") && !prnfsVariable.name().contains("_TO_")) {
     continue;
    }
-   prnfsTestBuilder()
+   PullRequestEventBuilder builder = prnfsTestBuilder()
      .isLoggedInAsAdmin()
      .withNotification(
        notificationBuilder()
          .withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/${" + prnfsVariable.name() + "}")
-         .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).build())
-     .store()
-     .trigger(
-       pullRequestEventBuilder() //
-         .withFromRef(
-           pullRequestRefBuilder().withHash("10").withId("10").withProjectId(10).withProjectKey("10")
-             .withRepositoryId(10).withRepositoryName("10").withRepositorySlug("10")) //
-         .withId(10L).withPullRequestAction(OPENED).build()).invokedUrl(0, "http://bjurr.se/10");
+         .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).build()).store()
+     .triggerPullRequestEventBuilder();
+
+   PullRequestRefBuilder refBuilder;
+   if (prnfsVariable.name().contains("_FROM_")) {
+    refBuilder = builder.withFromRefPullRequestRefBuilder();
+   } else {
+    refBuilder = builder.withToRefPullRequestRefBuilder();
+   }
+
+   refBuilder.withHash("10").withId("10").withProjectId(10).withProjectKey("10").withRepositoryId(10)
+     .withRepositoryName("10").withRepositorySlug("10").withCloneUrl(PrnfsRenderer.REPO_PROTOCOL.http, "10")
+     .withCloneUrl(PrnfsRenderer.REPO_PROTOCOL.ssh, "10").build() //
+     .withId(10L).withPullRequestAction(OPENED).triggerEvent().invokedUrl(0, "http://bjurr.se/10");
   }
  }
 
  @Test
- public void testThatAUrlWithVariablesToCanBeInvoked() {
-  for (final PrnfsVariable prnfsVariable : PrnfsVariable.values()) {
-   if (!prnfsVariable.name().contains("_TO_") || prnfsVariable.name().equals(PrnfsVariable.PULL_REQUEST_TO_SSH_CLONE_URL.name()) || prnfsVariable.name().equals(PrnfsVariable.PULL_REQUEST_TO_HTTP_CLONE_URL.name())) {
-    continue;
-   }
-   prnfsTestBuilder()
-     .isLoggedInAsAdmin()
-     .withNotification(
-       notificationBuilder()
-         .withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/${" + prnfsVariable.name() + "}")
-         .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).build())
-     .store()
-     .trigger(
-       pullRequestEventBuilder() //
-         .withToRef(
-           pullRequestRefBuilder().withHash("10").withId("10").withProjectId(10).withProjectKey("10")
-             .withRepositoryId(10).withRepositoryName("10").withRepositorySlug("10")) //
-         .withId(10L).withPullRequestAction(OPENED).build()).invokedUrl(0, "http://bjurr.se/10");
-  }
+ public void testThatRepoUrlReturnsEmptyIfThereIsNotUrlWithThatProtocol() {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder()
+        .withFieldValue(AdminFormValues.FIELDS.url,
+          "http://bjurr.se/${" + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_FROM_SSH_CLONE_URL + "}")
+        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).build()).store()
+    .trigger(pullRequestEventBuilder() //
+      .withFromRef(pullRequestRefBuilder()) //
+      .withId(10L).withPullRequestAction(OPENED).build()).invokedUrl(0, "http://bjurr.se/");
  }
 
  @Test

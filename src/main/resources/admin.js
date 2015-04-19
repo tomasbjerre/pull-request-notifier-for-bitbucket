@@ -62,7 +62,11 @@
       processData: false,
       error: function(xhr, data, error) {
        $(".error."+xhr.responseJSON.field,$form).html(xhr.responseJSON.error);
-       $(".post",$form).html("There were errors, form not saved!");
+       if (xhr.responseJSON.field) {
+        $(".post",$form).html("There were errors, form not saved!");
+       } else {  
+        $(".post",$form).html(xhr.responseText);
+       }
       },
       success: function(data, text, xhr) {
        getAll();
