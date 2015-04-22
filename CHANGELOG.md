@@ -2,6 +2,10 @@
 
 Changelog of Pull Request Notifier for Stash.
 
+## 1.13
+* Bugfix
+ * Letting PULL_REQUEST_FROM_BRANCH, and PULL_REQUEST_TO_BRANCH, evaluate to branch display name. A branch with slashes in name, like "feature/branchmodmerge", will no longer be evaluated to "branchmodmerge" but keep the name "feature/branchmodmerge".
+
 ## 1.12
 * Adding clone URL variables
  * ${PULL_REQUEST_FROM_HTTP_CLONE_URL} Example: http://admin@localhost:7990/stash/scm/project_1/rep_1.git

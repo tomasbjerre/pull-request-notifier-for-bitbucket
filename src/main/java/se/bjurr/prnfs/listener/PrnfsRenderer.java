@@ -8,7 +8,6 @@ import java.util.Set;
 
 import com.atlassian.stash.event.pull.PullRequestCommentAddedEvent;
 import com.atlassian.stash.event.pull.PullRequestEvent;
-import com.atlassian.stash.pull.PullRequestRef;
 import com.atlassian.stash.repository.Repository;
 import com.atlassian.stash.repository.RepositoryCloneLinksRequest;
 import com.atlassian.stash.repository.RepositoryService;
@@ -22,6 +21,7 @@ public class PrnfsRenderer {
 
  public enum PrnfsVariable {
   PULL_REQUEST_FROM_HASH(new Resolver() {
+   @SuppressWarnings("deprecation")
    @Override
    public String resolve(PullRequestEvent pullRequestEvent, RepositoryService repositoryService) {
     return pullRequestEvent.getPullRequest().getFromRef().getLatestChangeset();

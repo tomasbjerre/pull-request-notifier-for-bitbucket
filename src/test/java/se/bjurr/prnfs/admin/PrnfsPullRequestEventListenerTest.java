@@ -153,10 +153,13 @@ public class PrnfsPullRequestEventListenerTest {
       notificationBuilder()
         .withFieldValue(AdminFormValues.FIELDS.url,
           "http://bjurr.se/${" + PrnfsVariable.PULL_REQUEST_FROM_BRANCH.name() + "}")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).build()).store()
-    .trigger(pullRequestEventBuilder() //
-      .withFromRef(pullRequestRefBuilder().withId("refs/heads/branchmodmerge").withDisplayId("branchmodmerge")) //
-      .withId(10L).withPullRequestAction(OPENED).build()).invokedUrl(0, "http://bjurr.se/branchmodmerge");
+        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).build())
+    .store()
+    .trigger(
+      pullRequestEventBuilder() //
+        .withFromRef(
+          pullRequestRefBuilder().withId("refs/heads/feature/branchmodmerge").withDisplayId("feature/branchmodmerge")) //
+        .withId(10L).withPullRequestAction(OPENED).build()).invokedUrl(0, "http://bjurr.se/feature/branchmodmerge");
  }
 
  @Test
