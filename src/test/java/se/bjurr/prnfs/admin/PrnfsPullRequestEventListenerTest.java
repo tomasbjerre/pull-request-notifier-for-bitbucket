@@ -112,7 +112,7 @@ public class PrnfsPullRequestEventListenerTest {
 
    refBuilder.withHash("10").withId("10").withProjectId(10).withProjectKey("10").withRepositoryId(10)
      .withRepositoryName("10").withRepositorySlug("10").withCloneUrl(PrnfsRenderer.REPO_PROTOCOL.http, "10")
-     .withCloneUrl(PrnfsRenderer.REPO_PROTOCOL.ssh, "10").build() //
+     .withCloneUrl(PrnfsRenderer.REPO_PROTOCOL.ssh, "10").withDisplayId("10").build() //
      .withId(10L).withPullRequestAction(OPENED).triggerEvent().invokedUrl(0, "http://bjurr.se/10");
   }
  }
@@ -155,7 +155,7 @@ public class PrnfsPullRequestEventListenerTest {
           "http://bjurr.se/${" + PrnfsVariable.PULL_REQUEST_FROM_BRANCH.name() + "}")
         .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).build()).store()
     .trigger(pullRequestEventBuilder() //
-      .withFromRef(pullRequestRefBuilder().withId("refs/heads/branchmodmerge")) //
+      .withFromRef(pullRequestRefBuilder().withId("refs/heads/branchmodmerge").withDisplayId("branchmodmerge")) //
       .withId(10L).withPullRequestAction(OPENED).build()).invokedUrl(0, "http://bjurr.se/branchmodmerge");
  }
 
@@ -169,7 +169,7 @@ public class PrnfsPullRequestEventListenerTest {
           "http://bjurr.se/${" + PrnfsVariable.PULL_REQUEST_FROM_BRANCH.name() + "}")
         .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).build()).store()
     .trigger(pullRequestEventBuilder() //
-      .withFromRef(pullRequestRefBuilder().withId("branchmodmerge")) //
+      .withFromRef(pullRequestRefBuilder().withId("branchmodmerge").withDisplayId("branchmodmerge")) //
       .withId(10L).withPullRequestAction(OPENED).build()).invokedUrl(0, "http://bjurr.se/branchmodmerge");
  }
 

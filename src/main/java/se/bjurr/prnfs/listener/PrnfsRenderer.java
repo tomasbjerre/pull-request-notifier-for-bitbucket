@@ -34,7 +34,7 @@ public class PrnfsRenderer {
   }), PULL_REQUEST_FROM_BRANCH(new Resolver() {
    @Override
    public String resolve(PullRequestEvent pullRequestEvent, RepositoryService repositoryService) {
-    return branchNameFromId(pullRequestEvent.getPullRequest().getFromRef());
+    return pullRequestEvent.getPullRequest().getFromRef().getDisplayId();
    }
   }), PULL_REQUEST_FROM_REPO_ID(new Resolver() {
    @Override
@@ -126,7 +126,7 @@ public class PrnfsRenderer {
   }), PULL_REQUEST_TO_BRANCH(new Resolver() {
    @Override
    public String resolve(PullRequestEvent pullRequestEvent, RepositoryService repositoryService) {
-    return branchNameFromId(pullRequestEvent.getPullRequest().getToRef());
+    return pullRequestEvent.getPullRequest().getToRef().getDisplayId();
    }
   }), PULL_REQUEST_TO_REPO_ID(new Resolver() {
    @Override
@@ -175,12 +175,6 @@ public class PrnfsRenderer {
   });
 
   private Resolver resolver;
-
-  private static String branchNameFromId(PullRequestRef pullRequestRef) {
-   String branchId = pullRequestRef.getId();
-   int lastSlash = branchId.lastIndexOf('/');
-   return branchId.substring(lastSlash + 1);
-  }
 
   private static String cloneUrlFromRepository(REPO_PROTOCOL protocol, Repository repository,
     RepositoryService repositoryService) {
