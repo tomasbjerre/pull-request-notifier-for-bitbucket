@@ -30,6 +30,7 @@ public class PullRequestRefBuilder implements PullRequestRef {
  private String projectKey;
  private Integer repositoryId;
  private String repositoryName;
+ private String displayId;
 
  private String slug;
  private PullRequestEventBuilder pullRequestEventBuilder;
@@ -51,7 +52,7 @@ public class PullRequestRefBuilder implements PullRequestRef {
 
  @Override
  public String getDisplayId() {
-  return null;
+  return displayId;
  }
 
  @Override
@@ -215,6 +216,11 @@ public class PullRequestRefBuilder implements PullRequestRef {
 
  public PullRequestRefBuilder withCloneUrl(PrnfsRenderer.REPO_PROTOCOL protocol, String url) {
   mockCloneUrl(protocol, pullRequestEventBuilder.getPrnfsTestBuilder().getRepositoryService(), url);
+  return this;
+ }
+
+ public PullRequestRefBuilder withDisplayId(String displayId) {
+  this.displayId = displayId;
   return this;
  }
 
