@@ -34,6 +34,11 @@ The filter text as well as the URL support variables. These are:
 * ${PULL_REQUEST_VERSION} Example: 1
 * ${PULL_REQUEST_COMMENT_TEXT} Example: A comment
 * ${PULL_REQUEST_ACTION} Example: OPENED
+* ${PULL_REQUEST_USER_DISPLAY_NAME} Example: Some User
+* ${PULL_REQUEST_USER_EMAIL_ADDRESS} Example: some.user@stash.domain
+* ${PULL_REQUEST_USER_ID} Example: 1
+* ${PULL_REQUEST_USER_NAME} Example: user.name
+* ${PULL_REQUEST_USER_SLUG} Example: user.name
 * ${PULL_REQUEST_AUTHOR_DISPLAY_NAME} Example: Administrator
 * ${PULL_REQUEST_AUTHOR_EMAIL} Example: admin@example.com
 * ${PULL_REQUEST_AUTHOR_ID} Example: 1
@@ -50,6 +55,8 @@ The filter text as well as the URL support variables. These are:
 * ${PULL_REQUEST_FROM_REPO_PROJECT_KEY} Example: PROJECT_1
 * ${PULL_REQUEST_FROM_REPO_SLUG} Example: rep_1
 * And same variables for TO, like: ${PULL_REQUEST_TO_HASH}
+
+The ${PULL_REQUEST_USER...} contains information about the user who issued the event. Who commented it, who rejected it, who approved it...
 
 ## Developer instructions
 Prerequisites:

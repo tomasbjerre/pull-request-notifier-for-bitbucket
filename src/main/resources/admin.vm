@@ -13,6 +13,11 @@
         <li><b>${PULL_REQUEST_ACTION}</b> Example: OPENED</li>
         <li><b>${PULL_REQUEST_VERSION}</b> Example: 1</li>
         <li><b>${PULL_REQUEST_COMMENT_TEXT}</b> Example: A comment</li>
+        <li><b>${PULL_REQUEST_USER_DISPLAY_NAME}</b> Example: Some User</li>
+        <li><b>${PULL_REQUEST_USER_EMAIL_ADDRESS}</b> Example: some.user@stash.domain</li>
+        <li><b>${PULL_REQUEST_USER_ID}</b> Example: 1</li>
+        <li><b>${PULL_REQUEST_USER_NAME}</b> Example: some.user</li>
+        <li><b>${PULL_REQUEST_USER_SLUG}</b> Example: some.user</li>
         <li><b>${PULL_REQUEST_AUTHOR_DISPLAY_NAME}</b> Example: Administrator</li>
         <li><b>${PULL_REQUEST_AUTHOR_EMAIL}</b> Example: admin@example.com</li>
         <li><b>${PULL_REQUEST_AUTHOR_ID}</b> Example: 1</li>

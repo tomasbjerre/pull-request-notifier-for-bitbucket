@@ -172,6 +172,31 @@ public class PrnfsRenderer {
      return "";
     }
    }
+  }), PULL_REQUEST_USER_DISPLAY_NAME(new Resolver() {
+   @Override
+   public String resolve(PullRequestEvent pullRequestEvent, RepositoryService repositoryService) {
+    return pullRequestEvent.getUser().getDisplayName();
+   }
+  }), PULL_REQUEST_USER_EMAIL_ADDRESS(new Resolver() {
+   @Override
+   public String resolve(PullRequestEvent pullRequestEvent, RepositoryService repositoryService) {
+    return pullRequestEvent.getUser().getEmailAddress();
+   }
+  }), PULL_REQUEST_USER_ID(new Resolver() {
+   @Override
+   public String resolve(PullRequestEvent pullRequestEvent, RepositoryService repositoryService) {
+    return pullRequestEvent.getUser().getId() + "";
+   }
+  }), PULL_REQUEST_USER_NAME(new Resolver() {
+   @Override
+   public String resolve(PullRequestEvent pullRequestEvent, RepositoryService repositoryService) {
+    return pullRequestEvent.getUser().getName();
+   }
+  }), PULL_REQUEST_USER_SLUG(new Resolver() {
+   @Override
+   public String resolve(PullRequestEvent pullRequestEvent, RepositoryService repositoryService) {
+    return pullRequestEvent.getUser().getSlug();
+   }
   });
 
   private Resolver resolver;

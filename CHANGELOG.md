@@ -2,6 +2,14 @@
 
 Changelog of Pull Request Notifier for Stash.
 
+## 1.14
+* New variables with information about the user who issued the event
+ * ${PULL_REQUEST_USER_DISPLAY_NAME} Example: Some User
+ * ${PULL_REQUEST_USER_EMAIL_ADDRESS} Example: some.user@stash.domain
+ * ${PULL_REQUEST_USER_ID} Example: 1
+ * ${PULL_REQUEST_USER_NAME} Example: user.name
+ * ${PULL_REQUEST_USER_SLUG} Example: user.name
+
 ## 1.13
 * Bugfix
  * Letting PULL_REQUEST_FROM_BRANCH, and PULL_REQUEST_TO_BRANCH, evaluate to branch display name. A branch with slashes in name, like "feature/branchmodmerge", will no longer be evaluated to "branchmodmerge" but keep the name "feature/branchmodmerge".
@@ -9,7 +17,7 @@ Changelog of Pull Request Notifier for Stash.
 ## 1.12
 * Adding clone URL variables
  * ${PULL_REQUEST_FROM_HTTP_CLONE_URL} Example: http://admin@localhost:7990/stash/scm/project_1/rep_1.git
- * ${PULL_REQUEST_FROM_SSH_CLONE_URL}</b> Example: ssh://git@localhost:7999/project_1/rep_1
+ * ${PULL_REQUEST_FROM_SSH_CLONE_URL} Example: ssh://git@localhost:7999/project_1/rep_1
 
 ## 1.11
 * Custom HTTP headers
