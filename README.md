@@ -20,7 +20,7 @@ The Pull Request Notifier for Stash can:
 * Invoke any URL, or set of URL:s, when a pull request event happens.
  * With variables available to add necessary parameters.
  * HTTP POST, PUT, GET and DELETE. POST and PUT also supports rendered post content. 
-* Be configured to trigger on any pull request event. Including source branch change (RESCOPED_FROM) and target branch change (RESCOPED_TO).
+* Be configured to trigger on any [pull request event](https://developer.atlassian.com/static/javadoc/stash/3.10.0/api/reference/com/atlassian/stash/event/pull/package-summary.html). Including source branch change (RESCOPED_FROM) and target branch change (RESCOPED_TO).
 * Be configured to only trigger if the pull request mathches a filter. A filter text is constructed with any combination of the variables and then a regexp is constructed to match that text.
 * Authenticate with HTTP basic authentication.
 * Send custom HTTP headers
