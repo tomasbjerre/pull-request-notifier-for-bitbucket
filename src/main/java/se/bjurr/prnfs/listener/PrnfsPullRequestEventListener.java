@@ -29,6 +29,7 @@ import com.atlassian.stash.event.pull.PullRequestReopenedEvent;
 import com.atlassian.stash.event.pull.PullRequestRescopedEvent;
 import com.atlassian.stash.event.pull.PullRequestUnapprovedEvent;
 import com.atlassian.stash.event.pull.PullRequestUpdatedEvent;
+import com.atlassian.stash.pull.PullRequest;
 import com.atlassian.stash.repository.RepositoryService;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
@@ -62,55 +63,57 @@ public class PrnfsPullRequestEventListener {
 
  @EventListener
  public void onEvent(PullRequestApprovedEvent e) {
-  handleEvent(e, fromPullRequestEvent(e));
+  handleEvent(e);
  }
 
  @EventListener
  public void onEvent(PullRequestCommentAddedEvent e) {
-  handleEvent(e, fromPullRequestEvent(e));
+  handleEvent(e);
  }
 
  @EventListener
  public void onEvent(PullRequestDeclinedEvent e) {
-  handleEvent(e, fromPullRequestEvent(e));
+  handleEvent(e);
  }
 
  @EventListener
  public void onEvent(PullRequestMergedEvent e) {
-  handleEvent(e, fromPullRequestEvent(e));
+  handleEvent(e);
  }
 
  @EventListener
  public void onEvent(PullRequestOpenedEvent e) {
-  handleEvent(e, fromPullRequestEvent(e));
+  handleEvent(e);
  }
 
  @EventListener
  public void onEvent(PullRequestReopenedEvent e) {
-  handleEvent(e, fromPullRequestEvent(e));
+  handleEvent(e);
  }
 
  @EventListener
  public void onEvent(final PullRequestRescopedEvent e) {
-  handleEvent(e, fromPullRequestEvent(e));
+  handleEvent(e);
  }
 
  @EventListener
  public void onEvent(PullRequestUnapprovedEvent e) {
-  handleEvent(e, fromPullRequestEvent(e));
+  handleEvent(e);
  }
 
  @EventListener
  public void onEvent(PullRequestUpdatedEvent e) {
-  handleEvent(e, fromPullRequestEvent(e));
+  handleEvent(e);
  }
 
  @VisibleForTesting
- public void handleEvent(PullRequestEvent pullRequestEvent, PrnfsPullRequestAction action) {
-  final PrnfsRenderer renderer = new PrnfsRenderer(pullRequestEvent, repositoryService);
+ public void handleEvent(PullRequestEvent pullRequestEvent) {
   try {
    final PrnfsSettings settings = getPrnfsSettings(pluginSettingsFactory.createGlobalSettings());
    for (final PrnfsNotification notification : settings.getNotifications()) {
+    final PrnfsRenderer renderer = new PrnfsRenderer(pullRequestEvent, repositoryService, notification);
+    PrnfsPullRequestAction action = fromPullRequestEvent(pullRequestEvent, notification);
+    PullRequest pr = pullRequestEvent.getPullRequest();
     if (notification.getFilterRegexp().isPresent()
       && notification.getFilterString().isPresent()
       && !compile(notification.getFilterRegexp().get()).matcher(renderer.render(notification.getFilterString().get()))
@@ -122,8 +125,13 @@ public class PrnfsPullRequestEventListener {
      if (notification.getPostContent().isPresent()) {
       postContent = Optional.of(renderer.render(notification.getPostContent().get()));
      }
-     UrlInvoker urlInvoker = urlInvoker().withUrlParam(renderer.render(notification.getUrl()))
-       .withMethod(notification.getMethod()).withPostContent(postContent);
+     String renderedUrl = renderer.render(notification.getUrl());
+     logger.info(action.getName() + " "//
+       + pr.getFromRef().getId() + "(" + pr.getFromRef().getLatestChangeset() + ") -> " //
+       + pr.getToRef().getId() + "(" + pr.getToRef().getLatestChangeset() + ")" + " " //
+       + renderedUrl);
+     UrlInvoker urlInvoker = urlInvoker().withUrlParam(renderedUrl).withMethod(notification.getMethod())
+       .withPostContent(postContent);
      if (notification.getUser().isPresent() && notification.getPassword().isPresent()) {
       final String userpass = notification.getUser().get() + ":" + notification.getPassword().get();
       final String basicAuth = "Basic " + new String(printBase64Binary(userpass.getBytes(UTF_8)));

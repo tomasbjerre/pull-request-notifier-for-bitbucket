@@ -79,12 +79,10 @@
               <label for="MERGED_1">MERGED</label><br/>
               <input type="checkbox" name="events" id="OPENED_1" value="OPENED">
               <label for="OPENED_1">OPENED</label><br/>
-              <input type="checkbox" name="events" id="REOPENED_1" value="REOPENED">
-              <label for="REOPENED_1">REOPENED</label><br/>
             </div>
             <div class="right">
-              <input type="checkbox" name="events" id="RESCOPED_1" value="RESCOPED">
-              <label for="RESCOPED_1">RESCOPED</label><br/>
+              <input type="checkbox" name="events" id="REOPENED_1" value="REOPENED">
+              <label for="REOPENED_1">REOPENED</label><br/>
               <input type="checkbox" name="events" id="RESCOPED_FROM_1" value="RESCOPED_FROM">
               <label for="RESCOPED_FROM_1">RESCOPED_FROM</label><br/>
               <input type="checkbox" name="events" id="RESCOPED_TO_1" value="RESCOPED_TO">

@@ -15,9 +15,11 @@ import com.atlassian.stash.pull.PullRequestAction;
 import com.atlassian.stash.pull.PullRequestParticipant;
 
 public class PullRequestEventBuilder {
+ public static final String PREVIOUS_TO_HASH = "previousToHash";
+ public static final String PREVIOUS_FROM_HASH = "previousFromHash";
  private PullRequestAction pullRequestAction;
- private PullRequestRefBuilder toRef;
- private PullRequestRefBuilder fromRef;
+ private PullRequestRefBuilder toRef = pullRequestRefBuilder();
+ private PullRequestRefBuilder fromRef = pullRequestRefBuilder();
  private Long id;
  private PullRequestParticipant author;
  private String commentText;
@@ -85,8 +87,8 @@ public class PullRequestEventBuilder {
   PullRequestEvent pullRequestEvent = mock(PullRequestEvent.class);
   if (pullRequestAction == RESCOPED) {
    PullRequestRescopedEvent event = mock(PullRequestRescopedEvent.class);
-   when(event.getPreviousFromHash()).thenReturn("previousFromHash");
-   when(event.getPreviousToHash()).thenReturn("previousToHash");
+   when(event.getPreviousFromHash()).thenReturn(PREVIOUS_FROM_HASH);
+   when(event.getPreviousToHash()).thenReturn(PREVIOUS_TO_HASH);
    pullRequestEvent = event;
   } else if (pullRequestAction == COMMENTED) {
    PullRequestCommentAddedEvent event = mock(PullRequestCommentAddedEvent.class);

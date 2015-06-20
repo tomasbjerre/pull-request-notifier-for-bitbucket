@@ -26,7 +26,7 @@ The Pull Request Notifier for Stash can:
 * Send custom HTTP headers
 * Can optionally use proxy to connect
 
-If you only want to trigger on RESCOPED_FROM, or RESCOPED_TO, you will also need to trigger on RESCOPED. Stash will fire an event, RESCOPED, if target and/or source branch is changed. The plugin has its own implementation to create the RESCOPED_FROM and RESCOPED_TO events. RESCOPED is transformed to RESCOPED_FROM if only source branch changed, RESCOPED_TO if only target branch changed and kept as RESCOPED if both changed.
+The plugin has its own implementation to create the RESCOPED_FROM and RESCOPED_TO events. RESCOPED is transformed to RESCOPED_TO if target branch changed, RESCOPED_FROM if source branch, or both, changed.
 
 The filter text as well as the URL support variables. These are:
 

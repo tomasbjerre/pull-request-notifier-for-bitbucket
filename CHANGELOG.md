@@ -2,6 +2,10 @@
 
 Changelog of Pull Request Notifier for Stash.
 
+## 1.15
+* Removing RESCOPED event, its confusing when to use it together with _FROM and _TO. RESCOPED was triggered when both _FROM and _TO changed at the exact same time. Now, just check _FROM if you only want to trigger when source branch changes, _TO if only target and both if you want to trigger for both.
+* Adding logging to make it easier to debug what events are triggered.
+
 ## 1.14
 * New variables with information about the user who issued the event
  * ${PULL_REQUEST_USER_DISPLAY_NAME} Example: Some User

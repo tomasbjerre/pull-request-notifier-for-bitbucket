@@ -16,7 +16,6 @@ import static org.mockito.Mockito.when;
 import static se.bjurr.prnfs.admin.AdminFormValues.NAME;
 import static se.bjurr.prnfs.admin.AdminFormValues.VALUE;
 import static se.bjurr.prnfs.admin.utils.PullRequestEventBuilder.pullRequestEventBuilder;
-import static se.bjurr.prnfs.listener.PrnfsPullRequestAction.fromPullRequestEvent;
 import static se.bjurr.prnfs.listener.PrnfsPullRequestEventListener.setInvoker;
 import static se.bjurr.prnfs.listener.UrlInvoker.getHeaderValue;
 import static se.bjurr.prnfs.settings.PrnfsPredicates.predicate;
@@ -265,7 +264,7 @@ public class PrnfsTestBuilder {
     urlInvokers.add(urlInvoker);
    }
   });
-  listener.handleEvent(event, fromPullRequestEvent(event));
+  listener.handleEvent(event);
   return this;
  }
 

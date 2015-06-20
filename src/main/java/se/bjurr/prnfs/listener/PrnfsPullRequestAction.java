@@ -10,9 +10,12 @@ import static com.atlassian.stash.pull.PullRequestAction.RESCOPED;
 import static com.atlassian.stash.pull.PullRequestAction.UNAPPROVED;
 import static com.atlassian.stash.pull.PullRequestAction.UPDATED;
 import static com.google.common.collect.Lists.newArrayList;
+import static java.lang.Boolean.FALSE;
 
 import java.util.List;
 import java.util.Map;
+
+import se.bjurr.prnfs.settings.PrnfsNotification;
 
 import com.atlassian.stash.event.pull.PullRequestEvent;
 import com.atlassian.stash.event.pull.PullRequestRescopedEvent;
@@ -30,7 +33,7 @@ public class PrnfsPullRequestAction {
    .put(MERGED.name(), new PrnfsPullRequestAction(MERGED.name())) //
    .put(OPENED.name(), new PrnfsPullRequestAction(OPENED.name())) //
    .put(REOPENED.name(), new PrnfsPullRequestAction(REOPENED.name())) //
-   .put(RESCOPED.name(), new PrnfsPullRequestAction(RESCOPED.name())) //
+   .put(RESCOPED.name(), new PrnfsPullRequestAction(RESCOPED_FROM)) //
    .put(RESCOPED_FROM, new PrnfsPullRequestAction(RESCOPED_FROM)) //
    .put(RESCOPED_TO, new PrnfsPullRequestAction(RESCOPED_TO)) //
    .put(UNAPPROVED.name(), new PrnfsPullRequestAction(UNAPPROVED.name())) //
@@ -62,8 +65,7 @@ public class PrnfsPullRequestAction {
   return newArrayList(values.values());
  }
 
- @SuppressWarnings("deprecation")
- public static PrnfsPullRequestAction fromPullRequestEvent(PullRequestEvent event) {
+ public static PrnfsPullRequestAction fromPullRequestEvent(PullRequestEvent event, PrnfsNotification notification) {
   if (event instanceof PullRequestRescopedEvent) {
    PullRequestRescopedEvent rescopedEvent = (PullRequestRescopedEvent) event;
    boolean toChanged = !rescopedEvent.getPreviousToHash().equals(
@@ -74,8 +76,22 @@ public class PrnfsPullRequestAction {
     return PrnfsPullRequestAction.valueOf(RESCOPED_FROM);
    } else if (toChanged && !fromChanged) {
     return PrnfsPullRequestAction.valueOf(RESCOPED_TO);
+   } else {
+    if (notification.getTriggers().contains(values.get(RESCOPED_FROM))) {
+     return PrnfsPullRequestAction.valueOf(RESCOPED_FROM);
+    } else if (notification.getTriggers().contains(values.get(RESCOPED_TO))) {
+     return PrnfsPullRequestAction.valueOf(RESCOPED_TO);
+    }
    }
   }
   return PrnfsPullRequestAction.valueOf(event.getAction().name());
+ }
+
+ @Override
+ public boolean equals(Object obj) {
+  if (obj instanceof PrnfsPullRequestAction) {
+   return getName().equals(((PrnfsPullRequestAction) obj).getName());
+  }
+  return FALSE;
  }
 }
