@@ -58,6 +58,8 @@ The filter text as well as the URL support variables. These are:
 
 The ${PULL_REQUEST_USER...} contains information about the user who issued the event. Who commented it, who rejected it, who approved it...
 
+You may want to use [Violation Comments to Stash plugin](https://wiki.jenkins-ci.org/display/JENKINS/Violation+Comments+to+Stash+Plugin) and/or [StashNotifier plugin](https://wiki.jenkins-ci.org/display/JENKINS/StashNotifier+Plugin) to report results back to Stash.
+
 ## Developer instructions
 Prerequisites:
 
