@@ -21,6 +21,7 @@ import com.atlassian.event.api.EventListener;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.stash.event.pull.PullRequestApprovedEvent;
 import com.atlassian.stash.event.pull.PullRequestCommentAddedEvent;
+import com.atlassian.stash.event.pull.PullRequestCommentRepliedEvent;
 import com.atlassian.stash.event.pull.PullRequestDeclinedEvent;
 import com.atlassian.stash.event.pull.PullRequestEvent;
 import com.atlassian.stash.event.pull.PullRequestMergedEvent;
@@ -68,6 +69,11 @@ public class PrnfsPullRequestEventListener {
 
  @EventListener
  public void onEvent(PullRequestCommentAddedEvent e) {
+  handleEvent(e);
+ }
+
+ @EventListener
+ public void onEvent(PullRequestCommentRepliedEvent e) {
   handleEvent(e);
  }
 
