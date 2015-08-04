@@ -2,6 +2,9 @@
 
 Changelog of Pull Request Notifier for Stash.
 
+## 1.17
+* Ignoring events if pull request is closed
+
 ## 1.16
 * Triggering also on comment replies if COMMENTED event is checked.
 

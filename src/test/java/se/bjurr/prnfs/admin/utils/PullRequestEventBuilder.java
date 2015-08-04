@@ -24,6 +24,7 @@ public class PullRequestEventBuilder {
  private PullRequestParticipant author;
  private String commentText;
  private final PrnfsTestBuilder prnfsTestBuilder;
+ private boolean beingClosed;
 
  private PullRequestEventBuilder(PrnfsTestBuilder prnfsTestBuilder) {
   this.prnfsTestBuilder = prnfsTestBuilder;
@@ -98,6 +99,7 @@ public class PullRequestEventBuilder {
    pullRequestEvent = event;
   }
   final PullRequest pullRequest = mock(PullRequest.class);
+  when(pullRequest.isClosed()).thenReturn(beingClosed);
   when(pullRequestEvent.getAction()).thenReturn(pullRequestAction);
   when(pullRequestEvent.getPullRequest()).thenReturn(pullRequest);
   when(pullRequestEvent.getPullRequest().getAuthor()).thenReturn(author);
@@ -109,5 +111,10 @@ public class PullRequestEventBuilder {
 
  public PrnfsTestBuilder triggerEvent() {
   return prnfsTestBuilder.trigger(build());
+ }
+
+ public PullRequestEventBuilder beingClosed() {
+  beingClosed = true;
+  return this;
  }
 }

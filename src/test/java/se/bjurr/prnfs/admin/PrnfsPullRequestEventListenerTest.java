@@ -83,6 +83,17 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
+ public void testThatClosedPullRequestsAreIgnored() {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
+        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).build()).store()
+    .trigger(pullRequestEventBuilder() //
+      .beingClosed().withToRef(pullRequestRefBuilder()).withPullRequestAction(OPENED).build()).invokedNoUrl();
+ }
+
+ @Test
  public void testThatAUrlWithoutVariablesCanBeInvoked() {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()

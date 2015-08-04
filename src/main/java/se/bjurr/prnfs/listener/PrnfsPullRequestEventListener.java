@@ -115,6 +115,9 @@ public class PrnfsPullRequestEventListener {
  @VisibleForTesting
  public void handleEvent(PullRequestEvent pullRequestEvent) {
   try {
+   if (pullRequestEvent.getPullRequest().isClosed()) {
+    return;
+   }
    final PrnfsSettings settings = getPrnfsSettings(pluginSettingsFactory.createGlobalSettings());
    for (final PrnfsNotification notification : settings.getNotifications()) {
     final PrnfsRenderer renderer = new PrnfsRenderer(pullRequestEvent, repositoryService, notification);
