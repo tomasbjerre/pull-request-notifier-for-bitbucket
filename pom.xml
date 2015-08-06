@@ -191,8 +191,8 @@
         </resources> 
     </build>
     <properties>
-        <stash.version>3.7.0</stash.version>
-        <stash.data.version>3.7.0</stash.data.version>
-        <amps.version>5.0.13</amps.version>
+        <stash.version>3.11.1</stash.version>
+        <stash.data.version>3.11.1</stash.data.version>
+        <amps.version>6.0.3</amps.version>
     </properties>
 </project>

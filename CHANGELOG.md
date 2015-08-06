@@ -2,6 +2,9 @@
 
 Changelog of Pull Request Notifier for Stash.
 
+## 1.18
+* Building against latest Stash version (3.11.1) using latest Atlassian Maven Plugin Suite version (6.0.3)
+
 ## 1.17
 * Ignoring events if pull request is closed
 
