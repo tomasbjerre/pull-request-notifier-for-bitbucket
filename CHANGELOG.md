@@ -3,6 +3,7 @@
 Changelog of Pull Request Notifier for Stash.
 
 ## 1.18
+* Avoiding endless loop if user not 'System Admin' when editing configuration
 * Triggers can be named. To make it easier to keep track of them in large installations.
 * Building against latest Stash version (3.11.1) using latest Atlassian Maven Plugin Suite version (6.0.3)
 

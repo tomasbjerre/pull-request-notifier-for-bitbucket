@@ -1,5 +1,7 @@
 package se.bjurr.prnfs.admin;
 
+import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
+
 import java.io.IOException;
 import java.net.URI;
 
@@ -29,11 +31,12 @@ public class AdminServlet extends HttpServlet {
  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
   UserProfile user = userManager.getRemoteUser(request);
   if (user == null) {
-   redirectToLogin(request, response);
+   response.sendRedirect(loginUriProvider.getLoginUri(getUri(request)).toASCIIString());
    return;
   }
   if (!userManager.isSystemAdmin(user.getUserKey())) {
-   redirectToLogin(request, response);
+   response.sendError(SC_FORBIDDEN, "Only 'System Admin':s are allowed to edit configuration "
+     + loginUriProvider.getLoginUri(getUri(request)).toASCIIString());
    return;
   }
   response.setContentType("text/html;charset=utf-8");
@@ -47,9 +50,5 @@ public class AdminServlet extends HttpServlet {
    builder.append(request.getQueryString());
   }
   return URI.create(builder.toString());
- }
-
- private void redirectToLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
-  response.sendRedirect(loginUriProvider.getLoginUri(getUri(request)).toASCIIString());
  }
 }
