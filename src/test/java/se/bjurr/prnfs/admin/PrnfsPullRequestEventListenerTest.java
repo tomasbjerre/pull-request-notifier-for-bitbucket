@@ -19,8 +19,10 @@ import static se.bjurr.prnfs.admin.utils.PullRequestEventBuilder.PREVIOUS_FROM_H
 import static se.bjurr.prnfs.admin.utils.PullRequestEventBuilder.PREVIOUS_TO_HASH;
 import static se.bjurr.prnfs.admin.utils.PullRequestEventBuilder.pullRequestEventBuilder;
 import static se.bjurr.prnfs.admin.utils.PullRequestRefBuilder.pullRequestRefBuilder;
+import static se.bjurr.prnfs.listener.PrnfsPullRequestAction.BUTTON_TRIGGER;
 import static se.bjurr.prnfs.listener.PrnfsPullRequestAction.RESCOPED_FROM;
 import static se.bjurr.prnfs.listener.PrnfsPullRequestAction.RESCOPED_TO;
+import static se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable.BUTTON_TRIGGER_TITLE;
 
 import java.io.IOException;
 import java.net.URL;
@@ -30,6 +32,7 @@ import java.util.regex.Pattern;
 import org.junit.Test;
 
 import se.bjurr.prnfs.admin.AdminFormValues.FIELDS;
+import se.bjurr.prnfs.admin.utils.PrnfsTestBuilder;
 import se.bjurr.prnfs.admin.utils.PullRequestEventBuilder;
 import se.bjurr.prnfs.admin.utils.PullRequestRefBuilder;
 import se.bjurr.prnfs.listener.PrnfsPullRequestAction;
@@ -104,30 +107,42 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatAUrlWithVariablesFromCanBeInvoked() {
+ public void testThatAUrlWithVariablesFromAndToCanBeInvoked() throws Exception {
   for (final PrnfsVariable prnfsVariable : PrnfsVariable.values()) {
    if (!prnfsVariable.name().contains("_FROM_") && !prnfsVariable.name().contains("_TO_")) {
     continue;
    }
-   PullRequestEventBuilder builder = prnfsTestBuilder()
+   PrnfsTestBuilder builder = prnfsTestBuilder()
      .isLoggedInAsAdmin()
      .withNotification(
+       notificationBuilder().withFieldValue(AdminFormValues.FIELDS.FORM_IDENTIFIER, "The Button")
+         .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.BUTTON_CONFIG_FORM.name())
+         .withFieldValue(AdminFormValues.FIELDS.button_title, "The Button Text")
+         .withFieldValue(AdminFormValues.FIELDS.button_visibility, AdminFormValues.BUTTON_VISIBILITY.EVERYONE.name())
+         .build())
+     .withNotification(
        notificationBuilder()
-         .withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/${" + prnfsVariable.name() + "}")
-         .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).build()).store()
-     .triggerPullRequestEventBuilder();
+         .withFieldValue(AdminFormValues.FIELDS.url,
+           "http://bjurr.se/${" + prnfsVariable.name() + "}${" + PrnfsVariable.BUTTON_TRIGGER_TITLE.name() + "}")
+         .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name())
+         .withFieldValue(AdminFormValues.FIELDS.events, BUTTON_TRIGGER).build()).store();
+   PullRequestEventBuilder eventBuilder = builder.triggerPullRequestEventBuilder();
 
    PullRequestRefBuilder refBuilder;
    if (prnfsVariable.name().contains("_FROM_")) {
-    refBuilder = builder.withFromRefPullRequestRefBuilder();
+    refBuilder = eventBuilder.withFromRefPullRequestRefBuilder();
    } else {
-    refBuilder = builder.withToRefPullRequestRefBuilder();
+    refBuilder = eventBuilder.withToRefPullRequestRefBuilder();
    }
 
-   refBuilder.withHash("10").withId("10").withProjectId(10).withProjectKey("10").withRepositoryId(10)
-     .withRepositoryName("10").withRepositorySlug("10").withCloneUrl(PrnfsRenderer.REPO_PROTOCOL.http, "10")
-     .withCloneUrl(PrnfsRenderer.REPO_PROTOCOL.ssh, "10").withDisplayId("10").build().withId(10L)
-     .withPullRequestAction(OPENED).triggerEvent().invokedUrl(0, "http://bjurr.se/10");
+   PullRequestEventBuilder pullRequestEventBuilder = refBuilder.withHash("10").withId("10").withProjectId(10)
+     .withProjectKey("10").withRepositoryId(10).withRepositoryName("10").withRepositorySlug("10")
+     .withCloneUrl(PrnfsRenderer.REPO_PROTOCOL.http, "10").withCloneUrl(PrnfsRenderer.REPO_PROTOCOL.ssh, "10")
+     .withDisplayId("10").build().withId(10L);
+   pullRequestEventBuilder.withPullRequestAction(OPENED).triggerEvent().invokedOnlyUrl("http://bjurr.se/10");
+
+   builder.withPullRequest(pullRequestEventBuilder.build().getPullRequest()).triggerButton("The Button")
+     .invokedUrl(1, "http://bjurr.se/10The%20Button%20Text");
   }
  }
 
@@ -812,6 +827,128 @@ public class PrnfsPullRequestEventListenerTest {
         .withFieldValue(AdminFormValues.FIELDS.proxy_password, " ").build()).store()
     .trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build()).invokedUrl(0, "http://bjurr.se/")
     .usedNoProxyAuthentication(0);
+ }
+
+ @Test
+ public void testThatButtonCanBeUsedForTriggeringEvent() throws Exception {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder()
+        .withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/${" + BUTTON_TRIGGER_TITLE + "}")
+        .withFieldValue(AdminFormValues.FIELDS.events, BUTTON_TRIGGER)
+        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.TRIGGER_CONFIG_FORM.name()).build())
+    .store()
+    .withNotification(
+      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.FORM_IDENTIFIER, "Button Form")
+        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.BUTTON_CONFIG_FORM.name())
+        .withFieldValue(AdminFormValues.FIELDS.button_title, "Trigger notification")
+        .withFieldValue(AdminFormValues.FIELDS.button_visibility, AdminFormValues.BUTTON_VISIBILITY.EVERYONE.name())
+        .build()).store().triggerButton("Button Form").invokedOnlyUrl("http://bjurr.se/Trigger%20notification")
+    .hasButtonEnabled("Button Form");
+ }
+
+ @Test
+ public void testThatEventTriggeredByButtonCanBeFiltered() throws Exception {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder()
+        .withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/?123=${" + BUTTON_TRIGGER_TITLE + "}")
+        .withFieldValue(AdminFormValues.FIELDS.events, BUTTON_TRIGGER)
+        .withFieldValue(AdminFormValues.FIELDS.filter_string, "${" + BUTTON_TRIGGER_TITLE + "}")
+        .withFieldValue(AdminFormValues.FIELDS.filter_regexp, "123")
+        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.TRIGGER_CONFIG_FORM.name()).build())
+    .store()
+    .withNotification(
+      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.FORM_IDENTIFIER, "Button Form")
+        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.BUTTON_CONFIG_FORM.name())
+        .withFieldValue(AdminFormValues.FIELDS.button_title, "button text 123")
+        .withFieldValue(AdminFormValues.FIELDS.button_visibility, AdminFormValues.BUTTON_VISIBILITY.EVERYONE.name())
+        .build()).store().triggerButton("Button Form").invokedOnlyUrl("http://bjurr.se/?123=button%20text%20123");
+ }
+
+ @Test
+ public void testThatEventTriggeredByButtonCanBeIgnoredByFilterWhileAnotherIsNotIgnored() throws Exception {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder()
+        .withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/?123=${" + BUTTON_TRIGGER_TITLE + "}")
+        .withFieldValue(AdminFormValues.FIELDS.events, BUTTON_TRIGGER)
+        .withFieldValue(AdminFormValues.FIELDS.filter_string, "${" + BUTTON_TRIGGER_TITLE + "}")
+        .withFieldValue(AdminFormValues.FIELDS.filter_regexp, "123")
+        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.TRIGGER_CONFIG_FORM.name()).build())
+    .store()
+    .withNotification(
+      notificationBuilder()
+        .withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/?456=${" + BUTTON_TRIGGER_TITLE + "}")
+        .withFieldValue(AdminFormValues.FIELDS.events, BUTTON_TRIGGER)
+        .withFieldValue(AdminFormValues.FIELDS.filter_string, "${" + BUTTON_TRIGGER_TITLE + "}")
+        .withFieldValue(AdminFormValues.FIELDS.filter_regexp, "456")
+        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.TRIGGER_CONFIG_FORM.name()).build())
+    .store()
+    .withNotification(
+      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.FORM_IDENTIFIER, "Button Form")
+        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.BUTTON_CONFIG_FORM.name())
+        .withFieldValue(AdminFormValues.FIELDS.button_title, "button text 123")
+        .withFieldValue(AdminFormValues.FIELDS.button_visibility, AdminFormValues.BUTTON_VISIBILITY.EVERYONE.name())
+        .build()).store().triggerButton("Button Form").invokedOnlyUrl("http://bjurr.se/?123=button%20text%20123");
+ }
+
+ @Test
+ public void testThatEventTriggeredByButtonCanResultInSeveralNotifications() throws Exception {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder()
+        .withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/?123=${" + BUTTON_TRIGGER_TITLE + "}")
+        .withFieldValue(AdminFormValues.FIELDS.events, BUTTON_TRIGGER)
+        .withFieldValue(AdminFormValues.FIELDS.filter_string, "${" + BUTTON_TRIGGER_TITLE + "}")
+        .withFieldValue(AdminFormValues.FIELDS.filter_regexp, "button")
+        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.TRIGGER_CONFIG_FORM.name()).build())
+    .store()
+    .withNotification(
+      notificationBuilder()
+        .withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/?456=${" + BUTTON_TRIGGER_TITLE + "}")
+        .withFieldValue(AdminFormValues.FIELDS.events, BUTTON_TRIGGER)
+        .withFieldValue(AdminFormValues.FIELDS.filter_string, "${" + BUTTON_TRIGGER_TITLE + "}")
+        .withFieldValue(AdminFormValues.FIELDS.filter_regexp, "button")
+        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.TRIGGER_CONFIG_FORM.name()).build())
+    .store()
+    .withNotification(
+      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.FORM_IDENTIFIER, "Button Form")
+        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.BUTTON_CONFIG_FORM.name())
+        .withFieldValue(AdminFormValues.FIELDS.button_title, "button text 123")
+        .withFieldValue(AdminFormValues.FIELDS.button_visibility, AdminFormValues.BUTTON_VISIBILITY.EVERYONE.name())
+        .build()).store().triggerButton("Button Form").invokedUrl(0, "http://bjurr.se/?123=button%20text%20123")
+    .invokedUrl(1, "http://bjurr.se/?456=button%20text%20123");
+ }
+
+ @Test
+ public void testThatThereCanBeSeveralButtons() throws Exception {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder()
+        .withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/?${" + BUTTON_TRIGGER_TITLE + "}")
+        .withFieldValue(AdminFormValues.FIELDS.events, BUTTON_TRIGGER)
+        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.TRIGGER_CONFIG_FORM.name()).build())
+    .store()
+    .withNotification(
+      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.FORM_IDENTIFIER, "Button Form 1")
+        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.BUTTON_CONFIG_FORM.name())
+        .withFieldValue(AdminFormValues.FIELDS.button_title, "button text 1")
+        .withFieldValue(AdminFormValues.FIELDS.button_visibility, AdminFormValues.BUTTON_VISIBILITY.EVERYONE.name())
+        .build())
+    .store()
+    .withNotification(
+      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.FORM_IDENTIFIER, "Button Form 2")
+        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.BUTTON_CONFIG_FORM.name())
+        .withFieldValue(AdminFormValues.FIELDS.button_title, "button text 2")
+        .withFieldValue(AdminFormValues.FIELDS.button_visibility, AdminFormValues.BUTTON_VISIBILITY.EVERYONE.name())
+        .build()).store().triggerButton("Button Form 1").invokedUrl(0, "http://bjurr.se/?button%20text%201")
+    .triggerButton("Button Form 2").invokedUrl(1, "http://bjurr.se/?button%20text%202");
  }
 
  @Test

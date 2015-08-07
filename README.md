@@ -20,8 +20,12 @@ The Pull Request Notifier for Stash can:
 * Invoke any URL, or set of URL:s, when a pull request event happens.
  * With variables available to add necessary parameters.
  * HTTP POST, PUT, GET and DELETE. POST and PUT also supports rendered post content. 
-* Be configured to trigger on any [pull request event](https://developer.atlassian.com/static/javadoc/stash/3.10.0/api/reference/com/atlassian/stash/event/pull/package-summary.html). Including source branch change (RESCOPED_FROM) and target branch change (RESCOPED_TO).
+* Be configured to trigger on any [pull request event](https://developer.atlassian.com/static/javadoc/stash/3.10.0/api/reference/com/atlassian/stash/event/pull/package-summary.html). Including extended events:
+ * RESCOPED_FROM, when source branch change
+ * RESCOPED_TO, when target branch change
+ * MANUAL_TRIGGER, when trigger button in pull request view is pressed
 * Be configured to only trigger if the pull request mathches a filter. A filter text is constructed with any combination of the variables and then a regexp is constructed to match that text.
+* Add buttons to pull request view in Stash. And map those buttons to URL invocations. This can be done by setting the filter string to ${BUTTON_TRIGGER_TITLE} and the filter regexp to title of button.
 * Authenticate with HTTP basic authentication.
 * Send custom HTTP headers
 * Can optionally use proxy to connect
@@ -34,6 +38,7 @@ The filter text as well as the URL support variables. These are:
 * ${PULL_REQUEST_VERSION} Example: 1
 * ${PULL_REQUEST_COMMENT_TEXT} Example: A comment
 * ${PULL_REQUEST_ACTION} Example: OPENED
+* ${BUTTON_TRIGGER_TITLE} Example: Trigger Notification
 * ${PULL_REQUEST_URL} Example: http://localhost:7990/projects/PROJECT_1/repos/rep_1/pull-requests/1
 * ${PULL_REQUEST_USER_DISPLAY_NAME} Example: Some User
 * ${PULL_REQUEST_USER_EMAIL_ADDRESS} Example: some.user@stash.domain

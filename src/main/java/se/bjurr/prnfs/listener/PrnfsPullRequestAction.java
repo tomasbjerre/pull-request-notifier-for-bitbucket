@@ -26,6 +26,8 @@ public class PrnfsPullRequestAction {
 
  public static final String RESCOPED_FROM = "RESCOPED_FROM";
 
+ public static final String BUTTON_TRIGGER = "BUTTON_TRIGGER";
+
  private static final Map<String, PrnfsPullRequestAction> values = new ImmutableMap.Builder<String, PrnfsPullRequestAction>()
    .put(APPROVED.name(), new PrnfsPullRequestAction(APPROVED.name())) //
    .put(COMMENTED.name(), new PrnfsPullRequestAction(COMMENTED.name())) //
@@ -38,6 +40,7 @@ public class PrnfsPullRequestAction {
    .put(RESCOPED_TO, new PrnfsPullRequestAction(RESCOPED_TO)) //
    .put(UNAPPROVED.name(), new PrnfsPullRequestAction(UNAPPROVED.name())) //
    .put(UPDATED.name(), new PrnfsPullRequestAction(UPDATED.name())) //
+   .put(BUTTON_TRIGGER, new PrnfsPullRequestAction(BUTTON_TRIGGER)) //
    .build();
 
  private final String name;

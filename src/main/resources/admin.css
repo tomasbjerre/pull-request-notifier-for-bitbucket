@@ -1,10 +1,7 @@
-.trigger {
+.config-area {
  border: 1px;
  border-color: black;
  border-style: dotted;
-}
-
-.trigger {
  width: 400px;
  padding: 5px 15px;
 }

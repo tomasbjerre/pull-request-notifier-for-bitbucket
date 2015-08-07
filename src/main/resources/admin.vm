@@ -5,6 +5,10 @@
     $webResourceManager.requireResource("se.bjurr.prnfs.pull-request-notifier-for-stash:resources")
   </head>
   <body>
+
+    <div class="prnfs-BUTTON_CONFIG_FORM">
+    </div>
+  
     <div>
       <div class="description">
         You can use variables when invoking the URL, when forming the filter string, custom header values or in POST content.
@@ -14,6 +18,7 @@
         <li><b>${PULL_REQUEST_URL}</b> Example: http://localhost:7990/projects/PROJECT_1/repos/rep_1/pull-requests/1</li>
         <li><b>${PULL_REQUEST_VERSION}</b> Example: 1</li>
         <li><b>${PULL_REQUEST_COMMENT_TEXT}</b> Example: A comment</li>
+        <li><b>${BUTTON_TRIGGER_TITLE}</b> Example: Trigger Notification</li>
         <li><b>${PULL_REQUEST_USER_DISPLAY_NAME}</b> Example: Some User</li>
         <li><b>${PULL_REQUEST_USER_EMAIL_ADDRESS}</b> Example: some.user@stash.domain</li>
         <li><b>${PULL_REQUEST_USER_ID}</b> Example: 1</li>
@@ -48,17 +53,54 @@
       </div>
     </div>
     
-    <div class="prnfs">
+    <div class="prnfs-TRIGGER_CONFIG_FORM">
     </div>
     
-    <div class="prnfs-template">
-     <form class="trigger">
+    <div class="prnfs-template prnfs-template-BUTTON_CONFIG_FORM">
+     <form class="config-area">
+       <div class="content">
+        <input type="hidden" name="FORM_IDENTIFIER">
+        <input type="hidden" name="FORM_TYPE" value="BUTTON_CONFIG_FORM">
+        <div>
+          <fieldset>
+            <legend>Trigger notification -button in pull request view</legend>
+            <label for="title">Text to display on button</label>
+            <input type="text" name="button_title">
+          </fieldset>
+        </div>
+        <div>
+          <fieldset>
+            <legend>Show button for</legend>
+            <input type="radio" name="button_visibility" value="NONE" id="NONE">
+            <label for="NONE">None</label><br>
+            <input type="radio" name="button_visibility" value="SYSTEM_ADMIN" id="SYSTEM_ADMIN">
+            <label for="SYSTEM_ADMIN">System Admins</label><br>
+            <input type="radio" name="button_visibility" value="ADMIN" id="ADMIN">
+            <label for="ADMIN">Admins</label><br>
+            <input type="radio" name="button_visibility" value="EVERYONE" id="EVERYONE">
+            <label for="EVERYONE">Everyone</label><br>
+          </fieldset>
+        </div>
+        <div>
+          <fieldset>
+            <input type="button" name="save" value="Save"/>
+            <input type="button" name="delete" value="Remove"/>
+            <span class="post"></span>
+          </fieldset>
+        </div>
+       </div>
+     </form>
+    </div>
+    
+    <div class="prnfs-template prnfs-template-TRIGGER_CONFIG_FORM">
+     <form class="trigger config-area">
       <div class="expandable">
        <div class="title">
         <a href="javascript:void(0);" class="variable toggle" data-variable="name"></a>
        </div>
        <div class="content">
         <input type="hidden" name="FORM_IDENTIFIER">
+        <input type="hidden" name="FORM_TYPE" value="TRIGGER_CONFIG_FORM">
         <div>
           <fieldset>
             <legend>Name</legend>
@@ -92,6 +134,8 @@
               <label for="MERGED_1">MERGED</label><br/>
               <input type="checkbox" name="events" id="OPENED_1" value="OPENED">
               <label for="OPENED_1">OPENED</label><br/>
+              <input type="checkbox" name="events" id="BUTTON_TRIGGER_1" value="BUTTON_TRIGGER">
+              <label for="BUTTON_TRIGGER_1">BUTTON_TRIGGER</label><br/>
             </div>
             <div class="right">
               <input type="checkbox" name="events" id="REOPENED_1" value="REOPENED">

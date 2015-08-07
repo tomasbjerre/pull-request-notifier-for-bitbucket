@@ -31,4 +31,16 @@
     <servlet key="admin-servlet" class="se.bjurr.prnfs.admin.AdminServlet">
         <url-pattern>/prnfs/admin</url-pattern>
     </servlet>
+    
+    <web-item key="se.bjurr.prnfs.triggerbutton" name="Trigger Notification" weight="50" section="stash.pull-request.toolbar.actions">
+        <label key="stash.web.pull-request.toolbar.triggerbutton">Trigger Notification</label>
+        <styleClass>triggerManualNotification</styleClass>
+        <dependency>${project.groupId}-${project.artifactId}:pr-triggerbutton</dependency>
+    </web-item>
+    
+    <web-resource key="pr-triggerbutton">
+        <resource type="download" name="pr-triggerbutton.js" location="/pr-triggerbutton.js" />
+        <dependency>com.atlassian.stash.stash-web-plugin:global</dependency>
+        <context>stash.page.pullRequest.view</context>
+    </web-resource>
 </atlassian-plugin>

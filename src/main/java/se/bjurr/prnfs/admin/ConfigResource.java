@@ -6,9 +6,13 @@ import static javax.ws.rs.core.Response.ok;
 import static javax.ws.rs.core.Response.status;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
+import static se.bjurr.prnfs.settings.PrnfsNotification.isOfType;
+import static se.bjurr.prnfs.settings.SettingsStorage.checkFieldsRecognized;
 import static se.bjurr.prnfs.settings.SettingsStorage.deleteSettings;
+import static se.bjurr.prnfs.settings.SettingsStorage.getPrnfsButton;
 import static se.bjurr.prnfs.settings.SettingsStorage.getPrnfsNotification;
 import static se.bjurr.prnfs.settings.SettingsStorage.getSettingsAsFormValues;
+import static se.bjurr.prnfs.settings.SettingsStorage.injectFormIdentifierIfNotSet;
 import static se.bjurr.prnfs.settings.SettingsStorage.storeSettings;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,7 +54,7 @@ public class ConfigResource {
  @DELETE
  @Path("{id}")
  public Response delete(@PathParam("id") final String id, @Context HttpServletRequest request) {
-  if (!isAdminLoggedIn(request)) {
+  if (!isSystemAdminLoggedIn(request)) {
    return status(UNAUTHORIZED).build();
   }
 
@@ -70,7 +74,7 @@ public class ConfigResource {
  @GET
  @Produces(APPLICATION_JSON)
  public Response get(@Context HttpServletRequest request) {
-  if (!isAdminLoggedIn(request)) {
+  if (!isSystemAdminLoggedIn(request)) {
    return status(UNAUTHORIZED).build();
   }
 
@@ -94,7 +98,7 @@ public class ConfigResource {
   return userManager;
  }
 
- private boolean isAdminLoggedIn(HttpServletRequest request) {
+ private boolean isSystemAdminLoggedIn(HttpServletRequest request) {
   final UserProfile user = userManager.getRemoteUser(request);
   if (user == null) {
    return false;
@@ -109,7 +113,7 @@ public class ConfigResource {
  @Consumes(APPLICATION_JSON)
  @Produces(APPLICATION_JSON)
  public Response post(final AdminFormValues config, @Context HttpServletRequest request) {
-  if (!isAdminLoggedIn(request)) {
+  if (!isSystemAdminLoggedIn(request)) {
    return status(UNAUTHORIZED).build();
   }
 
@@ -117,7 +121,15 @@ public class ConfigResource {
    * Validate
    */
   try {
-   getPrnfsNotification(config);
+   injectFormIdentifierIfNotSet(config);
+   checkFieldsRecognized(config);
+   if (isOfType(config, AdminFormValues.FORM_TYPE.TRIGGER_CONFIG_FORM)) {
+    // Assuming TRIGGER_CONFIG_FORM here if field not available, to be backwards
+    // compatible
+    getPrnfsNotification(config);
+   } else {
+    getPrnfsButton(config);
+   }
   } catch (final ValidationException e) {
    return status(BAD_REQUEST).entity(new AdminFormError(e.getField(), e.getError())).build();
   }

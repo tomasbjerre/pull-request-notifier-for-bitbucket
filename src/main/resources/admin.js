@@ -1,4 +1,5 @@
 (function ($) {
+ 'use strict';
  var config_resource = AJS.contextPath() + "/rest/prnfs-admin/1.0/";
  $(document).ready(function() {
   function getEmpties($headers) {
@@ -16,8 +17,8 @@
   }
 
   function adjustHeaders($headers) {
-   var empties = getEmpties($headers)
-   if (empties.length == 0) {
+   var empties = getEmpties($headers);
+   if (empties.length === 0) {
     $headers.append($(".prnfs-template .header")[0].outerHTML);
    }
 
@@ -75,7 +76,7 @@
        $(".error."+xhr.responseJSON.field,$form).html(xhr.responseJSON.error);
        if (xhr.responseJSON.field) {
         $(".post",$form).html("There were errors, form not saved!");
-       } else {  
+       } else { 
         $(".post",$form).html(xhr.responseText);
        }
       },
@@ -85,13 +86,13 @@
      });
    });
   }
-  
-  function addNewForm() {
-   var $template = $(".prnfs-template").clone();
+
+  function addNewForm(formType) {
+   var $template = $(".prnfs-template-"+formType).clone();
    $('input[name="delete"]',$template).remove();
    $('input[name=method][value=GET]', $template).attr('checked','checked');
    $('.expandable',$template).addClass('expanded');
-   $(".prnfs").append($template.html());
+   $(".prnfs-"+formType).append($template.html());
   }
 
   function getAll() {
@@ -99,9 +100,18 @@
     url: config_resource,
     dataType: "json"
    }).done(function(configs) {
-    $(".prnfs").html("");
+    $(".prnfs-TRIGGER_CONFIG_FORM").html("");
+    $(".prnfs-BUTTON_CONFIG_FORM").html("");
     $.each(configs, function(index, config) {
-     var $template = $(".prnfs-template").clone();
+     var formType = 'TRIGGER_CONFIG_FORM';
+     $.each(config, function(fieldIndex,field_map) {
+      if (field_map.name === 'FORM_TYPE') {
+       formType = field_map.value;
+      }
+     });
+     
+     var $template = $(".prnfs-template-"+formType).clone();
+
      $.each(config, function(fieldIndex,field_map) {
       $('.variable[data-variable="'+field_map.name+'"]', $template).html(field_map.value);
       $('input[type="text"][name="'+field_map.name+'"]', $template).attr('value', field_map.value);
@@ -112,13 +122,13 @@
       $('input[type="radio"][name="'+field_map.name+'"][value="'+field_map.value+'"]', $template).attr('checked','checked');
       $('.visibleif.'+field_map.name+'_'+field_map.value.replace(/[^a-zA-Z]/g,''), $template).show();
      });
-     
+
      var header_names = [];
      var header_values = [];
      $.each(config, function(fieldIndex,field_map) {
-      if (field_map.name == 'header_name') {
+      if (field_map.name === 'header_name') {
        header_names.push(field_map.value);
-      } else if (field_map.name == 'header_value') {
+      } else if (field_map.name === 'header_value') {
        header_values.push(field_map.value);
       }
      });
@@ -127,13 +137,15 @@
       $('input[type="text"][name="header_value"]', $template).last().attr('value', header_values[i]);
       adjustHeaders($(".headers", $template));
      }
-     
+
      if (!$('input[name=method]:checked', $template).val()) {
       $('input[name=method][value=GET]', $template).attr('checked','checked');
      }
-     $(".prnfs").append($template.html());
+
+     $(".prnfs-"+formType).append($template.html());
     });
-    addNewForm();
+    addNewForm('TRIGGER_CONFIG_FORM');
+    addNewForm('BUTTON_CONFIG_FORM');
     setEvents();
    });
   }

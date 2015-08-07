@@ -12,6 +12,7 @@ import static java.lang.System.currentTimeMillis;
 import static se.bjurr.prnfs.admin.AdminFormValues.DEFAULT_NAME;
 import static se.bjurr.prnfs.admin.AdminFormValues.NAME;
 import static se.bjurr.prnfs.admin.AdminFormValues.VALUE;
+import static se.bjurr.prnfs.settings.PrnfsNotification.isOfType;
 import static se.bjurr.prnfs.settings.PrnfsNotificationBuilder.prnfsNotificationBuilder;
 import static se.bjurr.prnfs.settings.PrnfsPredicates.predicate;
 import static se.bjurr.prnfs.settings.PrnfsSettingsBuilder.prnfsSettingsBuilder;
@@ -26,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import se.bjurr.prnfs.admin.AdminFormValues;
+import se.bjurr.prnfs.admin.AdminFormValues.BUTTON_VISIBILITY;
 import se.bjurr.prnfs.listener.PrnfsPullRequestAction;
 
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
@@ -41,7 +43,7 @@ public class SettingsStorage {
 
  private static Random random = new Random(currentTimeMillis());
 
- private static final String STORAGE_KEY = AdminFormValues.class.getName() + "_2";
+ public static final String STORAGE_KEY = AdminFormValues.class.getName() + "_2";
 
  public static void deleteSettings(PluginSettings pluginSettings, String id) {
   final Map<String, AdminFormValues> map = getNotificationsMap(pluginSettings);
@@ -77,18 +79,25 @@ public class SettingsStorage {
   return allNotificationsMap;
  }
 
- public static PrnfsNotification getPrnfsNotification(AdminFormValues adminFormValues) throws ValidationException {
-  for (final Map<String, String> m : adminFormValues) {
-   for (final Entry<String, String> entry : m.entrySet()) {
-    if (entry.getKey().equals(NAME)) {
-     if (AdminFormValues.FIELDS.valueOf(entry.getValue()) == null) {
-      throw new ValidationException(entry.getValue(), "Field not recognized!");
-     }
-    } else if (!entry.getKey().equals(VALUE)) {
-     throw new ValidationException(entry.getKey(), "Key not recognized!");
-    }
-   }
+ public static PrnfsButton getPrnfsButton(AdminFormValues adminFormValues) throws ValidationException {
+  final Optional<Map<String, String>> titleOpt = tryFind(adminFormValues,
+    predicate(AdminFormValues.FIELDS.button_title.name()));
+  String title = "Trigger Notification";
+  if (titleOpt.isPresent()) {
+   title = titleOpt.get().get(VALUE);
   }
+
+  final Optional<Map<String, String>> visibilityOpt = tryFind(adminFormValues,
+    predicate(AdminFormValues.FIELDS.button_visibility.name()));
+  BUTTON_VISIBILITY visibility = AdminFormValues.BUTTON_VISIBILITY.NONE;
+  if (visibilityOpt.isPresent()) {
+   visibility = AdminFormValues.BUTTON_VISIBILITY.valueOf(visibilityOpt.get().get(VALUE));
+  }
+  return new PrnfsButton(title, visibility, find(adminFormValues,
+    predicate(AdminFormValues.FIELDS.FORM_IDENTIFIER.name())).get(VALUE));
+ }
+
+ public static PrnfsNotification getPrnfsNotification(AdminFormValues adminFormValues) throws ValidationException {
   final Optional<Map<String, String>> urlOpt = tryFind(adminFormValues, predicate(AdminFormValues.FIELDS.url.name()));
   if (!urlOpt.isPresent()) {
    throw new ValidationException("url", "URL not set");
@@ -155,10 +164,28 @@ public class SettingsStorage {
   return prnfsNotificationBuilder.build();
  }
 
+ public static void checkFieldsRecognized(AdminFormValues adminFormValues) throws ValidationException {
+  for (final Map<String, String> m : adminFormValues) {
+   for (final Entry<String, String> entry : m.entrySet()) {
+    if (entry.getKey().equals(NAME)) {
+     if (AdminFormValues.FIELDS.valueOf(entry.getValue()) == null) {
+      throw new ValidationException(entry.getValue(), "Field not recognized!");
+     }
+    } else if (!entry.getKey().equals(VALUE)) {
+     throw new ValidationException(entry.getKey(), "Key not recognized!");
+    }
+   }
+  }
+ }
+
  public static PrnfsSettings getPrnfsSettings(PluginSettings pluginSettings) throws ValidationException {
   final PrnfsSettingsBuilder prnfsSettingsBuilder = prnfsSettingsBuilder();
-  for (final AdminFormValues a : getSettingsAsFormValues(pluginSettings)) {
-   prnfsSettingsBuilder.withNotification(getPrnfsNotification(a));
+  for (final AdminFormValues adminFormValues : getSettingsAsFormValues(pluginSettings)) {
+   if (isOfType(adminFormValues, AdminFormValues.FORM_TYPE.TRIGGER_CONFIG_FORM)) {
+    prnfsSettingsBuilder.withNotification(getPrnfsNotification(adminFormValues));
+   } else {
+    prnfsSettingsBuilder.withButton(getPrnfsButton(adminFormValues));
+   }
   }
   return prnfsSettingsBuilder.build();
  }
@@ -216,8 +243,13 @@ public class SettingsStorage {
 
  public static void storeSettings(PluginSettings pluginSettings, final AdminFormValues config)
    throws ValidationException {
+  injectFormIdentifierIfNotSet(config);
   final Map<String, AdminFormValues> allNotificationsMap = getNotificationsMap(pluginSettings);
+  allNotificationsMap.put(find(config, predicate(AdminFormValues.FIELDS.FORM_IDENTIFIER.name())).get(VALUE), config);
+  storeNotificationsMap(pluginSettings, allNotificationsMap);
+ }
 
+ public static void injectFormIdentifierIfNotSet(final AdminFormValues config) {
   final Optional<Map<String, String>> formIdOpt = tryFind(config,
     predicate(AdminFormValues.FIELDS.FORM_IDENTIFIER.name()));
   if (!formIdOpt.isPresent() || formIdOpt.get().get(VALUE).trim().isEmpty()) {
@@ -226,9 +258,5 @@ public class SettingsStorage {
    config.add(new ImmutableMap.Builder<String, String>().put(NAME, AdminFormValues.FIELDS.FORM_IDENTIFIER.name())
      .put(VALUE, generatedIdentifier).build());
   }
-
-  allNotificationsMap.put(find(config, predicate(AdminFormValues.FIELDS.FORM_IDENTIFIER.name())).get(VALUE), config);
-
-  storeNotificationsMap(pluginSettings, allNotificationsMap);
  }
 }
