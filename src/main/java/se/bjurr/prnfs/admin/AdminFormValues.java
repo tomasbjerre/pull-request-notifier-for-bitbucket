@@ -14,7 +14,9 @@ public final class AdminFormValues extends ArrayList<Map<String, String>> {
  private static final long serialVersionUID = 9084184120202816120L;
  public static final String VALUE = "value";
 
+ public static final String DEFAULT_NAME = "Unnamed trigger";
+
  public enum FIELDS {
-  user, password, events, FORM_IDENTIFIER, url, filter_string, filter_regexp, method, post_content, proxy_user, proxy_password, proxy_server, proxy_port, header_name, header_value
+  user, password, events, FORM_IDENTIFIER, url, filter_string, filter_regexp, method, post_content, proxy_user, proxy_password, proxy_server, proxy_port, header_name, header_value, name
  }
 }

@@ -51,8 +51,20 @@
     </div>
     
     <div class="prnfs-template">
-      <form class="trigger">
+     <form class="trigger">
+      <div class="expandable">
+       <div class="title">
+        <a href="javascript:void(0);" class="variable toggle" data-variable="name"></a>
+       </div>
+       <div class="content">
         <input type="hidden" name="FORM_IDENTIFIER">
+        <div>
+          <fieldset>
+            <legend>Name</legend>
+            <input type="text" name="name" value="Unnamed trigger">
+            <label for="name">Name of this trigger. The name will show up in the log when trigger is executed. Other then that, this is just a feature to help you keep track of your triggers.</label><br/>
+          </fieldset>
+        </div>
         <div>
           <fieldset>
             <legend>Filter (Optional). Variables above are available.</legend>
@@ -180,7 +192,9 @@
             <span class="post"></span>
           </fieldset>
         </div>
-      </form>
+       </div>
+      </div>
+     </form>
     </div>
   </body>
 </html>

@@ -135,7 +135,7 @@ public class PrnfsPullRequestEventListener {
       postContent = Optional.of(renderer.render(notification.getPostContent().get()));
      }
      String renderedUrl = renderer.render(notification.getUrl());
-     logger.info(action.getName() + " "//
+     logger.info(notification.getName() + " > " + action.getName() + " "//
        + pr.getFromRef().getId() + "(" + pr.getFromRef().getLatestChangeset() + ") -> " //
        + pr.getToRef().getId() + "(" + pr.getToRef().getLatestChangeset() + ")" + " " //
        + renderedUrl);

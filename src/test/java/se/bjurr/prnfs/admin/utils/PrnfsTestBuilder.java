@@ -19,7 +19,6 @@ import static se.bjurr.prnfs.admin.utils.PullRequestEventBuilder.pullRequestEven
 import static se.bjurr.prnfs.listener.PrnfsPullRequestEventListener.setInvoker;
 import static se.bjurr.prnfs.listener.UrlInvoker.getHeaderValue;
 import static se.bjurr.prnfs.settings.PrnfsPredicates.predicate;
-import static se.bjurr.prnfs.settings.SettingsStorage.FORM_IDENTIFIER_NAME;
 import static se.bjurr.prnfs.settings.SettingsStorage.fakeRandom;
 
 import java.util.List;
@@ -162,7 +161,7 @@ public class PrnfsTestBuilder {
     new Function<AdminFormValues, String>() {
      @Override
      public String apply(AdminFormValues input) {
-      return find(input, predicate(FORM_IDENTIFIER_NAME)).get(VALUE);
+      return find(input, predicate(AdminFormValues.FIELDS.FORM_IDENTIFIER.name())).get(VALUE);
      }
     });
  }
@@ -273,7 +272,8 @@ public class PrnfsTestBuilder {
  }
 
  public PrnfsTestBuilder withNotification(AdminFormValues adminFormValues) {
-  final Optional<Map<String, String>> existing = tryFind(adminFormValues, predicate(FORM_IDENTIFIER_NAME));
+  final Optional<Map<String, String>> existing = tryFind(adminFormValues,
+    predicate(AdminFormValues.FIELDS.FORM_IDENTIFIER.name()));
   if (existing.isPresent()) {
    this.adminFormValuesMap.put(existing.get().get(VALUE), adminFormValues);
   } else {

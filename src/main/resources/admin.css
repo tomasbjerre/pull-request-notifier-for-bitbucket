@@ -57,3 +57,11 @@ td > input[type="text"] {
  margin: 0 10% 0 0;
  float:left
 }
+
+.expandable .content {
+ display: none;
+}
+
+.expandable.expanded .content {
+ display: inherit;
+}

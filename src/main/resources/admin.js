@@ -45,6 +45,17 @@
      });
    });
    
+   $('.expandable').each(function(index, el) {
+    var $element = $(el);
+    $element.find('.toggle').click(function() {
+     $element.toggleClass('expanded');
+    });
+   });
+   //If there are only a few triggers configured, they can be expanded by default without confusion.
+   if ($('.expandable').length < 4) {
+    $('.expandable').addClass('expanded');
+   }
+
    $('.headers').keyup(function(e) {
      var $headers = $(this);
      adjustHeaders($headers);
@@ -79,6 +90,7 @@
    var $template = $(".prnfs-template").clone();
    $('input[name="delete"]',$template).remove();
    $('input[name=method][value=GET]', $template).attr('checked','checked');
+   $('.expandable',$template).addClass('expanded');
    $(".prnfs").append($template.html());
   }
 
@@ -91,6 +103,7 @@
     $.each(configs, function(index, config) {
      var $template = $(".prnfs-template").clone();
      $.each(config, function(fieldIndex,field_map) {
+      $('.variable[data-variable="'+field_map.name+'"]', $template).html(field_map.value);
       $('input[type="text"][name="'+field_map.name+'"]', $template).attr('value', field_map.value);
       $('input[type="password"][name="'+field_map.name+'"]', $template).attr('value', field_map.value);
       $('textarea[name="'+field_map.name+'"]', $template).text(field_map.value);

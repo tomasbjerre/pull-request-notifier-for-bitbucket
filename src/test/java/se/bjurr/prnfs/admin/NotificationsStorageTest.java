@@ -1,6 +1,7 @@
 package se.bjurr.prnfs.admin;
 
 import static com.atlassian.stash.pull.PullRequestAction.OPENED;
+import static se.bjurr.prnfs.admin.AdminFormValues.DEFAULT_NAME;
 import static se.bjurr.prnfs.admin.utils.NotificationBuilder.notificationBuilder;
 import static se.bjurr.prnfs.admin.utils.PrnfsTestBuilder.prnfsTestBuilder;
 
@@ -15,6 +16,7 @@ public class NotificationsStorageTest {
       notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
         .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).build()).store().hasNotifications(1)
     .hasFieldValueAt(AdminFormValues.FIELDS.url, "http://bjurr.se/", "0")
+    .hasFieldValueAt(AdminFormValues.FIELDS.name, DEFAULT_NAME, "0")
     .hasNoneEmptyFieldAt(AdminFormValues.FIELDS.FORM_IDENTIFIER, "0");
  }
 

@@ -28,13 +28,14 @@ public class PrnfsNotificationBuilder {
  private String proxyPassword;
  private String proxyServer;
  private String proxyPort;
+ private String name;
 
  private PrnfsNotificationBuilder() {
  }
 
  public PrnfsNotification build() throws ValidationException {
   return new PrnfsNotification(triggers, url, user, password, filterString, filterRegexp, method, postContent, headers,
-    proxyUser, proxyPassword, proxyServer, proxyPort);
+    proxyUser, proxyPassword, proxyServer, proxyPort, name);
  }
 
  public PrnfsNotificationBuilder withPassword(String password) {
@@ -99,6 +100,11 @@ public class PrnfsNotificationBuilder {
 
  public PrnfsNotificationBuilder withProxyPassword(String s) {
   this.proxyPassword = checkNotNull(s);
+  return this;
+ }
+
+ public PrnfsNotificationBuilder withName(String name) {
+  this.name = name;
   return this;
  }
 }

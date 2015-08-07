@@ -6,6 +6,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.emptyToNull;
 import static com.google.common.base.Strings.nullToEmpty;
 import static java.util.regex.Pattern.compile;
+import static se.bjurr.prnfs.admin.AdminFormValues.DEFAULT_NAME;
 
 import java.net.URL;
 import java.util.List;
@@ -29,10 +30,11 @@ public class PrnfsNotification {
  private final String proxyPassword;
  private final String proxyServer;
  private final Integer proxyPort;
+ private final String name;
 
  public PrnfsNotification(List<PrnfsPullRequestAction> triggers, String url, String user, String password,
    String filterString, String filterRegexp, String method, String postContent, List<Header> headers, String proxyUser,
-   String proxyPassword, String proxyServer, String proxyPort) throws ValidationException {
+   String proxyPassword, String proxyServer, String proxyPort, String name) throws ValidationException {
   this.proxyUser = emptyToNull(nullToEmpty(proxyUser).trim());
   this.proxyPassword = emptyToNull(nullToEmpty(proxyPassword).trim());
   this.proxyServer = emptyToNull(nullToEmpty(proxyServer).trim());
@@ -66,6 +68,7 @@ public class PrnfsNotification {
   this.triggers = checkNotNull(triggers);
   this.filterString = filterString;
   this.filterRegexp = filterRegexp;
+  this.name = firstNonNull(emptyToNull(nullToEmpty(name).trim()), DEFAULT_NAME);
  }
 
  public Optional<String> getFilterRegexp() {
@@ -94,6 +97,10 @@ public class PrnfsNotification {
 
  public Optional<String> getProxyUser() {
   return fromNullable(proxyUser);
+ }
+
+ public String getName() {
+  return name;
  }
 
  public List<PrnfsPullRequestAction> getTriggers() {

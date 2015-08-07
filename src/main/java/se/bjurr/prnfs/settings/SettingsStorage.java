@@ -9,6 +9,7 @@ import static com.google.common.collect.Iterables.tryFind;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newTreeMap;
 import static java.lang.System.currentTimeMillis;
+import static se.bjurr.prnfs.admin.AdminFormValues.DEFAULT_NAME;
 import static se.bjurr.prnfs.admin.AdminFormValues.NAME;
 import static se.bjurr.prnfs.admin.AdminFormValues.VALUE;
 import static se.bjurr.prnfs.settings.PrnfsNotificationBuilder.prnfsNotificationBuilder;
@@ -34,10 +35,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 
 public class SettingsStorage {
- /**
-  * Every form should have a field with this name, with a unique value.
-  */
- public static final String FORM_IDENTIFIER_NAME = "FORM_IDENTIFIER";
 
  private static final Gson gson = new Gson();
  private static Logger logger = LoggerFactory.getLogger(SettingsStorage.class);
@@ -73,8 +70,8 @@ public class SettingsStorage {
  private static Map<String, AdminFormValues> getNotificationsMap(PluginSettings pluginSettings) {
   final Map<String, AdminFormValues> allNotificationsMap = newTreeMap();
   for (final AdminFormValues a : getSettingsAsFormValues(pluginSettings)) {
-   if (tryFind(a, predicate(FORM_IDENTIFIER_NAME)).isPresent()) {
-    allNotificationsMap.put(find(a, predicate(FORM_IDENTIFIER_NAME)).get(VALUE), a);
+   if (tryFind(a, predicate(AdminFormValues.FIELDS.FORM_IDENTIFIER.name())).isPresent()) {
+    allNotificationsMap.put(find(a, predicate(AdminFormValues.FIELDS.FORM_IDENTIFIER.name())).get(VALUE), a);
    }
   }
   return allNotificationsMap;
@@ -152,6 +149,9 @@ public class SettingsStorage {
    prnfsNotificationBuilder
      .withPostContent(find(adminFormValues, predicate(AdminFormValues.FIELDS.post_content.name())).get(VALUE));
   }
+  if (tryFind(adminFormValues, predicate(AdminFormValues.FIELDS.name.name())).isPresent()) {
+   prnfsNotificationBuilder.withName(find(adminFormValues, predicate(AdminFormValues.FIELDS.name.name())).get(VALUE));
+  }
   return prnfsNotificationBuilder.build();
  }
 
@@ -172,12 +172,27 @@ public class SettingsStorage {
    @SuppressWarnings("unchecked")
    final List<String> settingsList = newArrayList((List<String>) settings.get(STORAGE_KEY));
    for (final String storedJson : settingsList) {
-    toReturn.add(gson.fromJson(storedJson, AdminFormValues.class));
+    toReturn.add(injectConfigurationName(gson.fromJson(storedJson, AdminFormValues.class)));
    }
   } catch (final Exception e) {
    logger.error("Unable to deserialize settings", e);
   }
   return toReturn;
+ }
+
+ /**
+  * Inject a default name for the trigger. To make the plugin backwards
+  * compatible.
+  */
+ private static AdminFormValues injectConfigurationName(AdminFormValues adminFormValues) {
+  final Optional<Map<String, String>> nameMapOpt = tryFind(adminFormValues,
+    predicate(AdminFormValues.FIELDS.name.name()));
+  if (nameMapOpt.isPresent()) {
+   return adminFormValues;
+  }
+  adminFormValues.add(ImmutableMap.<String, String> builder().put(NAME, AdminFormValues.FIELDS.name.name())
+    .put(VALUE, DEFAULT_NAME).build());
+  return adminFormValues;
  }
 
  @VisibleForTesting
@@ -189,9 +204,10 @@ public class SettingsStorage {
    Map<String, AdminFormValues> allNotificationsMap) throws ValidationException {
   final List<String> toStore = newArrayList();
   for (final AdminFormValues adminFormValues : allNotificationsMap.values()) {
-   final Optional<Map<String, String>> formIdOpt = tryFind(adminFormValues, predicate(FORM_IDENTIFIER_NAME));
+   final Optional<Map<String, String>> formIdOpt = tryFind(adminFormValues,
+     predicate(AdminFormValues.FIELDS.FORM_IDENTIFIER.name()));
    if (!formIdOpt.isPresent() || formIdOpt.get().get(VALUE).trim().isEmpty()) {
-    throw new ValidationException(FORM_IDENTIFIER_NAME, "Not set!");
+    throw new ValidationException(AdminFormValues.FIELDS.FORM_IDENTIFIER.name(), "Not set!");
    }
    toStore.add(new Gson().toJson(adminFormValues));
   }
@@ -202,15 +218,16 @@ public class SettingsStorage {
    throws ValidationException {
   final Map<String, AdminFormValues> allNotificationsMap = getNotificationsMap(pluginSettings);
 
-  final Optional<Map<String, String>> formIdOpt = tryFind(config, predicate(FORM_IDENTIFIER_NAME));
+  final Optional<Map<String, String>> formIdOpt = tryFind(config,
+    predicate(AdminFormValues.FIELDS.FORM_IDENTIFIER.name()));
   if (!formIdOpt.isPresent() || formIdOpt.get().get(VALUE).trim().isEmpty()) {
    final String generatedIdentifier = formIdentifierGnerator();
-   removeIf(config, predicate(FORM_IDENTIFIER_NAME));
-   config.add(new ImmutableMap.Builder<String, String>().put(NAME, FORM_IDENTIFIER_NAME)
+   removeIf(config, predicate(AdminFormValues.FIELDS.FORM_IDENTIFIER.name()));
+   config.add(new ImmutableMap.Builder<String, String>().put(NAME, AdminFormValues.FIELDS.FORM_IDENTIFIER.name())
      .put(VALUE, generatedIdentifier).build());
   }
 
-  allNotificationsMap.put(find(config, predicate(FORM_IDENTIFIER_NAME)).get(VALUE), config);
+  allNotificationsMap.put(find(config, predicate(AdminFormValues.FIELDS.FORM_IDENTIFIER.name())).get(VALUE), config);
 
   storeNotificationsMap(pluginSettings, allNotificationsMap);
  }
