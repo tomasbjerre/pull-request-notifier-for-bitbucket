@@ -5,13 +5,18 @@ import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.emptyToNull;
 import static com.google.common.base.Strings.nullToEmpty;
+import static com.google.common.collect.Iterables.tryFind;
 import static java.util.regex.Pattern.compile;
 import static se.bjurr.prnfs.admin.AdminFormValues.DEFAULT_NAME;
+import static se.bjurr.prnfs.admin.AdminFormValues.VALUE;
+import static se.bjurr.prnfs.settings.PrnfsPredicates.predicate;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
 import se.bjurr.prnfs.admin.AdminFormValues;
+import se.bjurr.prnfs.admin.AdminFormValues.FORM_TYPE;
 import se.bjurr.prnfs.listener.PrnfsPullRequestAction;
 
 import com.google.common.base.Optional;
@@ -125,5 +130,11 @@ public class PrnfsNotification {
 
  public List<Header> getHeaders() {
   return headers;
+ }
+
+ public static boolean isOfType(AdminFormValues config, FORM_TYPE formType) {
+  Optional<Map<String, String>> formTypeOpt = tryFind(config, predicate(AdminFormValues.FIELDS.FORM_TYPE.name()));
+  return !formTypeOpt.isPresent() && formType.name().equals(FORM_TYPE.TRIGGER_CONFIG_FORM.name())
+    || formTypeOpt.get().get(VALUE).equals(AdminFormValues.FORM_TYPE.TRIGGER_CONFIG_FORM.name());
  }
 }

@@ -1,6 +1,7 @@
 package se.bjurr.prnfs.admin.utils;
 
 import static com.google.common.base.Optional.fromNullable;
+import static com.google.common.base.Throwables.propagate;
 import static com.google.common.collect.Iterables.find;
 import static com.google.common.collect.Iterables.tryFind;
 import static com.google.common.collect.Lists.newArrayList;
@@ -20,6 +21,7 @@ import static se.bjurr.prnfs.listener.PrnfsPullRequestEventListener.setInvoker;
 import static se.bjurr.prnfs.listener.UrlInvoker.getHeaderValue;
 import static se.bjurr.prnfs.settings.PrnfsPredicates.predicate;
 import static se.bjurr.prnfs.settings.SettingsStorage.fakeRandom;
+import static se.bjurr.prnfs.settings.SettingsStorage.getPrnfsSettings;
 
 import java.net.URI;
 import java.util.List;
@@ -32,6 +34,7 @@ import org.mockito.Matchers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import se.bjurr.prnfs.ManualResource;
 import se.bjurr.prnfs.admin.AdminFormError;
 import se.bjurr.prnfs.admin.AdminFormValues;
 import se.bjurr.prnfs.admin.ConfigResource;
@@ -40,6 +43,7 @@ import se.bjurr.prnfs.listener.PrnfsPullRequestEventListener;
 import se.bjurr.prnfs.listener.PrnfsPullRequestEventListener.Invoker;
 import se.bjurr.prnfs.listener.UrlInvoker;
 import se.bjurr.prnfs.settings.Header;
+import se.bjurr.prnfs.settings.PrnfsSettings;
 
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
@@ -49,8 +53,15 @@ import com.atlassian.sal.api.user.UserKey;
 import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.sal.api.user.UserProfile;
 import com.atlassian.stash.event.pull.PullRequestEvent;
+import com.atlassian.stash.pull.PullRequest;
+import com.atlassian.stash.pull.PullRequestService;
 import com.atlassian.stash.repository.RepositoryService;
 import com.atlassian.stash.server.ApplicationPropertiesService;
+import com.atlassian.stash.user.EscalatedSecurityContext;
+import com.atlassian.stash.user.Permission;
+import com.atlassian.stash.user.SecurityService;
+import com.atlassian.stash.user.UserService;
+import com.atlassian.stash.util.Operation;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
@@ -80,6 +91,7 @@ public class PrnfsTestBuilder {
  private final ConfigResource configResource;
 
  private PrnfsPullRequestEventListener listener;
+ private final ManualResource manualResouce;
 
  private final PluginSettings pluginSettings;
 
@@ -103,6 +115,10 @@ public class PrnfsTestBuilder {
 
  private List<AdminFormError> postResponses;
 
+ private EscalatedSecurityContext escalatedSecurityContext;
+
+ private PullRequestService pullRequestService;
+
  private PrnfsTestBuilder() {
   fakeRandomCounter = 0L;
   fakeRandom(new FakeRandom());
@@ -122,6 +138,16 @@ public class PrnfsTestBuilder {
   when(pluginSettingsFactory.createGlobalSettings()).thenReturn(pluginSettings);
   configResource = new ConfigResource(userManager, pluginSettingsFactory, transactionTemplate);
   listener = new PrnfsPullRequestEventListener(pluginSettingsFactory, repositoryService, propertiesService);
+  UserService userService = mock(UserService.class);
+  pullRequestService = mock(PullRequestService.class);
+  PullRequest pullRequest = pullRequestEventBuilder().build().getPullRequest();
+  when(pullRequestService.getById(Matchers.anyInt(), Matchers.anyLong())).thenReturn(pullRequest);
+  SecurityService securityService = mock(SecurityService.class);
+  escalatedSecurityContext = mock(EscalatedSecurityContext.class);
+  when(securityService.withPermission(Matchers.any(Permission.class), Matchers.anyString())).thenReturn(
+    escalatedSecurityContext);
+  manualResouce = new ManualResource(userManager, userService, pluginSettingsFactory, pullRequestService, listener,
+    repositoryService, propertiesService, securityService);
  }
 
  public PrnfsTestBuilder delete(String id) {
@@ -274,6 +300,25 @@ public class PrnfsTestBuilder {
    }
   });
   listener.handleEvent(event);
+  return this;
+ }
+
+ public PrnfsTestBuilder triggerButton(String formIdentifier) throws Exception {
+  try {
+   PrnfsSettings prnfsSettings = getPrnfsSettings(pluginSettings);
+   when(escalatedSecurityContext.call(Matchers.any(Operation.class))).thenReturn(prnfsSettings);
+  } catch (Throwable e) {
+   propagate(e);
+  }
+  setInvoker(new Invoker() {
+   @Override
+   public void invoke(UrlInvoker urlInvoker) {
+    urlInvokers.add(urlInvoker);
+   }
+  });
+  Integer repositoryId = 0;
+  Long pullRequestId = 0L;
+  manualResouce.post(request, repositoryId, pullRequestId, formIdentifier);
   return this;
  }
 

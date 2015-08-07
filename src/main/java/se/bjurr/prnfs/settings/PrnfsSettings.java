@@ -7,12 +7,18 @@ import java.util.List;
 
 public class PrnfsSettings {
  private List<PrnfsNotification> notifications = newArrayList();
+ private final List<PrnfsButton> buttons;
 
- public PrnfsSettings(List<PrnfsNotification> notifications) {
+ public PrnfsSettings(List<PrnfsNotification> notifications, List<PrnfsButton> buttons) {
   this.notifications = checkNotNull(notifications);
+  this.buttons = checkNotNull(buttons);
  }
 
  public List<PrnfsNotification> getNotifications() {
   return notifications;
+ }
+
+ public List<PrnfsButton> getButtons() {
+  return buttons;
  }
 }

@@ -9,6 +9,8 @@ import static se.bjurr.prnfs.listener.PrnfsPullRequestAction.fromPullRequestEven
 import static se.bjurr.prnfs.listener.UrlInvoker.urlInvoker;
 import static se.bjurr.prnfs.settings.SettingsStorage.getPrnfsSettings;
 
+import java.util.HashMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +37,7 @@ import com.atlassian.stash.repository.RepositoryService;
 import com.atlassian.stash.server.ApplicationPropertiesService;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
+import com.google.common.base.Supplier;
 
 public class PrnfsPullRequestEventListener {
 
@@ -124,45 +127,50 @@ public class PrnfsPullRequestEventListener {
    }
    final PrnfsSettings settings = getPrnfsSettings(pluginSettingsFactory.createGlobalSettings());
    for (final PrnfsNotification notification : settings.getNotifications()) {
-    final PrnfsRenderer renderer = new PrnfsRenderer(pullRequestEvent, repositoryService, propertiesService,
-      notification);
     PrnfsPullRequestAction action = fromPullRequestEvent(pullRequestEvent, notification);
+    final PrnfsRenderer renderer = new PrnfsRenderer(pullRequestEvent.getPullRequest(), action,
+      pullRequestEvent.getUser(), repositoryService, propertiesService, notification, pullRequestEvent,
+      new HashMap<PrnfsRenderer.PrnfsVariable, Supplier<String>>());
     PullRequest pr = pullRequestEvent.getPullRequest();
-    if (notification.getFilterRegexp().isPresent()
-      && notification.getFilterString().isPresent()
-      && !compile(notification.getFilterRegexp().get()).matcher(renderer.render(notification.getFilterString().get()))
-        .find()) {
-     continue;
-    }
     if (notification.getTriggers().contains(action)) {
-     Optional<String> postContent = absent();
-     if (notification.getPostContent().isPresent()) {
-      postContent = Optional.of(renderer.render(notification.getPostContent().get()));
-     }
-     String renderedUrl = renderer.render(notification.getUrl());
-     logger.info(notification.getName() + " > " + action.getName() + " "//
-       + pr.getFromRef().getId() + "(" + pr.getFromRef().getLatestChangeset() + ") -> " //
-       + pr.getToRef().getId() + "(" + pr.getToRef().getLatestChangeset() + ")" + " " //
-       + renderedUrl);
-     UrlInvoker urlInvoker = urlInvoker().withUrlParam(renderedUrl).withMethod(notification.getMethod())
-       .withPostContent(postContent);
-     if (notification.getUser().isPresent() && notification.getPassword().isPresent()) {
-      final String userpass = notification.getUser().get() + ":" + notification.getPassword().get();
-      final String basicAuth = "Basic " + new String(printBase64Binary(userpass.getBytes(UTF_8)));
-      urlInvoker.withHeader(AUTHORIZATION, basicAuth);
-     }
-     for (Header header : notification.getHeaders()) {
-      urlInvoker.withHeader(header.getName(), renderer.render(header.getValue()));
-     }
-     urlInvoker.withProxyServer(notification.getProxyServer());
-     urlInvoker.withProxyPort(notification.getProxyPort());
-     urlInvoker.withProxyUser(notification.getProxyUser());
-     urlInvoker.withProxyPassword(notification.getProxyPassword());
-     invoker.invoke(urlInvoker);
+     notify(notification, renderer, pr);
     }
    }
   } catch (final ValidationException e) {
    logger.error("", e);
   }
+ }
+
+ public void notify(final PrnfsNotification notification, final PrnfsRenderer renderer, PullRequest pr) {
+  if (notification.getFilterRegexp().isPresent()
+    && notification.getFilterString().isPresent()
+    && !compile(notification.getFilterRegexp().get()).matcher(renderer.render(notification.getFilterString().get()))
+      .find()) {
+   return;
+  }
+  Optional<String> postContent = absent();
+  if (notification.getPostContent().isPresent()) {
+   postContent = Optional.of(renderer.render(notification.getPostContent().get()));
+  }
+  String renderedUrl = renderer.render(notification.getUrl());
+  logger.info(notification.getName() + " > " //
+    + pr.getFromRef().getId() + "(" + pr.getFromRef().getLatestChangeset() + ") -> " //
+    + pr.getToRef().getId() + "(" + pr.getToRef().getLatestChangeset() + ")" + " " //
+    + renderedUrl);
+  UrlInvoker urlInvoker = urlInvoker().withUrlParam(renderedUrl).withMethod(notification.getMethod())
+    .withPostContent(postContent);
+  if (notification.getUser().isPresent() && notification.getPassword().isPresent()) {
+   final String userpass = notification.getUser().get() + ":" + notification.getPassword().get();
+   final String basicAuth = "Basic " + new String(printBase64Binary(userpass.getBytes(UTF_8)));
+   urlInvoker.withHeader(AUTHORIZATION, basicAuth);
+  }
+  for (Header header : notification.getHeaders()) {
+   urlInvoker.withHeader(header.getName(), renderer.render(header.getValue()));
+  }
+  urlInvoker.withProxyServer(notification.getProxyServer());
+  urlInvoker.withProxyPort(notification.getProxyPort());
+  urlInvoker.withProxyUser(notification.getProxyUser());
+  urlInvoker.withProxyPassword(notification.getProxyPassword());
+  invoker.invoke(urlInvoker);
  }
 }

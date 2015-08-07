@@ -10,16 +10,29 @@ public class PrnfsSettingsBuilder {
  }
 
  private final List<PrnfsNotification> notifications = newArrayList();
+ private final List<PrnfsButton> buttons = newArrayList();
 
  private PrnfsSettingsBuilder() {
  }
 
  public PrnfsSettings build() {
-  return new PrnfsSettings(notifications);
+  return new PrnfsSettings(notifications, buttons);
  }
 
  public PrnfsSettingsBuilder withNotification(PrnfsNotification notification) {
   this.notifications.add(notification);
   return this;
+ }
+
+ public void withButton(PrnfsButton prnfsButton) {
+  this.buttons.add(prnfsButton);
+ }
+
+ public List<PrnfsButton> getButtons() {
+  return buttons;
+ }
+
+ public List<PrnfsNotification> getNotifications() {
+  return notifications;
  }
 }
