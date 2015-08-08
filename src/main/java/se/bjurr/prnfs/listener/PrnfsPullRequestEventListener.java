@@ -9,7 +9,6 @@ import static se.bjurr.prnfs.listener.PrnfsPullRequestAction.fromPullRequestEven
 import static se.bjurr.prnfs.listener.UrlInvoker.urlInvoker;
 import static se.bjurr.prnfs.settings.SettingsStorage.getPrnfsSettings;
 
-import com.atlassian.stash.server.ApplicationPropertiesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +32,7 @@ import com.atlassian.stash.event.pull.PullRequestUnapprovedEvent;
 import com.atlassian.stash.event.pull.PullRequestUpdatedEvent;
 import com.atlassian.stash.pull.PullRequest;
 import com.atlassian.stash.repository.RepositoryService;
+import com.atlassian.stash.server.ApplicationPropertiesService;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 
@@ -59,7 +59,8 @@ public class PrnfsPullRequestEventListener {
   PrnfsPullRequestEventListener.invoker = invoker;
  }
 
- public PrnfsPullRequestEventListener(PluginSettingsFactory pluginSettingsFactory, RepositoryService repositoryService, ApplicationPropertiesService propertiesService) {
+ public PrnfsPullRequestEventListener(PluginSettingsFactory pluginSettingsFactory, RepositoryService repositoryService,
+   ApplicationPropertiesService propertiesService) {
   this.pluginSettingsFactory = pluginSettingsFactory;
   this.repositoryService = repositoryService;
   this.propertiesService = propertiesService;
@@ -123,7 +124,8 @@ public class PrnfsPullRequestEventListener {
    }
    final PrnfsSettings settings = getPrnfsSettings(pluginSettingsFactory.createGlobalSettings());
    for (final PrnfsNotification notification : settings.getNotifications()) {
-    final PrnfsRenderer renderer = new PrnfsRenderer(pullRequestEvent, repositoryService, propertiesService, notification);
+    final PrnfsRenderer renderer = new PrnfsRenderer(pullRequestEvent, repositoryService, propertiesService,
+      notification);
     PrnfsPullRequestAction action = fromPullRequestEvent(pullRequestEvent, notification);
     PullRequest pr = pullRequestEvent.getPullRequest();
     if (notification.getFilterRegexp().isPresent()

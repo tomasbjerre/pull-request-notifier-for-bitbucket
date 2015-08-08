@@ -21,13 +21,13 @@ import static se.bjurr.prnfs.listener.UrlInvoker.getHeaderValue;
 import static se.bjurr.prnfs.settings.PrnfsPredicates.predicate;
 import static se.bjurr.prnfs.settings.SettingsStorage.fakeRandom;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.atlassian.stash.server.ApplicationPropertiesService;
 import org.mockito.Matchers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +50,7 @@ import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.sal.api.user.UserProfile;
 import com.atlassian.stash.event.pull.PullRequestEvent;
 import com.atlassian.stash.repository.RepositoryService;
+import com.atlassian.stash.server.ApplicationPropertiesService;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
@@ -241,6 +242,11 @@ public class PrnfsTestBuilder {
   when(userProfile.getUserKey()).thenReturn(userKey);
   when(userManager.isSystemAdmin(Matchers.any(UserKey.class))).thenReturn(TRUE);
   when(userManager.getRemoteUser(Matchers.any(HttpServletRequest.class))).thenReturn(userProfile);
+  return this;
+ }
+
+ public PrnfsTestBuilder withBaseUrl(String baseUrl) throws Exception {
+  when(propertiesService.getBaseUrl()).thenReturn(new URI(baseUrl));
   return this;
  }
 

@@ -193,9 +193,10 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatAUrlWithVariablesExceptFromAndToCanBeInvoked() {
+ public void testThatAUrlWithVariablesExceptFromAndToCanBeInvoked() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
+    .withBaseUrl("http://stash.server")
     .withNotification(
       notificationBuilder()
         .withFieldValue(
@@ -206,19 +207,21 @@ public class PrnfsPullRequestEventListenerTest {
             + PrnfsVariable.PULL_REQUEST_AUTHOR_EMAIL.name() + "}&authorId=${"
             + PrnfsVariable.PULL_REQUEST_AUTHOR_ID.name() + "}&authorName=${"
             + PrnfsVariable.PULL_REQUEST_AUTHOR_NAME.name() + "}&authorSlug=${"
-            + PrnfsVariable.PULL_REQUEST_AUTHOR_SLUG.name() + "}")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).build())
+            + PrnfsVariable.PULL_REQUEST_AUTHOR_SLUG.name() + "}&pullRequestUrl=${"
+            + PrnfsVariable.PULL_REQUEST_URL.name() + "}").withFieldValue(AdminFormValues.FIELDS.events, OPENED.name())
+        .build())
     .store()
     .trigger(
       pullRequestEventBuilder()
         .withId(10L)
+        .withToRef(pullRequestRefBuilder().withProjectKey("theProject").withRepositoryName("theRepoName"))
         .withPullRequestAction(OPENED)
         .withAuthor(
           prnfsParticipantBuilder().withDisplayName("authorDisplayName").withEmail("authorEmail").withId(100)
             .withName("authorName").withSlug("authorSlug").build()).build())
     .invokedUrl(
       0,
-      "http://bjurr.se/id=10&action=OPENED&displayName=authorDisplayName&authorEmail=authorEmail&authorId=100&authorName=authorName&authorSlug=authorSlug");
+      "http://bjurr.se/id=10&action=OPENED&displayName=authorDisplayName&authorEmail=authorEmail&authorId=100&authorName=authorName&authorSlug=authorSlug&pullRequestUrl=http://stash.server/projects/theProject/repos/theRepoName/pull-requests/10");
  }
 
  @Test

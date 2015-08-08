@@ -34,6 +34,7 @@ The filter text as well as the URL support variables. These are:
 * ${PULL_REQUEST_VERSION} Example: 1
 * ${PULL_REQUEST_COMMENT_TEXT} Example: A comment
 * ${PULL_REQUEST_ACTION} Example: OPENED
+* ${PULL_REQUEST_URL} Example: http://localhost:7990/projects/PROJECT_1/repos/rep_1/pull-requests/1
 * ${PULL_REQUEST_USER_DISPLAY_NAME} Example: Some User
 * ${PULL_REQUEST_USER_EMAIL_ADDRESS} Example: some.user@stash.domain
 * ${PULL_REQUEST_USER_ID} Example: 1
