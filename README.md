@@ -23,7 +23,7 @@ The Pull Request Notifier for Stash can:
 * Be configured to trigger on any [pull request event](https://developer.atlassian.com/static/javadoc/stash/3.10.0/api/reference/com/atlassian/stash/event/pull/package-summary.html). Including extended events:
  * RESCOPED_FROM, when source branch change
  * RESCOPED_TO, when target branch change
- * MANUAL_TRIGGER, when trigger button in pull request view is pressed
+ * BUTTON_TRIGGER, when trigger button in pull request view is pressed
 * Be configured to only trigger if the pull request mathches a filter. A filter text is constructed with any combination of the variables and then a regexp is constructed to match that text.
 * Add buttons to pull request view in Stash. And map those buttons to URL invocations. This can be done by setting the filter string to ${BUTTON_TRIGGER_TITLE} and the filter regexp to title of button.
 * Authenticate with HTTP basic authentication.

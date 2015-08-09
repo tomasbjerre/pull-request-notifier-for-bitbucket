@@ -2,6 +2,7 @@ package se.bjurr.prnfs.listener;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Optional.absent;
+import static com.google.common.collect.Maps.newHashMap;
 import static java.util.regex.Pattern.compile;
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static javax.xml.bind.DatatypeConverter.printBase64Binary;
@@ -10,7 +11,6 @@ import static se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable.PULL_REQUEST_C
 import static se.bjurr.prnfs.listener.UrlInvoker.urlInvoker;
 import static se.bjurr.prnfs.settings.SettingsStorage.getPrnfsSettings;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -132,7 +132,7 @@ public class PrnfsPullRequestEventListener {
    final PrnfsSettings settings = getPrnfsSettings(pluginSettingsFactory.createGlobalSettings());
    for (final PrnfsNotification notification : settings.getNotifications()) {
     PrnfsPullRequestAction action = fromPullRequestEvent(pullRequestEvent, notification);
-    HashMap<PrnfsVariable, Supplier<String>> variables = new HashMap<PrnfsRenderer.PrnfsVariable, Supplier<String>>();
+    Map<PrnfsVariable, Supplier<String>> variables = newHashMap();
     if (pullRequestEvent instanceof PullRequestCommentAddedEvent) {
      variables.put(PULL_REQUEST_COMMENT_TEXT, new Supplier<String>() {
       @Override
@@ -141,8 +141,7 @@ public class PrnfsPullRequestEventListener {
       }
      });
     }
-    PullRequest pr = pullRequestEvent.getPullRequest();
-    notify(notification, action, pr, pullRequestEvent.getUser(), variables);
+    notify(notification, action, pullRequestEvent.getPullRequest(), pullRequestEvent.getUser(), variables);
    }
   } catch (final ValidationException e) {
    logger.error("", e);
