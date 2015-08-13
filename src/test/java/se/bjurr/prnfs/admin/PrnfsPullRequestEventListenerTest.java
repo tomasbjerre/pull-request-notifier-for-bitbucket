@@ -86,14 +86,14 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatClosedPullRequestsAreNotIgnoredForOpenedEvent() {
+ public void testThatClosedPullRequestsAreNotIgnoredForMergedEvent() {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
       notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).build()).store()
+        .withFieldValue(AdminFormValues.FIELDS.events, MERGED.name()).build()).store()
     .trigger(pullRequestEventBuilder() //
-      .beingClosed().withToRef(pullRequestRefBuilder()).withPullRequestAction(OPENED).build())
+      .beingClosed().withToRef(pullRequestRefBuilder()).withPullRequestAction(MERGED).build())
     .invokedOnlyUrl("http://bjurr.se/");
  }
 
