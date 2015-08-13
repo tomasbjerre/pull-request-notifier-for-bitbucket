@@ -26,6 +26,7 @@ import com.atlassian.event.api.EventListener;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.stash.event.pull.PullRequestApprovedEvent;
 import com.atlassian.stash.event.pull.PullRequestCommentAddedEvent;
+import com.atlassian.stash.event.pull.PullRequestCommentEvent;
 import com.atlassian.stash.event.pull.PullRequestCommentRepliedEvent;
 import com.atlassian.stash.event.pull.PullRequestDeclinedEvent;
 import com.atlassian.stash.event.pull.PullRequestEvent;
@@ -126,7 +127,7 @@ public class PrnfsPullRequestEventListener {
  @VisibleForTesting
  public void handleEvent(final PullRequestEvent pullRequestEvent) {
   try {
-   if (pullRequestEvent.getPullRequest().isClosed()) {
+   if (pullRequestEvent.getPullRequest().isClosed() && pullRequestEvent instanceof PullRequestCommentEvent) {
     return;
    }
    final PrnfsSettings settings = getPrnfsSettings(pluginSettingsFactory.createGlobalSettings());

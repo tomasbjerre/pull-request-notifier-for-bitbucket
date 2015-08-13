@@ -3,7 +3,7 @@
 Changelog of Pull Request Notifier for Stash.
 
 ## 1.19
-
+* Bugfix: Only ignore events on closed pull requests if its a COMMENT-event.
 
 ## 1.18
 * Avoiding endless loop if user not 'System Admin' when editing configuration

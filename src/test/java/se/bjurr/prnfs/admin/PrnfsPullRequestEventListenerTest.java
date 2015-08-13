@@ -86,14 +86,26 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatClosedPullRequestsAreIgnored() {
+ public void testThatClosedPullRequestsAreNotIgnoredForOpenedEvent() {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
       notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
         .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).build()).store()
     .trigger(pullRequestEventBuilder() //
-      .beingClosed().withToRef(pullRequestRefBuilder()).withPullRequestAction(OPENED).build()).invokedNoUrl();
+      .beingClosed().withToRef(pullRequestRefBuilder()).withPullRequestAction(OPENED).build())
+    .invokedOnlyUrl("http://bjurr.se/");
+ }
+
+ @Test
+ public void testThatClosedPullRequestsAreIgnoredForCommentEvent() {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
+        .withFieldValue(AdminFormValues.FIELDS.events, COMMENTED.name()).build()).store()
+    .trigger(pullRequestEventBuilder() //
+      .beingClosed().withToRef(pullRequestRefBuilder()).withPullRequestAction(COMMENTED).build()).invokedNoUrl();
  }
 
  @Test
