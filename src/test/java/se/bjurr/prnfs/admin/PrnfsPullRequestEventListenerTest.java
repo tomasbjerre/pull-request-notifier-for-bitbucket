@@ -53,7 +53,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatAUrlCanHaveSeveralVariables() {
+ public void testThatAUrlCanHaveSeveralVariables() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -74,7 +74,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatAUrlIsOnlyInvokedForConfiguredEvents() {
+ public void testThatAUrlIsOnlyInvokedForConfiguredEvents() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -86,7 +86,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatClosedPullRequestsAreNotIgnoredForMergedEvent() {
+ public void testThatClosedPullRequestsAreNotIgnoredForMergedEvent() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -98,7 +98,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatClosedPullRequestsAreIgnoredForCommentEvent() {
+ public void testThatClosedPullRequestsAreIgnoredForCommentEvent() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -109,7 +109,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatAUrlWithoutVariablesCanBeInvoked() {
+ public void testThatAUrlWithoutVariablesCanBeInvoked() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -159,7 +159,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatRepoUrlReturnsEmptyIfThereIsNotUrlWithThatProtocol() {
+ public void testThatRepoUrlReturnsEmptyIfThereIsNotUrlWithThatProtocol() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -173,7 +173,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatAUrlWithCommentVariableHasSpacesReplaced() {
+ public void testThatAUrlWithCommentVariableHasSpacesReplaced() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -187,7 +187,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatAUrlWithVariableFromBranchCanBeInvokedWhenBranchIdContainsSlashes() {
+ public void testThatAUrlWithVariableFromBranchCanBeInvokedWhenBranchIdContainsSlashes() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -204,7 +204,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatAUrlWithVariableFromBranchCanBeInvokedWhenBranchIdContainsOnlyName() {
+ public void testThatAUrlWithVariableFromBranchCanBeInvokedWhenBranchIdContainsOnlyName() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -252,7 +252,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatPostContentIsNotSentIfMethodIsNotSet() {
+ public void testThatPostContentIsNotSentIfMethodIsNotSet() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -264,7 +264,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatPostContentIsNotSentIfMethodIsPOSTButThereIsNotPostContent() {
+ public void testThatPostContentIsNotSentIfMethodIsPOSTButThereIsNotPostContent() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -277,7 +277,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatPostContentIsNotSentIfMethodIsGETAndThereIsPostContent() {
+ public void testThatPostContentIsNotSentIfMethodIsGETAndThereIsPostContent() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -290,7 +290,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatPostContentIsNotSentIfMethodIsDELETEAndThereIsPostContent() {
+ public void testThatPostContentIsNotSentIfMethodIsDELETEAndThereIsPostContent() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -303,7 +303,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatPostContentIsSentIfMethodIsPOSTAndThereIsPostContent() {
+ public void testThatPostContentIsSentIfMethodIsPOSTAndThereIsPostContent() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -316,7 +316,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatPostContentIsSentIfMethodIsPUTAndThereIsPostContent() {
+ public void testThatPostContentIsSentIfMethodIsPUTAndThereIsPostContent() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -329,7 +329,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatPostContentIsSentAndRenderedIfMethodIsPOSTAndThereIsPostContent() {
+ public void testThatPostContentIsSentAndRenderedIfMethodIsPOSTAndThereIsPostContent() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -344,7 +344,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatCustomHeaderCanBeSent() {
+ public void testThatCustomHeaderCanBeSent() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -357,7 +357,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatCustomHeaderCanBeSentWithVariables() {
+ public void testThatCustomHeaderCanBeSentWithVariables() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -372,7 +372,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatEmptyHeaderNameIsIgnored() {
+ public void testThatEmptyHeaderNameIsIgnored() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -385,7 +385,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatBasicAuthenticationHeaderIsSentIfThereIsAUser() {
+ public void testThatBasicAuthenticationHeaderIsSentIfThereIsAUser() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -398,7 +398,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatBasicAuthenticationHeaderIsSentAlongWithCustomHeaders() {
+ public void testThatBasicAuthenticationHeaderIsSentAlongWithCustomHeaders() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -416,7 +416,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatBasicAuthenticationHeaderIsNotSentIfThereIsNoUser() {
+ public void testThatBasicAuthenticationHeaderIsNotSentIfThereIsNoUser() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -428,7 +428,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatBasicAuthenticationHeaderIsNotSentIfThereIsNoPassword() {
+ public void testThatBasicAuthenticationHeaderIsNotSentIfThereIsNoPassword() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -440,7 +440,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatBasicAuthenticationHeaderIsNotSentIfTheUserContainsOnlySpace() {
+ public void testThatBasicAuthenticationHeaderIsNotSentIfTheUserContainsOnlySpace() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -452,7 +452,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatBasicAuthenticationHeaderIsNotSentIfThePasswordContainsOnlySpace() {
+ public void testThatBasicAuthenticationHeaderIsNotSentIfThePasswordContainsOnlySpace() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -474,7 +474,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatFilterCanBeUsedToIgnoreEventsThatAreOnAnotherProject() {
+ public void testThatFilterCanBeUsedToIgnoreEventsThatAreOnAnotherProject() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -489,7 +489,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatFilterCanIncludeRescopedFrom() {
+ public void testThatFilterCanIncludeRescopedFrom() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -505,7 +505,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatFilterCanBeUsedWithComments() {
+ public void testThatFilterCanBeUsedWithComments() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -529,7 +529,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatFilterCanBeUsedWithCommentsAndSpecialEscapedChars() {
+ public void testThatFilterCanBeUsedWithCommentsAndSpecialEscapedChars() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -552,7 +552,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatFilterCanBeUsedWithCommentsIgnore() {
+ public void testThatFilterCanBeUsedWithCommentsIgnore() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -575,7 +575,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatStringWithVariableCommentIsEmptyIfNotACommentEvent() {
+ public void testThatStringWithVariableCommentIsEmptyIfNotACommentEvent() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -588,7 +588,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatURLCanIncludeRescopedFrom() {
+ public void testThatURLCanIncludeRescopedFrom() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -604,7 +604,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatURLCanIncludeRescopedTo() {
+ public void testThatURLCanIncludeRescopedTo() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -620,7 +620,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatURLCanIncludeRescopedFromWhenBothFromAndToChanges() {
+ public void testThatURLCanIncludeRescopedFromWhenBothFromAndToChanges() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -636,7 +636,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatAllURLsMatchingEventsAreTriggered() {
+ public void testThatAllURLsMatchingEventsAreTriggered() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -666,7 +666,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatURLCanIncludeRescopedFromWhenBothFromAndToChangesAndBothFromAndToAreConfigured() {
+ public void testThatURLCanIncludeRescopedFromWhenBothFromAndToChangesAndBothFromAndToAreConfigured() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -683,7 +683,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatURLCanIncludeRescopedToWhenBothFromAndToChanges() {
+ public void testThatURLCanIncludeRescopedToWhenBothFromAndToChanges() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -699,7 +699,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatFilterCanBeUsedToIgnoreEventsThatAreOnAnotherProjectAnBranch() {
+ public void testThatFilterCanBeUsedToIgnoreEventsThatAreOnAnotherProjectAnBranch() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -714,7 +714,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatFilterCanBeUsedToTriggerEventsThatAreOnAnotherProject() {
+ public void testThatFilterCanBeUsedToTriggerEventsThatAreOnAnotherProject() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -729,7 +729,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatFilterCanBeUsedToTriggerOnEventsThatAreOnAnotherProjectAnBranch() {
+ public void testThatFilterCanBeUsedToTriggerOnEventsThatAreOnAnotherProjectAnBranch() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -744,7 +744,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatMultipleUrlsCanBeInvoked() {
+ public void testThatMultipleUrlsCanBeInvoked() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -758,7 +758,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatProxyCanBeUsedWhenInvokingUrl() {
+ public void testThatProxyCanBeUsedWhenInvokingUrl() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -771,7 +771,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatProxyPortIsNeeded() {
+ public void testThatProxyPortIsNeeded() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -784,7 +784,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatProxyHostIsNeeded() {
+ public void testThatProxyHostIsNeeded() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -797,7 +797,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatProxyCanUseUserAndPassword() {
+ public void testThatProxyCanUseUserAndPassword() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -812,7 +812,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatProxyDoesNotAuthenticateIfNoUser() {
+ public void testThatProxyDoesNotAuthenticateIfNoUser() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -827,7 +827,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatProxyDoesNotAuthenticateIfNoPassword() {
+ public void testThatProxyDoesNotAuthenticateIfNoPassword() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -964,7 +964,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatProxyMayNotBeUsedWhenInvokingUrl() {
+ public void testThatProxyMayNotBeUsedWhenInvokingUrl() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -975,7 +975,7 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatVariablesAreImplementedForBothFromAndTo() {
+ public void testThatVariablesAreImplementedForBothFromAndTo() throws Exception {
   final List<String> from = newArrayList();
   final List<String> to = newArrayList();
   for (final PrnfsVariable prnfsVariable : PrnfsVariable.values()) {

@@ -186,6 +186,10 @@ public class SettingsStorage {
    } else {
     prnfsSettingsBuilder.withButton(getPrnfsButton(adminFormValues));
    }
+   prnfsSettingsBuilder
+     .withUsersAllowed(tryFind(adminFormValues, predicate(AdminFormValues.FIELDS.user_allowed.name())).isPresent());
+   prnfsSettingsBuilder.withAdminsAllowed(tryFind(adminFormValues,
+     predicate(AdminFormValues.FIELDS.admin_allowed.name())).isPresent());
   }
   return prnfsSettingsBuilder.build();
  }

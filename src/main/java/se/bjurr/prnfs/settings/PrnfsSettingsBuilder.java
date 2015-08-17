@@ -11,12 +11,14 @@ public class PrnfsSettingsBuilder {
 
  private final List<PrnfsNotification> notifications = newArrayList();
  private final List<PrnfsButton> buttons = newArrayList();
+ private boolean usersAllowed;
+ private boolean adminsAllowed;
 
  private PrnfsSettingsBuilder() {
  }
 
  public PrnfsSettings build() {
-  return new PrnfsSettings(notifications, buttons);
+  return new PrnfsSettings(notifications, buttons, usersAllowed, adminsAllowed);
  }
 
  public PrnfsSettingsBuilder withNotification(PrnfsNotification notification) {
@@ -34,5 +36,23 @@ public class PrnfsSettingsBuilder {
 
  public List<PrnfsNotification> getNotifications() {
   return notifications;
+ }
+
+ public PrnfsSettingsBuilder withUsersAllowed(boolean allowed) {
+  this.usersAllowed = allowed;
+  return this;
+ }
+
+ public PrnfsSettingsBuilder withAdminsAllowed(boolean allowed) {
+  this.adminsAllowed = allowed;
+  return this;
+ }
+
+ public boolean isAdminsAllowed() {
+  return adminsAllowed;
+ }
+
+ public boolean isUsersAllowed() {
+  return usersAllowed;
  }
 }
