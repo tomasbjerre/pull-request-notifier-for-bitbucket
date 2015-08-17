@@ -2,6 +2,10 @@
 
 Changelog of Pull Request Notifier for Stash.
 
+## 1.20
+* Optionally allow users and admins to configure the plugin.
+ * A common user, will have to browse to http://domain/stash/plugins/servlet/prnfs/admin to do configuration.
+
 ## 1.19
 * Bugfix: Only ignore events on closed pull requests if its a COMMENT-event.
 

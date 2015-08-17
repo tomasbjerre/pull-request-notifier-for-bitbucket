@@ -142,20 +142,20 @@ public class PrnfsTestBuilder {
    }
   };
   when(pluginSettingsFactory.createGlobalSettings()).thenReturn(pluginSettings);
-  configResource = new ConfigResource(userManager, pluginSettingsFactory, transactionTemplate);
-  listener = new PrnfsPullRequestEventListener(pluginSettingsFactory, repositoryService, propertiesService);
-  UserService userService = mock(UserService.class);
-  pullRequestService = mock(PullRequestService.class);
-  withPullRequest(pullRequestEventBuilder().build().getPullRequest());
   SecurityService securityService = mock(SecurityService.class);
   escalatedSecurityContext = mock(EscalatedSecurityContext.class);
   when(securityService.withPermission(Matchers.any(Permission.class), Matchers.anyString())).thenReturn(
     escalatedSecurityContext);
+  configResource = new ConfigResource(userManager, pluginSettingsFactory, transactionTemplate, securityService);
+  listener = new PrnfsPullRequestEventListener(pluginSettingsFactory, repositoryService, propertiesService);
+  UserService userService = mock(UserService.class);
+  pullRequestService = mock(PullRequestService.class);
+  withPullRequest(pullRequestEventBuilder().build().getPullRequest());
   manualResouce = new ManualResource(userManager, userService, pluginSettingsFactory, pullRequestService, listener,
     repositoryService, propertiesService, securityService);
  }
 
- public PrnfsTestBuilder delete(String id) {
+ public PrnfsTestBuilder delete(String id) throws Exception {
   configResource.delete(id, request);
   return this;
  }
@@ -192,7 +192,7 @@ public class PrnfsTestBuilder {
  }
 
  @SuppressWarnings("unchecked")
- private Map<String, AdminFormValues> getAdminFormFields() {
+ private Map<String, AdminFormValues> getAdminFormFields() throws Exception {
   return uniqueIndex((List<AdminFormValues>) configResource.get(request).getEntity(),
     new Function<AdminFormValues, String>() {
      @Override
@@ -202,7 +202,7 @@ public class PrnfsTestBuilder {
     });
  }
 
- public PrnfsTestBuilder hasFieldValueAt(AdminFormValues.FIELDS field, String value, String id) {
+ public PrnfsTestBuilder hasFieldValueAt(AdminFormValues.FIELDS field, String value, String id) throws Exception {
   for (final Map<String, String> fieldValue : getAdminFormFields().get(id)) {
    if (fieldValue.get(NAME).equals(field.name()) && fieldValue.get(VALUE).equals(value)) {
     return this;
@@ -212,7 +212,7 @@ public class PrnfsTestBuilder {
   return this;
  }
 
- public PrnfsTestBuilder hasNoneEmptyFieldAt(AdminFormValues.FIELDS field, String id) {
+ public PrnfsTestBuilder hasNoneEmptyFieldAt(AdminFormValues.FIELDS field, String id) throws Exception {
   for (final Map<String, String> fieldValue : getAdminFormFields().get(id)) {
    if (fieldValue.get(NAME).equals(field.name())) {
     if (fieldValue.get(VALUE).trim().isEmpty()) {
@@ -226,7 +226,7 @@ public class PrnfsTestBuilder {
   return this;
  }
 
- public PrnfsTestBuilder hasNotifications(int num) {
+ public PrnfsTestBuilder hasNotifications(int num) throws Exception {
   assertEquals(num, getAdminFormFields().size());
   return this;
  }
@@ -286,7 +286,7 @@ public class PrnfsTestBuilder {
   return this;
  }
 
- public PrnfsTestBuilder store() {
+ public PrnfsTestBuilder store() throws Exception {
   postResponses = newArrayList();
   for (final AdminFormValues adminFormValues : adminFormValuesMap.values()) {
    final Optional<Object> postResponseOpt = fromNullable(configResource.post(adminFormValues, request).getEntity());

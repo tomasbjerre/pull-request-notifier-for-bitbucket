@@ -102,6 +102,7 @@
    }).done(function(configs) {
     $(".prnfs-TRIGGER_CONFIG_FORM").html("");
     $(".prnfs-BUTTON_CONFIG_FORM").html("");
+    $(".prnfs-GLOBAL_SETTINGS").html("");
     $.each(configs, function(index, config) {
      var formType = 'TRIGGER_CONFIG_FORM';
      $.each(config, function(fieldIndex,field_map) {
@@ -146,6 +147,9 @@
     });
     addNewForm('TRIGGER_CONFIG_FORM');
     addNewForm('BUTTON_CONFIG_FORM');
+    if ($('[name="FORM_TYPE"][value="GLOBAL_SETTINGS"]').length < 2) {
+     addNewForm('GLOBAL_SETTINGS');
+    }
     setEvents();
    });
   }

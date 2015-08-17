@@ -17,7 +17,7 @@ public final class AdminFormValues extends ArrayList<Map<String, String>> {
  public static final String DEFAULT_NAME = "Unnamed trigger";
 
  public enum FORM_TYPE {
-  BUTTON_CONFIG_FORM, TRIGGER_CONFIG_FORM
+  BUTTON_CONFIG_FORM, TRIGGER_CONFIG_FORM, GLOBAL_SETTINGS
  };
 
  public enum BUTTON_VISIBILITY {
@@ -25,6 +25,6 @@ public final class AdminFormValues extends ArrayList<Map<String, String>> {
  };
 
  public enum FIELDS {
-  user, password, events, FORM_IDENTIFIER, FORM_TYPE, url, filter_string, filter_regexp, method, post_content, proxy_user, proxy_password, proxy_server, proxy_port, header_name, header_value, name, button_title, button_visibility
+  user, password, events, FORM_IDENTIFIER, FORM_TYPE, url, filter_string, filter_regexp, method, post_content, proxy_user, proxy_password, proxy_server, proxy_port, header_name, header_value, name, button_title, button_visibility, admin_allowed, user_allowed
  }
 }

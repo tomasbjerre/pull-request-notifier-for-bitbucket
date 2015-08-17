@@ -1,5 +1,6 @@
 package se.bjurr.prnfs.admin;
 
+import static com.atlassian.stash.user.Permission.ADMIN;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.Response.noContent;
 import static javax.ws.rs.core.Response.ok;
@@ -11,6 +12,7 @@ import static se.bjurr.prnfs.settings.SettingsStorage.checkFieldsRecognized;
 import static se.bjurr.prnfs.settings.SettingsStorage.deleteSettings;
 import static se.bjurr.prnfs.settings.SettingsStorage.getPrnfsButton;
 import static se.bjurr.prnfs.settings.SettingsStorage.getPrnfsNotification;
+import static se.bjurr.prnfs.settings.SettingsStorage.getPrnfsSettings;
 import static se.bjurr.prnfs.settings.SettingsStorage.getSettingsAsFormValues;
 import static se.bjurr.prnfs.settings.SettingsStorage.injectFormIdentifierIfNotSet;
 import static se.bjurr.prnfs.settings.SettingsStorage.storeSettings;
@@ -29,6 +31,7 @@ import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import se.bjurr.prnfs.settings.PrnfsSettings;
 import se.bjurr.prnfs.settings.ValidationException;
 
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
@@ -36,6 +39,8 @@ import com.atlassian.sal.api.transaction.TransactionCallback;
 import com.atlassian.sal.api.transaction.TransactionTemplate;
 import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.sal.api.user.UserProfile;
+import com.atlassian.stash.user.SecurityService;
+import com.atlassian.stash.util.Operation;
 
 @Path("/")
 public class ConfigResource {
@@ -43,18 +48,20 @@ public class ConfigResource {
  private final PluginSettingsFactory pluginSettingsFactory;
  private final TransactionTemplate transactionTemplate;
  private final UserManager userManager;
+ private final SecurityService securityService;
 
  public ConfigResource(UserManager userManager, PluginSettingsFactory pluginSettingsFactory,
-   TransactionTemplate transactionTemplate) {
+   TransactionTemplate transactionTemplate, SecurityService securityService) {
   this.userManager = userManager;
   this.pluginSettingsFactory = pluginSettingsFactory;
   this.transactionTemplate = transactionTemplate;
+  this.securityService = securityService;
  }
 
  @DELETE
  @Path("{id}")
- public Response delete(@PathParam("id") final String id, @Context HttpServletRequest request) {
-  if (!isSystemAdminLoggedIn(request)) {
+ public Response delete(@PathParam("id") final String id, @Context HttpServletRequest request) throws Exception {
+  if (!isAdminAllowed(userManager, request, securityService, pluginSettingsFactory)) {
    return status(UNAUTHORIZED).build();
   }
 
@@ -73,8 +80,8 @@ public class ConfigResource {
   */
  @GET
  @Produces(APPLICATION_JSON)
- public Response get(@Context HttpServletRequest request) {
-  if (!isSystemAdminLoggedIn(request)) {
+ public Response get(@Context HttpServletRequest request) throws Exception {
+  if (!isAdminAllowed(userManager, request, securityService, pluginSettingsFactory)) {
    return status(UNAUTHORIZED).build();
   }
 
@@ -98,12 +105,22 @@ public class ConfigResource {
   return userManager;
  }
 
- private boolean isSystemAdminLoggedIn(HttpServletRequest request) {
+ static boolean isAdminAllowed(UserManager userManager, HttpServletRequest request, SecurityService securityService,
+   final PluginSettingsFactory pluginSettingsFactory) throws Exception {
   final UserProfile user = userManager.getRemoteUser(request);
   if (user == null) {
    return false;
   }
-  return userManager.isSystemAdmin(user.getUserKey());
+  PrnfsSettings settings = securityService.withPermission(ADMIN, "Getting config").call(
+    new Operation<PrnfsSettings, Exception>() {
+     @Override
+     public PrnfsSettings perform() throws Exception {
+      return getPrnfsSettings(pluginSettingsFactory.createGlobalSettings());
+     }
+    });
+  return userManager.isSystemAdmin(user.getUserKey()) //
+    || settings.isUsersAllowed() //
+    || settings.isAdminsAllowed() && userManager.isAdmin(user.getUserKey());
  }
 
  /**
@@ -112,8 +129,8 @@ public class ConfigResource {
  @POST
  @Consumes(APPLICATION_JSON)
  @Produces(APPLICATION_JSON)
- public Response post(final AdminFormValues config, @Context HttpServletRequest request) {
-  if (!isSystemAdminLoggedIn(request)) {
+ public Response post(final AdminFormValues config, @Context HttpServletRequest request) throws Exception {
+  if (!isAdminAllowed(userManager, request, securityService, pluginSettingsFactory)) {
    return status(UNAUTHORIZED).build();
   }
 

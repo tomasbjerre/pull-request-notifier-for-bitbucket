@@ -1,6 +1,8 @@
 package se.bjurr.prnfs.admin;
 
+import static com.google.common.base.Throwables.propagate;
 import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
+import static se.bjurr.prnfs.admin.ConfigResource.isAdminAllowed;
 
 import java.io.IOException;
 import java.net.URI;
@@ -11,8 +13,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.atlassian.sal.api.auth.LoginUriProvider;
+import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.sal.api.user.UserProfile;
+import com.atlassian.stash.user.SecurityService;
 import com.atlassian.templaterenderer.TemplateRenderer;
 
 public class AdminServlet extends HttpServlet {
@@ -20,11 +24,16 @@ public class AdminServlet extends HttpServlet {
  private final LoginUriProvider loginUriProvider;
  private final TemplateRenderer renderer;
  private final UserManager userManager;
+ private final SecurityService securityService;
+ private final PluginSettingsFactory pluginSettingsFactory;
 
- public AdminServlet(UserManager userManager, LoginUriProvider loginUriProvider, TemplateRenderer renderer) {
+ public AdminServlet(UserManager userManager, LoginUriProvider loginUriProvider, TemplateRenderer renderer,
+   SecurityService securityService, PluginSettingsFactory pluginSettingsFactory) {
   this.userManager = userManager;
   this.loginUriProvider = loginUriProvider;
   this.renderer = renderer;
+  this.securityService = securityService;
+  this.pluginSettingsFactory = pluginSettingsFactory;
  }
 
  @Override
@@ -34,10 +43,14 @@ public class AdminServlet extends HttpServlet {
    response.sendRedirect(loginUriProvider.getLoginUri(getUri(request)).toASCIIString());
    return;
   }
-  if (!userManager.isSystemAdmin(user.getUserKey())) {
-   response.sendError(SC_FORBIDDEN, "Only 'System Admin':s are allowed to edit configuration "
-     + loginUriProvider.getLoginUri(getUri(request)).toASCIIString());
-   return;
+  try {
+   if (!isAdminAllowed(userManager, request, securityService, pluginSettingsFactory)) {
+    response.sendError(SC_FORBIDDEN,
+      "You are not allowed to edit configuration " + loginUriProvider.getLoginUri(getUri(request)).toASCIIString());
+    return;
+   }
+  } catch (Exception e) {
+   propagate(e);
   }
   response.setContentType("text/html;charset=utf-8");
   renderer.render("admin.vm", response.getWriter());

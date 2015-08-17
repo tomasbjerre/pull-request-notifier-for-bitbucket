@@ -9,7 +9,7 @@ import org.junit.Test;
 
 public class NotificationsStorageTest {
  @Test
- public void testThatANewNotificationCanBeStored() {
+ public void testThatANewNotificationCanBeStored() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -21,7 +21,7 @@ public class NotificationsStorageTest {
  }
 
  @Test
- public void testThatANewNotificationCanBeStoredWithWhiteSpaceInFormIdentifier() {
+ public void testThatANewNotificationCanBeStoredWithWhiteSpaceInFormIdentifier() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -33,7 +33,7 @@ public class NotificationsStorageTest {
  }
 
  @Test
- public void testThatFilterRegExpMustBeValid() {
+ public void testThatFilterRegExpMustBeValid() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -46,7 +46,7 @@ public class NotificationsStorageTest {
  }
 
  @Test
- public void testThatFilterTextCannotBeEmptyWhenRegExpMustIsSet() {
+ public void testThatFilterTextCannotBeEmptyWhenRegExpMustIsSet() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -58,7 +58,7 @@ public class NotificationsStorageTest {
  }
 
  @Test
- public void testThatTwoNewNotificationsCanBeStored() {
+ public void testThatTwoNewNotificationsCanBeStored() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -74,7 +74,7 @@ public class NotificationsStorageTest {
  }
 
  @Test
- public void testThatTwoNewNotificationsCanBeStoredAndThenOneDeleted() {
+ public void testThatTwoNewNotificationsCanBeStoredAndThenOneDeleted() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -94,7 +94,7 @@ public class NotificationsStorageTest {
  }
 
  @Test
- public void testThatTwoNewNotificationsCanBeStoredAndThenOneUpdated() {
+ public void testThatTwoNewNotificationsCanBeStoredAndThenOneUpdated() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -127,14 +127,14 @@ public class NotificationsStorageTest {
  }
 
  @Test
- public void testThatUrlMustBeSet() {
+ public void testThatUrlMustBeSet() throws Exception {
   prnfsTestBuilder().isLoggedInAsAdmin()
     .withNotification(notificationBuilder().withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).build())
     .store().hasValidationError(AdminFormValues.FIELDS.url, "URL not set");
  }
 
  @Test
- public void testThatUrlMustBeValid() {
+ public void testThatUrlMustBeValid() throws Exception {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
@@ -144,7 +144,7 @@ public class NotificationsStorageTest {
  }
 
  @Test
- public void testThatValuesMustBeSet() {
+ public void testThatValuesMustBeSet() throws Exception {
   prnfsTestBuilder().isLoggedInAsAdmin().withNotification(notificationBuilder().build()).store()
     .hasValidationError(AdminFormValues.FIELDS.url, "URL not set");
  }

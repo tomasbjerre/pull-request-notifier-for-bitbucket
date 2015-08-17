@@ -5,6 +5,31 @@
     $webResourceManager.requireResource("se.bjurr.prnfs.pull-request-notifier-for-stash:resources")
   </head>
   <body>
+    <div class="prnfs-template prnfs-template-GLOBAL_SETTINGS">
+     <form class="trigger config-area">
+      <input type="hidden" name="FORM_IDENTIFIER" value="GLOBAL_SETTINGS">
+      <input type="hidden" name="FORM_TYPE" value="GLOBAL_SETTINGS">
+      <div>
+        <fieldset>
+          <legend>Admin restrictions</legend>
+          <input type="checkbox" id="systemadmin_allowed" checked disabled>
+          <label for="systemadmin_allowed">System administrators</label><br>
+          <input type="checkbox" name="admin_allowed" value="ADMINS" id="admin_allowed">
+          <label for="admin_allowed">Administrators</label><br>
+          <input type="checkbox" name="user_allowed" value="USERS" id="user_allowed">
+          <label for="user_allowed">Users</label><br>
+        </fieldset>
+      </div>
+      <div>
+        <fieldset>
+          <input type="button" name="save" value="Save"/>
+          <span class="post"></span>
+        </fieldset>
+      </div>
+     </form>
+    </div>
+    <div class="prnfs-GLOBAL_SETTINGS">
+    </div>
 
     <div class="prnfs-BUTTON_CONFIG_FORM">
     </div>
