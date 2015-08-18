@@ -95,6 +95,7 @@ public class PrnfsTestBuilder {
  private final ConfigResource configResource;
 
  private PrnfsPullRequestEventListener listener;
+
  private final ManualResource manualResouce;
 
  private final PluginSettings pluginSettings;
@@ -333,16 +334,25 @@ public class PrnfsTestBuilder {
   return this;
  }
 
- public PrnfsTestBuilder hasButtonEnabled(final String formIdentifier) throws Exception {
-  List<PrnfsButton> enabledButtons = new Gson().fromJson((String) manualResouce.get(request).getEntity(),
-    new TypeToken<List<PrnfsButton>>() {
+ public PrnfsTestBuilder hasNoButtonsEnabled() throws Exception {
+  return hasButtonsEnabled();
+ }
+
+ public PrnfsTestBuilder hasButtonsEnabled(final String... formIdentifiers) throws Exception {
+  Integer repositoryId = 0;
+  Long pullRequestId = 0L;
+  List<PrnfsButton> enabledButtons = new Gson().fromJson(
+    (String) manualResouce.get(request, repositoryId, pullRequestId).getEntity(), new TypeToken<List<PrnfsButton>>() {
     }.getType());
-  assertTrue(tryFind(enabledButtons, new Predicate<PrnfsButton>() {
-   @Override
-   public boolean apply(PrnfsButton input) {
-    return input.getFormIdentifier().equals(formIdentifier);
-   }
-  }).isPresent());
+  assertEquals(formIdentifiers.length, enabledButtons.size());
+  for (final String formIdentifier : formIdentifiers) {
+   assertTrue(tryFind(enabledButtons, new Predicate<PrnfsButton>() {
+    @Override
+    public boolean apply(PrnfsButton input) {
+     return input.getFormIdentifier().equals(formIdentifier);
+    }
+   }).isPresent());
+  }
   return this;
  }
 

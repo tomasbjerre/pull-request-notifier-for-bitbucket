@@ -3,6 +3,7 @@
 Changelog of Pull Request Notifier for Stash.
 
 ## 1.21
+* Hiding buttons in pull request view, if no notification will be fired when it is clicked
 * Using label without ID:s in admin GUI
  * To avoid using same ID:s multiple times
 

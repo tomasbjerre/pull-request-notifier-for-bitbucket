@@ -857,7 +857,46 @@ public class PrnfsPullRequestEventListenerTest {
         .withFieldValue(AdminFormValues.FIELDS.button_title, "Trigger notification")
         .withFieldValue(AdminFormValues.FIELDS.button_visibility, AdminFormValues.BUTTON_VISIBILITY.EVERYONE.name())
         .build()).store().triggerButton("Button Form").invokedOnlyUrl("http://bjurr.se/Trigger%20notification")
-    .hasButtonEnabled("Button Form");
+    .hasButtonsEnabled("Button Form");
+ }
+
+ @Test
+ public void testThatButtonIsHiddenIfNoConfiguredNotificationForItWhenNotificationSetToOpened() throws Exception {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder()
+        .withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/${" + BUTTON_TRIGGER_TITLE + "}")
+        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name())
+        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.TRIGGER_CONFIG_FORM.name()).build())
+    .store()
+    .withNotification(
+      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.FORM_IDENTIFIER, "Button Form")
+        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.BUTTON_CONFIG_FORM.name())
+        .withFieldValue(AdminFormValues.FIELDS.button_title, "Trigger notification")
+        .withFieldValue(AdminFormValues.FIELDS.button_visibility, AdminFormValues.BUTTON_VISIBILITY.EVERYONE.name())
+        .build()).store().triggerButton("Button Form").hasNoButtonsEnabled();
+ }
+
+ @Test
+ public void testThatButtonIsHiddenIfNoConfiguredNotificationForItWhenNotificationSetToButtonTriggered()
+   throws Exception {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification(
+      notificationBuilder()
+        .withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/${" + BUTTON_TRIGGER_TITLE + "}")
+        .withFieldValue(AdminFormValues.FIELDS.events, BUTTON_TRIGGER)
+        .withFieldValue(AdminFormValues.FIELDS.filter_string, "${" + BUTTON_TRIGGER_TITLE + "}")
+        .withFieldValue(AdminFormValues.FIELDS.filter_regexp, "123")
+        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.TRIGGER_CONFIG_FORM.name()).build())
+    .store()
+    .withNotification(
+      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.FORM_IDENTIFIER, "Button Form")
+        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.BUTTON_CONFIG_FORM.name())
+        .withFieldValue(AdminFormValues.FIELDS.button_title, "Trigger notification")
+        .withFieldValue(AdminFormValues.FIELDS.button_visibility, AdminFormValues.BUTTON_VISIBILITY.EVERYONE.name())
+        .build()).store().triggerButton("Button Form").hasNoButtonsEnabled();
  }
 
  @Test

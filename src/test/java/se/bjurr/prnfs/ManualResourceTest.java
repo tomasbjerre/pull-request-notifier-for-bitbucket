@@ -4,7 +4,7 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static se.bjurr.prnfs.ManualResource.canUseButton;
+import static se.bjurr.prnfs.ManualResource.allowedUseButton;
 import static se.bjurr.prnfs.admin.AdminFormValues.BUTTON_VISIBILITY.ADMIN;
 import static se.bjurr.prnfs.admin.AdminFormValues.BUTTON_VISIBILITY.EVERYONE;
 import static se.bjurr.prnfs.admin.AdminFormValues.BUTTON_VISIBILITY.NONE;
@@ -23,23 +23,23 @@ public class ManualResourceTest {
   PrnfsButton systemAdmin = new PrnfsButton("", SYSTEM_ADMIN, "");
   PrnfsButton none = new PrnfsButton("", NONE, "");
 
-  assertTrue(canUseButton(everyone, TRUE, TRUE));
-  assertTrue(canUseButton(everyone, TRUE, FALSE));
-  assertTrue(canUseButton(everyone, FALSE, TRUE));
+  assertTrue(allowedUseButton(everyone, TRUE, TRUE));
+  assertTrue(allowedUseButton(everyone, TRUE, FALSE));
+  assertTrue(allowedUseButton(everyone, FALSE, TRUE));
 
-  assertTrue(canUseButton(admin, TRUE, TRUE));
-  assertFalse(canUseButton(admin, FALSE, TRUE));
-  assertTrue(canUseButton(admin, TRUE, FALSE));
-  assertFalse(canUseButton(admin, FALSE, FALSE));
+  assertTrue(allowedUseButton(admin, TRUE, TRUE));
+  assertFalse(allowedUseButton(admin, FALSE, TRUE));
+  assertTrue(allowedUseButton(admin, TRUE, FALSE));
+  assertFalse(allowedUseButton(admin, FALSE, FALSE));
 
-  assertTrue(canUseButton(systemAdmin, TRUE, TRUE));
-  assertTrue(canUseButton(systemAdmin, FALSE, TRUE));
-  assertTrue(canUseButton(systemAdmin, TRUE, FALSE));
-  assertFalse(canUseButton(systemAdmin, FALSE, FALSE));
+  assertTrue(allowedUseButton(systemAdmin, TRUE, TRUE));
+  assertTrue(allowedUseButton(systemAdmin, FALSE, TRUE));
+  assertTrue(allowedUseButton(systemAdmin, TRUE, FALSE));
+  assertFalse(allowedUseButton(systemAdmin, FALSE, FALSE));
 
-  assertFalse(canUseButton(none, FALSE, FALSE));
-  assertFalse(canUseButton(none, FALSE, TRUE));
-  assertFalse(canUseButton(none, TRUE, FALSE));
-  assertFalse(canUseButton(none, FALSE, FALSE));
+  assertFalse(allowedUseButton(none, FALSE, FALSE));
+  assertFalse(allowedUseButton(none, FALSE, TRUE));
+  assertFalse(allowedUseButton(none, TRUE, FALSE));
+  assertFalse(allowedUseButton(none, FALSE, FALSE));
  }
 }
