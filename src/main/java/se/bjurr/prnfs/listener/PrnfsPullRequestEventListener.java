@@ -3,6 +3,8 @@ package se.bjurr.prnfs.listener;
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Optional.absent;
 import static com.google.common.collect.Maps.newHashMap;
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
 import static java.util.regex.Pattern.compile;
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static javax.xml.bind.DatatypeConverter.printBase64Binary;
@@ -142,7 +144,9 @@ public class PrnfsPullRequestEventListener {
       }
      });
     }
-    notify(notification, action, pullRequestEvent.getPullRequest(), pullRequestEvent.getUser(), variables);
+    PrnfsRenderer renderer = new PrnfsRenderer(pullRequestEvent.getPullRequest(), action, pullRequestEvent.getUser(), repositoryService,
+      propertiesService, notification, variables);
+    notify(notification, action, pullRequestEvent.getPullRequest(), variables, renderer);
    }
   } catch (final ValidationException e) {
    logger.error("", e);
@@ -151,16 +155,8 @@ public class PrnfsPullRequestEventListener {
 
  @SuppressWarnings("deprecation")
  public void notify(final PrnfsNotification notification, PrnfsPullRequestAction pullRequestAction,
-   PullRequest pullRequest, StashUser stashUser, Map<PrnfsVariable, Supplier<String>> variables) {
-  PrnfsRenderer renderer = new PrnfsRenderer(pullRequest, pullRequestAction, stashUser, repositoryService,
-    propertiesService, notification, variables);
-  if (!notification.getTriggers().contains(pullRequestAction)) {
-   return;
-  }
-  if (notification.getFilterRegexp().isPresent()
-    && notification.getFilterString().isPresent()
-    && !compile(notification.getFilterRegexp().get()).matcher(renderer.render(notification.getFilterString().get()))
-      .find()) {
+   PullRequest pullRequest, Map<PrnfsVariable, Supplier<String>> variables, PrnfsRenderer renderer) {
+  if (!notificationTriggeredByAction(notification, pullRequestAction, renderer)) {
    return;
   }
   Optional<String> postContent = absent();
@@ -187,5 +183,19 @@ public class PrnfsPullRequestEventListener {
   urlInvoker.withProxyUser(notification.getProxyUser());
   urlInvoker.withProxyPassword(notification.getProxyPassword());
   invoker.invoke(urlInvoker);
+ }
+
+ public boolean notificationTriggeredByAction(PrnfsNotification notification, PrnfsPullRequestAction pullRequestAction,
+   PrnfsRenderer renderer) {
+  if (!notification.getTriggers().contains(pullRequestAction)) {
+   return FALSE;
+  }
+  if (notification.getFilterRegexp().isPresent()
+    && notification.getFilterString().isPresent()
+    && !compile(notification.getFilterRegexp().get()).matcher(renderer.render(notification.getFilterString().get()))
+      .find()) {
+   return FALSE;
+  }
+  return TRUE;
  }
 }
