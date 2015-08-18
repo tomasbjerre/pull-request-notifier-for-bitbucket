@@ -144,7 +144,7 @@ public class ConfigResource {
     // Assuming TRIGGER_CONFIG_FORM here if field not available, to be backwards
     // compatible
     getPrnfsNotification(config);
-   } else {
+   } else if (isOfType(config, AdminFormValues.FORM_TYPE.BUTTON_CONFIG_FORM)) {
     getPrnfsButton(config);
    }
   } catch (final ValidationException e) {
