@@ -2,6 +2,10 @@
 
 Changelog of Pull Request Notifier for Stash.
 
+## 1.21
+* Using label without ID:s in admin GUI
+ * To avoid using same ID:s multiple times
+
 ## 1.20
 * Optionally allow users and admins to configure the plugin.
  * A common user, will have to browse to http://domain/stash/plugins/servlet/prnfs/admin to do configuration.

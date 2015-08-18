@@ -89,21 +89,16 @@
         <div>
           <fieldset>
             <legend>Trigger notification -button in pull request view</legend>
-            <label for="title">Text to display on button</label>
-            <input type="text" name="button_title">
+            <label>Text to display on button<input type="text" name="button_title"></label>
           </fieldset>
         </div>
         <div>
           <fieldset>
             <legend>Show button for</legend>
-            <input type="radio" name="button_visibility" value="NONE" id="NONE">
-            <label for="NONE">None</label><br>
-            <input type="radio" name="button_visibility" value="SYSTEM_ADMIN" id="SYSTEM_ADMIN">
-            <label for="SYSTEM_ADMIN">System Admins</label><br>
-            <input type="radio" name="button_visibility" value="ADMIN" id="ADMIN">
-            <label for="ADMIN">Admins</label><br>
-            <input type="radio" name="button_visibility" value="EVERYONE" id="EVERYONE">
-            <label for="EVERYONE">Everyone</label><br>
+            <label><input type="radio" name="button_visibility" value="NONE">None</label><br>
+            <label><input type="radio" name="button_visibility" value="SYSTEM_ADMIN">System Admins</label><br>
+            <label><input type="radio" name="button_visibility" value="ADMIN">Admins</label><br>
+            <label><input type="radio" name="button_visibility" value="EVERYONE">Everyone</label><br>
           </fieldset>
         </div>
         <div>
@@ -129,18 +124,15 @@
         <div>
           <fieldset>
             <legend>Name</legend>
-            <input type="text" name="name" value="Unnamed trigger">
-            <label for="name">Name of this trigger. The name will show up in the log when trigger is executed. Other then that, this is just a feature to help you keep track of your triggers.</label><br/>
+            <label><input type="text" name="name" value="Unnamed trigger">Name of this trigger. The name will show up in the log when trigger is executed. Other then that, this is just a feature to help you keep track of your triggers.</label><br/>
           </fieldset>
         </div>
         <div>
           <fieldset>
             <legend>Filter (Optional). Variables above are available.</legend>
-            <label for="filter_string">Filter string</label>
-            <input type="text" name="filter_string"><br/>
+            <label>Filter string<input type="text" name="filter_string"><br/></label>
             <div class="error filter_string"></div>
-            <label for="filter_regexp">Filter regexp</label>
-            <input type="text" name="filter_regexp"><br>
+            <label>Filter regexp<input type="text" name="filter_regexp"><br></label>
             <div class="error filter_regexp"></div>
             You can use <a target="_blank" href="http://jex.im/regulex/">http://jex.im/regulex/</a> to fiddle with regular expressions.
           </fieldset>
@@ -149,58 +141,41 @@
           <fieldset>
             <legend>Triggers</legend>
             <div class="left">
-              <input type="checkbox" name="events" id="APPROVED_1" value="APPROVED">
-              <label for="APPROVED_1">APPROVED</label><br/>
-              <input type="checkbox" name="events" id="COMMENTED_1" value="COMMENTED">
-              <label for="COMMENTED_1">COMMENTED</label><br/>
-              <input type="checkbox" name="events" id="DECLINED_1" value="DECLINED">
-              <label for="DECLINED_1">DECLINED</label><br/>
-              <input type="checkbox" name="events" id="MERGED_1" value="MERGED">
-              <label for="MERGED_1">MERGED</label><br/>
-              <input type="checkbox" name="events" id="OPENED_1" value="OPENED">
-              <label for="OPENED_1">OPENED</label><br/>
-              <input type="checkbox" name="events" id="BUTTON_TRIGGER_1" value="BUTTON_TRIGGER">
-              <label for="BUTTON_TRIGGER_1">BUTTON_TRIGGER</label><br/>
+              <label><input type="checkbox" name="events" value="APPROVED">APPROVED</label><br/>
+              <label><input type="checkbox" name="events" value="COMMENTED">COMMENTED</label><br/>
+              <label><input type="checkbox" name="events" value="DECLINED">DECLINED</label><br/>
+              <label><input type="checkbox" name="events" value="MERGED">MERGED</label><br/>
+              <label><input type="checkbox" name="events" value="OPENED">OPENED</label><br/>
+              <label><input type="checkbox" name="events" value="BUTTON_TRIGGER">BUTTON_TRIGGER</label><br/>
             </div>
             <div class="right">
-              <input type="checkbox" name="events" id="REOPENED_1" value="REOPENED">
-              <label for="REOPENED_1">REOPENED</label><br/>
-              <input type="checkbox" name="events" id="RESCOPED_FROM_1" value="RESCOPED_FROM">
-              <label for="RESCOPED_FROM_1">RESCOPED_FROM</label><br/>
-              <input type="checkbox" name="events" id="RESCOPED_TO_1" value="RESCOPED_TO">
-              <label for="RESCOPED_TO_1">RESCOPED_TO</label><br/>
-              <input type="checkbox" name="events" id="UNAPPROVED_1" value="UNAPPROVED">
-              <label for="UNAPPROVED_1">UNAPPROVED</label><br/>
-              <input type="checkbox" name="events" id="UPDATED_1" value="UPDATED">
-              <label for="UPDATED_1">UPDATED</label><br/>
+              <label><input type="checkbox" name="events" value="REOPENED">REOPENED</label><br/>
+              <label><input type="checkbox" name="events" value="RESCOPED_FROM">RESCOPED_FROM</label><br/>
+              <label><input type="checkbox" name="events" value="RESCOPED_TO">RESCOPED_TO</label><br/>
+              <label><input type="checkbox" name="events" value="UNAPPROVED">UNAPPROVED</label><br/>
+              <label><input type="checkbox" name="events" value="UPDATED">UPDATED</label><br/>
             </div>
           </fieldset>
         </div>
         <div>
           <fieldset>
             <legend>Basic authentication (Optional)</legend>
-            <label for="user">User</label>
-            <input type="text" name="user"><br/>
+            <label>User<input type="text" name="user"><br/></label>
             <div class="error user"></div>
-            <label for="password">Password</label>
-            <input type="password" name="password">
+            <label>Password<input type="password" name="password"></label>
             <div class="error password"></div>
           </fieldset>
         </div>
         <div>
           <fieldset>
             <legend>Proxy (Optional)</legend>
-            <label for="proxy_user">User (Optional)</label>
-            <input type="text" name="proxy_user"><br/>
+            <label>User (Optional)<input type="text" name="proxy_user"></label>
             <div class="error proxy_user"></div>
-            <label for="proxy_password">Password (Optional)</label>
-            <input type="password" name="proxy_password">
+            <label>Password (Optional)<input type="password" name="proxy_password"></label>
             <div class="error proxy_password"></div>
-            <label for="proxy_server">Server, IP or hostname</label>
-            <input type="text" name="proxy_server">
+            <label>Server, IP or hostname<input type="text" name="proxy_server"></label>
             <div class="error proxy_server"></div>
-            <label for="proxy_port">Server port</label>
-            <input type="text" name="proxy_port">
+            <label>Server port<input type="text" name="proxy_port"></label>
             <div class="error proxy_port"></div>
           </fieldset>
         </div>
@@ -231,22 +206,17 @@
         <div>
           <fieldset>
             <legend>Invoke URL</legend>
-            <label for="url">URL</label>
-            <input type="text" name="url">
+            <label>URL<input type="text" name="url"></label>
             <div class="error url"></div>
           </fieldset>
         </div>
         <div>
           <fieldset>
             <legend>HTTP method</legend>
-            <input type="radio" name="method" value="GET" onClick="jQuery('.method_POST').hide()">
-            <label for="GET">GET</label><br>
-            <input type="radio" name="method" value="POST" onClick="jQuery('.method_POST').show()">
-            <label for="post">POST</label><br>
-            <input type="radio" name="method" value="PUT" onClick="jQuery('.method_POST').show()">
-            <label for="post">PUT</label><br>
-            <input type="radio" name="method" value="DELETE" onClick="jQuery('.method_POST').hide()">
-            <label for="post">DELETE</label>
+            <label><input type="radio" name="method" value="GET" onClick="jQuery('.method_POST').hide()">GET</label><br>
+            <label><input type="radio" name="method" value="POST" onClick="jQuery('.method_POST').show()">POST</label><br>
+            <label><input type="radio" name="method" value="PUT" onClick="jQuery('.method_POST').show()">PUT</label><br>
+            <label><input type="radio" name="method" value="DELETE" onClick="jQuery('.method_POST').hide()">DELETE</label>
           </fieldset>
         </div>
         <div class="visibleif method_POST method_PUT">
