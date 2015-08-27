@@ -41,16 +41,11 @@ import com.atlassian.stash.event.pull.PullRequestUpdatedEvent;
 import com.atlassian.stash.pull.PullRequest;
 import com.atlassian.stash.repository.RepositoryService;
 import com.atlassian.stash.server.ApplicationPropertiesService;
-import com.atlassian.stash.user.StashUser;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
 
 public class PrnfsPullRequestEventListener {
-
- public interface Invoker {
-  void invoke(UrlInvoker urlInvoker);
- }
 
  private final PluginSettingsFactory pluginSettingsFactory;
  private final RepositoryService repositoryService;
@@ -144,8 +139,8 @@ public class PrnfsPullRequestEventListener {
       }
      });
     }
-    PrnfsRenderer renderer = new PrnfsRenderer(pullRequestEvent.getPullRequest(), action, pullRequestEvent.getUser(), repositoryService,
-      propertiesService, notification, variables);
+    PrnfsRenderer renderer = new PrnfsRenderer(pullRequestEvent.getPullRequest(), action, pullRequestEvent.getUser(),
+      repositoryService, propertiesService, notification, variables);
     notify(notification, action, pullRequestEvent.getPullRequest(), variables, renderer);
    }
   } catch (final ValidationException e) {
@@ -178,11 +173,10 @@ public class PrnfsPullRequestEventListener {
   for (Header header : notification.getHeaders()) {
    urlInvoker.withHeader(header.getName(), renderer.render(header.getValue()));
   }
-  urlInvoker.withProxyServer(notification.getProxyServer());
-  urlInvoker.withProxyPort(notification.getProxyPort());
-  urlInvoker.withProxyUser(notification.getProxyUser());
-  urlInvoker.withProxyPassword(notification.getProxyPassword());
-  invoker.invoke(urlInvoker);
+  invoker.invoke(urlInvoker.withProxyServer(notification.getProxyServer()) //
+    .withProxyPort(notification.getProxyPort())//
+    .withProxyUser(notification.getProxyUser())//
+    .withProxyPassword(notification.getProxyPassword()));
  }
 
  public boolean notificationTriggeredByAction(PrnfsNotification notification, PrnfsPullRequestAction pullRequestAction,

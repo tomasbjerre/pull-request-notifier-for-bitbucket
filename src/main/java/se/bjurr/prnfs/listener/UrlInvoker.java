@@ -2,12 +2,16 @@ package se.bjurr.prnfs.listener;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Joiner.on;
+import static com.google.common.base.Optional.absent;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.io.CharStreams.readLines;
 import static java.lang.Boolean.TRUE;
+import static se.bjurr.prnfs.listener.UrlInvoker.HTTP_METHOD.GET;
 
+import java.io.ByteArrayInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Authenticator;
 import java.net.HttpURLConnection;
@@ -28,15 +32,20 @@ import com.google.common.io.Closeables;
 
 public class UrlInvoker {
 
+ public enum HTTP_METHOD {
+  GET, PUT, POST, DELETE
+ }
+
  private static final Logger logger = LoggerFactory.getLogger(UrlInvoker.class);
  private String urlParam;
- private String method;
+ private HTTP_METHOD method = GET;
  private Optional<String> postContent;
  private final List<Header> headers = newArrayList();
- private Optional<String> proxyUser;
- private Optional<String> proxyPassword;
- private Optional<String> proxyHost;
+ private Optional<String> proxyUser = absent();
+ private Optional<String> proxyPassword = absent();
+ private Optional<String> proxyHost = absent();
  private Integer proxyPort;
+ private String responseString;
 
  private UrlInvoker() {
  }
@@ -50,7 +59,7 @@ public class UrlInvoker {
   return this;
  }
 
- public UrlInvoker withMethod(String method) {
+ public UrlInvoker withMethod(HTTP_METHOD method) {
   this.method = method;
   return this;
  }
@@ -87,7 +96,7 @@ public class UrlInvoker {
    } else {
     uc = (HttpURLConnection) url.openConnection();
    }
-   uc.setRequestMethod(method);
+   uc.setRequestMethod(method.name());
    for (Header header : headers) {
     logger.info("header: \"" + header.getName() + "\" value: \"" + header.getValue() + "\"");
     uc.setRequestProperty(header.getName(), getHeaderValue(header));
@@ -101,8 +110,11 @@ public class UrlInvoker {
     wr.write(postContent.get().getBytes(UTF_8));
    }
    ir = new InputStreamReader(uc.getInputStream(), UTF_8);
-   logger.debug(on("\n").join(readLines(ir)));
+   responseString = on("\n").join(readLines(ir));
+   logger.debug(responseString);
   } catch (final Exception e) {
+   logger.error("", e);
+  } finally {
    try {
     Closeables.close(ir, TRUE);
     if (wr != null) {
@@ -110,7 +122,6 @@ public class UrlInvoker {
     }
    } catch (final IOException e1) {
    }
-   logger.error("", e);
   }
  }
 
@@ -124,7 +135,7 @@ public class UrlInvoker {
   return header.getValue();
  }
 
- public String getMethod() {
+ public HTTP_METHOD getMethod() {
   return method;
  }
 
@@ -143,6 +154,10 @@ public class UrlInvoker {
 
  public List<Header> getHeaders() {
   return headers;
+ }
+
+ public String getResponseString() {
+  return responseString;
  }
 
  @VisibleForTesting
@@ -184,5 +199,13 @@ public class UrlInvoker {
  public UrlInvoker withProxyPort(Integer proxyPort) {
   this.proxyPort = proxyPort;
   return this;
+ }
+
+ public InputStream getResponseStringStream() {
+  return new ByteArrayInputStream(getResponseString().getBytes(UTF_8));
+ }
+
+ public void setResponseString(String responseString) {
+  this.responseString = responseString;
  }
 }

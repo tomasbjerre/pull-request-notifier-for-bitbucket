@@ -2,6 +2,10 @@
 
 Changelog of Pull Request Notifier for Stash.
 
+## 1.22
+* Adding feature that can inject variable evaluated in content of a URL. Raw content or value of a xPath or JsonPath.
+* Bugfix: Closing inputstream after invokation. This may have caused "IOException: Too many open files".
+
 ## 1.21
 * Hiding buttons in pull request view, if no notification will be fired when it is clicked
 * Using label without ID:s in admin GUI
