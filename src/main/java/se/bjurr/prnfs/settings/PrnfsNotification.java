@@ -9,6 +9,7 @@ import static com.google.common.collect.Iterables.tryFind;
 import static java.util.regex.Pattern.compile;
 import static se.bjurr.prnfs.admin.AdminFormValues.DEFAULT_NAME;
 import static se.bjurr.prnfs.admin.AdminFormValues.VALUE;
+import static se.bjurr.prnfs.listener.UrlInvoker.HTTP_METHOD.GET;
 import static se.bjurr.prnfs.settings.PrnfsPredicates.predicate;
 
 import java.net.URL;
@@ -17,7 +18,9 @@ import java.util.Map;
 
 import se.bjurr.prnfs.admin.AdminFormValues;
 import se.bjurr.prnfs.admin.AdminFormValues.FORM_TYPE;
+import se.bjurr.prnfs.admin.AdminFormValues.INEJCTION_TYPE;
 import se.bjurr.prnfs.listener.PrnfsPullRequestAction;
+import se.bjurr.prnfs.listener.UrlInvoker.HTTP_METHOD;
 
 import com.google.common.base.Optional;
 
@@ -28,7 +31,7 @@ public class PrnfsNotification {
  private final List<PrnfsPullRequestAction> triggers;
  private final String url;
  private final String user;
- private final String method;
+ private final HTTP_METHOD method;
  private final String postContent;
  private final List<Header> headers;
  private final String proxyUser;
@@ -36,17 +39,22 @@ public class PrnfsNotification {
  private final String proxyServer;
  private final Integer proxyPort;
  private final String name;
+ private final String injectionUrl;
+ private final String injectionUrlJsonPath;
+ private final String injectionUrlXPath;
+ private final INEJCTION_TYPE injectionUrlType;
 
  public PrnfsNotification(List<PrnfsPullRequestAction> triggers, String url, String user, String password,
    String filterString, String filterRegexp, String method, String postContent, List<Header> headers, String proxyUser,
-   String proxyPassword, String proxyServer, String proxyPort, String name) throws ValidationException {
+   String proxyPassword, String proxyServer, String proxyPort, String name, String injectionUrl,
+   String injectionUrlJsonPath, String injectionUrlXPath, INEJCTION_TYPE injectionUrlType) throws ValidationException {
   this.proxyUser = emptyToNull(nullToEmpty(proxyUser).trim());
   this.proxyPassword = emptyToNull(nullToEmpty(proxyPassword).trim());
   this.proxyServer = emptyToNull(nullToEmpty(proxyServer).trim());
   this.proxyPort = Integer.valueOf(firstNonNull(emptyToNull(nullToEmpty(proxyPort).trim()), "-1"));
   this.headers = checkNotNull(headers);
   this.postContent = emptyToNull(nullToEmpty(postContent).trim());
-  this.method = firstNonNull(emptyToNull(nullToEmpty(method).trim()), "GET");
+  this.method = HTTP_METHOD.valueOf(firstNonNull(emptyToNull(nullToEmpty(method).trim()), GET.name()));
   if (nullToEmpty(url).trim().isEmpty()) {
    throw new ValidationException(AdminFormValues.FIELDS.url.name(), "URL not set!");
   }
@@ -74,6 +82,10 @@ public class PrnfsNotification {
   this.filterString = filterString;
   this.filterRegexp = filterRegexp;
   this.name = firstNonNull(emptyToNull(nullToEmpty(name).trim()), DEFAULT_NAME);
+  this.injectionUrl = emptyToNull(nullToEmpty(injectionUrl).trim());
+  this.injectionUrlJsonPath = emptyToNull(nullToEmpty(injectionUrlJsonPath).trim());
+  this.injectionUrlXPath = emptyToNull(nullToEmpty(injectionUrlXPath).trim());
+  this.injectionUrlType = injectionUrlType;
  }
 
  public Optional<String> getFilterRegexp() {
@@ -120,7 +132,7 @@ public class PrnfsNotification {
   return fromNullable(user);
  }
 
- public String getMethod() {
+ public HTTP_METHOD getMethod() {
   return method;
  }
 
@@ -136,5 +148,21 @@ public class PrnfsNotification {
   Optional<Map<String, String>> formTypeOpt = tryFind(config, predicate(AdminFormValues.FIELDS.FORM_TYPE.name()));
   return !formTypeOpt.isPresent() && formType.name().equals(FORM_TYPE.TRIGGER_CONFIG_FORM.name())
     || formTypeOpt.get().get(VALUE).equals(AdminFormValues.FORM_TYPE.TRIGGER_CONFIG_FORM.name());
+ }
+
+ public Optional<String> getInjectionUrl() {
+  return fromNullable(injectionUrl);
+ }
+
+ public Optional<String> getInjectionUrlJsonPath() {
+  return fromNullable(injectionUrlJsonPath);
+ }
+
+ public Optional<String> getInjectionUrlXPath() {
+  return fromNullable(injectionUrlXPath);
+ }
+
+ public INEJCTION_TYPE getInjectionUrlType() {
+  return injectionUrlType;
  }
 }

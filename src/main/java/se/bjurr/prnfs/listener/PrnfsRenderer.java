@@ -1,10 +1,22 @@
 package se.bjurr.prnfs.listener;
 
+import static javax.xml.xpath.XPathConstants.STRING;
+import static se.bjurr.prnfs.admin.AdminFormValues.INEJCTION_TYPE.JSONPATH;
+import static se.bjurr.prnfs.admin.AdminFormValues.INEJCTION_TYPE.RAW;
+import static se.bjurr.prnfs.admin.AdminFormValues.INEJCTION_TYPE.XPATH;
 import static se.bjurr.prnfs.listener.PrnfsRenderer.REPO_PROTOCOL.http;
 import static se.bjurr.prnfs.listener.PrnfsRenderer.REPO_PROTOCOL.ssh;
+import static se.bjurr.prnfs.listener.UrlInvoker.urlInvoker;
+import static se.bjurr.prnfs.listener.UrlInvoker.HTTP_METHOD.GET;
 
 import java.util.Map;
 import java.util.Set;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPathFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import se.bjurr.prnfs.settings.PrnfsNotification;
 
@@ -15,9 +27,23 @@ import com.atlassian.stash.repository.RepositoryService;
 import com.atlassian.stash.server.ApplicationPropertiesService;
 import com.atlassian.stash.user.StashUser;
 import com.atlassian.stash.util.NamedLink;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Supplier;
+import com.jayway.jsonpath.JsonPath;
 
 public class PrnfsRenderer {
+ private static final Logger logger = LoggerFactory.getLogger(PrnfsRenderer.class);
+ private static Invoker invoker = new Invoker() {
+  @Override
+  public void invoke(UrlInvoker urlInvoker) {
+   urlInvoker.invoke();
+  }
+ };
+
+ @VisibleForTesting
+ public static void setInvoker(Invoker invoker) {
+  PrnfsRenderer.invoker = invoker;
+ }
 
  public enum REPO_PROTOCOL {
   ssh, http
@@ -276,6 +302,39 @@ public class PrnfsRenderer {
      RepositoryService repositoryService, ApplicationPropertiesService propertiesService,
      PrnfsNotification prnfsNotification, Map<PrnfsRenderer.PrnfsVariable, Supplier<String>> variables) {
     return getOrEmpty(variables, BUTTON_TRIGGER_TITLE);
+   }
+  }), INJECTION_URL_VALUE(new Resolver() {
+   @Override
+   public String resolve(PullRequest pullRequest, PrnfsPullRequestAction pullRequestAction, StashUser stashUser,
+     RepositoryService repositoryService, ApplicationPropertiesService propertiesService,
+     PrnfsNotification prnfsNotification, Map<PrnfsRenderer.PrnfsVariable, Supplier<String>> variables) {
+    if (!prnfsNotification.getInjectionUrl().isPresent()) {
+     return "";
+    }
+    UrlInvoker urlInvoker = urlInvoker() //
+      .withUrlParam(prnfsNotification.getInjectionUrl().get()) //
+      .withMethod(GET).withProxyServer(prnfsNotification.getProxyServer()) //
+      .withProxyPort(prnfsNotification.getProxyPort()) //
+      .withProxyUser(prnfsNotification.getProxyUser()) //
+      .withProxyPassword(prnfsNotification.getProxyPassword());
+    PrnfsRenderer.invoker.invoke(urlInvoker);
+    if (prnfsNotification.getInjectionUrlType() == JSONPATH && prnfsNotification.getInjectionUrlJsonPath().isPresent()) {
+     return (String) JsonPath.read(urlInvoker.getResponseString(), prnfsNotification.getInjectionUrlJsonPath().get());
+    } else if (prnfsNotification.getInjectionUrlType() == RAW) {
+     return urlInvoker.getResponseString().trim();
+    } else if (prnfsNotification.getInjectionUrlType() == XPATH && prnfsNotification.getInjectionUrlXPath().isPresent()) {
+     try {
+      return (String) XPathFactory
+        .newInstance()
+        .newXPath()
+        .compile(prnfsNotification.getInjectionUrlXPath().get())
+        .evaluate(
+          DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(urlInvoker.getResponseStringStream()), STRING);
+     } catch (Exception e) {
+      logger.error(prnfsNotification.getInjectionUrl().get() + " " + prnfsNotification.getInjectionUrlXPath().get(), e);
+     }
+    }
+    return "";
    }
   });
 

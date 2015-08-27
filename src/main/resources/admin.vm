@@ -44,6 +44,7 @@
         <li><b>${PULL_REQUEST_VERSION}</b> Example: 1</li>
         <li><b>${PULL_REQUEST_COMMENT_TEXT}</b> Example: A comment</li>
         <li><b>${BUTTON_TRIGGER_TITLE}</b> Example: Trigger Notification</li>
+        <li><b>${INJECTION_URL_VALUE}</b> If injection URL configured</li>
         <li><b>${PULL_REQUEST_USER_DISPLAY_NAME}</b> Example: Some User</li>
         <li><b>${PULL_REQUEST_USER_EMAIL_ADDRESS}</b> Example: some.user@stash.domain</li>
         <li><b>${PULL_REQUEST_USER_ID}</b> Example: 1</li>
@@ -155,6 +156,20 @@
               <label><input type="checkbox" name="events" value="UNAPPROVED">UNAPPROVED</label><br/>
               <label><input type="checkbox" name="events" value="UPDATED">UPDATED</label><br/>
             </div>
+          </fieldset>
+        </div>
+        <div>
+          <fieldset>
+            <legend>Injection URL (Optional)</legend>
+            <label>URL<input type="text" name="injection_url"></label>
+
+            <label><input type="radio" name="injection_url_type" value="JSONPATH" onClick="jQuery('.injection_url_type_JSONPATH').show();jQuery('.injection_url_type_XPATH').hide()">JsonPath</label><br>
+            <input class="visibleif injection_url_type_JSONPATH" type="text" name="injection_url_jsonpath">
+
+            <label><input type="radio" name="injection_url_type" value="XPATH" onClick="jQuery('.injection_url_type_XPATH').show();jQuery('.injection_url_type_JSONPATH').hide()">XPath</label><br>
+            <input class="visibleif injection_url_type_XPATH" type="text" name="injection_url_xpath">
+
+            <label><input type="radio" name="injection_url_type" value="RAW" onClick="jQuery('.injection_url_type_XPATH').hide();jQuery('.injection_url_type_JSONPATH').hide()">RAW</label>
           </fieldset>
         </div>
         <div>

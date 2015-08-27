@@ -12,6 +12,31 @@ import static java.util.Collections.sort;
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static se.bjurr.prnfs.admin.AdminFormValues.BUTTON_VISIBILITY.EVERYONE;
+import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.FORM_IDENTIFIER;
+import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.FORM_TYPE;
+import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.button_title;
+import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.button_visibility;
+import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.events;
+import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.filter_regexp;
+import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.filter_string;
+import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.header_name;
+import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.header_value;
+import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.injection_url;
+import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.method;
+import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.password;
+import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.post_content;
+import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.proxy_password;
+import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.proxy_port;
+import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.proxy_server;
+import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.proxy_user;
+import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.url;
+import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.user;
+import static se.bjurr.prnfs.admin.AdminFormValues.FORM_TYPE.BUTTON_CONFIG_FORM;
+import static se.bjurr.prnfs.admin.AdminFormValues.FORM_TYPE.TRIGGER_CONFIG_FORM;
+import static se.bjurr.prnfs.admin.AdminFormValues.INEJCTION_TYPE.JSONPATH;
+import static se.bjurr.prnfs.admin.AdminFormValues.INEJCTION_TYPE.RAW;
+import static se.bjurr.prnfs.admin.AdminFormValues.INEJCTION_TYPE.XPATH;
 import static se.bjurr.prnfs.admin.utils.NotificationBuilder.notificationBuilder;
 import static se.bjurr.prnfs.admin.utils.PrnfsParticipantBuilder.prnfsParticipantBuilder;
 import static se.bjurr.prnfs.admin.utils.PrnfsTestBuilder.prnfsTestBuilder;
@@ -23,6 +48,25 @@ import static se.bjurr.prnfs.listener.PrnfsPullRequestAction.BUTTON_TRIGGER;
 import static se.bjurr.prnfs.listener.PrnfsPullRequestAction.RESCOPED_FROM;
 import static se.bjurr.prnfs.listener.PrnfsPullRequestAction.RESCOPED_TO;
 import static se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable.BUTTON_TRIGGER_TITLE;
+import static se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable.INJECTION_URL_VALUE;
+import static se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable.PULL_REQUEST_ACTION;
+import static se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable.PULL_REQUEST_AUTHOR_DISPLAY_NAME;
+import static se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable.PULL_REQUEST_AUTHOR_EMAIL;
+import static se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable.PULL_REQUEST_AUTHOR_ID;
+import static se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable.PULL_REQUEST_AUTHOR_NAME;
+import static se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable.PULL_REQUEST_AUTHOR_SLUG;
+import static se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable.PULL_REQUEST_COMMENT_TEXT;
+import static se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable.PULL_REQUEST_FROM_BRANCH;
+import static se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable.PULL_REQUEST_FROM_SSH_CLONE_URL;
+import static se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable.PULL_REQUEST_ID;
+import static se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable.PULL_REQUEST_TO_ID;
+import static se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable.PULL_REQUEST_URL;
+import static se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable.PULL_REQUEST_VERSION;
+import static se.bjurr.prnfs.listener.PrnfsRenderer.REPO_PROTOCOL.http;
+import static se.bjurr.prnfs.listener.PrnfsRenderer.REPO_PROTOCOL.ssh;
+import static se.bjurr.prnfs.listener.UrlInvoker.HTTP_METHOD.DELETE;
+import static se.bjurr.prnfs.listener.UrlInvoker.HTTP_METHOD.GET;
+import static se.bjurr.prnfs.listener.UrlInvoker.HTTP_METHOD.POST;
 
 import java.io.IOException;
 import java.net.URL;
@@ -36,7 +80,6 @@ import se.bjurr.prnfs.admin.utils.PrnfsTestBuilder;
 import se.bjurr.prnfs.admin.utils.PullRequestEventBuilder;
 import se.bjurr.prnfs.admin.utils.PullRequestRefBuilder;
 import se.bjurr.prnfs.listener.PrnfsPullRequestAction;
-import se.bjurr.prnfs.listener.PrnfsRenderer;
 import se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable;
 
 import com.google.common.io.Resources;
@@ -59,9 +102,9 @@ public class PrnfsPullRequestEventListenerTest {
     .withNotification(
       notificationBuilder()
         .withFieldValue(
-          AdminFormValues.FIELDS.url,
+          url,
           "http://bjurr.se/?PULL_REQUEST_FROM_HASH=${PULL_REQUEST_FROM_HASH}&PULL_REQUEST_TO_HASH=${PULL_REQUEST_TO_HASH}&PULL_REQUEST_FROM_REPO_SLUG=${PULL_REQUEST_FROM_REPO_SLUG}&PULL_REQUEST_TO_REPO_SLUG=${PULL_REQUEST_TO_REPO_SLUG}")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).build())
+        .withFieldValue(events, OPENED.name()).build())
     .store()
     .trigger(
       pullRequestEventBuilder().withFromRef(pullRequestRefBuilder().withHash("cde456").withRepositorySlug("fromslug"))
@@ -70,7 +113,7 @@ public class PrnfsPullRequestEventListenerTest {
     .invokedUrl(
       0,
       "http://bjurr.se/?PULL_REQUEST_FROM_HASH=cde456&PULL_REQUEST_TO_HASH=asd123&PULL_REQUEST_FROM_REPO_SLUG=fromslug&PULL_REQUEST_TO_REPO_SLUG=toslug")
-    .invokedMethod("GET");
+    .invokedMethod(GET);
  }
 
  @Test
@@ -78,9 +121,8 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).build()).store()
-    .trigger(pullRequestEventBuilder() //
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(events, OPENED.name()).build())
+    .store().trigger(pullRequestEventBuilder() //
       .withToRef(pullRequestRefBuilder()) //
       .withId(10L).withPullRequestAction(MERGED).build()).invokedNoUrl();
  }
@@ -90,9 +132,8 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, MERGED.name()).build()).store()
-    .trigger(pullRequestEventBuilder() //
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(events, MERGED.name()).build())
+    .store().trigger(pullRequestEventBuilder() //
       .beingClosed().withToRef(pullRequestRefBuilder()).withPullRequestAction(MERGED).build())
     .invokedOnlyUrl("http://bjurr.se/");
  }
@@ -102,9 +143,8 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, COMMENTED.name()).build()).store()
-    .trigger(pullRequestEventBuilder() //
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(events, COMMENTED.name()).build())
+    .store().trigger(pullRequestEventBuilder() //
       .beingClosed().withToRef(pullRequestRefBuilder()).withPullRequestAction(COMMENTED).build()).invokedNoUrl();
  }
 
@@ -113,9 +153,8 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).build()).store()
-    .trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build()).invokedUrl(0, "http://bjurr.se/");
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(events, OPENED.name()).build())
+    .store().trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build()).invokedUrl(0, "http://bjurr.se/");
  }
 
  @Test
@@ -127,17 +166,13 @@ public class PrnfsPullRequestEventListenerTest {
    PrnfsTestBuilder builder = prnfsTestBuilder()
      .isLoggedInAsAdmin()
      .withNotification(
-       notificationBuilder().withFieldValue(AdminFormValues.FIELDS.FORM_IDENTIFIER, "The Button")
-         .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.BUTTON_CONFIG_FORM.name())
-         .withFieldValue(AdminFormValues.FIELDS.button_title, "The Button Text")
-         .withFieldValue(AdminFormValues.FIELDS.button_visibility, AdminFormValues.BUTTON_VISIBILITY.EVERYONE.name())
-         .build())
+       notificationBuilder().withFieldValue(FORM_IDENTIFIER, "The Button")
+         .withFieldValue(FORM_TYPE, BUTTON_CONFIG_FORM.name()).withFieldValue(button_title, "The Button Text")
+         .withFieldValue(button_visibility, EVERYONE.name()).build())
      .withNotification(
        notificationBuilder()
-         .withFieldValue(AdminFormValues.FIELDS.url,
-           "http://bjurr.se/${" + prnfsVariable.name() + "}${" + PrnfsVariable.BUTTON_TRIGGER_TITLE.name() + "}")
-         .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name())
-         .withFieldValue(AdminFormValues.FIELDS.events, BUTTON_TRIGGER).build()).store();
+         .withFieldValue(url, "http://bjurr.se/${" + prnfsVariable.name() + "}${" + BUTTON_TRIGGER_TITLE.name() + "}")
+         .withFieldValue(events, OPENED.name()).withFieldValue(events, BUTTON_TRIGGER).build()).store();
    PullRequestEventBuilder eventBuilder = builder.triggerPullRequestEventBuilder();
 
    PullRequestRefBuilder refBuilder;
@@ -149,8 +184,7 @@ public class PrnfsPullRequestEventListenerTest {
 
    PullRequestEventBuilder pullRequestEventBuilder = refBuilder.withHash("10").withId("10").withProjectId(10)
      .withProjectKey("10").withRepositoryId(10).withRepositoryName("10").withRepositorySlug("10")
-     .withCloneUrl(PrnfsRenderer.REPO_PROTOCOL.http, "10").withCloneUrl(PrnfsRenderer.REPO_PROTOCOL.ssh, "10")
-     .withDisplayId("10").build().withId(10L);
+     .withCloneUrl(http, "10").withCloneUrl(ssh, "10").withDisplayId("10").build().withId(10L);
    pullRequestEventBuilder.withPullRequestAction(OPENED).triggerEvent().invokedOnlyUrl("http://bjurr.se/10");
 
    builder.withPullRequest(pullRequestEventBuilder.build().getPullRequest()).triggerButton("The Button")
@@ -163,11 +197,8 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder()
-        .withFieldValue(AdminFormValues.FIELDS.url,
-          "http://bjurr.se/${" + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_FROM_SSH_CLONE_URL + "}")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).build()).store()
-    .trigger(pullRequestEventBuilder() //
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/${" + PULL_REQUEST_FROM_SSH_CLONE_URL + "}")
+        .withFieldValue(events, OPENED.name()).build()).store().trigger(pullRequestEventBuilder() //
       .withFromRef(pullRequestRefBuilder()) //
       .withId(10L).withPullRequestAction(OPENED).build()).invokedUrl(0, "http://bjurr.se/");
  }
@@ -177,10 +208,8 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder()
-        .withFieldValue(AdminFormValues.FIELDS.url,
-          "http://bjurr.se/${" + PrnfsVariable.PULL_REQUEST_COMMENT_TEXT.name() + "}")
-        .withFieldValue(AdminFormValues.FIELDS.events, COMMENTED.name()).build())
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/${" + PULL_REQUEST_COMMENT_TEXT.name() + "}")
+        .withFieldValue(events, COMMENTED.name()).build())
     .store()
     .trigger(pullRequestEventBuilder().withPullRequestAction(COMMENTED).withCommentText("a text with\nnewline").build())
     .invokedUrl(0, "http://bjurr.se/a%20text%20with%20newline");
@@ -191,10 +220,8 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder()
-        .withFieldValue(AdminFormValues.FIELDS.url,
-          "http://bjurr.se/${" + PrnfsVariable.PULL_REQUEST_FROM_BRANCH.name() + "}")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).build())
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/${" + PULL_REQUEST_FROM_BRANCH.name() + "}")
+        .withFieldValue(events, OPENED.name()).build())
     .store()
     .trigger(
       pullRequestEventBuilder()
@@ -208,10 +235,8 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder()
-        .withFieldValue(AdminFormValues.FIELDS.url,
-          "http://bjurr.se/${" + PrnfsVariable.PULL_REQUEST_FROM_BRANCH.name() + "}")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).build())
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/${" + PULL_REQUEST_FROM_BRANCH.name() + "}")
+        .withFieldValue(events, OPENED.name()).build())
     .store()
     .trigger(
       pullRequestEventBuilder()
@@ -227,16 +252,12 @@ public class PrnfsPullRequestEventListenerTest {
     .withNotification(
       notificationBuilder()
         .withFieldValue(
-          AdminFormValues.FIELDS.url,
-          "http://bjurr.se/id=${" + PrnfsVariable.PULL_REQUEST_ID.name() + "}&action=${"
-            + PrnfsVariable.PULL_REQUEST_ACTION.name() + "}&displayName=${"
-            + PrnfsVariable.PULL_REQUEST_AUTHOR_DISPLAY_NAME.name() + "}&authorEmail=${"
-            + PrnfsVariable.PULL_REQUEST_AUTHOR_EMAIL.name() + "}&authorId=${"
-            + PrnfsVariable.PULL_REQUEST_AUTHOR_ID.name() + "}&authorName=${"
-            + PrnfsVariable.PULL_REQUEST_AUTHOR_NAME.name() + "}&authorSlug=${"
-            + PrnfsVariable.PULL_REQUEST_AUTHOR_SLUG.name() + "}&pullRequestUrl=${"
-            + PrnfsVariable.PULL_REQUEST_URL.name() + "}").withFieldValue(AdminFormValues.FIELDS.events, OPENED.name())
-        .build())
+          url,
+          "http://bjurr.se/id=${" + PULL_REQUEST_ID.name() + "}&action=${" + PULL_REQUEST_ACTION.name()
+            + "}&displayName=${" + PULL_REQUEST_AUTHOR_DISPLAY_NAME.name() + "}&authorEmail=${"
+            + PULL_REQUEST_AUTHOR_EMAIL.name() + "}&authorId=${" + PULL_REQUEST_AUTHOR_ID.name() + "}&authorName=${"
+            + PULL_REQUEST_AUTHOR_NAME.name() + "}&authorSlug=${" + PULL_REQUEST_AUTHOR_SLUG.name()
+            + "}&pullRequestUrl=${" + PULL_REQUEST_URL.name() + "}").withFieldValue(events, OPENED.name()).build())
     .store()
     .trigger(
       pullRequestEventBuilder()
@@ -256,11 +277,10 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.post_content, "should not be sent") //
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()) //
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(post_content, "should not be sent") //
+        .withFieldValue(events, OPENED.name()) //
         .build()).store().trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build())
-    .invokedUrl(0, "http://bjurr.se/").invokedMethod("GET").didNotSendPostContentAt(0);
+    .invokedUrl(0, "http://bjurr.se/").invokedMethod(GET).didNotSendPostContentAt(0);
  }
 
  @Test
@@ -268,12 +288,11 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()) //
-        .withFieldValue(AdminFormValues.FIELDS.post_content, " ") //
-        .withFieldValue(AdminFormValues.FIELDS.method, "POST") //
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(events, OPENED.name()) //
+        .withFieldValue(post_content, " ") //
+        .withFieldValue(method, "POST") //
         .build()).store().trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build())
-    .invokedUrl(0, "http://bjurr.se/").invokedMethod("POST").didNotSendPostContentAt(0);
+    .invokedUrl(0, "http://bjurr.se/").invokedMethod(POST).didNotSendPostContentAt(0);
  }
 
  @Test
@@ -281,12 +300,11 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()) //
-        .withFieldValue(AdminFormValues.FIELDS.post_content, "some content") //
-        .withFieldValue(AdminFormValues.FIELDS.method, "GET") //
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(events, OPENED.name()) //
+        .withFieldValue(post_content, "some content") //
+        .withFieldValue(method, GET.name()) //
         .build()).store().trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build())
-    .invokedUrl(0, "http://bjurr.se/").invokedMethod("GET").didNotSendPostContentAt(0);
+    .invokedUrl(0, "http://bjurr.se/").invokedMethod(GET).didNotSendPostContentAt(0);
  }
 
  @Test
@@ -294,12 +312,11 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()) //
-        .withFieldValue(AdminFormValues.FIELDS.post_content, "some content") //
-        .withFieldValue(AdminFormValues.FIELDS.method, "DELETE") //
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(events, OPENED.name()) //
+        .withFieldValue(post_content, "some content") //
+        .withFieldValue(method, "DELETE") //
         .build()).store().trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build())
-    .invokedUrl(0, "http://bjurr.se/").invokedMethod("DELETE").didNotSendPostContentAt(0);
+    .invokedUrl(0, "http://bjurr.se/").invokedMethod(DELETE).didNotSendPostContentAt(0);
  }
 
  @Test
@@ -307,10 +324,9 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()) //
-        .withFieldValue(AdminFormValues.FIELDS.post_content, "some content") //
-        .withFieldValue(AdminFormValues.FIELDS.method, "POST") //
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(events, OPENED.name()) //
+        .withFieldValue(post_content, "some content") //
+        .withFieldValue(method, "POST") //
         .build()).store().trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build())
     .invokedUrl(0, "http://bjurr.se/").didSendPostContentAt(0, "some content");
  }
@@ -320,10 +336,9 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()) //
-        .withFieldValue(AdminFormValues.FIELDS.post_content, "some content") //
-        .withFieldValue(AdminFormValues.FIELDS.method, "PUT") //
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(events, OPENED.name()) //
+        .withFieldValue(post_content, "some content") //
+        .withFieldValue(method, "PUT") //
         .build()).store().trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build())
     .invokedUrl(0, "http://bjurr.se/").didSendPostContentAt(0, "some content");
  }
@@ -333,12 +348,9 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder()
-        .withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name())
-        .withFieldValue(AdminFormValues.FIELDS.post_content,
-          "some ${" + PrnfsVariable.PULL_REQUEST_ACTION.name() + "} content") //
-        .withFieldValue(AdminFormValues.FIELDS.method, "POST") //
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(events, OPENED.name())
+        .withFieldValue(post_content, "some ${" + PULL_REQUEST_ACTION.name() + "} content") //
+        .withFieldValue(method, "POST") //
         .build()).store().trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build())
     .invokedUrl(0, "http://bjurr.se/").didSendPostContentAt(0, "some OPENED content");
  }
@@ -348,10 +360,8 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name())
-        .withFieldValue(AdminFormValues.FIELDS.header_name, "CustomHeader")
-        .withFieldValue(AdminFormValues.FIELDS.header_value, "custom value").build()).store()
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(events, OPENED.name())
+        .withFieldValue(header_name, "CustomHeader").withFieldValue(header_value, "custom value").build()).store()
     .trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build()).invokedUrl(0, "http://bjurr.se/")
     .usedHeader(0, "CustomHeader", "custom value");
  }
@@ -361,12 +371,9 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder()
-        .withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name())
-        .withFieldValue(AdminFormValues.FIELDS.header_name, "CustomHeader")
-        .withFieldValue(AdminFormValues.FIELDS.header_value,
-          "custom ${" + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_ACTION.name() + "} value").build()).store()
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(events, OPENED.name())
+        .withFieldValue(header_name, "CustomHeader")
+        .withFieldValue(header_value, "custom ${" + PULL_REQUEST_ACTION.name() + "} value").build()).store()
     .trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build()).invokedUrl(0, "http://bjurr.se/")
     .usedHeader(0, "CustomHeader", "custom OPENED value");
  }
@@ -376,10 +383,8 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name())
-        .withFieldValue(AdminFormValues.FIELDS.header_name, " ")
-        .withFieldValue(AdminFormValues.FIELDS.header_value, "custom value").build()).store()
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(events, OPENED.name())
+        .withFieldValue(header_name, " ").withFieldValue(header_value, "custom value").build()).store()
     .trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build()).invokedUrl(0, "http://bjurr.se/")
     .didNotSendHeaders();
  }
@@ -389,10 +394,8 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name())
-        .withFieldValue(AdminFormValues.FIELDS.user, "theuser")
-        .withFieldValue(AdminFormValues.FIELDS.password, "thepassword").build()).store()
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(events, OPENED.name())
+        .withFieldValue(user, "theuser").withFieldValue(password, "thepassword").build()).store()
     .trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build()).invokedUrl(0, "http://bjurr.se/")
     .usedHeader(0, AUTHORIZATION, "Basic dGhldXNlcjp0aGVwYXNzd29yZA==");
  }
@@ -402,15 +405,11 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name())
-        .withFieldValue(AdminFormValues.FIELDS.user, "theuser")
-        .withFieldValue(AdminFormValues.FIELDS.password, "thepassword")
-        .withFieldValue(AdminFormValues.FIELDS.header_name, "CustomHeader1")
-        .withFieldValue(AdminFormValues.FIELDS.header_value, "custom value1")
-        .withFieldValue(AdminFormValues.FIELDS.header_name, "CustomHeader2")
-        .withFieldValue(AdminFormValues.FIELDS.header_value, "theuser:thepassword").build()).store()
-    .trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build()).invokedUrl(0, "http://bjurr.se/")
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(events, OPENED.name())
+        .withFieldValue(user, "theuser").withFieldValue(password, "thepassword")
+        .withFieldValue(header_name, "CustomHeader1").withFieldValue(header_value, "custom value1")
+        .withFieldValue(header_name, "CustomHeader2").withFieldValue(header_value, "theuser:thepassword").build())
+    .store().trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build()).invokedUrl(0, "http://bjurr.se/")
     .usedHeader(0, AUTHORIZATION, "Basic dGhldXNlcjp0aGVwYXNzd29yZA==").usedHeader(0, "CustomHeader1", "custom value1")
     .usedHeader(0, "CustomHeader2", "theuser:thepassword");
  }
@@ -420,9 +419,8 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).withFieldValue(AdminFormValues.FIELDS.user, "")
-        .withFieldValue(AdminFormValues.FIELDS.password, "thepassword").build()).store()
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(events, OPENED.name())
+        .withFieldValue(user, "").withFieldValue(password, "thepassword").build()).store()
     .trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build()).invokedUrl(0, "http://bjurr.se/")
     .didNotSendHeaders();
  }
@@ -432,11 +430,10 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name())
-        .withFieldValue(AdminFormValues.FIELDS.user, "theuser").withFieldValue(AdminFormValues.FIELDS.password, "")
-        .build()).store().trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build())
-    .invokedUrl(0, "http://bjurr.se/").didNotSendHeaders();
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(events, OPENED.name())
+        .withFieldValue(user, "theuser").withFieldValue(password, "").build()).store()
+    .trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build()).invokedUrl(0, "http://bjurr.se/")
+    .didNotSendHeaders();
  }
 
  @Test
@@ -444,9 +441,8 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).withFieldValue(AdminFormValues.FIELDS.user, " ")
-        .withFieldValue(AdminFormValues.FIELDS.password, "thepassword").build()).store()
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(events, OPENED.name())
+        .withFieldValue(user, " ").withFieldValue(password, "thepassword").build()).store()
     .trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build()).invokedUrl(0, "http://bjurr.se/")
     .didNotSendHeaders();
  }
@@ -456,11 +452,10 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name())
-        .withFieldValue(AdminFormValues.FIELDS.user, "theuser").withFieldValue(AdminFormValues.FIELDS.password, " ")
-        .build()).store().trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build())
-    .invokedUrl(0, "http://bjurr.se/").didNotSendHeaders();
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(events, OPENED.name())
+        .withFieldValue(user, "theuser").withFieldValue(password, " ").build()).store()
+    .trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build()).invokedUrl(0, "http://bjurr.se/")
+    .didNotSendHeaders();
  }
 
  @Test
@@ -478,10 +473,9 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name())
-        .withFieldValue(FIELDS.filter_string, "${PULL_REQUEST_FROM_REPO_PROJECT_KEY}")
-        .withFieldValue(FIELDS.filter_regexp, "EXP").build())
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(events, OPENED.name())
+        .withFieldValue(filter_string, "${PULL_REQUEST_FROM_REPO_PROJECT_KEY}").withFieldValue(filter_regexp, "EXP")
+        .build())
     .store()
     .trigger(
       pullRequestEventBuilder().withFromRef(pullRequestRefBuilder().withProjectKey("ABC")).withId(10L)
@@ -493,10 +487,9 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, RESCOPED_FROM)
-        .withFieldValue(FIELDS.filter_string, "${" + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_ACTION.name() + "}")
-        .withFieldValue(FIELDS.filter_regexp, RESCOPED_FROM).build())
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(events, RESCOPED_FROM)
+        .withFieldValue(filter_string, "${" + PULL_REQUEST_ACTION.name() + "}")
+        .withFieldValue(filter_regexp, RESCOPED_FROM).build())
     .store()
     .trigger(
       pullRequestEventBuilder().withFromRef(pullRequestRefBuilder().withHash("from"))
@@ -510,16 +503,12 @@ public class PrnfsPullRequestEventListenerTest {
     .isLoggedInAsAdmin()
     .withNotification(
       notificationBuilder()
-        .withFieldValue(
-          AdminFormValues.FIELDS.url,
-          "http://bjurr.se/?comment=${" + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_COMMENT_TEXT + "}&version=${"
-            + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_VERSION + "}")
-        .withFieldValue(AdminFormValues.FIELDS.events, COMMENTED.name())
-        .withFieldValue(
-          FIELDS.filter_string,
-          "${" + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_TO_ID.name() + "}:${"
-            + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_COMMENT_TEXT.name() + "}:")
-        .withFieldValue(FIELDS.filter_regexp, ".*:.*?keyword.*?:.*").build())
+        .withFieldValue(url,
+          "http://bjurr.se/?comment=${" + PULL_REQUEST_COMMENT_TEXT + "}&version=${" + PULL_REQUEST_VERSION + "}")
+        .withFieldValue(events, COMMENTED.name())
+        .withFieldValue(filter_string,
+          "${" + PULL_REQUEST_TO_ID.name() + "}:${" + PULL_REQUEST_COMMENT_TEXT.name() + "}:")
+        .withFieldValue(filter_regexp, ".*:.*?keyword.*?:.*").build())
     .store()
     .trigger(
       pullRequestEventBuilder().withFromRef(pullRequestRefBuilder().withHash("from"))
@@ -534,16 +523,12 @@ public class PrnfsPullRequestEventListenerTest {
     .isLoggedInAsAdmin()
     .withNotification(
       notificationBuilder()
-        .withFieldValue(
-          AdminFormValues.FIELDS.url,
-          "http://bjurr.se/?comment=${" + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_COMMENT_TEXT + "}&version=${"
-            + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_VERSION + "}")
-        .withFieldValue(AdminFormValues.FIELDS.events, COMMENTED.name())
-        .withFieldValue(
-          FIELDS.filter_string,
-          "${" + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_TO_ID.name() + "}:${"
-            + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_COMMENT_TEXT.name() + "}:")
-        .withFieldValue(FIELDS.filter_regexp, ".*:\\skeyword\\s:.*").build())
+        .withFieldValue(url,
+          "http://bjurr.se/?comment=${" + PULL_REQUEST_COMMENT_TEXT + "}&version=${" + PULL_REQUEST_VERSION + "}")
+        .withFieldValue(events, COMMENTED.name())
+        .withFieldValue(filter_string,
+          "${" + PULL_REQUEST_TO_ID.name() + "}:${" + PULL_REQUEST_COMMENT_TEXT.name() + "}:")
+        .withFieldValue(filter_regexp, ".*:\\skeyword\\s:.*").build())
     .store()
     .trigger(
       pullRequestEventBuilder().withFromRef(pullRequestRefBuilder().withHash("from"))
@@ -557,16 +542,12 @@ public class PrnfsPullRequestEventListenerTest {
     .isLoggedInAsAdmin()
     .withNotification(
       notificationBuilder()
-        .withFieldValue(
-          AdminFormValues.FIELDS.url,
-          "http://bjurr.se/?comment=${" + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_COMMENT_TEXT + "}&version=${"
-            + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_VERSION + "}")
-        .withFieldValue(AdminFormValues.FIELDS.events, COMMENTED.name())
-        .withFieldValue(
-          FIELDS.filter_string,
-          "${" + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_TO_ID.name() + "}:${"
-            + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_COMMENT_TEXT.name() + "}:")
-        .withFieldValue(FIELDS.filter_regexp, ".*:.*?keyword.*?:.*").build())
+        .withFieldValue(url,
+          "http://bjurr.se/?comment=${" + PULL_REQUEST_COMMENT_TEXT + "}&version=${" + PULL_REQUEST_VERSION + "}")
+        .withFieldValue(events, COMMENTED.name())
+        .withFieldValue(filter_string,
+          "${" + PULL_REQUEST_TO_ID.name() + "}:${" + PULL_REQUEST_COMMENT_TEXT.name() + "}:")
+        .withFieldValue(filter_regexp, ".*:.*?keyword.*?:.*").build())
     .store()
     .trigger(
       pullRequestEventBuilder().withFromRef(pullRequestRefBuilder().withHash("from"))
@@ -579,11 +560,8 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder()
-        .withFieldValue(AdminFormValues.FIELDS.url,
-          "http://bjurr.se/?comment=${" + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_COMMENT_TEXT + "}")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).build()).store()
-    .trigger(pullRequestEventBuilder() //
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/?comment=${" + PULL_REQUEST_COMMENT_TEXT + "}")
+        .withFieldValue(events, OPENED.name()).build()).store().trigger(pullRequestEventBuilder() //
       .withId(10L).withPullRequestAction(OPENED).build()).invokedUrl(0, "http://bjurr.se/?comment=");
  }
 
@@ -592,10 +570,8 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder()
-        .withFieldValue(AdminFormValues.FIELDS.url,
-          "http://bjurr.se/${" + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_ACTION.name() + "}")
-        .withFieldValue(AdminFormValues.FIELDS.events, RESCOPED_FROM).build())
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/${" + PULL_REQUEST_ACTION.name() + "}")
+        .withFieldValue(events, RESCOPED_FROM).build())
     .store()
     .trigger(
       pullRequestEventBuilder().withFromRef(pullRequestRefBuilder().withHash("from"))
@@ -608,10 +584,8 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder()
-        .withFieldValue(AdminFormValues.FIELDS.url,
-          "http://bjurr.se/${" + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_ACTION.name() + "}")
-        .withFieldValue(AdminFormValues.FIELDS.events, RESCOPED_TO).build())
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/${" + PULL_REQUEST_ACTION.name() + "}")
+        .withFieldValue(events, RESCOPED_TO).build())
     .store()
     .trigger(
       pullRequestEventBuilder().withFromRef(pullRequestRefBuilder().withHash(PREVIOUS_FROM_HASH))
@@ -624,10 +598,8 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder()
-        .withFieldValue(AdminFormValues.FIELDS.url,
-          "http://bjurr.se/${" + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_ACTION.name() + "}")
-        .withFieldValue(AdminFormValues.FIELDS.events, RESCOPED_FROM).build())
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/${" + PULL_REQUEST_ACTION.name() + "}")
+        .withFieldValue(events, RESCOPED_FROM).build())
     .store()
     .trigger(
       pullRequestEventBuilder().withFromRef(pullRequestRefBuilder().withHash("fromHash"))
@@ -640,23 +612,16 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder()
-        .withFieldValue(AdminFormValues.FIELDS.url,
-          "http://bjurr.se/${" + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_ACTION.name() + "}")
-        .withFieldValue(AdminFormValues.FIELDS.events, RESCOPED_FROM).build())
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/${" + PULL_REQUEST_ACTION.name() + "}")
+        .withFieldValue(events, RESCOPED_FROM).build())
     .store()
     .withNotification(
-      notificationBuilder()
-        .withFieldValue(AdminFormValues.FIELDS.url,
-          "http://bjurr.se/${" + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_ACTION.name() + "}")
-        .withFieldValue(AdminFormValues.FIELDS.events, RESCOPED_TO).build())
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/${" + PULL_REQUEST_ACTION.name() + "}")
+        .withFieldValue(events, RESCOPED_TO).build())
     .store()
     .withNotification(
-      notificationBuilder()
-        .withFieldValue(AdminFormValues.FIELDS.url,
-          "http://bjurr.se/${" + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_ACTION.name() + "}")
-        .withFieldValue(AdminFormValues.FIELDS.events, RESCOPED_FROM)
-        .withFieldValue(AdminFormValues.FIELDS.events, RESCOPED_TO).build())
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/${" + PULL_REQUEST_ACTION.name() + "}")
+        .withFieldValue(events, RESCOPED_FROM).withFieldValue(events, RESCOPED_TO).build())
     .store()
     .trigger(
       pullRequestEventBuilder().withFromRef(pullRequestRefBuilder().withHash("fromHash"))
@@ -670,11 +635,8 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder()
-        .withFieldValue(AdminFormValues.FIELDS.url,
-          "http://bjurr.se/${" + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_ACTION.name() + "}")
-        .withFieldValue(AdminFormValues.FIELDS.events, RESCOPED_FROM)
-        .withFieldValue(AdminFormValues.FIELDS.events, RESCOPED_TO).build())
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/${" + PULL_REQUEST_ACTION.name() + "}")
+        .withFieldValue(events, RESCOPED_FROM).withFieldValue(events, RESCOPED_TO).build())
     .store()
     .trigger(
       pullRequestEventBuilder().withFromRef(pullRequestRefBuilder().withHash("fromHash"))
@@ -687,10 +649,8 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder()
-        .withFieldValue(AdminFormValues.FIELDS.url,
-          "http://bjurr.se/${" + PrnfsRenderer.PrnfsVariable.PULL_REQUEST_ACTION.name() + "}")
-        .withFieldValue(AdminFormValues.FIELDS.events, RESCOPED_TO).build())
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/${" + PULL_REQUEST_ACTION.name() + "}")
+        .withFieldValue(events, RESCOPED_TO).build())
     .store()
     .trigger(
       pullRequestEventBuilder().withFromRef(pullRequestRefBuilder().withHash("fromHash"))
@@ -703,10 +663,9 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name())
-        .withFieldValue(FIELDS.filter_string, "${PULL_REQUEST_FROM_REPO_PROJECT_KEY} ${PULL_REQUEST_FROM_ID}")
-        .withFieldValue(FIELDS.filter_regexp, "EXP my_branch").build())
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(events, OPENED.name())
+        .withFieldValue(filter_string, "${PULL_REQUEST_FROM_REPO_PROJECT_KEY} ${PULL_REQUEST_FROM_ID}")
+        .withFieldValue(filter_regexp, "EXP my_branch").build())
     .store()
     .trigger(
       pullRequestEventBuilder().withFromRef(pullRequestRefBuilder().withProjectKey("ABC").withId("my_therbranch"))
@@ -718,10 +677,9 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name())
-        .withFieldValue(FIELDS.filter_string, "${PULL_REQUEST_FROM_REPO_PROJECT_KEY}")
-        .withFieldValue(FIELDS.filter_regexp, "EXP").build())
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(events, OPENED.name())
+        .withFieldValue(filter_string, "${PULL_REQUEST_FROM_REPO_PROJECT_KEY}").withFieldValue(filter_regexp, "EXP")
+        .build())
     .store()
     .trigger(
       pullRequestEventBuilder().withFromRef(pullRequestRefBuilder().withProjectKey("EXP")).withId(10L)
@@ -733,10 +691,9 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name())
-        .withFieldValue(FIELDS.filter_string, "${PULL_REQUEST_FROM_REPO_PROJECT_KEY} ${PULL_REQUEST_FROM_ID}")
-        .withFieldValue(FIELDS.filter_regexp, "EXP my_branch").build())
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(events, OPENED.name())
+        .withFieldValue(filter_string, "${PULL_REQUEST_FROM_REPO_PROJECT_KEY} ${PULL_REQUEST_FROM_ID}")
+        .withFieldValue(filter_regexp, "EXP my_branch").build())
     .store()
     .trigger(
       pullRequestEventBuilder().withFromRef(pullRequestRefBuilder().withProjectKey("EXP").withId("my_branch"))
@@ -748,12 +705,10 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://merged.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, MERGED.name()).build())
+      notificationBuilder().withFieldValue(url, "http://merged.se/").withFieldValue(events, MERGED.name()).build())
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://opened.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).build()).store()
-    .trigger(pullRequestEventBuilder() //
+      notificationBuilder().withFieldValue(url, "http://opened.se/").withFieldValue(events, OPENED.name()).build())
+    .store().trigger(pullRequestEventBuilder() //
       .withId(10L).withPullRequestAction(MERGED).build()).invokedOnlyUrl("http://merged.se/").didNotSendHeaders();
  }
 
@@ -762,10 +717,8 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name())
-        .withFieldValue(AdminFormValues.FIELDS.proxy_server, "proxyhost")
-        .withFieldValue(AdminFormValues.FIELDS.proxy_port, " 1234 ").build()).store()
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(events, OPENED.name())
+        .withFieldValue(proxy_server, "proxyhost").withFieldValue(proxy_port, " 1234 ").build()).store()
     .trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build()).invokedUrl(0, "http://bjurr.se/")
     .usedNoProxyUser(0).usedNoProxyPassword(0).usedProxyHost(0, "proxyhost").usedProxyPort(0, 1234);
  }
@@ -775,10 +728,8 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name())
-        .withFieldValue(AdminFormValues.FIELDS.proxy_server, "proxyhost")
-        .withFieldValue(AdminFormValues.FIELDS.proxy_port, " ").build()).store()
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(events, OPENED.name())
+        .withFieldValue(proxy_server, "proxyhost").withFieldValue(proxy_port, " ").build()).store()
     .trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build()).invokedUrl(0, "http://bjurr.se/")
     .usedNoProxy(0);
  }
@@ -788,10 +739,8 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name())
-        .withFieldValue(AdminFormValues.FIELDS.proxy_server, "")
-        .withFieldValue(AdminFormValues.FIELDS.proxy_port, "123").build()).store()
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(events, OPENED.name())
+        .withFieldValue(proxy_server, "").withFieldValue(proxy_port, "123").build()).store()
     .trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build()).invokedUrl(0, "http://bjurr.se/")
     .usedNoProxy(0);
  }
@@ -801,12 +750,9 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name())
-        .withFieldValue(AdminFormValues.FIELDS.proxy_server, "proxyhost")
-        .withFieldValue(AdminFormValues.FIELDS.proxy_port, "123")
-        .withFieldValue(AdminFormValues.FIELDS.proxy_user, "proxyuser")
-        .withFieldValue(AdminFormValues.FIELDS.proxy_password, "proxypassword").build()).store()
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(events, OPENED.name())
+        .withFieldValue(proxy_server, "proxyhost").withFieldValue(proxy_port, "123")
+        .withFieldValue(proxy_user, "proxyuser").withFieldValue(proxy_password, "proxypassword").build()).store()
     .trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build()).invokedUrl(0, "http://bjurr.se/")
     .usedProxyUser(0, "proxyuser").usedProxyPassword(0, "proxypassword");
  }
@@ -816,12 +762,9 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name())
-        .withFieldValue(AdminFormValues.FIELDS.proxy_server, "proxyhost")
-        .withFieldValue(AdminFormValues.FIELDS.proxy_port, "123")
-        .withFieldValue(AdminFormValues.FIELDS.proxy_user, " ")
-        .withFieldValue(AdminFormValues.FIELDS.proxy_password, "proxypassword").build()).store()
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(events, OPENED.name())
+        .withFieldValue(proxy_server, "proxyhost").withFieldValue(proxy_port, "123").withFieldValue(proxy_user, " ")
+        .withFieldValue(proxy_password, "proxypassword").build()).store()
     .trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build()).invokedUrl(0, "http://bjurr.se/")
     .usedNoProxyAuthentication(0);
  }
@@ -831,12 +774,9 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name())
-        .withFieldValue(AdminFormValues.FIELDS.proxy_server, "proxyhost")
-        .withFieldValue(AdminFormValues.FIELDS.proxy_port, "123")
-        .withFieldValue(AdminFormValues.FIELDS.proxy_user, "user")
-        .withFieldValue(AdminFormValues.FIELDS.proxy_password, " ").build()).store()
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(events, OPENED.name())
+        .withFieldValue(proxy_server, "proxyhost").withFieldValue(proxy_port, "123").withFieldValue(proxy_user, "user")
+        .withFieldValue(proxy_password, " ").build()).store()
     .trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build()).invokedUrl(0, "http://bjurr.se/")
     .usedNoProxyAuthentication(0);
  }
@@ -846,18 +786,14 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder()
-        .withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/${" + BUTTON_TRIGGER_TITLE + "}")
-        .withFieldValue(AdminFormValues.FIELDS.events, BUTTON_TRIGGER)
-        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.TRIGGER_CONFIG_FORM.name()).build())
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/${" + BUTTON_TRIGGER_TITLE + "}")
+        .withFieldValue(events, BUTTON_TRIGGER).withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()).build())
     .store()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.FORM_IDENTIFIER, "Button Form")
-        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.BUTTON_CONFIG_FORM.name())
-        .withFieldValue(AdminFormValues.FIELDS.button_title, "Trigger notification")
-        .withFieldValue(AdminFormValues.FIELDS.button_visibility, AdminFormValues.BUTTON_VISIBILITY.EVERYONE.name())
-        .build()).store().triggerButton("Button Form").invokedOnlyUrl("http://bjurr.se/Trigger%20notification")
-    .hasButtonsEnabled("Button Form");
+      notificationBuilder().withFieldValue(FORM_IDENTIFIER, "Button Form")
+        .withFieldValue(FORM_TYPE, BUTTON_CONFIG_FORM.name()).withFieldValue(button_title, "Trigger notification")
+        .withFieldValue(button_visibility, EVERYONE.name()).build()).store().triggerButton("Button Form")
+    .invokedOnlyUrl("http://bjurr.se/Trigger%20notification").hasButtonsEnabled("Button Form");
  }
 
  @Test
@@ -865,17 +801,14 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder()
-        .withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/${" + BUTTON_TRIGGER_TITLE + "}")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name())
-        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.TRIGGER_CONFIG_FORM.name()).build())
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/${" + BUTTON_TRIGGER_TITLE + "}")
+        .withFieldValue(events, OPENED.name()).withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()).build())
     .store()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.FORM_IDENTIFIER, "Button Form")
-        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.BUTTON_CONFIG_FORM.name())
-        .withFieldValue(AdminFormValues.FIELDS.button_title, "Trigger notification")
-        .withFieldValue(AdminFormValues.FIELDS.button_visibility, AdminFormValues.BUTTON_VISIBILITY.EVERYONE.name())
-        .build()).store().triggerButton("Button Form").hasNoButtonsEnabled();
+      notificationBuilder().withFieldValue(FORM_IDENTIFIER, "Button Form")
+        .withFieldValue(FORM_TYPE, BUTTON_CONFIG_FORM.name()).withFieldValue(button_title, "Trigger notification")
+        .withFieldValue(button_visibility, EVERYONE.name()).build()).store().triggerButton("Button Form")
+    .hasNoButtonsEnabled();
  }
 
  @Test
@@ -884,19 +817,15 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder()
-        .withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/${" + BUTTON_TRIGGER_TITLE + "}")
-        .withFieldValue(AdminFormValues.FIELDS.events, BUTTON_TRIGGER)
-        .withFieldValue(AdminFormValues.FIELDS.filter_string, "${" + BUTTON_TRIGGER_TITLE + "}")
-        .withFieldValue(AdminFormValues.FIELDS.filter_regexp, "123")
-        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.TRIGGER_CONFIG_FORM.name()).build())
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/${" + BUTTON_TRIGGER_TITLE + "}")
+        .withFieldValue(events, BUTTON_TRIGGER).withFieldValue(filter_string, "${" + BUTTON_TRIGGER_TITLE + "}")
+        .withFieldValue(filter_regexp, "123").withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()).build())
     .store()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.FORM_IDENTIFIER, "Button Form")
-        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.BUTTON_CONFIG_FORM.name())
-        .withFieldValue(AdminFormValues.FIELDS.button_title, "Trigger notification")
-        .withFieldValue(AdminFormValues.FIELDS.button_visibility, AdminFormValues.BUTTON_VISIBILITY.EVERYONE.name())
-        .build()).store().triggerButton("Button Form").hasNoButtonsEnabled();
+      notificationBuilder().withFieldValue(FORM_IDENTIFIER, "Button Form")
+        .withFieldValue(FORM_TYPE, BUTTON_CONFIG_FORM.name()).withFieldValue(button_title, "Trigger notification")
+        .withFieldValue(button_visibility, EVERYONE.name()).build()).store().triggerButton("Button Form")
+    .hasNoButtonsEnabled();
  }
 
  @Test
@@ -904,19 +833,15 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder()
-        .withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/?123=${" + BUTTON_TRIGGER_TITLE + "}")
-        .withFieldValue(AdminFormValues.FIELDS.events, BUTTON_TRIGGER)
-        .withFieldValue(AdminFormValues.FIELDS.filter_string, "${" + BUTTON_TRIGGER_TITLE + "}")
-        .withFieldValue(AdminFormValues.FIELDS.filter_regexp, "123")
-        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.TRIGGER_CONFIG_FORM.name()).build())
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/?123=${" + BUTTON_TRIGGER_TITLE + "}")
+        .withFieldValue(events, BUTTON_TRIGGER).withFieldValue(filter_string, "${" + BUTTON_TRIGGER_TITLE + "}")
+        .withFieldValue(filter_regexp, "123").withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()).build())
     .store()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.FORM_IDENTIFIER, "Button Form")
-        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.BUTTON_CONFIG_FORM.name())
-        .withFieldValue(AdminFormValues.FIELDS.button_title, "button text 123")
-        .withFieldValue(AdminFormValues.FIELDS.button_visibility, AdminFormValues.BUTTON_VISIBILITY.EVERYONE.name())
-        .build()).store().triggerButton("Button Form").invokedOnlyUrl("http://bjurr.se/?123=button%20text%20123");
+      notificationBuilder().withFieldValue(FORM_IDENTIFIER, "Button Form")
+        .withFieldValue(FORM_TYPE, BUTTON_CONFIG_FORM.name()).withFieldValue(button_title, "button text 123")
+        .withFieldValue(button_visibility, EVERYONE.name()).build()).store().triggerButton("Button Form")
+    .invokedOnlyUrl("http://bjurr.se/?123=button%20text%20123");
  }
 
  @Test
@@ -924,27 +849,20 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder()
-        .withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/?123=${" + BUTTON_TRIGGER_TITLE + "}")
-        .withFieldValue(AdminFormValues.FIELDS.events, BUTTON_TRIGGER)
-        .withFieldValue(AdminFormValues.FIELDS.filter_string, "${" + BUTTON_TRIGGER_TITLE + "}")
-        .withFieldValue(AdminFormValues.FIELDS.filter_regexp, "123")
-        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.TRIGGER_CONFIG_FORM.name()).build())
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/?123=${" + BUTTON_TRIGGER_TITLE + "}")
+        .withFieldValue(events, BUTTON_TRIGGER).withFieldValue(filter_string, "${" + BUTTON_TRIGGER_TITLE + "}")
+        .withFieldValue(filter_regexp, "123").withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()).build())
     .store()
     .withNotification(
-      notificationBuilder()
-        .withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/?456=${" + BUTTON_TRIGGER_TITLE + "}")
-        .withFieldValue(AdminFormValues.FIELDS.events, BUTTON_TRIGGER)
-        .withFieldValue(AdminFormValues.FIELDS.filter_string, "${" + BUTTON_TRIGGER_TITLE + "}")
-        .withFieldValue(AdminFormValues.FIELDS.filter_regexp, "456")
-        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.TRIGGER_CONFIG_FORM.name()).build())
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/?456=${" + BUTTON_TRIGGER_TITLE + "}")
+        .withFieldValue(events, BUTTON_TRIGGER).withFieldValue(filter_string, "${" + BUTTON_TRIGGER_TITLE + "}")
+        .withFieldValue(filter_regexp, "456").withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()).build())
     .store()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.FORM_IDENTIFIER, "Button Form")
-        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.BUTTON_CONFIG_FORM.name())
-        .withFieldValue(AdminFormValues.FIELDS.button_title, "button text 123")
-        .withFieldValue(AdminFormValues.FIELDS.button_visibility, AdminFormValues.BUTTON_VISIBILITY.EVERYONE.name())
-        .build()).store().triggerButton("Button Form").invokedOnlyUrl("http://bjurr.se/?123=button%20text%20123");
+      notificationBuilder().withFieldValue(FORM_IDENTIFIER, "Button Form")
+        .withFieldValue(FORM_TYPE, BUTTON_CONFIG_FORM.name()).withFieldValue(button_title, "button text 123")
+        .withFieldValue(button_visibility, EVERYONE.name()).build()).store().triggerButton("Button Form")
+    .invokedOnlyUrl("http://bjurr.se/?123=button%20text%20123");
  }
 
  @Test
@@ -952,27 +870,20 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder()
-        .withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/?123=${" + BUTTON_TRIGGER_TITLE + "}")
-        .withFieldValue(AdminFormValues.FIELDS.events, BUTTON_TRIGGER)
-        .withFieldValue(AdminFormValues.FIELDS.filter_string, "${" + BUTTON_TRIGGER_TITLE + "}")
-        .withFieldValue(AdminFormValues.FIELDS.filter_regexp, "button")
-        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.TRIGGER_CONFIG_FORM.name()).build())
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/?123=${" + BUTTON_TRIGGER_TITLE + "}")
+        .withFieldValue(events, BUTTON_TRIGGER).withFieldValue(filter_string, "${" + BUTTON_TRIGGER_TITLE + "}")
+        .withFieldValue(filter_regexp, "button").withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()).build())
     .store()
     .withNotification(
-      notificationBuilder()
-        .withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/?456=${" + BUTTON_TRIGGER_TITLE + "}")
-        .withFieldValue(AdminFormValues.FIELDS.events, BUTTON_TRIGGER)
-        .withFieldValue(AdminFormValues.FIELDS.filter_string, "${" + BUTTON_TRIGGER_TITLE + "}")
-        .withFieldValue(AdminFormValues.FIELDS.filter_regexp, "button")
-        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.TRIGGER_CONFIG_FORM.name()).build())
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/?456=${" + BUTTON_TRIGGER_TITLE + "}")
+        .withFieldValue(events, BUTTON_TRIGGER).withFieldValue(filter_string, "${" + BUTTON_TRIGGER_TITLE + "}")
+        .withFieldValue(filter_regexp, "button").withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()).build())
     .store()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.FORM_IDENTIFIER, "Button Form")
-        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.BUTTON_CONFIG_FORM.name())
-        .withFieldValue(AdminFormValues.FIELDS.button_title, "button text 123")
-        .withFieldValue(AdminFormValues.FIELDS.button_visibility, AdminFormValues.BUTTON_VISIBILITY.EVERYONE.name())
-        .build()).store().triggerButton("Button Form").invokedUrl(0, "http://bjurr.se/?123=button%20text%20123")
+      notificationBuilder().withFieldValue(FORM_IDENTIFIER, "Button Form")
+        .withFieldValue(FORM_TYPE, BUTTON_CONFIG_FORM.name()).withFieldValue(button_title, "button text 123")
+        .withFieldValue(button_visibility, EVERYONE.name()).build()).store().triggerButton("Button Form")
+    .invokedUrl(0, "http://bjurr.se/?123=button%20text%20123")
     .invokedUrl(1, "http://bjurr.se/?456=button%20text%20123");
  }
 
@@ -981,25 +892,93 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder()
-        .withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/?${" + BUTTON_TRIGGER_TITLE + "}")
-        .withFieldValue(AdminFormValues.FIELDS.events, BUTTON_TRIGGER)
-        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.TRIGGER_CONFIG_FORM.name()).build())
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/?${" + BUTTON_TRIGGER_TITLE + "}")
+        .withFieldValue(events, BUTTON_TRIGGER).withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()).build())
     .store()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.FORM_IDENTIFIER, "Button Form 1")
-        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.BUTTON_CONFIG_FORM.name())
-        .withFieldValue(AdminFormValues.FIELDS.button_title, "button text 1")
-        .withFieldValue(AdminFormValues.FIELDS.button_visibility, AdminFormValues.BUTTON_VISIBILITY.EVERYONE.name())
-        .build())
+      notificationBuilder().withFieldValue(FORM_IDENTIFIER, "Button Form 1")
+        .withFieldValue(FORM_TYPE, BUTTON_CONFIG_FORM.name()).withFieldValue(button_title, "button text 1")
+        .withFieldValue(button_visibility, EVERYONE.name()).build())
     .store()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.FORM_IDENTIFIER, "Button Form 2")
-        .withFieldValue(AdminFormValues.FIELDS.FORM_TYPE, AdminFormValues.FORM_TYPE.BUTTON_CONFIG_FORM.name())
-        .withFieldValue(AdminFormValues.FIELDS.button_title, "button text 2")
-        .withFieldValue(AdminFormValues.FIELDS.button_visibility, AdminFormValues.BUTTON_VISIBILITY.EVERYONE.name())
-        .build()).store().triggerButton("Button Form 1").invokedUrl(0, "http://bjurr.se/?button%20text%201")
-    .triggerButton("Button Form 2").invokedUrl(1, "http://bjurr.se/?button%20text%202");
+      notificationBuilder().withFieldValue(FORM_IDENTIFIER, "Button Form 2")
+        .withFieldValue(FORM_TYPE, BUTTON_CONFIG_FORM.name()).withFieldValue(button_title, "button text 2")
+        .withFieldValue(button_visibility, EVERYONE.name()).build()).store().triggerButton("Button Form 1")
+    .invokedUrl(0, "http://bjurr.se/?button%20text%201").triggerButton("Button Form 2")
+    .invokedUrl(1, "http://bjurr.se/?button%20text%202");
+ }
+
+ @Test
+ public void testThatValueFromUrlCanBeUsedInInvocation() throws Exception {
+  prnfsTestBuilder() //
+    .isLoggedInAsAdmin() //
+    .withNotification( //
+      notificationBuilder() //
+        .withFieldValue(url, "http://bjurr.se/?${" + INJECTION_URL_VALUE + "}") //
+        .withFieldValue(events, OPENED.name()) //
+        .withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()) //
+        .withFieldValue(injection_url, "http://bjurr.se/get") //
+        .withFieldValue(FIELDS.injection_url_type, RAW.name()) //
+        .build() //
+    ) //
+    .store() //
+    .withResponse("http://bjurr.se/get", "some content") //
+    .trigger( //
+      pullRequestEventBuilder() //
+        .withPullRequestAction(OPENED) //
+        .build() //
+    ) //
+    .invokedOnlyUrl("http://bjurr.se/?some%20content");
+ }
+
+ @Test
+ public void testThatValueFromUrlJsonPathCanBeUsedInInvocation() throws Exception {
+  prnfsTestBuilder() //
+    .isLoggedInAsAdmin() //
+    .withNotification( //
+      notificationBuilder() //
+        .withFieldValue(url, "http://bjurr.se/?${" + INJECTION_URL_VALUE + "}") //
+        .withFieldValue(events, OPENED.name()) //
+        .withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()) //
+        .withFieldValue(injection_url, "http://bjurr.se/get") //
+        .withFieldValue(FIELDS.injection_url_type, JSONPATH.name()) //
+        .withFieldValue(FIELDS.injection_url_jsonpath, "$.content") //
+        .build() //
+    ) //
+    .store() //
+    .withResponse("http://bjurr.se/get", "{ \"content\": \"some json\"}") //
+    .trigger( //
+      pullRequestEventBuilder() //
+        .withPullRequestAction(OPENED) //
+        .build() //
+    ) //
+    .invokedOnlyUrl("http://bjurr.se/?some%20json");
+ }
+
+ @Test
+ public void testThatValueFromUrlXPathCanBeUsedInInvocation() throws Exception {
+  prnfsTestBuilder() //
+    .isLoggedInAsAdmin() //
+    .withNotification( //
+      notificationBuilder() //
+        .withFieldValue(url, "http://bjurr.se/?${" + INJECTION_URL_VALUE + "}") //
+        .withFieldValue(events, OPENED.name()) //
+        .withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()) //
+        .withFieldValue(injection_url, "http://bjurr.se/get") //
+        .withFieldValue(FIELDS.injection_url_type, XPATH.name()) //
+        .withFieldValue(FIELDS.injection_url_xpath, "concat(//crumbRequestField,\":\",//crumb)") //
+        .build() //
+    ) //
+    .store() //
+    .withResponse(
+      "http://bjurr.se/get",
+      "<defaultCrumbIssuer><crumb>11d72c5cec68eaad9acf23a66f3576d2</crumb><crumbRequestField>.crumb</crumbRequestField></defaultCrumbIssuer>") //
+    .trigger( //
+      pullRequestEventBuilder() //
+        .withPullRequestAction(OPENED) //
+        .build() //
+    ) //
+    .invokedOnlyUrl("http://bjurr.se/?.crumb:11d72c5cec68eaad9acf23a66f3576d2");
  }
 
  @Test
@@ -1007,9 +986,8 @@ public class PrnfsPullRequestEventListenerTest {
   prnfsTestBuilder()
     .isLoggedInAsAdmin()
     .withNotification(
-      notificationBuilder().withFieldValue(AdminFormValues.FIELDS.url, "http://bjurr.se/")
-        .withFieldValue(AdminFormValues.FIELDS.events, OPENED.name()).build()).store()
-    .trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build()).invokedUrl(0, "http://bjurr.se/")
+      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(events, OPENED.name()).build())
+    .store().trigger(pullRequestEventBuilder().withPullRequestAction(OPENED).build()).invokedUrl(0, "http://bjurr.se/")
     .usedNoProxy(0);
  }
 

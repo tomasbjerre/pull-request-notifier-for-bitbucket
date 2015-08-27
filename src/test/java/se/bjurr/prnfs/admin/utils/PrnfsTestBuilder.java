@@ -39,9 +39,11 @@ import se.bjurr.prnfs.admin.AdminFormError;
 import se.bjurr.prnfs.admin.AdminFormValues;
 import se.bjurr.prnfs.admin.ConfigResource;
 import se.bjurr.prnfs.admin.data.PluginSettingsImpl;
+import se.bjurr.prnfs.listener.Invoker;
 import se.bjurr.prnfs.listener.PrnfsPullRequestEventListener;
-import se.bjurr.prnfs.listener.PrnfsPullRequestEventListener.Invoker;
+import se.bjurr.prnfs.listener.PrnfsRenderer;
 import se.bjurr.prnfs.listener.UrlInvoker;
+import se.bjurr.prnfs.listener.UrlInvoker.HTTP_METHOD;
 import se.bjurr.prnfs.settings.Header;
 import se.bjurr.prnfs.settings.PrnfsButton;
 import se.bjurr.prnfs.settings.PrnfsSettings;
@@ -251,7 +253,7 @@ public class PrnfsTestBuilder {
 
  public PrnfsTestBuilder invokedOnlyUrl(String url) {
   assertEquals(1, urlInvokers.size());
-  assertTrue(urlInvokers.get(0).getUrlParam().equals(url));
+  assertEquals(url, urlInvokers.get(0).getUrlParam());
   return this;
  }
 
@@ -260,13 +262,13 @@ public class PrnfsTestBuilder {
   return this;
  }
 
- public PrnfsTestBuilder invokedMethod(String method) {
+ public PrnfsTestBuilder invokedMethod(HTTP_METHOD method) {
   for (UrlInvoker u : urlInvokers) {
    if (method.equals(u.getMethod())) {
     return this;
    }
   }
-  fail(method);
+  fail(method.name());
   return this;
  }
 
@@ -427,4 +429,15 @@ public class PrnfsTestBuilder {
   return repositoryService;
  }
 
+ public PrnfsTestBuilder withResponse(final String url, final String response) {
+  PrnfsRenderer.setInvoker(new Invoker() {
+   @Override
+   public void invoke(UrlInvoker urlInvoker) {
+    if (urlInvoker.getUrlParam().equals(url)) {
+     urlInvoker.setResponseString(response);
+    }
+   }
+  });
+  return this;
+ }
 }

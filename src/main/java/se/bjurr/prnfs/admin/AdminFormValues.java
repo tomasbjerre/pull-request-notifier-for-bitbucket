@@ -20,11 +20,39 @@ public final class AdminFormValues extends ArrayList<Map<String, String>> {
   BUTTON_CONFIG_FORM, TRIGGER_CONFIG_FORM, GLOBAL_SETTINGS
  };
 
+ public enum INEJCTION_TYPE {
+  JSONPATH, XPATH, RAW
+ };
+
  public enum BUTTON_VISIBILITY {
   NONE, SYSTEM_ADMIN, ADMIN, EVERYONE
  };
 
  public enum FIELDS {
-  user, password, events, FORM_IDENTIFIER, FORM_TYPE, url, filter_string, filter_regexp, method, post_content, proxy_user, proxy_password, proxy_server, proxy_port, header_name, header_value, name, button_title, button_visibility, admin_allowed, user_allowed
+  user, //
+  password, //
+  events, //
+  FORM_IDENTIFIER, //
+  FORM_TYPE, //
+  url, //
+  filter_string, //
+  filter_regexp, //
+  method, //
+  post_content, //
+  proxy_user, //
+  proxy_password, //
+  proxy_server, //
+  proxy_port, //
+  header_name, //
+  header_value, //
+  name, //
+  button_title, //
+  button_visibility, //
+  admin_allowed, //
+  user_allowed, //
+  injection_url, //
+  injection_url_xpath, //
+  injection_url_jsonpath, //
+  injection_url_type, //
  }
 }
