@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>se.bjurr.prnfs</groupId>
     <artifactId>pull-request-notifier-for-stash</artifactId>
-    <version>1.22-SNAPSHOT</version>
+    <version>1.22</version>
     <organization>
         <name>Tomas Bjerre</name>
         <url>http://bjurr.se/</url>
@@ -15,7 +15,7 @@
     <scm>
         <developerConnection>scm:git:git@github.com:tomasbjerre/pull-request-notifier-for-stash.git</developerConnection>
         <url>https://github.com/tomasbjerre/pull-request-notifier-for-stash</url>
-        <tag>HEAD</tag>
+        <tag>pull-request-notifier-for-stash-1.22</tag>
     </scm>
     <distributionManagement>
         <repository>
