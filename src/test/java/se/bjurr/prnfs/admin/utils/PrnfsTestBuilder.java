@@ -27,12 +27,11 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.mockito.Matchers;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import se.bjurr.prnfs.ManualResource;
 import se.bjurr.prnfs.admin.AdminFormError;
@@ -84,7 +83,7 @@ public class PrnfsTestBuilder {
 
  private static Long fakeRandomCounter = null;
 
- private static final Logger logger = LoggerFactory.getLogger(PrnfsTestBuilder.class);
+ private static final Logger logger = Logger.getLogger(PrnfsTestBuilder.class.getName());
 
  public static PrnfsTestBuilder prnfsTestBuilder() {
   return new PrnfsTestBuilder();

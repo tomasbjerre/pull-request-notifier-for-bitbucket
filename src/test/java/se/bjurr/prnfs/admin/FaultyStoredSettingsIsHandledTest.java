@@ -7,12 +7,12 @@ import static org.mockito.Mockito.when;
 import static se.bjurr.prnfs.settings.SettingsStorage.getSettingsAsFormValues;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
-import org.slf4j.Logger;
+import org.mockito.Matchers;
 
 import se.bjurr.prnfs.settings.SettingsStorage;
 
@@ -46,19 +46,19 @@ public class FaultyStoredSettingsIsHandledTest {
 
  @Test
  public void whenItIsAListOfNoneJson() {
-  when(settings.get(Mockito.anyString())).thenReturn(newArrayList("this is not json"));
+  when(settings.get(Matchers.anyString())).thenReturn(newArrayList("this is not json"));
   assertEmpty();
  }
 
  @Test
  public void whenItIsAListOfUnrecognizedJson() {
-  when(settings.get(Mockito.anyString())).thenReturn(newArrayList("{\"this\": \"that\"}"));
+  when(settings.get(Matchers.anyString())).thenReturn(newArrayList("{\"this\": \"that\"}"));
   assertEmpty();
  }
 
  @Test
  public void whenItIsNotAList() {
-  when(settings.get(Mockito.anyString())).thenReturn("this is not a list!");
+  when(settings.get(Matchers.anyString())).thenReturn("this is not a list!");
   assertEmpty();
  }
 }

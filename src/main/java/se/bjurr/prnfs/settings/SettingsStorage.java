@@ -9,6 +9,7 @@ import static com.google.common.collect.Iterables.tryFind;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newTreeMap;
 import static java.lang.System.currentTimeMillis;
+import static java.util.logging.Level.SEVERE;
 import static se.bjurr.prnfs.admin.AdminFormValues.DEFAULT_NAME;
 import static se.bjurr.prnfs.admin.AdminFormValues.NAME;
 import static se.bjurr.prnfs.admin.AdminFormValues.VALUE;
@@ -22,9 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Logger;
 
 import se.bjurr.prnfs.admin.AdminFormValues;
 import se.bjurr.prnfs.admin.AdminFormValues.BUTTON_VISIBILITY;
@@ -39,7 +38,7 @@ import com.google.gson.Gson;
 public class SettingsStorage {
 
  private static final Gson gson = new Gson();
- private static Logger logger = LoggerFactory.getLogger(SettingsStorage.class);
+ private static Logger logger = Logger.getLogger(SettingsStorage.class.getName());
 
  private static Random random = new Random(currentTimeMillis());
 
@@ -51,7 +50,7 @@ public class SettingsStorage {
   try {
    storeNotificationsMap(pluginSettings, map);
   } catch (final ValidationException e) {
-   logger.error("", e);
+   logger.log(SEVERE, "", e);
   }
  }
 
@@ -222,7 +221,7 @@ public class SettingsStorage {
     toReturn.add(injectConfigurationName(gson.fromJson(storedJson, AdminFormValues.class)));
    }
   } catch (final Exception e) {
-   logger.error("Unable to deserialize settings", e);
+   logger.log(SEVERE, "Unable to deserialize settings", e);
   }
   return toReturn;
  }

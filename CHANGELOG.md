@@ -2,6 +2,9 @@
 
 Changelog of Pull Request Notifier for Stash.
 
+## 1.23
+* Removing SLF4J usage to deal with classpath issues.
+
 ## 1.22
 * Adding feature that can inject variable evaluated in content of a URL. Raw content or value of an xPath or JsonPath.
 * Bugfix: Closing inputstream after invocation. This may have caused "IOException: Too many open files".

@@ -6,6 +6,8 @@ import static com.google.common.base.Optional.absent;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.io.CharStreams.readLines;
 import static java.lang.Boolean.TRUE;
+import static java.util.logging.Level.SEVERE;
+import static java.util.logging.Logger.getLogger;
 import static se.bjurr.prnfs.listener.UrlInvoker.HTTP_METHOD.GET;
 
 import java.io.ByteArrayInputStream;
@@ -20,9 +22,7 @@ import java.net.PasswordAuthentication;
 import java.net.Proxy;
 import java.net.URL;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Logger;
 
 import se.bjurr.prnfs.settings.Header;
 
@@ -36,7 +36,7 @@ public class UrlInvoker {
   GET, PUT, POST, DELETE
  }
 
- private static final Logger logger = LoggerFactory.getLogger(UrlInvoker.class);
+ private static final Logger logger = getLogger(UrlInvoker.class.getName());
  private String urlParam;
  private HTTP_METHOD method = GET;
  private Optional<String> postContent;
@@ -103,7 +103,7 @@ public class UrlInvoker {
    }
    uc.setDoOutput(true);
    if (shouldPostContent()) {
-    logger.debug(method + " >\n" + postContent.get());
+    logger.fine(method + " >\n" + postContent.get());
     uc.setDoInput(true);
     uc.setRequestProperty("Content-Length", postContent.get().length() + "");
     wr = new DataOutputStream(uc.getOutputStream());
@@ -111,9 +111,9 @@ public class UrlInvoker {
    }
    ir = new InputStreamReader(uc.getInputStream(), UTF_8);
    responseString = on("\n").join(readLines(ir));
-   logger.debug(responseString);
+   logger.fine(responseString);
   } catch (final Exception e) {
-   logger.error("", e);
+   logger.log(SEVERE, "", e);
   } finally {
    try {
     Closeables.close(ir, TRUE);

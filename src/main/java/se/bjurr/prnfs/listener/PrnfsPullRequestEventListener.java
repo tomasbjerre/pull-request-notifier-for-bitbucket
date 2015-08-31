@@ -5,6 +5,8 @@ import static com.google.common.base.Optional.absent;
 import static com.google.common.collect.Maps.newHashMap;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
+import static java.util.logging.Level.SEVERE;
+import static java.util.logging.Logger.getLogger;
 import static java.util.regex.Pattern.compile;
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static javax.xml.bind.DatatypeConverter.printBase64Binary;
@@ -14,9 +16,7 @@ import static se.bjurr.prnfs.listener.UrlInvoker.urlInvoker;
 import static se.bjurr.prnfs.settings.SettingsStorage.getPrnfsSettings;
 
 import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Logger;
 
 import se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable;
 import se.bjurr.prnfs.settings.Header;
@@ -50,7 +50,7 @@ public class PrnfsPullRequestEventListener {
  private final PluginSettingsFactory pluginSettingsFactory;
  private final RepositoryService repositoryService;
  private final ApplicationPropertiesService propertiesService;
- private static final Logger logger = LoggerFactory.getLogger(PrnfsPullRequestEventListener.class);
+ private static final Logger logger = getLogger(PrnfsPullRequestEventListener.class.getName());
 
  private static Invoker invoker = new Invoker() {
   @Override
@@ -144,7 +144,7 @@ public class PrnfsPullRequestEventListener {
     notify(notification, action, pullRequestEvent.getPullRequest(), variables, renderer);
    }
   } catch (final ValidationException e) {
-   logger.error("", e);
+   logger.log(SEVERE, "", e);
   }
  }
 

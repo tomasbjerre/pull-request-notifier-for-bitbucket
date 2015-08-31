@@ -1,5 +1,7 @@
 package se.bjurr.prnfs.listener;
 
+import static java.util.logging.Level.SEVERE;
+import static java.util.logging.Logger.getLogger;
 import static javax.xml.xpath.XPathConstants.STRING;
 import static se.bjurr.prnfs.admin.AdminFormValues.INEJCTION_TYPE.JSONPATH;
 import static se.bjurr.prnfs.admin.AdminFormValues.INEJCTION_TYPE.RAW;
@@ -11,12 +13,10 @@ import static se.bjurr.prnfs.listener.UrlInvoker.HTTP_METHOD.GET;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPathFactory;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import se.bjurr.prnfs.settings.PrnfsNotification;
 
@@ -32,7 +32,7 @@ import com.google.common.base.Supplier;
 import com.jayway.jsonpath.JsonPath;
 
 public class PrnfsRenderer {
- private static final Logger logger = LoggerFactory.getLogger(PrnfsRenderer.class);
+ private static final Logger logger = getLogger(PrnfsRenderer.class.getName());
  private static Invoker invoker = new Invoker() {
   @Override
   public void invoke(UrlInvoker urlInvoker) {
@@ -331,7 +331,8 @@ public class PrnfsRenderer {
         .evaluate(
           DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(urlInvoker.getResponseStringStream()), STRING);
      } catch (Exception e) {
-      logger.error(prnfsNotification.getInjectionUrl().get() + " " + prnfsNotification.getInjectionUrlXPath().get(), e);
+      logger.log(SEVERE, prnfsNotification.getInjectionUrl().get() + " "
+        + prnfsNotification.getInjectionUrlXPath().get(), e);
      }
     }
     return "";

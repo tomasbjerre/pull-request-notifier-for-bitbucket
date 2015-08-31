@@ -1,6 +1,8 @@
 package se.bjurr.prnfs.admin;
 
 import static com.atlassian.stash.user.Permission.ADMIN;
+import static java.util.logging.Level.SEVERE;
+import static java.util.logging.Logger.getLogger;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.Response.noContent;
 import static javax.ws.rs.core.Response.ok;
@@ -17,6 +19,8 @@ import static se.bjurr.prnfs.settings.SettingsStorage.getSettingsAsFormValues;
 import static se.bjurr.prnfs.settings.SettingsStorage.injectFormIdentifierIfNotSet;
 import static se.bjurr.prnfs.settings.SettingsStorage.storeSettings;
 
+import java.util.logging.Logger;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -27,9 +31,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import se.bjurr.prnfs.settings.PrnfsSettings;
 import se.bjurr.prnfs.settings.ValidationException;
@@ -44,7 +45,7 @@ import com.atlassian.stash.util.Operation;
 
 @Path("/")
 public class ConfigResource {
- private static final Logger logger = LoggerFactory.getLogger(ConfigResource.class);
+ private static final Logger logger = getLogger(ConfigResource.class.getName());
  private final PluginSettingsFactory pluginSettingsFactory;
  private final TransactionTemplate transactionTemplate;
  private final UserManager userManager;
@@ -157,7 +158,7 @@ public class ConfigResource {
     try {
      storeSettings(pluginSettingsFactory.createGlobalSettings(), config);
     } catch (final ValidationException e) {
-     logger.error("", e);
+     logger.log(SEVERE, "", e);
     }
     return null;
    }
