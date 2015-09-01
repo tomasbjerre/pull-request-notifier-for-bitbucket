@@ -377,6 +377,7 @@ public class PrnfsTestBuilder {
  }
 
  public void didSendPostContentAt(int i, String string) {
+  assertTrue(urlInvokers.get(i).shouldPostContent());
   assertEquals(string, urlInvokers.get(i).getPostContent().get());
  }
 

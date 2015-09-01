@@ -2,6 +2,9 @@
 
 Changelog of Pull Request Notifier for Stash.
 
+## 1.25
+* Bugfix: Sending post content in POST and PUT notifications.
+
 ## 1.24
 * Removing JsonPath alternative, introduced in version 1.22. It causes classpath issues for some users.
 

@@ -9,6 +9,8 @@ import static java.lang.Boolean.TRUE;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Logger.getLogger;
 import static se.bjurr.prnfs.listener.UrlInvoker.HTTP_METHOD.GET;
+import static se.bjurr.prnfs.listener.UrlInvoker.HTTP_METHOD.POST;
+import static se.bjurr.prnfs.listener.UrlInvoker.HTTP_METHOD.PUT;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataOutputStream;
@@ -149,7 +151,7 @@ public class UrlInvoker {
 
  @VisibleForTesting
  public boolean shouldPostContent() {
-  return (method.equals("POST") || method.equals("PUT")) && postContent.isPresent();
+  return (method == POST || method == PUT) && postContent.isPresent();
  }
 
  public List<Header> getHeaders() {
