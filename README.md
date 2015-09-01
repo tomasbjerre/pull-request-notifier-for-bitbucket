@@ -24,7 +24,8 @@ The Pull Request Notifier for Stash can:
  * RESCOPED_FROM, when source branch change
  * RESCOPED_TO, when target branch change
  * BUTTON_TRIGGER, when trigger button in pull request view is pressed
-* Can invoke CSRF protected systems (including Jenkins), using the ${INJECTION_URL_VALUE} variable
+* Can invoke CSRF protected systems, using the ${INJECTION_URL_VALUE} variable
+ * With Jenkins you set the Injection URL field to: `JENKINS_URL/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//crumb)`
 * Be configured to only trigger if the pull request mathches a filter. A filter text is constructed with any combination of the variables and then a regexp is constructed to match that text.
 * Add buttons to pull request view in Stash. And map those buttons to URL invocations. This can be done by setting the filter string to ${BUTTON_TRIGGER_TITLE} and the filter regexp to title of button.
 * Authenticate with HTTP basic authentication.

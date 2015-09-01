@@ -89,7 +89,10 @@
         <input type="hidden" name="FORM_TYPE" value="BUTTON_CONFIG_FORM">
         <div>
           <fieldset>
-            <legend>Trigger notification -button in pull request view</legend>
+            <legend>Trigger button</legend>
+            <p>
+             Button in pull request view.
+            </p>
             <label>Text to display on button<input type="text" name="button_title"></label>
           </fieldset>
         </div>
@@ -130,7 +133,10 @@
         </div>
         <div>
           <fieldset>
-            <legend>Filter (Optional). Variables above are available.</legend>
+            <legend>Filter (Optional)</legend>
+            <p>
+             Variables above are available.
+            </p>
             <label>Filter string<input type="text" name="filter_string"><br/></label>
             <div class="error filter_string"></div>
             <label>Filter regexp<input type="text" name="filter_regexp"><br></label>
@@ -162,11 +168,9 @@
           <fieldset>
             <legend>Injection URL (Optional)</legend>
             <label>URL<input type="text" name="injection_url"></label>
-
-            <label><input type="radio" name="injection_url_type" value="XPATH" onClick="jQuery('.injection_url_type_XPATH').show()">XPath</label><br>
-            <input class="visibleif injection_url_type_XPATH" type="text" name="injection_url_xpath">
-
-            <label><input type="radio" name="injection_url_type" value="RAW" onClick="jQuery('.injection_url_type_XPATH').hide()">RAW</label>
+            <p>
+             The (GET) response from this URL will be available in the ${INJECTION_URL_VALUE} variable.
+            </p>
           </fieldset>
         </div>
         <div>

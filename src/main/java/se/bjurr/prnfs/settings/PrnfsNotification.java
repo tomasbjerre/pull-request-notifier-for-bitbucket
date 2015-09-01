@@ -18,7 +18,6 @@ import java.util.Map;
 
 import se.bjurr.prnfs.admin.AdminFormValues;
 import se.bjurr.prnfs.admin.AdminFormValues.FORM_TYPE;
-import se.bjurr.prnfs.admin.AdminFormValues.INEJCTION_TYPE;
 import se.bjurr.prnfs.listener.PrnfsPullRequestAction;
 import se.bjurr.prnfs.listener.UrlInvoker.HTTP_METHOD;
 
@@ -40,14 +39,11 @@ public class PrnfsNotification {
  private final Integer proxyPort;
  private final String name;
  private final String injectionUrl;
- private final String injectionUrlJsonPath;
- private final String injectionUrlXPath;
- private final INEJCTION_TYPE injectionUrlType;
 
  public PrnfsNotification(List<PrnfsPullRequestAction> triggers, String url, String user, String password,
    String filterString, String filterRegexp, String method, String postContent, List<Header> headers, String proxyUser,
-   String proxyPassword, String proxyServer, String proxyPort, String name, String injectionUrl,
-   String injectionUrlJsonPath, String injectionUrlXPath, INEJCTION_TYPE injectionUrlType) throws ValidationException {
+   String proxyPassword, String proxyServer, String proxyPort, String name, String injectionUrl)
+   throws ValidationException {
   this.proxyUser = emptyToNull(nullToEmpty(proxyUser).trim());
   this.proxyPassword = emptyToNull(nullToEmpty(proxyPassword).trim());
   this.proxyServer = emptyToNull(nullToEmpty(proxyServer).trim());
@@ -83,9 +79,6 @@ public class PrnfsNotification {
   this.filterRegexp = filterRegexp;
   this.name = firstNonNull(emptyToNull(nullToEmpty(name).trim()), DEFAULT_NAME);
   this.injectionUrl = emptyToNull(nullToEmpty(injectionUrl).trim());
-  this.injectionUrlJsonPath = emptyToNull(nullToEmpty(injectionUrlJsonPath).trim());
-  this.injectionUrlXPath = emptyToNull(nullToEmpty(injectionUrlXPath).trim());
-  this.injectionUrlType = injectionUrlType;
  }
 
  public Optional<String> getFilterRegexp() {
@@ -152,17 +145,5 @@ public class PrnfsNotification {
 
  public Optional<String> getInjectionUrl() {
   return fromNullable(injectionUrl);
- }
-
- public Optional<String> getInjectionUrlJsonPath() {
-  return fromNullable(injectionUrlJsonPath);
- }
-
- public Optional<String> getInjectionUrlXPath() {
-  return fromNullable(injectionUrlXPath);
- }
-
- public INEJCTION_TYPE getInjectionUrlType() {
-  return injectionUrlType;
  }
 }

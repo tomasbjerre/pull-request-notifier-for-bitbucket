@@ -2,6 +2,9 @@
 
 Changelog of Pull Request Notifier for Stash.
 
+## 1.26
+* Removing XPath alternative, introduced in version 1.22. It may not work in all installations. And is is not needed for Jenkins, which was the original use case.
+
 ## 1.25
 * Bugfix: Sending post content in POST and PUT notifications.
 

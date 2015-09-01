@@ -23,8 +23,6 @@ import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.filter_string;
 import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.header_name;
 import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.header_value;
 import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.injection_url;
-import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.injection_url_type;
-import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.injection_url_xpath;
 import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.method;
 import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.password;
 import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.post_content;
@@ -36,8 +34,6 @@ import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.url;
 import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.user;
 import static se.bjurr.prnfs.admin.AdminFormValues.FORM_TYPE.BUTTON_CONFIG_FORM;
 import static se.bjurr.prnfs.admin.AdminFormValues.FORM_TYPE.TRIGGER_CONFIG_FORM;
-import static se.bjurr.prnfs.admin.AdminFormValues.INEJCTION_TYPE.RAW;
-import static se.bjurr.prnfs.admin.AdminFormValues.INEJCTION_TYPE.XPATH;
 import static se.bjurr.prnfs.admin.utils.NotificationBuilder.notificationBuilder;
 import static se.bjurr.prnfs.admin.utils.PrnfsParticipantBuilder.prnfsParticipantBuilder;
 import static se.bjurr.prnfs.admin.utils.PrnfsTestBuilder.prnfsTestBuilder;
@@ -76,7 +72,6 @@ import java.util.regex.Pattern;
 
 import org.junit.Test;
 
-import se.bjurr.prnfs.admin.AdminFormValues.FIELDS;
 import se.bjurr.prnfs.admin.utils.PrnfsTestBuilder;
 import se.bjurr.prnfs.admin.utils.PullRequestEventBuilder;
 import se.bjurr.prnfs.admin.utils.PullRequestRefBuilder;
@@ -1604,43 +1599,16 @@ public class PrnfsPullRequestEventListenerTest {
         .withFieldValue(events, OPENED.name()) //
         .withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()) //
         .withFieldValue(injection_url, "http://bjurr.se/get") //
-        .withFieldValue(FIELDS.injection_url_type, RAW.name()) //
         .build() //
     ) //
     .store() //
-    .withResponse("http://bjurr.se/get", "some content") //
+    .withResponse("http://bjurr.se/get", " \n some content \n ") //
     .trigger( //
       pullRequestEventBuilder() //
         .withPullRequestAction(OPENED) //
         .build() //
     ) //
     .invokedOnlyUrl("http://bjurr.se/?some%20content");
- }
-
- @Test
- public void testThatValueFromUrlXPathCanBeUsedInInvocation() throws Exception {
-  prnfsTestBuilder() //
-    .isLoggedInAsAdmin() //
-    .withNotification( //
-      notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/?${" + INJECTION_URL_VALUE + "}") //
-        .withFieldValue(events, OPENED.name()) //
-        .withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()) //
-        .withFieldValue(injection_url, "http://bjurr.se/get") //
-        .withFieldValue(injection_url_type, XPATH.name()) //
-        .withFieldValue(injection_url_xpath, "concat(//crumbRequestField,\":\",//crumb)") //
-        .build() //
-    ) //
-    .store() //
-    .withResponse(
-      "http://bjurr.se/get",
-      "<defaultCrumbIssuer><crumb>11d72c5cec68eaad9acf23a66f3576d2</crumb><crumbRequestField>.crumb</crumbRequestField></defaultCrumbIssuer>") //
-    .trigger( //
-      pullRequestEventBuilder() //
-        .withPullRequestAction(OPENED) //
-        .build() //
-    ) //
-    .invokedOnlyUrl("http://bjurr.se/?.crumb:11d72c5cec68eaad9acf23a66f3576d2");
  }
 
  @Test

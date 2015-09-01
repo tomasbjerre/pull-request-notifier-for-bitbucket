@@ -5,7 +5,6 @@ import static com.google.common.collect.Lists.newArrayList;
 
 import java.util.List;
 
-import se.bjurr.prnfs.admin.AdminFormValues.INEJCTION_TYPE;
 import se.bjurr.prnfs.listener.PrnfsPullRequestAction;
 
 public class PrnfsNotificationBuilder {
@@ -31,36 +30,17 @@ public class PrnfsNotificationBuilder {
  private String proxyPort;
  private String name;
  private String injectionUrl;
- private String injectionUrlJsonPath;
- private String injectionUrlXPath;
- private INEJCTION_TYPE injectionUrlType;
 
  private PrnfsNotificationBuilder() {
  }
 
  public PrnfsNotification build() throws ValidationException {
   return new PrnfsNotification(triggers, url, user, password, filterString, filterRegexp, method, postContent, headers,
-    proxyUser, proxyPassword, proxyServer, proxyPort, name, injectionUrl, injectionUrlJsonPath, injectionUrlXPath,
-    injectionUrlType);
+    proxyUser, proxyPassword, proxyServer, proxyPort, name, injectionUrl);
  }
 
  public PrnfsNotificationBuilder withInjectionUrl(String injectionUrl) {
   this.injectionUrl = checkNotNull(injectionUrl);
-  return this;
- }
-
- public PrnfsNotificationBuilder withInjectionUrlJsonPath(String injectionUrlJsonPath) {
-  this.injectionUrlJsonPath = checkNotNull(injectionUrlJsonPath);
-  return this;
- }
-
- public PrnfsNotificationBuilder withInjectionUrlXPath(String injectionUrlXPath) {
-  this.injectionUrlXPath = checkNotNull(injectionUrlXPath);
-  return this;
- }
-
- public PrnfsNotificationBuilder withInjectionUrlType(INEJCTION_TYPE injectionUrlType) {
-  this.injectionUrlType = injectionUrlType;
   return this;
  }
 

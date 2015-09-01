@@ -1,10 +1,6 @@
 package se.bjurr.prnfs.listener;
 
-import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Logger.getLogger;
-import static javax.xml.xpath.XPathConstants.STRING;
-import static se.bjurr.prnfs.admin.AdminFormValues.INEJCTION_TYPE.RAW;
-import static se.bjurr.prnfs.admin.AdminFormValues.INEJCTION_TYPE.XPATH;
 import static se.bjurr.prnfs.listener.PrnfsRenderer.REPO_PROTOCOL.http;
 import static se.bjurr.prnfs.listener.PrnfsRenderer.REPO_PROTOCOL.ssh;
 import static se.bjurr.prnfs.listener.UrlInvoker.urlInvoker;
@@ -13,9 +9,6 @@ import static se.bjurr.prnfs.listener.UrlInvoker.HTTP_METHOD.GET;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPathFactory;
 
 import se.bjurr.prnfs.settings.PrnfsNotification;
 
@@ -316,22 +309,7 @@ public class PrnfsRenderer {
       .withProxyUser(prnfsNotification.getProxyUser()) //
       .withProxyPassword(prnfsNotification.getProxyPassword());
     PrnfsRenderer.invoker.invoke(urlInvoker);
-    if (prnfsNotification.getInjectionUrlType() == RAW) {
-     return urlInvoker.getResponseString().trim();
-    } else if (prnfsNotification.getInjectionUrlType() == XPATH && prnfsNotification.getInjectionUrlXPath().isPresent()) {
-     try {
-      return (String) XPathFactory
-        .newInstance()
-        .newXPath()
-        .compile(prnfsNotification.getInjectionUrlXPath().get())
-        .evaluate(
-          DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(urlInvoker.getResponseStringStream()), STRING);
-     } catch (Exception e) {
-      logger.log(SEVERE, prnfsNotification.getInjectionUrl().get() + " "
-        + prnfsNotification.getInjectionUrlXPath().get(), e);
-     }
-    }
-    return "";
+    return urlInvoker.getResponseString().trim();
    }
   });
 

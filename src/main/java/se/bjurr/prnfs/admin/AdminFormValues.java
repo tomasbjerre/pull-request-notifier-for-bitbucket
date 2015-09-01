@@ -20,10 +20,6 @@ public final class AdminFormValues extends ArrayList<Map<String, String>> {
   BUTTON_CONFIG_FORM, TRIGGER_CONFIG_FORM, GLOBAL_SETTINGS
  };
 
- public enum INEJCTION_TYPE {
-  XPATH, RAW
- };
-
  public enum BUTTON_VISIBILITY {
   NONE, SYSTEM_ADMIN, ADMIN, EVERYONE
  };
@@ -50,8 +46,6 @@ public final class AdminFormValues extends ArrayList<Map<String, String>> {
   button_visibility, //
   admin_allowed, //
   user_allowed, //
-  injection_url, //
-  injection_url_xpath, //
-  injection_url_type, //
+  injection_url
  }
 }
