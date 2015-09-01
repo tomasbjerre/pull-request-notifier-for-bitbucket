@@ -23,7 +23,6 @@ import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.filter_string;
 import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.header_name;
 import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.header_value;
 import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.injection_url;
-import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.injection_url_jsonpath;
 import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.injection_url_type;
 import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.injection_url_xpath;
 import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.method;
@@ -37,7 +36,6 @@ import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.url;
 import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.user;
 import static se.bjurr.prnfs.admin.AdminFormValues.FORM_TYPE.BUTTON_CONFIG_FORM;
 import static se.bjurr.prnfs.admin.AdminFormValues.FORM_TYPE.TRIGGER_CONFIG_FORM;
-import static se.bjurr.prnfs.admin.AdminFormValues.INEJCTION_TYPE.JSONPATH;
 import static se.bjurr.prnfs.admin.AdminFormValues.INEJCTION_TYPE.RAW;
 import static se.bjurr.prnfs.admin.AdminFormValues.INEJCTION_TYPE.XPATH;
 import static se.bjurr.prnfs.admin.utils.NotificationBuilder.notificationBuilder;
@@ -1617,30 +1615,6 @@ public class PrnfsPullRequestEventListenerTest {
         .build() //
     ) //
     .invokedOnlyUrl("http://bjurr.se/?some%20content");
- }
-
- @Test
- public void testThatValueFromUrlJsonPathCanBeUsedInInvocation() throws Exception {
-  prnfsTestBuilder() //
-    .isLoggedInAsAdmin() //
-    .withNotification( //
-      notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/?${" + INJECTION_URL_VALUE + "}") //
-        .withFieldValue(events, OPENED.name()) //
-        .withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()) //
-        .withFieldValue(injection_url, "http://bjurr.se/get") //
-        .withFieldValue(injection_url_type, JSONPATH.name()) //
-        .withFieldValue(injection_url_jsonpath, "$.content") //
-        .build() //
-    ) //
-    .store() //
-    .withResponse("http://bjurr.se/get", "{ \"content\": \"some json\"}") //
-    .trigger( //
-      pullRequestEventBuilder() //
-        .withPullRequestAction(OPENED) //
-        .build() //
-    ) //
-    .invokedOnlyUrl("http://bjurr.se/?some%20json");
  }
 
  @Test

@@ -21,7 +21,7 @@ public final class AdminFormValues extends ArrayList<Map<String, String>> {
  };
 
  public enum INEJCTION_TYPE {
-  JSONPATH, XPATH, RAW
+  XPATH, RAW
  };
 
  public enum BUTTON_VISIBILITY {
@@ -52,7 +52,6 @@ public final class AdminFormValues extends ArrayList<Map<String, String>> {
   user_allowed, //
   injection_url, //
   injection_url_xpath, //
-  injection_url_jsonpath, //
   injection_url_type, //
  }
 }

@@ -2,6 +2,9 @@
 
 Changelog of Pull Request Notifier for Stash.
 
+## 1.24
+* Removing JsonPath alternative, introduced in version 1.22. It causes classpath issues for some users.
+
 ## 1.23
 * Removing SLF4J usage to deal with classpath issues.
 

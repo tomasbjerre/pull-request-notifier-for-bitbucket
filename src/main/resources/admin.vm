@@ -163,13 +163,10 @@
             <legend>Injection URL (Optional)</legend>
             <label>URL<input type="text" name="injection_url"></label>
 
-            <label><input type="radio" name="injection_url_type" value="JSONPATH" onClick="jQuery('.injection_url_type_JSONPATH').show();jQuery('.injection_url_type_XPATH').hide()">JsonPath</label><br>
-            <input class="visibleif injection_url_type_JSONPATH" type="text" name="injection_url_jsonpath">
-
-            <label><input type="radio" name="injection_url_type" value="XPATH" onClick="jQuery('.injection_url_type_XPATH').show();jQuery('.injection_url_type_JSONPATH').hide()">XPath</label><br>
+            <label><input type="radio" name="injection_url_type" value="XPATH" onClick="jQuery('.injection_url_type_XPATH').show()">XPath</label><br>
             <input class="visibleif injection_url_type_XPATH" type="text" name="injection_url_xpath">
 
-            <label><input type="radio" name="injection_url_type" value="RAW" onClick="jQuery('.injection_url_type_XPATH').hide();jQuery('.injection_url_type_JSONPATH').hide()">RAW</label>
+            <label><input type="radio" name="injection_url_type" value="RAW" onClick="jQuery('.injection_url_type_XPATH').hide()">RAW</label>
           </fieldset>
         </div>
         <div>

@@ -3,7 +3,6 @@ package se.bjurr.prnfs.listener;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Logger.getLogger;
 import static javax.xml.xpath.XPathConstants.STRING;
-import static se.bjurr.prnfs.admin.AdminFormValues.INEJCTION_TYPE.JSONPATH;
 import static se.bjurr.prnfs.admin.AdminFormValues.INEJCTION_TYPE.RAW;
 import static se.bjurr.prnfs.admin.AdminFormValues.INEJCTION_TYPE.XPATH;
 import static se.bjurr.prnfs.listener.PrnfsRenderer.REPO_PROTOCOL.http;
@@ -29,7 +28,6 @@ import com.atlassian.stash.user.StashUser;
 import com.atlassian.stash.util.NamedLink;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Supplier;
-import com.jayway.jsonpath.JsonPath;
 
 public class PrnfsRenderer {
  private static final Logger logger = getLogger(PrnfsRenderer.class.getName());
@@ -318,9 +316,7 @@ public class PrnfsRenderer {
       .withProxyUser(prnfsNotification.getProxyUser()) //
       .withProxyPassword(prnfsNotification.getProxyPassword());
     PrnfsRenderer.invoker.invoke(urlInvoker);
-    if (prnfsNotification.getInjectionUrlType() == JSONPATH && prnfsNotification.getInjectionUrlJsonPath().isPresent()) {
-     return (String) JsonPath.read(urlInvoker.getResponseString(), prnfsNotification.getInjectionUrlJsonPath().get());
-    } else if (prnfsNotification.getInjectionUrlType() == RAW) {
+    if (prnfsNotification.getInjectionUrlType() == RAW) {
      return urlInvoker.getResponseString().trim();
     } else if (prnfsNotification.getInjectionUrlType() == XPATH && prnfsNotification.getInjectionUrlXPath().isPresent()) {
      try {
