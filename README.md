@@ -24,8 +24,7 @@ The Pull Request Notifier for Stash can:
  * RESCOPED_FROM, when source branch change
  * RESCOPED_TO, when target branch change
  * BUTTON_TRIGGER, when trigger button in pull request view is pressed
-* Can invoke CSRF protected systems, using the ${INJECTION_URL_VALUE} variable
- * With Jenkins you set the Injection URL field to: `JENKINS_URL/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//crumb)`
+* Can invoke CSRF protected systems, using the ${INJECTION_URL_VALUE} variable. How to to that with Jenkins is described below.
 * Be configured to only trigger if the pull request mathches a filter. A filter text is constructed with any combination of the variables and then a regexp is constructed to match that text.
 * Add buttons to pull request view in Stash. And map those buttons to URL invocations. This can be done by setting the filter string to ${BUTTON_TRIGGER_TITLE} and the filter regexp to title of button.
 * Authenticate with HTTP basic authentication.
@@ -69,6 +68,16 @@ The filter text as well as the URL support variables. These are:
 The ${PULL_REQUEST_USER...} contains information about the user who issued the event. Who commented it, who rejected it, who approved it...
 
 You may want to use [Violation Comments to Stash plugin](https://wiki.jenkins-ci.org/display/JENKINS/Violation+Comments+to+Stash+Plugin) and/or [StashNotifier plugin](https://wiki.jenkins-ci.org/display/JENKINS/StashNotifier+Plugin) to report results back to Stash.
+
+### Jenkins
+Parameterized Jenkins jobs can be triggered remotely via:
+```
+http://server/job/theJob/buildWithParameters?token=TOKEN&PARAMETER=Value
+```
+
+If you are using a CSRF protection in Jenkins, you can use the **Injection URL** feature.
+* Set **Injection URL** field to `http://JENKINS/crumbIssuer/api/xml?xpath=//crumb/text()`. You may get an error like *primitive XPath result sets forbidden; implement jenkins.security.SecureRequester*. If so, you can set Injection URL to `http://JENKINS/crumbIssuer/api/xml?xpath=//crumb` in combination with regular expression `<crumb>([^<]*)</crumb>`. Or a third option is to checkout [this](https://wiki.jenkins-ci.org/display/JENKINS/Secure+Requester+Whitelist+Plugin) Jenkins plugin.
+* In the headers section, set header **.crumb** with value **${INJECTION_URL_VALUE}**.
 
 ## Developer instructions
 Prerequisites:

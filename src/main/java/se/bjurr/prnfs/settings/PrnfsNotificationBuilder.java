@@ -30,17 +30,23 @@ public class PrnfsNotificationBuilder {
  private String proxyPort;
  private String name;
  private String injectionUrl;
+ private String injectionUrlRegexp;
 
  private PrnfsNotificationBuilder() {
  }
 
  public PrnfsNotification build() throws ValidationException {
   return new PrnfsNotification(triggers, url, user, password, filterString, filterRegexp, method, postContent, headers,
-    proxyUser, proxyPassword, proxyServer, proxyPort, name, injectionUrl);
+    proxyUser, proxyPassword, proxyServer, proxyPort, name, injectionUrl, injectionUrlRegexp);
  }
 
  public PrnfsNotificationBuilder withInjectionUrl(String injectionUrl) {
   this.injectionUrl = checkNotNull(injectionUrl);
+  return this;
+ }
+
+ public PrnfsNotificationBuilder withInjectionUrlRegexp(String injectionUrlRegexp) {
+  this.injectionUrlRegexp = checkNotNull(injectionUrlRegexp);
   return this;
  }
 

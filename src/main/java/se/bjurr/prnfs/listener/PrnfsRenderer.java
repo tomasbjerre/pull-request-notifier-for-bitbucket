@@ -1,6 +1,7 @@
 package se.bjurr.prnfs.listener;
 
 import static java.util.logging.Logger.getLogger;
+import static java.util.regex.Pattern.compile;
 import static se.bjurr.prnfs.listener.PrnfsRenderer.REPO_PROTOCOL.http;
 import static se.bjurr.prnfs.listener.PrnfsRenderer.REPO_PROTOCOL.ssh;
 import static se.bjurr.prnfs.listener.UrlInvoker.urlInvoker;
@@ -9,6 +10,7 @@ import static se.bjurr.prnfs.listener.UrlInvoker.HTTP_METHOD.GET;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
 
 import se.bjurr.prnfs.settings.PrnfsNotification;
 
@@ -304,12 +306,23 @@ public class PrnfsRenderer {
     }
     UrlInvoker urlInvoker = urlInvoker() //
       .withUrlParam(prnfsNotification.getInjectionUrl().get()) //
-      .withMethod(GET).withProxyServer(prnfsNotification.getProxyServer()) //
+      .withMethod(GET)//
+      .withProxyServer(prnfsNotification.getProxyServer()) //
       .withProxyPort(prnfsNotification.getProxyPort()) //
       .withProxyUser(prnfsNotification.getProxyUser()) //
       .withProxyPassword(prnfsNotification.getProxyPassword());
     PrnfsRenderer.invoker.invoke(urlInvoker);
-    return urlInvoker.getResponseString().trim();
+    String rawResponse = urlInvoker.getResponseString().trim();
+    if (prnfsNotification.getInjectionUrlRegexp().isPresent()) {
+     Matcher m = compile(prnfsNotification.getInjectionUrlRegexp().get()).matcher(rawResponse);
+     if (!m.find()) {
+      logger.severe("Could not find \"" + prnfsNotification.getInjectionUrlRegexp().get() + "\" in:\n" + rawResponse);
+      return "";
+     }
+     return m.group(1);
+    } else {
+     return rawResponse;
+    }
    }
   });
 

@@ -46,6 +46,7 @@ public final class AdminFormValues extends ArrayList<Map<String, String>> {
   button_visibility, //
   admin_allowed, //
   user_allowed, //
-  injection_url
+  injection_url, //
+  injection_url_regexp
  }
 }

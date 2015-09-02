@@ -23,6 +23,7 @@ import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.filter_string;
 import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.header_name;
 import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.header_value;
 import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.injection_url;
+import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.injection_url_regexp;
 import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.method;
 import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.password;
 import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.post_content;
@@ -1609,6 +1610,31 @@ public class PrnfsPullRequestEventListenerTest {
         .build() //
     ) //
     .invokedOnlyUrl("http://bjurr.se/?some%20content");
+ }
+
+ @Test
+ public void testThatValueFromUrlAndRegexpCanBeUsedInInvocation() throws Exception {
+  prnfsTestBuilder() //
+    .isLoggedInAsAdmin() //
+    .withNotification( //
+      notificationBuilder() //
+        .withFieldValue(url, "http://bjurr.se/?${" + INJECTION_URL_VALUE + "}") //
+        .withFieldValue(events, OPENED.name()) //
+        .withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()) //
+        .withFieldValue(injection_url, "http://bjurr.se/get") //
+        .withFieldValue(injection_url_regexp, "<crumb>([^<]*)</crumb>") //
+        .build() //
+    ) //
+    .store() //
+    .withResponse(
+      "http://bjurr.se/get",
+      " \n <defaultCrumbIssuer><crumb>986a2d65b7987258434da5583c9f5337</crumb><crumbRequestField>.crumb</crumbRequestField></defaultCrumbIssuer> \n ") //
+    .trigger( //
+      pullRequestEventBuilder() //
+        .withPullRequestAction(OPENED) //
+        .build() //
+    ) //
+    .invokedOnlyUrl("http://bjurr.se/?986a2d65b7987258434da5583c9f5337");
  }
 
  @Test

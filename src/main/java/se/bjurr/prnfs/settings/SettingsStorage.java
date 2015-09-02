@@ -164,6 +164,10 @@ public class SettingsStorage {
    prnfsNotificationBuilder.withInjectionUrl(find(adminFormValues,
      predicate(AdminFormValues.FIELDS.injection_url.name())).get(VALUE));
   }
+  if (tryFind(adminFormValues, predicate(AdminFormValues.FIELDS.injection_url_regexp.name())).isPresent()) {
+   prnfsNotificationBuilder.withInjectionUrlRegexp(find(adminFormValues,
+     predicate(AdminFormValues.FIELDS.injection_url_regexp.name())).get(VALUE));
+  }
   return prnfsNotificationBuilder.build();
  }
 

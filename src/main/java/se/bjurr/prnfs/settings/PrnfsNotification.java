@@ -9,6 +9,9 @@ import static com.google.common.collect.Iterables.tryFind;
 import static java.util.regex.Pattern.compile;
 import static se.bjurr.prnfs.admin.AdminFormValues.DEFAULT_NAME;
 import static se.bjurr.prnfs.admin.AdminFormValues.VALUE;
+import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.filter_regexp;
+import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.filter_string;
+import static se.bjurr.prnfs.admin.AdminFormValues.FORM_TYPE.TRIGGER_CONFIG_FORM;
 import static se.bjurr.prnfs.listener.UrlInvoker.HTTP_METHOD.GET;
 import static se.bjurr.prnfs.settings.PrnfsPredicates.predicate;
 
@@ -17,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import se.bjurr.prnfs.admin.AdminFormValues;
+import se.bjurr.prnfs.admin.AdminFormValues.FIELDS;
 import se.bjurr.prnfs.admin.AdminFormValues.FORM_TYPE;
 import se.bjurr.prnfs.listener.PrnfsPullRequestAction;
 import se.bjurr.prnfs.listener.UrlInvoker.HTTP_METHOD;
@@ -39,11 +43,12 @@ public class PrnfsNotification {
  private final Integer proxyPort;
  private final String name;
  private final String injectionUrl;
+ private final String injectionUrlRegexp;
 
  public PrnfsNotification(List<PrnfsPullRequestAction> triggers, String url, String user, String password,
    String filterString, String filterRegexp, String method, String postContent, List<Header> headers, String proxyUser,
-   String proxyPassword, String proxyServer, String proxyPort, String name, String injectionUrl)
-   throws ValidationException {
+   String proxyPassword, String proxyServer, String proxyPort, String name, String injectionUrl,
+   String injectionUrlRegexp) throws ValidationException {
   this.proxyUser = emptyToNull(nullToEmpty(proxyUser).trim());
   this.proxyPassword = emptyToNull(nullToEmpty(proxyPassword).trim());
   this.proxyServer = emptyToNull(nullToEmpty(proxyServer).trim());
@@ -52,23 +57,22 @@ public class PrnfsNotification {
   this.postContent = emptyToNull(nullToEmpty(postContent).trim());
   this.method = HTTP_METHOD.valueOf(firstNonNull(emptyToNull(nullToEmpty(method).trim()), GET.name()));
   if (nullToEmpty(url).trim().isEmpty()) {
-   throw new ValidationException(AdminFormValues.FIELDS.url.name(), "URL not set!");
+   throw new ValidationException(FIELDS.url.name(), "URL not set!");
   }
   try {
    new URL(url);
   } catch (final Exception e) {
-   throw new ValidationException(AdminFormValues.FIELDS.url.name(), "URL not valid!");
+   throw new ValidationException(FIELDS.url.name(), "URL not valid!");
   }
   if (!nullToEmpty(filterRegexp).trim().isEmpty()) {
    try {
     compile(filterRegexp);
    } catch (final Exception e) {
-    throw new ValidationException(AdminFormValues.FIELDS.filter_regexp.name(), "Filter regexp not valid! "
+    throw new ValidationException(filter_regexp.name(), "Filter regexp not valid! "
       + e.getMessage().replaceAll("\n", " "));
    }
    if (nullToEmpty(filterString).trim().isEmpty()) {
-    throw new ValidationException(AdminFormValues.FIELDS.filter_string.name(),
-      "Filter string not set, nothing to match regexp against!");
+    throw new ValidationException(filter_string.name(), "Filter string not set, nothing to match regexp against!");
    }
   }
   this.url = url;
@@ -79,6 +83,7 @@ public class PrnfsNotification {
   this.filterRegexp = filterRegexp;
   this.name = firstNonNull(emptyToNull(nullToEmpty(name).trim()), DEFAULT_NAME);
   this.injectionUrl = emptyToNull(nullToEmpty(injectionUrl).trim());
+  this.injectionUrlRegexp = emptyToNull(nullToEmpty(injectionUrlRegexp).trim());
  }
 
  public Optional<String> getFilterRegexp() {
@@ -139,11 +144,15 @@ public class PrnfsNotification {
 
  public static boolean isOfType(AdminFormValues config, FORM_TYPE formType) {
   Optional<Map<String, String>> formTypeOpt = tryFind(config, predicate(AdminFormValues.FIELDS.FORM_TYPE.name()));
-  return !formTypeOpt.isPresent() && formType.name().equals(FORM_TYPE.TRIGGER_CONFIG_FORM.name())
-    || formTypeOpt.get().get(VALUE).equals(AdminFormValues.FORM_TYPE.TRIGGER_CONFIG_FORM.name());
+  return !formTypeOpt.isPresent() && formType.name().equals(TRIGGER_CONFIG_FORM.name())
+    || formTypeOpt.get().get(VALUE).equals(TRIGGER_CONFIG_FORM.name());
  }
 
  public Optional<String> getInjectionUrl() {
   return fromNullable(injectionUrl);
+ }
+
+ public Optional<String> getInjectionUrlRegexp() {
+  return fromNullable(injectionUrlRegexp);
  }
 }
