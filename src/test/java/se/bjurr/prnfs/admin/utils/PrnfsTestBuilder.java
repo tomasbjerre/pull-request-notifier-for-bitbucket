@@ -7,11 +7,14 @@ import static com.google.common.collect.Iterables.tryFind;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newTreeMap;
 import static com.google.common.collect.Maps.uniqueIndex;
+import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static se.bjurr.prnfs.admin.AdminFormValues.NAME;
@@ -56,6 +59,7 @@ import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.sal.api.user.UserProfile;
 import com.atlassian.stash.event.pull.PullRequestEvent;
 import com.atlassian.stash.pull.PullRequest;
+import com.atlassian.stash.pull.PullRequestMergeability;
 import com.atlassian.stash.pull.PullRequestService;
 import com.atlassian.stash.repository.RepositoryService;
 import com.atlassian.stash.server.ApplicationPropertiesService;
@@ -149,9 +153,10 @@ public class PrnfsTestBuilder {
   when(securityService.withPermission(Matchers.any(Permission.class), Matchers.anyString())).thenReturn(
     escalatedSecurityContext);
   configResource = new ConfigResource(userManager, pluginSettingsFactory, transactionTemplate, securityService);
-  listener = new PrnfsPullRequestEventListener(pluginSettingsFactory, repositoryService, propertiesService);
-  UserService userService = mock(UserService.class);
   pullRequestService = mock(PullRequestService.class);
+  listener = new PrnfsPullRequestEventListener(pluginSettingsFactory, repositoryService, propertiesService,
+    pullRequestService);
+  UserService userService = mock(UserService.class);
   withPullRequest(pullRequestEventBuilder().build().getPullRequest());
   manualResouce = new ManualResource(userManager, userService, pluginSettingsFactory, pullRequestService, listener,
     repositoryService, propertiesService, securityService);
@@ -316,7 +321,7 @@ public class PrnfsTestBuilder {
  }
 
  public PrnfsTestBuilder triggerButton(String formIdentifier) throws Exception {
-  when(pullRequestService.getById(Matchers.anyInt(), Matchers.anyLong())).thenReturn(pullRequest);
+  when(pullRequestService.getById(anyInt(), anyLong())).thenReturn(pullRequest);
   try {
    PrnfsSettings prnfsSettings = getPrnfsSettings(pluginSettings);
    when(escalatedSecurityContext.call(Matchers.any(Operation.class))).thenReturn(prnfsSettings);
@@ -438,6 +443,21 @@ public class PrnfsTestBuilder {
     }
    }
   });
+  return this;
+ }
+
+ public PrnfsTestBuilder isConflicting() {
+  return isConflicting(TRUE);
+ }
+
+ public PrnfsTestBuilder isNotConflicting() {
+  return isConflicting(FALSE);
+ }
+
+ private PrnfsTestBuilder isConflicting(Boolean conflicting) {
+  PullRequestMergeability value = mock(PullRequestMergeability.class);
+  when(value.isConflicted()).thenReturn(conflicting);
+  when(pullRequestService.canMerge(anyInt(), anyInt())).thenReturn(value);
   return this;
  }
 }

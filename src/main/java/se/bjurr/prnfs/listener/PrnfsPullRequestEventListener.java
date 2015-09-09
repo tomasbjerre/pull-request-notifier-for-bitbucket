@@ -10,6 +10,9 @@ import static java.util.logging.Logger.getLogger;
 import static java.util.regex.Pattern.compile;
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static javax.xml.bind.DatatypeConverter.printBase64Binary;
+import static se.bjurr.prnfs.admin.AdminFormValues.TRIGGER_IF_MERGE.ALWAYS;
+import static se.bjurr.prnfs.admin.AdminFormValues.TRIGGER_IF_MERGE.CONFLICTING;
+import static se.bjurr.prnfs.admin.AdminFormValues.TRIGGER_IF_MERGE.NOT_CONFLICTING;
 import static se.bjurr.prnfs.listener.PrnfsPullRequestAction.fromPullRequestEvent;
 import static se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable.PULL_REQUEST_COMMENT_TEXT;
 import static se.bjurr.prnfs.listener.UrlInvoker.urlInvoker;
@@ -39,6 +42,7 @@ import com.atlassian.stash.event.pull.PullRequestRescopedEvent;
 import com.atlassian.stash.event.pull.PullRequestUnapprovedEvent;
 import com.atlassian.stash.event.pull.PullRequestUpdatedEvent;
 import com.atlassian.stash.pull.PullRequest;
+import com.atlassian.stash.pull.PullRequestService;
 import com.atlassian.stash.repository.RepositoryService;
 import com.atlassian.stash.server.ApplicationPropertiesService;
 import com.google.common.annotations.VisibleForTesting;
@@ -50,6 +54,7 @@ public class PrnfsPullRequestEventListener {
  private final PluginSettingsFactory pluginSettingsFactory;
  private final RepositoryService repositoryService;
  private final ApplicationPropertiesService propertiesService;
+ private final PullRequestService pullRequestService;
  private static final Logger logger = getLogger(PrnfsPullRequestEventListener.class.getName());
 
  private static Invoker invoker = new Invoker() {
@@ -65,10 +70,11 @@ public class PrnfsPullRequestEventListener {
  }
 
  public PrnfsPullRequestEventListener(PluginSettingsFactory pluginSettingsFactory, RepositoryService repositoryService,
-   ApplicationPropertiesService propertiesService) {
+   ApplicationPropertiesService propertiesService, PullRequestService pullRequestService) {
   this.pluginSettingsFactory = pluginSettingsFactory;
   this.repositoryService = repositoryService;
   this.propertiesService = propertiesService;
+  this.pullRequestService = pullRequestService;
  }
 
  @EventListener
@@ -151,9 +157,10 @@ public class PrnfsPullRequestEventListener {
  @SuppressWarnings("deprecation")
  public void notify(final PrnfsNotification notification, PrnfsPullRequestAction pullRequestAction,
    PullRequest pullRequest, Map<PrnfsVariable, Supplier<String>> variables, PrnfsRenderer renderer) {
-  if (!notificationTriggeredByAction(notification, pullRequestAction, renderer)) {
+  if (!notificationTriggeredByAction(notification, pullRequestAction, renderer, pullRequest)) {
    return;
   }
+
   Optional<String> postContent = absent();
   if (notification.getPostContent().isPresent()) {
    postContent = Optional.of(renderer.render(notification.getPostContent().get()));
@@ -180,7 +187,7 @@ public class PrnfsPullRequestEventListener {
  }
 
  public boolean notificationTriggeredByAction(PrnfsNotification notification, PrnfsPullRequestAction pullRequestAction,
-   PrnfsRenderer renderer) {
+   PrnfsRenderer renderer, PullRequest pullRequest) {
   if (!notification.getTriggers().contains(pullRequestAction)) {
    return FALSE;
   }
@@ -190,6 +197,17 @@ public class PrnfsPullRequestEventListener {
       .find()) {
    return FALSE;
   }
+
+  if (notification.getTriggerIfCanMerge() != ALWAYS && pullRequest.isOpen()) {
+   // Cannot perform canMerge unless PR is open
+   boolean isConflicted = pullRequestService.canMerge(pullRequest.getToRef().getRepository().getId(),
+     pullRequest.getId()).isConflicted();
+   if (notification.getTriggerIfCanMerge() == NOT_CONFLICTING && isConflicted || //
+     notification.getTriggerIfCanMerge() == CONFLICTING && !isConflicted) {
+    return FALSE;
+   }
+  }
+
   return TRUE;
  }
 }

@@ -31,13 +31,14 @@ public class PrnfsNotificationBuilder {
  private String name;
  private String injectionUrl;
  private String injectionUrlRegexp;
+ private String triggerIfCanMerge;
 
  private PrnfsNotificationBuilder() {
  }
 
  public PrnfsNotification build() throws ValidationException {
   return new PrnfsNotification(triggers, url, user, password, filterString, filterRegexp, method, postContent, headers,
-    proxyUser, proxyPassword, proxyServer, proxyPort, name, injectionUrl, injectionUrlRegexp);
+    proxyUser, proxyPassword, proxyServer, proxyPort, name, injectionUrl, injectionUrlRegexp, triggerIfCanMerge);
  }
 
  public PrnfsNotificationBuilder withInjectionUrl(String injectionUrl) {
@@ -117,6 +118,11 @@ public class PrnfsNotificationBuilder {
 
  public PrnfsNotificationBuilder withName(String name) {
   this.name = name;
+  return this;
+ }
+
+ public PrnfsNotificationBuilder withTriggerIfCanMerge(String triggerIfCanMerge) {
+  this.triggerIfCanMerge = triggerIfCanMerge;
   return this;
  }
 }

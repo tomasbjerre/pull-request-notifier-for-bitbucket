@@ -31,6 +31,10 @@ The Pull Request Notifier for Stash can:
 * Send custom HTTP headers
 * Can optionally use proxy to connect
 * Can let users and/or admins do configuration. Or restrict configuration to just system admins. A user will have to browse to the configuration page at `http://domain/stash/plugins/servlet/prnfs/admin`.
+* Can enable trigger
+ * If PR has, or has no, conflicts
+ * Only if PR has conflicts
+ * Only if PR has no conflicts
 
 The plugin has its own implementation to create the RESCOPED_FROM and RESCOPED_TO events. RESCOPED is transformed to RESCOPED_TO if target branch changed, RESCOPED_FROM if source branch, or both, changed.
 

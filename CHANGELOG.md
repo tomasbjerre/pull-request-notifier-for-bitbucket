@@ -3,6 +3,10 @@
 Changelog of Pull Request Notifier for Stash.
 
 ## 1.28
+* Can enable trigger
+ * If PR has, or has no, conflicts
+ * Only if PR has conflicts
+ * Only if PR has no conflicts
 * New variable ${PULL_REQUEST_TITLE}
 
 ## 1.27

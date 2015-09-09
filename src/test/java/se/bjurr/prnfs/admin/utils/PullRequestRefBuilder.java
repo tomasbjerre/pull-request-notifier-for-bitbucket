@@ -28,7 +28,7 @@ public class PullRequestRefBuilder implements PullRequestRef {
  private String id;
  private Integer projectId;
  private String projectKey;
- private Integer repositoryId;
+ private Integer repositoryId = 0;
  private String repositoryName;
  private String displayId;
 
@@ -112,7 +112,7 @@ public class PullRequestRefBuilder implements PullRequestRef {
      public Integer getId() {
       return projectId;
      }
-     
+
      // Should not use @Override, since its only available until 3.12.0
      public boolean getIsPersonal() {
       return false;

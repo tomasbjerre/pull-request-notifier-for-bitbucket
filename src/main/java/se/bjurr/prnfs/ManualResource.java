@@ -112,7 +112,8 @@ public class ManualResource {
    PullRequest pullRequest, Map<PrnfsVariable, Supplier<String>> variables, HttpServletRequest request) {
   for (PrnfsNotification prnfsNotification : settings.getNotifications()) {
    PrnfsRenderer renderer = getRenderer(pullRequest, prnfsNotification, pullRequestAction, variables, request);
-   if (prnfsPullRequestEventListener.notificationTriggeredByAction(prnfsNotification, pullRequestAction, renderer)) {
+   if (prnfsPullRequestEventListener.notificationTriggeredByAction(prnfsNotification, pullRequestAction, renderer,
+     pullRequest)) {
     return TRUE;
    }
   }
@@ -134,7 +135,8 @@ public class ManualResource {
    final PullRequest pullRequest = pullRequestService.getById(repositoryId, pullRequestId);
    Map<PrnfsVariable, Supplier<String>> variables = getVariables(settings, formIdentifier);
    PrnfsRenderer renderer = getRenderer(pullRequest, prnfsNotification, pullRequestAction, variables, request);
-   if (prnfsPullRequestEventListener.notificationTriggeredByAction(prnfsNotification, pullRequestAction, renderer)) {
+   if (prnfsPullRequestEventListener.notificationTriggeredByAction(prnfsNotification, pullRequestAction, renderer,
+     pullRequest)) {
     prnfsPullRequestEventListener.notify(prnfsNotification, pullRequestAction, pullRequest, variables, renderer);
    }
   }

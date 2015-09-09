@@ -31,10 +31,14 @@ import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.proxy_password;
 import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.proxy_port;
 import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.proxy_server;
 import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.proxy_user;
+import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.trigger_if_isconflicting;
 import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.url;
 import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.user;
 import static se.bjurr.prnfs.admin.AdminFormValues.FORM_TYPE.BUTTON_CONFIG_FORM;
 import static se.bjurr.prnfs.admin.AdminFormValues.FORM_TYPE.TRIGGER_CONFIG_FORM;
+import static se.bjurr.prnfs.admin.AdminFormValues.TRIGGER_IF_MERGE.ALWAYS;
+import static se.bjurr.prnfs.admin.AdminFormValues.TRIGGER_IF_MERGE.CONFLICTING;
+import static se.bjurr.prnfs.admin.AdminFormValues.TRIGGER_IF_MERGE.NOT_CONFLICTING;
 import static se.bjurr.prnfs.admin.utils.NotificationBuilder.notificationBuilder;
 import static se.bjurr.prnfs.admin.utils.PrnfsParticipantBuilder.prnfsParticipantBuilder;
 import static se.bjurr.prnfs.admin.utils.PrnfsTestBuilder.prnfsTestBuilder;
@@ -118,7 +122,7 @@ public class PrnfsPullRequestEventListenerTest {
             .withHash("asd123") //
             .withRepositorySlug("toslug") //
         ) //
-        .withId(10L) //
+        .withPullRequestId(10L) //
         .withPullRequestAction(OPENED) //
         .build() //
     ) //
@@ -144,7 +148,7 @@ public class PrnfsPullRequestEventListenerTest {
         .withToRef( //
           pullRequestRefBuilder() //
         ) //
-        .withId(10L) //
+        .withPullRequestId(10L) //
         .withPullRequestAction(MERGED) //
         .build() //
     ) //
@@ -261,7 +265,7 @@ public class PrnfsPullRequestEventListenerTest {
      .withCloneUrl(ssh, "10") //
      .withDisplayId("10") //
      .build() //
-     .withId(10L);
+     .withPullRequestId(10L);
    pullRequestEventBuilder //
      .withPullRequestAction(OPENED) //
      .triggerEvent() //
@@ -294,7 +298,7 @@ public class PrnfsPullRequestEventListenerTest {
         .withFromRef( //
           pullRequestRefBuilder() //
         ) //
-        .withId(10L) //
+        .withPullRequestId(10L) //
         .withPullRequestAction(OPENED) //
         .build() //
     ) //
@@ -339,7 +343,7 @@ public class PrnfsPullRequestEventListenerTest {
             .withId("refs/heads/feature/branchmodmerge") //
             .withDisplayId("feature/branchmodmerge") //
         ) //
-        .withId(10L) //
+        .withPullRequestId(10L) //
         .withPullRequestAction(OPENED) //
         .build() //
     ) //
@@ -364,7 +368,7 @@ public class PrnfsPullRequestEventListenerTest {
             .withId("branchmodmerge") //
             .withDisplayId("branchmodmerge") //
         ) //
-        .withId(10L) //
+        .withPullRequestId(10L) //
         .withPullRequestAction(OPENED) //
         .build() //
     ) //
@@ -391,7 +395,7 @@ public class PrnfsPullRequestEventListenerTest {
     .store() //
     .trigger( //
       pullRequestEventBuilder() //
-        .withId(10L) //
+        .withPullRequestId(10L) //
         .withToRef( //
           pullRequestRefBuilder() //
             .withProjectKey("theProject") //
@@ -807,7 +811,7 @@ public class PrnfsPullRequestEventListenerTest {
           pullRequestRefBuilder() //
             .withProjectKey("ABC") //
         ) //
-        .withId(10L) //
+        .withPullRequestId(10L) //
         .withPullRequestAction(OPENED) //
         .build() //
     ) //
@@ -837,7 +841,7 @@ public class PrnfsPullRequestEventListenerTest {
           pullRequestRefBuilder() //
             .withHash(PREVIOUS_TO_HASH) //
         ) //
-        .withId(10L) //
+        .withPullRequestId(10L) //
         .withPullRequestAction(RESCOPED) //
         .build() //
     ) //
@@ -870,7 +874,7 @@ public class PrnfsPullRequestEventListenerTest {
             .withId("123") //
         ) //
         .withCommentText("keyword A nice comment") //
-        .withId(10L) //
+        .withPullRequestId(10L) //
         .withPullRequestAction(COMMENTED) //
         .build() //
     ) //
@@ -903,7 +907,7 @@ public class PrnfsPullRequestEventListenerTest {
             .withId("123") //
         ) //
         .withCommentText(" keyword ") //
-        .withId(10L) //
+        .withPullRequestId(10L) //
         .withPullRequestAction(COMMENTED) //
         .build() //
     ) //
@@ -936,7 +940,7 @@ public class PrnfsPullRequestEventListenerTest {
             .withId("123") //
         ) //
         .withCommentText("notkw A nice comment") //
-        .withId(10L) //
+        .withPullRequestId(10L) //
         .withPullRequestAction(COMMENTED) //
         .build() //
     ) //
@@ -957,7 +961,7 @@ public class PrnfsPullRequestEventListenerTest {
     .store() //
     .trigger( //
       pullRequestEventBuilder() //
-        .withId(10L) //
+        .withPullRequestId(10L) //
         .withPullRequestAction(OPENED) //
         .build() //
     ) //
@@ -1146,16 +1150,29 @@ public class PrnfsPullRequestEventListenerTest {
 
  @Test
  public void testThatFilterCanBeUsedToIgnoreEventsThatAreOnAnotherProjectAnBranch() throws Exception {
-  prnfsTestBuilder()
-    .isLoggedInAsAdmin()
-    .withNotification(
-      notificationBuilder().withFieldValue(url, "http://bjurr.se/").withFieldValue(events, OPENED.name())
-        .withFieldValue(filter_string, "${PULL_REQUEST_FROM_REPO_PROJECT_KEY} ${PULL_REQUEST_FROM_ID}")
-        .withFieldValue(filter_regexp, "EXP my_branch").build())
-    .store()
-    .trigger(
-      pullRequestEventBuilder().withFromRef(pullRequestRefBuilder().withProjectKey("ABC").withId("my_therbranch"))
-        .withId(10L).withPullRequestAction(OPENED).build()).invokedNoUrl();
+  prnfsTestBuilder()//
+    .isLoggedInAsAdmin()//
+    .withNotification(//
+      notificationBuilder()//
+        .withFieldValue(url, "http://bjurr.se/")//
+        .withFieldValue(events, OPENED.name())//
+        .withFieldValue(filter_string, "${PULL_REQUEST_FROM_REPO_PROJECT_KEY} ${PULL_REQUEST_FROM_ID}")//
+        .withFieldValue(filter_regexp, "EXP my_branch")//
+        .build()//
+    )//
+    .store()//
+    .trigger(//
+      pullRequestEventBuilder()//
+        .withFromRef(//
+          pullRequestRefBuilder()//
+            .withProjectKey("ABC")//
+            .withId("my_therbranch")//
+        )//
+        .withPullRequestId(10L)//
+        .withPullRequestAction(OPENED)//
+        .build()//
+    )//
+    .invokedNoUrl();
  }
 
  @Test
@@ -1177,7 +1194,7 @@ public class PrnfsPullRequestEventListenerTest {
           pullRequestRefBuilder() //
             .withProjectKey("EXP") //
         ) //
-        .withId(10L) //
+        .withPullRequestId(10L) //
         .withPullRequestAction(OPENED) //
         .build() //
     ) //
@@ -1204,7 +1221,7 @@ public class PrnfsPullRequestEventListenerTest {
             .withProjectKey("EXP") //
             .withId("my_branch") //
         ) //
-        .withId(10L) //
+        .withPullRequestId(10L) //
         .withPullRequestAction(OPENED) //
         .build() //
     ) //
@@ -1230,7 +1247,7 @@ public class PrnfsPullRequestEventListenerTest {
     .store() //
     .trigger( //
       pullRequestEventBuilder() //
-        .withId(10L) //
+        .withPullRequestId(10L) //
         .withPullRequestAction(MERGED) //
         .build() //
     ) //
@@ -1655,6 +1672,112 @@ public class PrnfsPullRequestEventListenerTest {
     )//
     .invokedUrl(0, "http://bjurr.se/")//
     .usedNoProxy(0);
+ }
+
+ @Test
+ public void testThatUrlMayBeInvokedWhenIsConflicting() throws Exception {
+  prnfsTestBuilder()//
+    .isLoggedInAsAdmin()//
+    .withNotification(//
+      notificationBuilder()//
+        .withFieldValue(url, "http://bjurr.se/")//
+        .withFieldValue(events, OPENED.name())//
+        .withFieldValue(trigger_if_isconflicting, CONFLICTING.name())//
+        .build()//
+    )//
+    .store()//
+    .isConflicting()//
+    .trigger(//
+      pullRequestEventBuilder()//
+        .withPullRequestAction(OPENED)//
+        .build()//
+    )//
+    .invokedUrl(0, "http://bjurr.se/");
+ }
+
+ @Test
+ public void testThatUrlMayNotBeInvokedWhenIsConflicting() throws Exception {
+  prnfsTestBuilder()//
+    .isLoggedInAsAdmin()//
+    .withNotification(//
+      notificationBuilder()//
+        .withFieldValue(url, "http://bjurr.se/")//
+        .withFieldValue(events, OPENED.name())//
+        .withFieldValue(trigger_if_isconflicting, NOT_CONFLICTING.name())//
+        .build()//
+    )//
+    .store()//
+    .isConflicting()//
+    .trigger(//
+      pullRequestEventBuilder()//
+        .withPullRequestAction(OPENED)//
+        .build()//
+    )//
+    .invokedNoUrl();
+ }
+
+ @Test
+ public void testThatUrlMayBeInvokedWhenIsNotConflicting() throws Exception {
+  prnfsTestBuilder()//
+    .isLoggedInAsAdmin()//
+    .withNotification(//
+      notificationBuilder()//
+        .withFieldValue(url, "http://bjurr.se/")//
+        .withFieldValue(events, OPENED.name())//
+        .withFieldValue(trigger_if_isconflicting, NOT_CONFLICTING.name())//
+        .build()//
+    )//
+    .store()//
+    .isNotConflicting()//
+    .trigger(//
+      pullRequestEventBuilder()//
+        .withPullRequestAction(OPENED)//
+        .withToRefPullRequestRefBuilder()//
+        .build()//
+        .build() //
+    )//
+    .invokedUrl(0, "http://bjurr.se/");
+ }
+
+ @Test
+ public void testThatUrlMayNotBeInvokedWhenIsNotConflicting() throws Exception {
+  prnfsTestBuilder()//
+    .isLoggedInAsAdmin()//
+    .withNotification(//
+      notificationBuilder()//
+        .withFieldValue(url, "http://bjurr.se/")//
+        .withFieldValue(events, OPENED.name())//
+        .withFieldValue(trigger_if_isconflicting, CONFLICTING.name())//
+        .build()//
+    )//
+    .store()//
+    .isNotConflicting()//
+    .trigger(//
+      pullRequestEventBuilder()//
+        .withPullRequestAction(OPENED)//
+        .build()//
+    )//
+    .invokedNoUrl();
+ }
+
+ @Test
+ public void testThatUrlMayBeInvokedWhenIsOrIsNotConflicting() throws Exception {
+  prnfsTestBuilder()//
+    .isLoggedInAsAdmin()//
+    .withNotification(//
+      notificationBuilder()//
+        .withFieldValue(url, "http://bjurr.se/")//
+        .withFieldValue(events, OPENED.name())//
+        .withFieldValue(trigger_if_isconflicting, ALWAYS.name())//
+        .build()//
+    )//
+    .store()//
+    .trigger(//
+      pullRequestEventBuilder()//
+        .withPullRequestAction(OPENED)//
+        .build()//
+    )//
+    .invokedUrl(0, "http://bjurr.se/");
  }
 
  @Test

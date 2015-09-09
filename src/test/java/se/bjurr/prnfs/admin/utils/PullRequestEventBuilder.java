@@ -2,6 +2,7 @@ package se.bjurr.prnfs.admin.utils;
 
 import static com.atlassian.stash.pull.PullRequestAction.COMMENTED;
 import static com.atlassian.stash.pull.PullRequestAction.RESCOPED;
+import static java.lang.Boolean.TRUE;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static se.bjurr.prnfs.admin.utils.PullRequestRefBuilder.pullRequestRefBuilder;
@@ -20,11 +21,12 @@ public class PullRequestEventBuilder {
  private PullRequestAction pullRequestAction;
  private PullRequestRefBuilder toRef = pullRequestRefBuilder();
  private PullRequestRefBuilder fromRef = pullRequestRefBuilder();
- private Long id;
  private PullRequestParticipant author;
  private String commentText;
  private final PrnfsTestBuilder prnfsTestBuilder;
  private boolean beingClosed;
+ private final boolean beingOpen = TRUE;
+ private Long pullRequestId = 0L;
 
  private PullRequestEventBuilder(PrnfsTestBuilder prnfsTestBuilder) {
   this.prnfsTestBuilder = prnfsTestBuilder;
@@ -74,11 +76,6 @@ public class PullRequestEventBuilder {
   return this;
  }
 
- public PullRequestEventBuilder withId(Long id) {
-  this.id = id;
-  return this;
- }
-
  public PullRequestEventBuilder withCommentText(String commentText) {
   this.commentText = commentText;
   return this;
@@ -100,10 +97,11 @@ public class PullRequestEventBuilder {
   }
   final PullRequest pullRequest = mock(PullRequest.class);
   when(pullRequest.isClosed()).thenReturn(beingClosed);
+  when(pullRequest.isOpen()).thenReturn(beingOpen);
+  when(pullRequest.getId()).thenReturn(pullRequestId);
   when(pullRequestEvent.getAction()).thenReturn(pullRequestAction);
   when(pullRequestEvent.getPullRequest()).thenReturn(pullRequest);
   when(pullRequestEvent.getPullRequest().getAuthor()).thenReturn(author);
-  when(pullRequestEvent.getPullRequest().getId()).thenReturn(id);
   when(pullRequestEvent.getPullRequest().getFromRef()).thenReturn(fromRef);
   when(pullRequestEvent.getPullRequest().getToRef()).thenReturn(toRef);
   return pullRequestEvent;
@@ -115,6 +113,11 @@ public class PullRequestEventBuilder {
 
  public PullRequestEventBuilder beingClosed() {
   beingClosed = true;
+  return this;
+ }
+
+ public PullRequestEventBuilder withPullRequestId(Long id) {
+  this.pullRequestId = id;
   return this;
  }
 }
