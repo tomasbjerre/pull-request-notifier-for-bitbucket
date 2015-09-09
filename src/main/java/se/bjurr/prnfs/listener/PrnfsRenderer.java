@@ -324,6 +324,13 @@ public class PrnfsRenderer {
      return rawResponse;
     }
    }
+  }), PULL_REQUEST_TITLE(new Resolver() {
+   @Override
+   public String resolve(PullRequest pullRequest, PrnfsPullRequestAction pullRequestAction, StashUser stashUser,
+     RepositoryService repositoryService, ApplicationPropertiesService propertiesService,
+     PrnfsNotification prnfsNotification, Map<PrnfsVariable, Supplier<String>> variables) {
+    return pullRequest.getTitle();
+   }
   });
 
   private Resolver resolver;

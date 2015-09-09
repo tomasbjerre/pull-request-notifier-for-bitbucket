@@ -2,6 +2,9 @@
 
 Changelog of Pull Request Notifier for Stash.
 
+## 1.28
+* New variable ${PULL_REQUEST_TITLE}
+
 ## 1.27
 * Adding an optional regular expression, that can be evaluated in the response from injection URL, to populate ${INJECTION_URL_VALUE}.
 
