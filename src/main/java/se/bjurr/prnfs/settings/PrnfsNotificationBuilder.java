@@ -8,9 +8,6 @@ import java.util.List;
 import se.bjurr.prnfs.listener.PrnfsPullRequestAction;
 
 public class PrnfsNotificationBuilder {
- public static final String YES = "YES";
- public static final String NO = "NO";
-
  public static PrnfsNotificationBuilder prnfsNotificationBuilder() {
   return new PrnfsNotificationBuilder();
  }
@@ -37,8 +34,7 @@ public class PrnfsNotificationBuilder {
  }
 
  public PrnfsNotification build() throws ValidationException {
-  return new PrnfsNotification(triggers, url, user, password, filterString, filterRegexp, method, postContent, headers,
-    proxyUser, proxyPassword, proxyServer, proxyPort, name, injectionUrl, injectionUrlRegexp, triggerIfCanMerge);
+  return new PrnfsNotification(this);
  }
 
  public PrnfsNotificationBuilder withInjectionUrl(String injectionUrl) {
@@ -124,5 +120,73 @@ public class PrnfsNotificationBuilder {
  public PrnfsNotificationBuilder withTriggerIfCanMerge(String triggerIfCanMerge) {
   this.triggerIfCanMerge = triggerIfCanMerge;
   return this;
+ }
+
+ public String getFilterRegexp() {
+  return filterRegexp;
+ }
+
+ public String getFilterString() {
+  return filterString;
+ }
+
+ public List<Header> getHeaders() {
+  return headers;
+ }
+
+ public String getInjectionUrl() {
+  return injectionUrl;
+ }
+
+ public String getInjectionUrlRegexp() {
+  return injectionUrlRegexp;
+ }
+
+ public String getMethod() {
+  return method;
+ }
+
+ public String getName() {
+  return name;
+ }
+
+ public String getPassword() {
+  return password;
+ }
+
+ public String getPostContent() {
+  return postContent;
+ }
+
+ public String getProxyPassword() {
+  return proxyPassword;
+ }
+
+ public String getProxyPort() {
+  return proxyPort;
+ }
+
+ public String getProxyServer() {
+  return proxyServer;
+ }
+
+ public String getProxyUser() {
+  return proxyUser;
+ }
+
+ public String getTriggerIfCanMerge() {
+  return triggerIfCanMerge;
+ }
+
+ public List<PrnfsPullRequestAction> getTriggers() {
+  return triggers;
+ }
+
+ public String getUrl() {
+  return url;
+ }
+
+ public String getUser() {
+  return user;
  }
 }

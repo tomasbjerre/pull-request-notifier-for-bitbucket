@@ -48,47 +48,44 @@ public class PrnfsNotification {
  private final String injectionUrlRegexp;
  private final TRIGGER_IF_MERGE triggerIfCanMerge;
 
- public PrnfsNotification(List<PrnfsPullRequestAction> triggers, String url, String user, String password,
-   String filterString, String filterRegexp, String method, String postContent, List<Header> headers, String proxyUser,
-   String proxyPassword, String proxyServer, String proxyPort, String name, String injectionUrl,
-   String injectionUrlRegexp, String triggerIfCanMerge) throws ValidationException {
-  this.proxyUser = emptyToNull(nullToEmpty(proxyUser).trim());
-  this.proxyPassword = emptyToNull(nullToEmpty(proxyPassword).trim());
-  this.proxyServer = emptyToNull(nullToEmpty(proxyServer).trim());
-  this.proxyPort = Integer.valueOf(firstNonNull(emptyToNull(nullToEmpty(proxyPort).trim()), "-1"));
-  this.headers = checkNotNull(headers);
-  this.postContent = emptyToNull(nullToEmpty(postContent).trim());
-  this.method = HTTP_METHOD.valueOf(firstNonNull(emptyToNull(nullToEmpty(method).trim()), GET.name()));
-  this.triggerIfCanMerge = TRIGGER_IF_MERGE.valueOf(firstNonNull(emptyToNull(nullToEmpty(triggerIfCanMerge).trim()),
-    ALWAYS.name()));
-  if (nullToEmpty(url).trim().isEmpty()) {
+ public PrnfsNotification(PrnfsNotificationBuilder builder) throws ValidationException {
+  this.proxyUser = emptyToNull(nullToEmpty(builder.getProxyUser()).trim());
+  this.proxyPassword = emptyToNull(nullToEmpty(builder.getProxyPassword()).trim());
+  this.proxyServer = emptyToNull(nullToEmpty(builder.getProxyServer()).trim());
+  this.proxyPort = Integer.valueOf(firstNonNull(emptyToNull(nullToEmpty(builder.getProxyPort()).trim()), "-1"));
+  this.headers = checkNotNull(builder.getHeaders());
+  this.postContent = emptyToNull(nullToEmpty(builder.getPostContent()).trim());
+  this.method = HTTP_METHOD.valueOf(firstNonNull(emptyToNull(nullToEmpty(builder.getMethod()).trim()), GET.name()));
+  this.triggerIfCanMerge = TRIGGER_IF_MERGE.valueOf(firstNonNull(
+    emptyToNull(nullToEmpty(builder.getTriggerIfCanMerge()).trim()), ALWAYS.name()));
+  if (nullToEmpty(builder.getUrl()).trim().isEmpty()) {
    throw new ValidationException(FIELDS.url.name(), "URL not set!");
   }
   try {
-   new URL(url);
+   new URL(builder.getUrl());
   } catch (final Exception e) {
    throw new ValidationException(FIELDS.url.name(), "URL not valid!");
   }
-  if (!nullToEmpty(filterRegexp).trim().isEmpty()) {
+  if (!nullToEmpty(builder.getFilterRegexp()).trim().isEmpty()) {
    try {
-    compile(filterRegexp);
+    compile(builder.getFilterRegexp());
    } catch (final Exception e) {
     throw new ValidationException(filter_regexp.name(), "Filter regexp not valid! "
       + e.getMessage().replaceAll("\n", " "));
    }
-   if (nullToEmpty(filterString).trim().isEmpty()) {
+   if (nullToEmpty(builder.getFilterString()).trim().isEmpty()) {
     throw new ValidationException(filter_string.name(), "Filter string not set, nothing to match regexp against!");
    }
   }
-  this.url = url;
-  this.user = emptyToNull(nullToEmpty(user).trim());
-  this.password = emptyToNull(nullToEmpty(password).trim());
-  this.triggers = checkNotNull(triggers);
-  this.filterString = filterString;
-  this.filterRegexp = filterRegexp;
-  this.name = firstNonNull(emptyToNull(nullToEmpty(name).trim()), DEFAULT_NAME);
-  this.injectionUrl = emptyToNull(nullToEmpty(injectionUrl).trim());
-  this.injectionUrlRegexp = emptyToNull(nullToEmpty(injectionUrlRegexp).trim());
+  this.url = builder.getUrl();
+  this.user = emptyToNull(nullToEmpty(builder.getUser()).trim());
+  this.password = emptyToNull(nullToEmpty(builder.getPassword()).trim());
+  this.triggers = checkNotNull(builder.getTriggers());
+  this.filterString = builder.getFilterString();
+  this.filterRegexp = builder.getFilterRegexp();
+  this.name = firstNonNull(emptyToNull(nullToEmpty(builder.getName()).trim()), DEFAULT_NAME);
+  this.injectionUrl = emptyToNull(nullToEmpty(builder.getInjectionUrl()).trim());
+  this.injectionUrlRegexp = emptyToNull(nullToEmpty(builder.getInjectionUrlRegexp()).trim());
  }
 
  public TRIGGER_IF_MERGE getTriggerIfCanMerge() {

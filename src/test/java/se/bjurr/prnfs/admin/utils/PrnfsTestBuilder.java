@@ -320,6 +320,7 @@ public class PrnfsTestBuilder {
   return this;
  }
 
+ @SuppressWarnings("unchecked")
  public PrnfsTestBuilder triggerButton(String formIdentifier) throws Exception {
   when(pullRequestService.getById(anyInt(), anyLong())).thenReturn(pullRequest);
   try {
