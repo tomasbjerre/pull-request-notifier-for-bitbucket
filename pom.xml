@@ -2,19 +2,19 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>se.bjurr.prnfs</groupId>
-    <artifactId>pull-request-notifier-for-stash</artifactId>
-    <version>1.29-SNAPSHOT</version>
+    <groupId>se.bjurr.prnfb</groupId>
+    <artifactId>pull-request-notifier-for-bitbucket</artifactId>
+    <version>2.0-SNAPSHOT</version>
     <organization>
         <name>Tomas Bjerre</name>
         <url>http://bjurr.se/</url>
     </organization>
-    <name>pull-request-notifier-for-stash</name>
-    <description>This is the Pull Request Notifier for Atlassian Stash. See https://github.com/tomasbjerre/pull-request-notifier-for-stash for documentation and source code.</description>
+    <name>pull-request-notifier-for-bitbucket</name>
+    <description>This is the Pull Request Notifier for Atlassian Bitbucket. See https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket for documentation and source code.</description>
     <packaging>atlassian-plugin</packaging>
     <scm>
-        <developerConnection>scm:git:git@github.com:tomasbjerre/pull-request-notifier-for-stash.git</developerConnection>
-        <url>https://github.com/tomasbjerre/pull-request-notifier-for-stash</url>
+        <developerConnection>scm:git:git@github.com:tomasbjerre/pull-request-notifier-for-bitbucket.git</developerConnection>
+        <url>https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket</url>
         <tag>HEAD</tag>
     </scm>
     <distributionManagement>
@@ -42,19 +42,34 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.atlassian.stash</groupId>
-                <artifactId>stash-parent</artifactId>
-                <version>${stash.version}</version>
+                <groupId>com.atlassian.bitbucket.server</groupId>
+                <artifactId>bitbucket-parent</artifactId>
+                <version>${bitbucket.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
     <dependencies>
+        <!-- PROD //-->
         <dependency>
             <groupId>com.atlassian.templaterenderer</groupId>
             <artifactId>atlassian-template-renderer-api</artifactId>
-            <version>1.1.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.bitbucket.server</groupId>
+            <artifactId>bitbucket-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.sal</groupId>
+            <artifactId>sal-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -64,70 +79,17 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>2.1</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.atlassian.sal</groupId>
-            <artifactId>sal-api</artifactId>
-            <version>2.0.17</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.atlassian.sal</groupId>
-            <artifactId>sal-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.atlassian.stash</groupId>
-            <artifactId>stash-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.atlassian.stash</groupId>
-            <artifactId>stash-spi</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.atlassian.stash</groupId>
-            <artifactId>stash-page-objects</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.atlassian.stash</groupId>
-            <artifactId>stash-scm-git-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.atlassian.plugins</groupId>
-            <artifactId>atlassian-plugins-webfragment</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.6</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>18.0</version>
+            <scope>provided</scope>
         </dependency>
-         <dependency>
+        <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.3.1</version>
+            <scope>provided</scope>
         </dependency>
-        
-        <!-- WIRED TEST RUNNER DEPENDENCIES -->
+
+        <!-- TEST //-->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
@@ -151,16 +113,16 @@
         <plugins>
             <plugin>
                 <groupId>com.atlassian.maven.plugins</groupId>
-                <artifactId>maven-stash-plugin</artifactId>
+                <artifactId>bitbucket-maven-plugin</artifactId>
                 <version>${amps.version}</version>
                 <extensions>true</extensions>
                 <configuration>
                     <products>
                         <product>
-                            <id>stash</id>
-                            <instanceId>stash</instanceId>
-                            <version>${stash.version}</version>
-                            <dataVersion>${stash.data.version}</dataVersion>
+                            <id>bitbucket</id>
+                            <instanceId>bitbucket</instanceId>
+                            <version>${bitbucket.version}</version>
+                            <dataVersion>${bitbucket.data.version}</dataVersion>
                         </product>
                     </products>
                 </configuration>
@@ -168,8 +130,8 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -191,8 +153,8 @@
         </resources> 
     </build>
     <properties>
-        <stash.version>3.11.1</stash.version>
-        <stash.data.version>3.11.1</stash.data.version>
-        <amps.version>6.0.3</amps.version>
+        <bitbucket.version>4.0.0-eap3</bitbucket.version>
+        <bitbucket.data.version>${bitbucket.version}</bitbucket.data.version>
+        <amps.version>6.1.0</amps.version>
     </properties>
 </project>

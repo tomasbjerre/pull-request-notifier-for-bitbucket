@@ -1,11 +1,11 @@
-define('plugin/prnfs/pr-triggerbutton', [
+define('plugin/prnfb/pr-triggerbutton', [
   'jquery',
   'aui',
-  'model/page-state'
+  'bitbucket/util/state'
 ], function($, AJS, pageState) {
   
   var getResourceUrl = function() {
-    return AJS.contextPath() + '/rest/prnfs-admin/1.0/manual/?repositoryId=' + pageState.getRepository().getId() + '&pullRequestId=' + pageState.getPullRequest().getId();
+    return AJS.contextPath() + '/rest/prnfb-admin/1.0/manual/?repositoryId=' + pageState.getRepository().id + '&pullRequestId=' + pageState.getPullRequest().id;
   };
 
   var waiting = '<span class="aui-icon aui-icon-wait">Wait</span>';
@@ -40,5 +40,5 @@ define('plugin/prnfs/pr-triggerbutton', [
 });
 
 AJS.$(document).ready(function() {
-    require('plugin/prnfs/pr-triggerbutton');
+    require('plugin/prnfb/pr-triggerbutton');
 });

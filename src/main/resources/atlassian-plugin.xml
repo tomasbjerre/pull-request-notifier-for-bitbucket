@@ -1,4 +1,4 @@
-<atlassian-plugin key="${project.groupId}.${project.artifactId}" name="${project.name}" plugins-version="2">
+<atlassian-plugin key="se.bjurr.prnfs.pull-request-notifier-for-stash" name="${project.name}" plugins-version="2">
     <plugin-info>
         <description>${project.description}</description>
         <version>${project.version}</version>
@@ -6,19 +6,19 @@
         <param name="atlassian-data-center-compatible">true</param>
         <param name="plugin-icon">images/pluginIcon.png</param>
         <param name="plugin-logo">images/pluginLogo.png</param>
-        <param name="configure.url">/plugins/servlet/prnfs/admin</param>
+        <param name="configure.url">/plugins/servlet/prnfb/admin</param>
     </plugin-info>
     
-    <component key="prnfsPullRequestEventListener" class="se.bjurr.prnfs.listener.PrnfsPullRequestEventListener" />
+    <component key="prnfbPullRequestEventListener" class="se.bjurr.prnfb.listener.PrnfbPullRequestEventListener" />
     <component-import key="applicationProperties" interface="com.atlassian.sal.api.ApplicationProperties" />   
     <component-import key="userManager" interface="com.atlassian.sal.api.user.UserManager" />
     <component-import key="loginUriProvider" interface="com.atlassian.sal.api.auth.LoginUriProvider" />
     <component-import key="renderer" interface="com.atlassian.templaterenderer.velocity.one.six.VelocityTemplateRenderer" />
     <component-import key="pluginSettingsFactory" interface="com.atlassian.sal.api.pluginsettings.PluginSettingsFactory" />
     <component-import key="transactionTemplate" interface="com.atlassian.sal.api.transaction.TransactionTemplate" />
-    <component-import key="repositoryService" interface="com.atlassian.stash.repository.RepositoryService" />
+    <component-import key="repositoryService" interface="com.atlassian.bitbucket.repository.RepositoryService" />
 
-    <rest key="rest" path="/prnfs-admin" version="1.0">
+    <rest key="rest" path="/prnfb-admin" version="1.0">
         <description>Provides REST resources for the admin UI.</description>
     </rest>
 
@@ -28,19 +28,19 @@
         <resource type="download" name="admin.css" location="admin.css"/> 
     </web-resource>
 
-    <servlet key="admin-servlet" class="se.bjurr.prnfs.admin.AdminServlet">
-        <url-pattern>/prnfs/admin</url-pattern>
+    <servlet key="admin-servlet" class="se.bjurr.prnfb.admin.AdminServlet">
+        <url-pattern>/prnfb/admin</url-pattern>
     </servlet>
     
-    <web-item key="se.bjurr.prnfs.triggerbutton" name="Trigger Notification" weight="50" section="stash.pull-request.toolbar.actions">
-        <label key="stash.web.pull-request.toolbar.triggerbutton">Trigger Notification</label>
+    <web-item key="se.bjurr.prnfb.triggerbutton" name="Trigger Notification" weight="50" section="bitbucket.pull-request.toolbar.actions">
+        <label key="bitbucket.web.pull-request.toolbar.triggerbutton">Trigger Notification</label>
         <styleClass>triggerManualNotification</styleClass>
         <dependency>${project.groupId}-${project.artifactId}:pr-triggerbutton</dependency>
     </web-item>
     
     <web-resource key="pr-triggerbutton">
         <resource type="download" name="pr-triggerbutton.js" location="/pr-triggerbutton.js" />
-        <dependency>com.atlassian.stash.stash-web-plugin:global</dependency>
-        <context>stash.page.pullRequest.view</context>
+        <dependency>com.atlassian.bitbucket.bitbucket-web-plugin:global</dependency>
+        <context>bitbucket.page.pullRequest.view</context>
     </web-resource>
 </atlassian-plugin>

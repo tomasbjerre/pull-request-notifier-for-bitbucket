@@ -1,11 +1,11 @@
 <html>
   <head>
-    <title>Pull Request Notifier for Stash Admin</title>
+    <title>Pull Request Notifier for Bitbucket Admin</title>
     <meta name="decorator" content="atl.admin">
-    $webResourceManager.requireResource("se.bjurr.prnfs.pull-request-notifier-for-stash:resources")
+    $webResourceManager.requireResource("se.bjurr.prnfb.pull-request-notifier-for-bitbucket:resources")
   </head>
   <body>
-    <div class="prnfs-template prnfs-template-GLOBAL_SETTINGS">
+    <div class="prnfb-template prnfb-template-GLOBAL_SETTINGS">
      <form class="trigger config-area">
       <input type="hidden" name="FORM_IDENTIFIER" value="GLOBAL_SETTINGS">
       <input type="hidden" name="FORM_TYPE" value="GLOBAL_SETTINGS">
@@ -28,10 +28,10 @@
       </div>
      </form>
     </div>
-    <div class="prnfs-GLOBAL_SETTINGS">
+    <div class="prnfb-GLOBAL_SETTINGS">
     </div>
 
-    <div class="prnfs-BUTTON_CONFIG_FORM">
+    <div class="prnfb-BUTTON_CONFIG_FORM">
     </div>
   
     <div>
@@ -47,7 +47,7 @@
         <li><b>${BUTTON_TRIGGER_TITLE}</b> Example: Trigger Notification</li>
         <li><b>${INJECTION_URL_VALUE}</b> If injection URL configured</li>
         <li><b>${PULL_REQUEST_USER_DISPLAY_NAME}</b> Example: Some User</li>
-        <li><b>${PULL_REQUEST_USER_EMAIL_ADDRESS}</b> Example: some.user@stash.domain</li>
+        <li><b>${PULL_REQUEST_USER_EMAIL_ADDRESS}</b> Example: some.user@bitbucket.domain</li>
         <li><b>${PULL_REQUEST_USER_ID}</b> Example: 1</li>
         <li><b>${PULL_REQUEST_USER_NAME}</b> Example: some.user</li>
         <li><b>${PULL_REQUEST_USER_SLUG}</b> Example: some.user</li>
@@ -57,7 +57,7 @@
         <li><b>${PULL_REQUEST_AUTHOR_NAME}</b> Example: admin</li>
         <li><b>${PULL_REQUEST_AUTHOR_SLUG}</b> Example: admin</li>
         <li><b>${PULL_REQUEST_FROM_SSH_CLONE_URL}</b> Example: ssh://git@localhost:7999/project_1/rep_1</li>
-        <li><b>${PULL_REQUEST_FROM_HTTP_CLONE_URL}</b> Example: http://admin@localhost:7990/stash/scm/project_1/rep_1.git</li>
+        <li><b>${PULL_REQUEST_FROM_HTTP_CLONE_URL}</b> Example: http://admin@localhost:7990/bitbucket/scm/project_1/rep_1.git</li>
         <li><b>${PULL_REQUEST_FROM_HASH}</b> Example: 6053a1eaa1c009dd11092d09a72f3c41af1b59ad</li>
         <li><b>${PULL_REQUEST_FROM_ID}</b> Example: refs/heads/branch_mod_merge</li>
         <li><b>${PULL_REQUEST_FROM_BRANCH}</b> Example: branch_mod_merge</li>
@@ -67,7 +67,7 @@
         <li><b>${PULL_REQUEST_FROM_REPO_PROJECT_KEY}</b> Example: PROJECT_1</li>
         <li><b>${PULL_REQUEST_FROM_REPO_SLUG}</b> Example: rep_1</li>
         <li><b>${PULL_REQUEST_TO_SSH_CLONE_URL}</b> Example: ssh://git@localhost:7999/project_1/rep_1</li>
-        <li><b>${PULL_REQUEST_TO_HTTP_CLONE_URL}</b> Example: http://admin@localhost:7990/stash/scm/project_1/rep_1.git</li>
+        <li><b>${PULL_REQUEST_TO_HTTP_CLONE_URL}</b> Example: http://admin@localhost:7990/bitbucket/scm/project_1/rep_1.git</li>
         <li><b>${PULL_REQUEST_TO_HASH}</b> Example: d6edcbf924697ab811a867421dab60d954ccad99</li>
         <li><b>${PULL_REQUEST_TO_ID}</b> Example: refs/heads/basic_branching</li>
         <li><b>${PULL_REQUEST_TO_BRANCH}</b> Example: basic_branching</li>
@@ -80,10 +80,10 @@
       </div>
     </div>
     
-    <div class="prnfs-TRIGGER_CONFIG_FORM">
+    <div class="prnfb-TRIGGER_CONFIG_FORM">
     </div>
     
-    <div class="prnfs-template prnfs-template-BUTTON_CONFIG_FORM">
+    <div class="prnfb-template prnfb-template-BUTTON_CONFIG_FORM">
      <form class="config-area">
        <div class="content">
         <input type="hidden" name="FORM_IDENTIFIER">
@@ -117,7 +117,7 @@
      </form>
     </div>
     
-    <div class="prnfs-template prnfs-template-TRIGGER_CONFIG_FORM">
+    <div class="prnfb-template prnfb-template-TRIGGER_CONFIG_FORM">
      <form class="trigger config-area">
       <div class="expandable">
        <div class="title">

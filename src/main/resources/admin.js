@@ -1,6 +1,6 @@
 (function ($) {
  'use strict';
- var config_resource = AJS.contextPath() + "/rest/prnfs-admin/1.0/";
+ var config_resource = AJS.contextPath() + "/rest/prnfb-admin/1.0/";
  $(document).ready(function() {
   function getEmpties($headers) {
    var empties = [];
@@ -19,7 +19,7 @@
   function adjustHeaders($headers) {
    var empties = getEmpties($headers);
    if (empties.length === 0) {
-    $headers.append($(".prnfs-template .header")[0].outerHTML);
+    $headers.append($(".prnfb-template .header")[0].outerHTML);
    }
 
    if (empties.length > 1) {
@@ -88,11 +88,11 @@
   }
 
   function addNewForm(formType) {
-   var $template = $(".prnfs-template-"+formType).clone();
+   var $template = $(".prnfb-template-"+formType).clone();
    $('input[name="delete"]',$template).remove();
    $('input[name=method][value=GET]', $template).attr('checked','checked');
    $('.expandable',$template).addClass('expanded');
-   $(".prnfs-"+formType).append($template.html());
+   $(".prnfb-"+formType).append($template.html());
   }
 
   function getAll() {
@@ -100,9 +100,9 @@
     url: config_resource,
     dataType: "json"
    }).done(function(configs) {
-    $(".prnfs-TRIGGER_CONFIG_FORM").html("");
-    $(".prnfs-BUTTON_CONFIG_FORM").html("");
-    $(".prnfs-GLOBAL_SETTINGS").html("");
+    $(".prnfb-TRIGGER_CONFIG_FORM").html("");
+    $(".prnfb-BUTTON_CONFIG_FORM").html("");
+    $(".prnfb-GLOBAL_SETTINGS").html("");
     $.each(configs, function(index, config) {
      var formType = 'TRIGGER_CONFIG_FORM';
      $.each(config, function(fieldIndex,field_map) {
@@ -111,7 +111,7 @@
       }
      });
      
-     var $template = $(".prnfs-template-"+formType).clone();
+     var $template = $(".prnfb-template-"+formType).clone();
 
      $.each(config, function(fieldIndex,field_map) {
       $('.variable[data-variable="'+field_map.name+'"]', $template).html(field_map.value);
@@ -143,7 +143,7 @@
       $('input[name=method][value=GET]', $template).attr('checked','checked');
      }
 
-     $(".prnfs-"+formType).append($template.html());
+     $(".prnfb-"+formType).append($template.html());
     });
     addNewForm('TRIGGER_CONFIG_FORM');
     addNewForm('BUTTON_CONFIG_FORM');
