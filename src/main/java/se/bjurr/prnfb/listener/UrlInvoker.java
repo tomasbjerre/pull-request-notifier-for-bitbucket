@@ -8,6 +8,8 @@ import static com.google.common.io.CharStreams.readLines;
 import static java.lang.Boolean.TRUE;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Logger.getLogger;
+import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
+import static javax.xml.bind.DatatypeConverter.printBase64Binary;
 import static se.bjurr.prnfb.listener.UrlInvoker.HTTP_METHOD.GET;
 import static se.bjurr.prnfb.listener.UrlInvoker.HTTP_METHOD.POST;
 import static se.bjurr.prnfb.listener.UrlInvoker.HTTP_METHOD.PUT;
@@ -27,6 +29,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import se.bjurr.prnfb.settings.Header;
+import se.bjurr.prnfb.settings.PrnfbNotification;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
@@ -209,5 +212,14 @@ public class UrlInvoker {
 
  public void setResponseString(String responseString) {
   this.responseString = responseString;
+ }
+
+ public UrlInvoker appendBasicAuth(PrnfbNotification notification) {
+  if (notification.getUser().isPresent() && notification.getPassword().isPresent()) {
+   final String userpass = notification.getUser().get() + ":" + notification.getPassword().get();
+   final String basicAuth = "Basic " + new String(printBase64Binary(userpass.getBytes(UTF_8)));
+   withHeader(AUTHORIZATION, basicAuth);
+  }
+  return this;
  }
 }

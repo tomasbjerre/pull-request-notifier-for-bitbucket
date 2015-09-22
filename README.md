@@ -12,7 +12,7 @@ The plugin can trigger any system, not only Jenkins. The plugin can notify any s
 
 [Here](http://bjurr.se/building-atlassian-bitbucket-pull-requests-in-jenkins/) is a blog post that includes the plugin.
 
-Available in [Atlassian Marketplace](https://marketplace.atlassian.com/plugins/se.bjurr.prnfb.pull-request-notifier-for-bitbucket).
+Available in [Atlassian Marketplace](https://marketplace.atlassian.com/plugins/se.bjurr.prnfs.pull-request-notifier-for-stash).
 
 ## Features
 The Pull Request Notifier for Bitbucket can:
