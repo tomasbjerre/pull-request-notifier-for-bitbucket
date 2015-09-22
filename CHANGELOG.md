@@ -2,6 +2,10 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## 2.2
+* Building against Bitbucket 4.0.0
+ * Was using EAP
+
 ## 2.1
 * Bugfix: Adding Basic Auth headers to injection url request.
 
