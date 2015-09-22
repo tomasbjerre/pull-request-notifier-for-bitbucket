@@ -1,6 +1,5 @@
 package se.bjurr.prnfs.listener;
 
-import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Optional.absent;
 import static com.google.common.collect.Maps.newHashMap;
 import static java.lang.Boolean.FALSE;
@@ -8,8 +7,6 @@ import static java.lang.Boolean.TRUE;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Logger.getLogger;
 import static java.util.regex.Pattern.compile;
-import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
-import static javax.xml.bind.DatatypeConverter.printBase64Binary;
 import static se.bjurr.prnfs.admin.AdminFormValues.TRIGGER_IF_MERGE.ALWAYS;
 import static se.bjurr.prnfs.admin.AdminFormValues.TRIGGER_IF_MERGE.CONFLICTING;
 import static se.bjurr.prnfs.admin.AdminFormValues.TRIGGER_IF_MERGE.NOT_CONFLICTING;
@@ -170,13 +167,12 @@ public class PrnfsPullRequestEventListener {
     + pullRequest.getFromRef().getId() + "(" + pullRequest.getFromRef().getLatestChangeset() + ") -> " //
     + pullRequest.getToRef().getId() + "(" + pullRequest.getToRef().getLatestChangeset() + ")" + " " //
     + renderedUrl);
-  UrlInvoker urlInvoker = urlInvoker().withUrlParam(renderedUrl).withMethod(notification.getMethod())
-    .withPostContent(postContent);
-  if (notification.getUser().isPresent() && notification.getPassword().isPresent()) {
-   final String userpass = notification.getUser().get() + ":" + notification.getPassword().get();
-   final String basicAuth = "Basic " + new String(printBase64Binary(userpass.getBytes(UTF_8)));
-   urlInvoker.withHeader(AUTHORIZATION, basicAuth);
-  }
+  UrlInvoker urlInvoker = urlInvoker()//
+    .withUrlParam(renderedUrl)//
+    .withMethod(notification.getMethod())//
+    .withPostContent(postContent)//
+    .appendBasicAuth(notification);
+
   for (Header header : notification.getHeaders()) {
    urlInvoker.withHeader(header.getName(), renderer.render(header.getValue()));
   }
