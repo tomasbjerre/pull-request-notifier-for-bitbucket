@@ -2,6 +2,9 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## 2.3
+* Bugfix: Loading CSS and JS in admin-page
+
 ## 2.2
 * Building against Bitbucket 4.0.0
  * Was using EAP

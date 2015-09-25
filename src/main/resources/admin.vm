@@ -2,7 +2,7 @@
   <head>
     <title>Pull Request Notifier for Bitbucket Admin</title>
     <meta name="decorator" content="atl.admin">
-    $webResourceManager.requireResource("se.bjurr.prnfb.pull-request-notifier-for-bitbucket:resources")
+    $webResourceManager.requireResource("se.bjurr.prnfs.pull-request-notifier-for-stash:resources")
   </head>
   <body>
     <div class="prnfb-template prnfb-template-GLOBAL_SETTINGS">
