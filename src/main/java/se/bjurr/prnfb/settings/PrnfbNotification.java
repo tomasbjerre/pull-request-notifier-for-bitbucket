@@ -27,6 +27,7 @@ import se.bjurr.prnfb.admin.AdminFormValues.TRIGGER_IF_MERGE;
 import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
 import se.bjurr.prnfb.listener.UrlInvoker.HTTP_METHOD;
 
+import com.atlassian.bitbucket.pull.PullRequestState;
 import com.google.common.base.Optional;
 
 public class PrnfbNotification {
@@ -47,6 +48,7 @@ public class PrnfbNotification {
  private final String injectionUrl;
  private final String injectionUrlRegexp;
  private final TRIGGER_IF_MERGE triggerIfCanMerge;
+ private final List<PullRequestState> triggerIgnoreStateList;
 
  public PrnfbNotification(PrnfbNotificationBuilder builder) throws ValidationException {
   this.proxyUser = emptyToNull(nullToEmpty(builder.getProxyUser()).trim());
@@ -86,6 +88,11 @@ public class PrnfbNotification {
   this.name = firstNonNull(emptyToNull(nullToEmpty(builder.getName()).trim()), DEFAULT_NAME);
   this.injectionUrl = emptyToNull(nullToEmpty(builder.getInjectionUrl()).trim());
   this.injectionUrlRegexp = emptyToNull(nullToEmpty(builder.getInjectionUrlRegexp()).trim());
+  this.triggerIgnoreStateList = builder.getTriggerIgnoreStateList();
+ }
+
+ public List<PullRequestState> getTriggerIgnoreStateList() {
+  return triggerIgnoreStateList;
  }
 
  public TRIGGER_IF_MERGE getTriggerIfCanMerge() {

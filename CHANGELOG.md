@@ -3,6 +3,7 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## 2.4
+* Adding "Triggers do not apply to" option with values DECLINED and MERGED.
 * Changing wording of trigger conditions in admin GUI.
 
 ## 2.3

@@ -7,6 +7,8 @@ import java.util.List;
 
 import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
 
+import com.atlassian.bitbucket.pull.PullRequestState;
+
 public class PrnfbNotificationBuilder {
  public static PrnfbNotificationBuilder prnfbNotificationBuilder() {
   return new PrnfbNotificationBuilder();
@@ -21,6 +23,7 @@ public class PrnfbNotificationBuilder {
  private String method;
  private String postContent;
  private final List<Header> headers = newArrayList();
+ private final List<PullRequestState> triggerIgnoreStateList = newArrayList();
  private String proxyUser;
  private String proxyPassword;
  private String proxyServer;
@@ -100,6 +103,10 @@ public class PrnfbNotificationBuilder {
  public PrnfbNotificationBuilder withProxyPort(String s) {
   this.proxyPort = checkNotNull(s);
   return this;
+ }
+
+ public List<PullRequestState> getTriggerIgnoreStateList() {
+  return triggerIgnoreStateList;
  }
 
  public PrnfbNotificationBuilder withProxyUser(String s) {
@@ -188,5 +195,10 @@ public class PrnfbNotificationBuilder {
 
  public String getUser() {
   return user;
+ }
+
+ public PrnfbNotificationBuilder withTriggerIgnoreState(PullRequestState triggerIgnoreState) {
+  this.triggerIgnoreStateList.add(checkNotNull(triggerIgnoreState));
+  return this;
  }
 }
