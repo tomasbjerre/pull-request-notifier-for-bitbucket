@@ -2,6 +2,9 @@
 
 Changelog of Pull Request Notifier for Stash.
 
+## 1.30
+* Changing wording of trigger conditions in admin GUI.
+
 ## 1.29
 * Bugfix: Adding Basic Auth headers to injection url request
 

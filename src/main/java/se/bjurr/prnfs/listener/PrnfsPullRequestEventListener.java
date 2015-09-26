@@ -1,6 +1,7 @@
 package se.bjurr.prnfs.listener;
 
 import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.of;
 import static com.google.common.collect.Maps.newHashMap;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -160,7 +161,7 @@ public class PrnfsPullRequestEventListener {
 
   Optional<String> postContent = absent();
   if (notification.getPostContent().isPresent()) {
-   postContent = Optional.of(renderer.render(notification.getPostContent().get()));
+   postContent = of(renderer.render(notification.getPostContent().get()));
   }
   String renderedUrl = renderer.render(notification.getUrl());
   logger.info(notification.getName() + " > " //
@@ -174,9 +175,11 @@ public class PrnfsPullRequestEventListener {
     .appendBasicAuth(notification);
 
   for (Header header : notification.getHeaders()) {
-   urlInvoker.withHeader(header.getName(), renderer.render(header.getValue()));
+   urlInvoker//
+     .withHeader(header.getName(), renderer.render(header.getValue()));
   }
-  invoker.invoke(urlInvoker.withProxyServer(notification.getProxyServer()) //
+  invoker.invoke(urlInvoker//
+    .withProxyServer(notification.getProxyServer()) //
     .withProxyPort(notification.getProxyPort())//
     .withProxyUser(notification.getProxyUser())//
     .withProxyPassword(notification.getProxyPassword()));

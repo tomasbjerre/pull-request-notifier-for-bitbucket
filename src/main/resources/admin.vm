@@ -147,10 +147,10 @@
         </div>
         <div>
           <fieldset>
-            <legend>Trigger if pull request</legend>
-            <label><input type="radio" name="trigger_if_isconflicting" value="ALWAYS">Has, or has no, merge conflicts</label><br>
-            <label><input type="radio" name="trigger_if_isconflicting" value="NOT_CONFLICTING">Has no merge conflicts</label><br>
-            <label><input type="radio" name="trigger_if_isconflicting" value="CONFLICTING">Has merge conflicts</label><br>
+            <legend>Triggers apply</legend>
+            <label><input type="radio" name="trigger_if_isconflicting" value="ALWAYS">Always</label><br>
+            <label><input type="radio" name="trigger_if_isconflicting" value="NOT_CONFLICTING">To PRs without merge conflicts</label><br>
+            <label><input type="radio" name="trigger_if_isconflicting" value="CONFLICTING">To PRs with merge conflicts</label><br>
           </fieldset>
         </div>
         <div>
