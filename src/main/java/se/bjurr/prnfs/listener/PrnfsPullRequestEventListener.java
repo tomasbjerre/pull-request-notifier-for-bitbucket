@@ -197,6 +197,10 @@ public class PrnfsPullRequestEventListener {
    return FALSE;
   }
 
+  if (notification.getTriggerIgnoreStateList().contains(pullRequest.getState())) {
+   return FALSE;
+  }
+
   if (notification.getTriggerIfCanMerge() != ALWAYS && pullRequest.isOpen()) {
    // Cannot perform canMerge unless PR is open
    boolean isConflicted = pullRequestService.canMerge(pullRequest.getToRef().getRepository().getId(),

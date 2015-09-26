@@ -7,6 +7,8 @@ import java.util.List;
 
 import se.bjurr.prnfs.listener.PrnfsPullRequestAction;
 
+import com.atlassian.stash.pull.PullRequestState;
+
 public class PrnfsNotificationBuilder {
  public static final String YES = "YES";
  public static final String NO = "NO";
@@ -32,13 +34,89 @@ public class PrnfsNotificationBuilder {
  private String injectionUrl;
  private String injectionUrlRegexp;
  private String triggerIfCanMerge;
+ private final List<PullRequestState> triggerIgnoreStateList = newArrayList();
 
  private PrnfsNotificationBuilder() {
  }
 
  public PrnfsNotification build() throws ValidationException {
-  return new PrnfsNotification(triggers, url, user, password, filterString, filterRegexp, method, postContent, headers,
-    proxyUser, proxyPassword, proxyServer, proxyPort, name, injectionUrl, injectionUrlRegexp, triggerIfCanMerge);
+  return new PrnfsNotification(this);
+ }
+
+ public String getFilterRegexp() {
+  return filterRegexp;
+ }
+
+ public String getFilterString() {
+  return filterString;
+ }
+
+ public List<Header> getHeaders() {
+  return headers;
+ }
+
+ public String getInjectionUrl() {
+  return injectionUrl;
+ }
+
+ public String getInjectionUrlRegexp() {
+  return injectionUrlRegexp;
+ }
+
+ public String getMethod() {
+  return method;
+ }
+
+ public String getName() {
+  return name;
+ }
+
+ public String getPassword() {
+  return password;
+ }
+
+ public String getPostContent() {
+  return postContent;
+ }
+
+ public String getProxyPassword() {
+  return proxyPassword;
+ }
+
+ public String getProxyPort() {
+  return proxyPort;
+ }
+
+ public String getProxyServer() {
+  return proxyServer;
+ }
+
+ public String getProxyUser() {
+  return proxyUser;
+ }
+
+ public String getTriggerIfCanMerge() {
+  return triggerIfCanMerge;
+ }
+
+ public List<PrnfsPullRequestAction> getTriggers() {
+  return triggers;
+ }
+
+ public String getUrl() {
+  return url;
+ }
+
+ public String getUser() {
+  return user;
+ }
+
+ public static String getNo() {
+  return NO;
+ }
+
+ public static String getYes() {
+  return YES;
  }
 
  public PrnfsNotificationBuilder withInjectionUrl(String injectionUrl) {
@@ -124,5 +202,14 @@ public class PrnfsNotificationBuilder {
  public PrnfsNotificationBuilder withTriggerIfCanMerge(String triggerIfCanMerge) {
   this.triggerIfCanMerge = triggerIfCanMerge;
   return this;
+ }
+
+ public PrnfsNotificationBuilder withTriggerIgnoreState(PullRequestState triggerIgnoreState) {
+  this.triggerIgnoreStateList.add(triggerIgnoreState);
+  return this;
+ }
+
+ public List<PullRequestState> getTriggerIgnoreStateList() {
+  return triggerIgnoreStateList;
  }
 }

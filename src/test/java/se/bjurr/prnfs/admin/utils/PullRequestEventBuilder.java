@@ -14,6 +14,7 @@ import com.atlassian.stash.event.pull.PullRequestRescopedEvent;
 import com.atlassian.stash.pull.PullRequest;
 import com.atlassian.stash.pull.PullRequestAction;
 import com.atlassian.stash.pull.PullRequestParticipant;
+import com.atlassian.stash.pull.PullRequestState;
 
 public class PullRequestEventBuilder {
  public static final String PREVIOUS_TO_HASH = "previousToHash";
@@ -27,6 +28,7 @@ public class PullRequestEventBuilder {
  private boolean beingClosed;
  private final boolean beingOpen = TRUE;
  private Long pullRequestId = 0L;
+ private PullRequestState pullRequestState;
 
  private PullRequestEventBuilder(PrnfsTestBuilder prnfsTestBuilder) {
   this.prnfsTestBuilder = prnfsTestBuilder;
@@ -99,6 +101,7 @@ public class PullRequestEventBuilder {
   when(pullRequest.isClosed()).thenReturn(beingClosed);
   when(pullRequest.isOpen()).thenReturn(beingOpen);
   when(pullRequest.getId()).thenReturn(pullRequestId);
+  when(pullRequest.getState()).thenReturn(pullRequestState);
   when(pullRequestEvent.getAction()).thenReturn(pullRequestAction);
   when(pullRequestEvent.getPullRequest()).thenReturn(pullRequest);
   when(pullRequestEvent.getPullRequest().getAuthor()).thenReturn(author);
@@ -118,6 +121,11 @@ public class PullRequestEventBuilder {
 
  public PullRequestEventBuilder withPullRequestId(Long id) {
   this.pullRequestId = id;
+  return this;
+ }
+
+ public PullRequestEventBuilder withPullRequestInState(PullRequestState pullRequestState) {
+  this.pullRequestState = pullRequestState;
   return this;
  }
 }

@@ -4,6 +4,7 @@ import static com.atlassian.stash.pull.PullRequestAction.COMMENTED;
 import static com.atlassian.stash.pull.PullRequestAction.MERGED;
 import static com.atlassian.stash.pull.PullRequestAction.OPENED;
 import static com.atlassian.stash.pull.PullRequestAction.RESCOPED;
+import static com.atlassian.stash.pull.PullRequestState.DECLINED;
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Joiner.on;
 import static com.google.common.collect.Lists.newArrayList;
@@ -32,6 +33,7 @@ import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.proxy_port;
 import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.proxy_server;
 import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.proxy_user;
 import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.trigger_if_isconflicting;
+import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.trigger_ignore_state;
 import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.url;
 import static se.bjurr.prnfs.admin.AdminFormValues.FIELDS.user;
 import static se.bjurr.prnfs.admin.AdminFormValues.FORM_TYPE.BUTTON_CONFIG_FORM;
@@ -83,6 +85,7 @@ import se.bjurr.prnfs.admin.utils.PullRequestRefBuilder;
 import se.bjurr.prnfs.listener.PrnfsPullRequestAction;
 import se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable;
 
+import com.atlassian.stash.pull.PullRequestState;
 import com.google.common.io.Resources;
 
 public class PrnfsPullRequestEventListenerTest {
@@ -1775,6 +1778,69 @@ public class PrnfsPullRequestEventListenerTest {
     .trigger(//
       pullRequestEventBuilder()//
         .withPullRequestAction(OPENED)//
+        .build()//
+    )//
+    .invokedUrl(0, "http://bjurr.se/");
+ }
+
+ @Test
+ public void testThatUrlMayNotBeInvokedWhenIsDeclined() throws Exception {
+  prnfsTestBuilder()//
+    .isLoggedInAsAdmin()//
+    .withNotification(//
+      notificationBuilder()//
+        .withFieldValue(url, "http://bjurr.se/")//
+        .withFieldValue(events, COMMENTED.name())//
+        .withFieldValue(trigger_ignore_state, DECLINED.name())//
+        .build()//
+    )//
+    .store()//
+    .trigger(//
+      pullRequestEventBuilder()//
+        .withPullRequestAction(COMMENTED)//
+        .withPullRequestInState(DECLINED)//
+        .build()//
+    )//
+    .invokedNoUrl();
+ }
+
+ @Test
+ public void testThatUrlMayNotBeInvokedWhenIsMerged() throws Exception {
+  prnfsTestBuilder()//
+    .isLoggedInAsAdmin()//
+    .withNotification(//
+      notificationBuilder()//
+        .withFieldValue(url, "http://bjurr.se/")//
+        .withFieldValue(events, COMMENTED.name())//
+        .withFieldValue(trigger_ignore_state, PullRequestState.MERGED.name())//
+        .build()//
+    )//
+    .store()//
+    .trigger(//
+      pullRequestEventBuilder()//
+        .withPullRequestAction(COMMENTED)//
+        .withPullRequestInState(PullRequestState.MERGED)//
+        .build()//
+    )//
+    .invokedNoUrl();
+ }
+
+ @Test
+ public void testThatUrlMayBeInvokedWhenIsMergedAndDeclinedIsIgnored() throws Exception {
+  prnfsTestBuilder()//
+    .isLoggedInAsAdmin()//
+    .withNotification(//
+      notificationBuilder()//
+        .withFieldValue(url, "http://bjurr.se/")//
+        .withFieldValue(events, COMMENTED.name())//
+        .withFieldValue(trigger_ignore_state, DECLINED.name())//
+        .build()//
+    )//
+    .store()//
+    .trigger(//
+      pullRequestEventBuilder()//
+        .withPullRequestAction(COMMENTED)//
+        .withPullRequestInState(PullRequestState.MERGED)//
         .build()//
     )//
     .invokedUrl(0, "http://bjurr.se/");

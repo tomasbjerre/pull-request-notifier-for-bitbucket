@@ -155,6 +155,13 @@
         </div>
         <div>
           <fieldset>
+            <legend>Triggers do not apply to</legend>
+            <label><input type="checkbox" name="trigger_ignore_state" value="MERGED">Merged PRs</label><br>
+            <label><input type="checkbox" name="trigger_ignore_state" value="DECLINED">Declined PRs</label><br>
+          </fieldset>
+        </div>
+        <div>
+          <fieldset>
             <legend>Triggers</legend>
             <div class="left">
               <label><input type="checkbox" name="events" value="APPROVED">APPROVED</label><br/>

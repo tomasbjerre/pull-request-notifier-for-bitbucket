@@ -52,6 +52,7 @@ public final class AdminFormValues extends ArrayList<Map<String, String>> {
   user_allowed, //
   injection_url, //
   injection_url_regexp, //
-  trigger_if_isconflicting
+  trigger_if_isconflicting, //
+  trigger_ignore_state//
  }
 }

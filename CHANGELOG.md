@@ -3,6 +3,7 @@
 Changelog of Pull Request Notifier for Stash.
 
 ## 1.30
+* Adding "Triggers do not apply to" option with values DECLINED and MERGED.
 * Changing wording of trigger conditions in admin GUI.
 
 ## 1.29
