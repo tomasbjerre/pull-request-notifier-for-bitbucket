@@ -2,6 +2,9 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## 2.4
+* Changing wording of trigger conditions in admin GUI.
+
 ## 2.3
 * Bugfix: Loading CSS and JS in admin-page
 
