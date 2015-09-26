@@ -9,6 +9,8 @@ import static javax.ws.rs.core.Response.ok;
 import static javax.ws.rs.core.Response.status;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
+import static se.bjurr.prnfb.admin.AdminFormValues.FORM_TYPE.BUTTON_CONFIG_FORM;
+import static se.bjurr.prnfb.admin.AdminFormValues.FORM_TYPE.TRIGGER_CONFIG_FORM;
 import static se.bjurr.prnfb.settings.PrnfbNotification.isOfType;
 import static se.bjurr.prnfb.settings.SettingsStorage.checkFieldsRecognized;
 import static se.bjurr.prnfb.settings.SettingsStorage.deleteSettings;
@@ -103,11 +105,13 @@ public class ConfigResource {
   if (user == null) {
    return false;
   }
-  PrnfbSettings settings = securityService.withPermission(ADMIN, "Getting config").call(
-    () -> getPrnfbSettings(pluginSettingsFactory.createGlobalSettings()));
-  return userManager.isSystemAdmin(user.getUserKey()) //
-    || settings.isUsersAllowed() //
-    || settings.isAdminsAllowed() && userManager.isAdmin(user.getUserKey());
+  PrnfbSettings settings = securityService//
+    .withPermission(ADMIN, "Getting config")//
+    .call(() -> getPrnfbSettings(pluginSettingsFactory.createGlobalSettings()));
+  return //
+    userManager.isSystemAdmin(user.getUserKey()) || //
+    settings.isUsersAllowed() || //
+    settings.isAdminsAllowed() && userManager.isAdmin(user.getUserKey());
  }
 
  /**
@@ -127,11 +131,11 @@ public class ConfigResource {
   try {
    injectFormIdentifierIfNotSet(config);
    checkFieldsRecognized(config);
-   if (isOfType(config, AdminFormValues.FORM_TYPE.TRIGGER_CONFIG_FORM)) {
+   if (isOfType(config, TRIGGER_CONFIG_FORM)) {
     // Assuming TRIGGER_CONFIG_FORM here if field not available, to be backwards
     // compatible
     getPrnfbNotification(config);
-   } else if (isOfType(config, AdminFormValues.FORM_TYPE.BUTTON_CONFIG_FORM)) {
+   } else if (isOfType(config, BUTTON_CONFIG_FORM)) {
     getPrnfbButton(config);
    }
   } catch (final ValidationException e) {

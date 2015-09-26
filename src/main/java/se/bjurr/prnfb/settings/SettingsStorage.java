@@ -70,7 +70,8 @@ public class SettingsStorage {
 
  private static Random random = new Random(currentTimeMillis());
 
- public static final String STORAGE_KEY = AdminFormValues.class.getName() + "_2";
+ public static final String STORAGE_KEY = "se.bjurr.prnfb.admin.AdminFormValues_2";
+ public static final String STORAGE_KEY_PRNFS = "se.bjurr.prnfs.admin.AdminFormValues_2";
 
  public static void deleteSettings(PluginSettings pluginSettings, String id) {
   final Map<String, AdminFormValues> map = getNotificationsMap(pluginSettings);
@@ -222,11 +223,19 @@ public class SettingsStorage {
  public static List<AdminFormValues> getSettingsAsFormValues(PluginSettings settings) {
   final List<AdminFormValues> toReturn = newArrayList();
   try {
-   if (!fromNullable(settings.get(STORAGE_KEY)).isPresent()) {
-    return toReturn;
+   /**
+    * The storage key was accidently changed when migrating to Bitbucket 4. This
+    * is an attempt to load 1.x settings if they exist.
+    */
+   Optional<Object> settingsToUse = fromNullable(settings.get(STORAGE_KEY));
+   if (!settingsToUse.isPresent()) {
+    settingsToUse = fromNullable(settings.get(STORAGE_KEY_PRNFS));
+    if (!settingsToUse.isPresent()) {
+     return toReturn;
+    }
    }
    @SuppressWarnings("unchecked")
-   final List<String> settingsList = newArrayList((List<String>) settings.get(STORAGE_KEY));
+   final List<String> settingsList = newArrayList((List<String>) settingsToUse.get());
    for (final String storedJson : settingsList) {
     toReturn.add(injectConfigurationName(gson.fromJson(storedJson, AdminFormValues.class)));
    }

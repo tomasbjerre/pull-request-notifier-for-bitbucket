@@ -20,6 +20,7 @@ import static org.mockito.Mockito.when;
 import static se.bjurr.prnbs.admin.utils.PullRequestEventBuilder.pullRequestEventBuilder;
 import static se.bjurr.prnfb.admin.AdminFormValues.NAME;
 import static se.bjurr.prnfb.admin.AdminFormValues.VALUE;
+import static se.bjurr.prnfb.admin.AdminFormValues.FIELDS.FORM_IDENTIFIER;
 import static se.bjurr.prnfb.listener.PrnfbPullRequestEventListener.setInvoker;
 import static se.bjurr.prnfb.listener.UrlInvoker.getHeaderValue;
 import static se.bjurr.prnfb.settings.PrnfbPredicates.predicate;
@@ -194,8 +195,7 @@ public class PrnfbTestBuilder {
  @SuppressWarnings("unchecked")
  private Map<String, AdminFormValues> getAdminFormFields() throws Exception {
   return uniqueIndex((List<AdminFormValues>) configResource.get(request).getEntity(),
-    (Function<AdminFormValues, String>) input -> find(input, predicate(AdminFormValues.FIELDS.FORM_IDENTIFIER.name()))
-      .get(VALUE));
+    (Function<AdminFormValues, String>) input -> find(input, predicate(FORM_IDENTIFIER.name())).get(VALUE));
  }
 
  public PrnfbTestBuilder hasFieldValueAt(AdminFormValues.FIELDS field, String value, String id) throws Exception {
@@ -343,8 +343,7 @@ public class PrnfbTestBuilder {
  }
 
  public PrnfbTestBuilder withNotification(AdminFormValues adminFormValues) {
-  final Optional<Map<String, String>> existing = tryFind(adminFormValues,
-    predicate(AdminFormValues.FIELDS.FORM_IDENTIFIER.name()));
+  final Optional<Map<String, String>> existing = tryFind(adminFormValues, predicate(FORM_IDENTIFIER.name()));
   if (existing.isPresent()) {
    this.adminFormValuesMap.put(existing.get().get(VALUE), adminFormValues);
   } else {

@@ -11,7 +11,7 @@ public class PrnfbPredicates {
   return new Predicate<Map<String, String>>() {
    @Override
    public boolean apply(Map<String, String> input) {
-    return input.get(NAME).equals(name);
+    return input.get(NAME) != null && input.get(NAME).equals(name);
    }
   };
  }
