@@ -1,14 +1,15 @@
-sudo: required
+sudo: false
 language: java
 jdk:
   - oraclejdk8
 before_install:
   - wget https://marketplace.atlassian.com/download/plugins/atlassian-plugin-sdk-tgz
-  - sudo tar -xvzf *plugin-sdk* -C /opt
-  - sudo mv /opt/*plugin-sdk* /opt/atlassian-plugin-sdk
-  - sudo chmod a+x /opt/atlassian-plugin-sdk/bin/*
-  - sudo chmod a+x /opt/atlassian-plugin-sdk/apache-maven-*/bin/*
-  - export PATH=/opt/atlassian-plugin-sdk/bin:/opt/atlassian-plugin-sdk/apache-maven-*/bin:$PATH
+  - mkdir opt
+  - tar -xvzf *plugin-sdk* -C opt
+  - mv opt/*plugin-sdk* opt/atlassian-plugin-sdk
+  - chmod a+x opt/atlassian-plugin-sdk/bin/*
+  - chmod a+x opt/atlassian-plugin-sdk/apache-maven-*/bin/*
+  - export PATH=opt/atlassian-plugin-sdk/bin:opt/atlassian-plugin-sdk/apache-maven-*/bin:$PATH
   - atlas-version
 install:
   - atlas-mvn -q install
