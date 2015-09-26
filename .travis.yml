@@ -1,14 +1,17 @@
+sudo: false
 language: java
 jdk:
   - oraclejdk8
   - oraclejdk7
 before_install:
-  - sudo apt-get update
-  - sudo apt-get install apt-transport-https
-  - echo "deb https://sdkrepo.atlassian.com/debian/ stable contrib" | sudo tee -a /etc/apt/sources.list
-  - sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys B07804338C015B73
-  - sudo apt-get update
-  - sudo apt-get install atlassian-plugin-sdk
+  - wget https://marketplace.atlassian.com/download/plugins/atlassian-plugin-sdk-tgz
+  - mkdir opt
+  - tar -xvzf *plugin-sdk* -C opt
+  - mv opt/*plugin-sdk* opt/atlassian-plugin-sdk
+  - chmod a+x opt/atlassian-plugin-sdk/bin/*
+  - chmod a+x opt/atlassian-plugin-sdk/apache-maven-*/bin/*
+  - export PATH=opt/atlassian-plugin-sdk/bin:opt/atlassian-plugin-sdk/apache-maven-*/bin:$PATH
+  - atlas-version
 install:
   #Install Atlassian libs in local Maven repo
   - atlas-mvn -q install -Dstash.version=2.12.0 -Dstash.data.version=2.12.0
