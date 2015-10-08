@@ -114,14 +114,15 @@
      var $template = $(".prnfs-template-"+formType).clone();
 
      $.each(config, function(fieldIndex,field_map) {
+      var safe_value = field_map.value.replace(/[^a-zA-Z]/g,'');
       $('.variable[data-variable="'+field_map.name+'"]', $template).html(field_map.value);
       $('input[type="text"][name="'+field_map.name+'"]', $template).attr('value', field_map.value);
       $('input[type="password"][name="'+field_map.name+'"]', $template).attr('value', field_map.value);
       $('textarea[name="'+field_map.name+'"]', $template).text(field_map.value);
       $('input[type="hidden"][name="'+field_map.name+'"]', $template).attr('value', field_map.value);
-      $('input[type="checkbox"][name="'+field_map.name+'"][value="'+field_map.value+'"]', $template).attr('checked','checked');
-      $('input[type="radio"][name="'+field_map.name+'"][value="'+field_map.value+'"]', $template).attr('checked','checked');
-      $('.visibleif.'+field_map.name+'_'+field_map.value.replace(/[^a-zA-Z]/g,''), $template).show();
+      $('input[type="checkbox"][name="'+field_map.name+'"][value="'+safe_value+'"]', $template).attr('checked','checked');
+      $('input[type="radio"][name="'+field_map.name+'"][value="'+safe_value+'"]', $template).attr('checked','checked');
+      $('.visibleif.'+field_map.name+'_'+safe_value, $template).show();
      });
 
      var header_names = [];
