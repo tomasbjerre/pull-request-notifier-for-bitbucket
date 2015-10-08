@@ -153,7 +153,7 @@
         </resources> 
     </build>
     <properties>
-        <bitbucket.version>4.0.0</bitbucket.version>
+        <bitbucket.version>4.0.1</bitbucket.version>
         <bitbucket.data.version>${bitbucket.version}</bitbucket.data.version>
         <amps.version>6.1.0</amps.version>
     </properties>

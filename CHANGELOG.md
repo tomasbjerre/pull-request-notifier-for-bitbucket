@@ -2,6 +2,9 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## 2.5
+* Bugfix: Avoiding admin page to crash if entering quote as value of a field.
+
 ## 2.4
 * The storage key was accidently changed when migrating to Bitbucket 4. This includes a fix that will load 1.x settings if they exist, and if no 2.x settings are available.
 * Adding "Triggers do not apply to" option with values DECLINED and MERGED.

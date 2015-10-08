@@ -254,7 +254,10 @@ public class SettingsStorage {
   if (nameMapOpt.isPresent()) {
    return adminFormValues;
   }
-  adminFormValues.add(ImmutableMap.<String, String> builder().put(NAME, name.name()).put(VALUE, DEFAULT_NAME).build());
+  adminFormValues.add(ImmutableMap.<String, String> builder()//
+    .put(NAME, name.name())//
+    .put(VALUE, DEFAULT_NAME)//
+    .build());
   return adminFormValues;
  }
 
