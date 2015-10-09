@@ -1,5 +1,7 @@
 package se.bjurr.prnfs.listener;
 
+import static com.google.common.collect.Iterables.filter;
+import static com.google.common.collect.Lists.newArrayList;
 import static java.util.logging.Logger.getLogger;
 import static java.util.regex.Pattern.compile;
 import static se.bjurr.prnfs.listener.PrnfsRenderer.REPO_PROTOCOL.http;
@@ -15,6 +17,7 @@ import java.util.regex.Matcher;
 import se.bjurr.prnfs.settings.PrnfsNotification;
 
 import com.atlassian.stash.pull.PullRequest;
+import com.atlassian.stash.pull.PullRequestParticipant;
 import com.atlassian.stash.repository.Repository;
 import com.atlassian.stash.repository.RepositoryCloneLinksRequest;
 import com.atlassian.stash.repository.RepositoryService;
@@ -22,6 +25,7 @@ import com.atlassian.stash.server.ApplicationPropertiesService;
 import com.atlassian.stash.user.StashUser;
 import com.atlassian.stash.util.NamedLink;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
 
 public class PrnfsRenderer {
@@ -331,7 +335,28 @@ public class PrnfsRenderer {
      PrnfsNotification prnfsNotification, Map<PrnfsVariable, Supplier<String>> variables) {
     return pullRequest.getTitle();
    }
+  }), PULL_REQUEST_REVIEWERS_APPROVED_COUNT(new Resolver() {
+   @Override
+   public String resolve(PullRequest pullRequest, PrnfsPullRequestAction pullRequestAction, StashUser ApplicationUser,
+     RepositoryService repositoryService, ApplicationPropertiesService propertiesService,
+     PrnfsNotification prnfbNotification, Map<PrnfsVariable, Supplier<String>> variables) {
+    return Integer.toString(newArrayList(filter(pullRequest.getReviewers(), isApproved)).size());
+   }
+  }), PULL_REQUEST_PARTICIPANTS_APPROVED_COUNT(new Resolver() {
+   @Override
+   public String resolve(PullRequest pullRequest, PrnfsPullRequestAction pullRequestAction, StashUser ApplicationUser,
+     RepositoryService repositoryService, ApplicationPropertiesService propertiesService,
+     PrnfsNotification prnfbNotification, Map<PrnfsVariable, Supplier<String>> variables) {
+    return Integer.toString(newArrayList(filter(pullRequest.getParticipants(), isApproved)).size());
+   }
   });
+  ;
+  private static final Predicate<PullRequestParticipant> isApproved = new Predicate<PullRequestParticipant>() {
+   @Override
+   public boolean apply(PullRequestParticipant input) {
+    return input.isApproved();
+   }
+  };
 
   private Resolver resolver;
 

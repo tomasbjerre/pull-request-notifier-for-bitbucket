@@ -4,11 +4,15 @@ import static com.atlassian.stash.pull.PullRequestAction.COMMENTED;
 import static com.atlassian.stash.pull.PullRequestAction.MERGED;
 import static com.atlassian.stash.pull.PullRequestAction.OPENED;
 import static com.atlassian.stash.pull.PullRequestAction.RESCOPED;
+import static com.atlassian.stash.pull.PullRequestRole.AUTHOR;
+import static com.atlassian.stash.pull.PullRequestRole.PARTICIPANT;
 import static com.atlassian.stash.pull.PullRequestState.DECLINED;
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Joiner.on;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.io.Resources.getResource;
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
 import static java.util.Collections.sort;
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static org.junit.Assert.assertEquals;
@@ -108,7 +112,7 @@ public class PrnfsPullRequestEventListenerTest {
       notificationBuilder() //
         .withFieldValue(
           url,
-          "http://bjurr.se/?PULL_REQUEST_FROM_HASH=${PULL_REQUEST_FROM_HASH}&PULL_REQUEST_TO_HASH=${PULL_REQUEST_TO_HASH}&PULL_REQUEST_FROM_REPO_SLUG=${PULL_REQUEST_FROM_REPO_SLUG}&PULL_REQUEST_TO_REPO_SLUG=${PULL_REQUEST_TO_REPO_SLUG}") //
+          "http://bjurr.se/?PULL_REQUEST_FROM_HASH=${PULL_REQUEST_FROM_HASH}&PULL_REQUEST_TO_HASH=${PULL_REQUEST_TO_HASH}&PULL_REQUEST_FROM_REPO_SLUG=${PULL_REQUEST_FROM_REPO_SLUG}&PULL_REQUEST_TO_REPO_SLUG=${PULL_REQUEST_TO_REPO_SLUG}&revapp=${PULL_REQUEST_REVIEWERS_APPROVED_COUNT}&partapp=${PULL_REQUEST_PARTICIPANTS_APPROVED_COUNT}") //
         .withFieldValue(events, OPENED.name()) //
         .build() //
     ) //
@@ -127,11 +131,18 @@ public class PrnfsPullRequestEventListenerTest {
         ) //
         .withPullRequestId(10L) //
         .withPullRequestAction(OPENED) //
+        .withParticipant(PARTICIPANT, TRUE) //
+        .withParticipant(PARTICIPANT, TRUE) //
+        .withParticipant(PARTICIPANT, TRUE) //
+        .withParticipant(PARTICIPANT, FALSE) //
+        .withParticipant(AUTHOR, TRUE) //
+        .withParticipant(AUTHOR, TRUE) //
+        .withParticipant(AUTHOR, FALSE) //
         .build() //
     ) //
     .invokedUrl(
       0,
-      "http://bjurr.se/?PULL_REQUEST_FROM_HASH=cde456&PULL_REQUEST_TO_HASH=asd123&PULL_REQUEST_FROM_REPO_SLUG=fromslug&PULL_REQUEST_TO_REPO_SLUG=toslug") //
+      "http://bjurr.se/?PULL_REQUEST_FROM_HASH=cde456&PULL_REQUEST_TO_HASH=asd123&PULL_REQUEST_FROM_REPO_SLUG=fromslug&PULL_REQUEST_TO_REPO_SLUG=toslug&revapp=2&partapp=3") //
     .invokedMethod(GET);
  }
 

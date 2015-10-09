@@ -2,6 +2,12 @@
 
 Changelog of Pull Request Notifier for Stash.
 
+## 1.32
+* New variables
+ * ${PULL_REQUEST_REVIEWERS_APPROVED_COUNT} Number of reviewers that approved the PR.
+ * ${PULL_REQUEST_PARTICIPANTS_APPROVED_COUNT} Number of participants that approved the PR.
+These can be used to, for example, show a trigger button only if there are non-zero number of approvals.
+
 ## 1.31
 * Bugfix: Saving with checked checkboxes RESCOPED_FROM/TO and BUTTON_TRIGGER was not reflected in GUI.
 * Bugfix: Avoiding admin page to crash if entering quote as value of a field.
