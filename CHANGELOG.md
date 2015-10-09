@@ -3,6 +3,7 @@
 Changelog of Pull Request Notifier for Stash.
 
 ## 1.31
+* Bugfix: Saving with checked checkboxes RESCOPED_FROM/TO and BUTTON_TRIGGER was not reflected in GUI.
 * Bugfix: Avoiding admin page to crash if entering quote as value of a field.
 
 ## 1.30

@@ -114,7 +114,7 @@
      var $template = $(".prnfs-template-"+formType).clone();
 
      $.each(config, function(fieldIndex,field_map) {
-      var safe_value = field_map.value.replace(/[^a-zA-Z]/g,'');
+      var safe_value = field_map.value.replace(/[^a-zA-Z\_]/g,'');
       $('.variable[data-variable="'+field_map.name+'"]', $template).html(field_map.value);
       $('input[type="text"][name="'+field_map.name+'"]', $template).attr('value', field_map.value);
       $('input[type="password"][name="'+field_map.name+'"]', $template).attr('value', field_map.value);
