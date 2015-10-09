@@ -3,6 +3,9 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## 2.5
+* Bugfix: Saving with checked checkboxes RESCOPED_FROM/TO and BUTTON_TRIGGER was not reflected in GUI.
+
+## 2.5
 * Bugfix: Avoiding admin page to crash if entering quote as value of a field.
 
 ## 2.4
