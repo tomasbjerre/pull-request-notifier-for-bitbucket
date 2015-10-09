@@ -2,10 +2,14 @@ package se.bjurr.prnbs.admin.utils;
 
 import static com.atlassian.bitbucket.pull.PullRequestAction.COMMENTED;
 import static com.atlassian.bitbucket.pull.PullRequestAction.RESCOPED;
+import static com.atlassian.bitbucket.pull.PullRequestRole.PARTICIPANT;
+import static com.google.common.collect.Sets.newHashSet;
 import static java.lang.Boolean.TRUE;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static se.bjurr.prnbs.admin.utils.PullRequestRefBuilder.pullRequestRefBuilder;
+
+import java.util.Set;
 
 import com.atlassian.bitbucket.comment.Comment;
 import com.atlassian.bitbucket.event.pull.PullRequestCommentAddedEvent;
@@ -14,6 +18,7 @@ import com.atlassian.bitbucket.event.pull.PullRequestRescopedEvent;
 import com.atlassian.bitbucket.pull.PullRequest;
 import com.atlassian.bitbucket.pull.PullRequestAction;
 import com.atlassian.bitbucket.pull.PullRequestParticipant;
+import com.atlassian.bitbucket.pull.PullRequestRole;
 import com.atlassian.bitbucket.pull.PullRequestState;
 
 public class PullRequestEventBuilder {
@@ -29,6 +34,8 @@ public class PullRequestEventBuilder {
  private final boolean beingOpen = TRUE;
  private Long pullRequestId = 0L;
  private PullRequestState pullRequestState;
+ private final Set<PullRequestParticipant> participants = newHashSet();
+ private final Set<PullRequestParticipant> reviewers = newHashSet();
 
  private PullRequestEventBuilder(PrnfbTestBuilder prnfbTestBuilder) {
   this.prnfbTestBuilder = prnfbTestBuilder;
@@ -36,6 +43,17 @@ public class PullRequestEventBuilder {
 
  public PullRequestEventBuilder withFromRef(PullRequestRefBuilder fromRef) {
   this.fromRef = fromRef;
+  return this;
+ }
+
+ public PullRequestEventBuilder withParticipant(PullRequestRole role, Boolean isApproved) {
+  PullRequestParticipant participant = mock(PullRequestParticipant.class);
+  when(participant.isApproved()).thenReturn(isApproved);
+  if (role == PARTICIPANT) {
+   participants.add(participant);
+  } else {
+   reviewers.add(participant);
+  }
   return this;
  }
 
@@ -104,6 +122,8 @@ public class PullRequestEventBuilder {
   when(pullRequest.getState()).thenReturn(pullRequestState);
   when(pullRequestEvent.getAction()).thenReturn(pullRequestAction);
   when(pullRequestEvent.getPullRequest()).thenReturn(pullRequest);
+  when(pullRequestEvent.getPullRequest().getParticipants()).thenReturn(participants);
+  when(pullRequestEvent.getPullRequest().getReviewers()).thenReturn(reviewers);
   when(pullRequestEvent.getPullRequest().getAuthor()).thenReturn(author);
   when(pullRequestEvent.getPullRequest().getFromRef()).thenReturn(fromRef);
   when(pullRequestEvent.getPullRequest().getToRef()).thenReturn(toRef);

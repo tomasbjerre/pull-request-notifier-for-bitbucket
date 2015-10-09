@@ -2,7 +2,13 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
-## 2.5
+## 2.7
+* New variables
+ * ${PULL_REQUEST_REVIEWERS_APPROVED_COUNT} Number of reviewers that approved the PR.
+ * ${PULL_REQUEST_PARTICIPANTS_APPROVED_COUNT} Number of participants that approved the PR.
+These can be used to, for example, show a trigger button only if there are non-zero number of approvals.
+
+## 2.6
 * Bugfix: Saving with checked checkboxes RESCOPED_FROM/TO and BUTTON_TRIGGER was not reflected in GUI.
 
 ## 2.5

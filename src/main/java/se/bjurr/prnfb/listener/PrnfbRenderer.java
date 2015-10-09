@@ -1,5 +1,7 @@
 package se.bjurr.prnfb.listener;
 
+import static com.google.common.collect.Iterables.filter;
+import static com.google.common.collect.Lists.newArrayList;
 import static java.util.logging.Logger.getLogger;
 import static java.util.regex.Pattern.compile;
 import static se.bjurr.prnfb.listener.PrnfbRenderer.REPO_PROTOCOL.http;
@@ -15,6 +17,7 @@ import java.util.regex.Matcher;
 import se.bjurr.prnfb.settings.PrnfbNotification;
 
 import com.atlassian.bitbucket.pull.PullRequest;
+import com.atlassian.bitbucket.pull.PullRequestParticipant;
 import com.atlassian.bitbucket.repository.Repository;
 import com.atlassian.bitbucket.repository.RepositoryCloneLinksRequest;
 import com.atlassian.bitbucket.repository.RepositoryService;
@@ -22,6 +25,7 @@ import com.atlassian.bitbucket.server.ApplicationPropertiesService;
 import com.atlassian.bitbucket.user.ApplicationUser;
 import com.atlassian.bitbucket.util.NamedLink;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
 
 public class PrnfbRenderer {
@@ -369,7 +373,30 @@ public class PrnfbRenderer {
      Map<PrnfbVariable, Supplier<String>> variables) {
     return pullRequest.getTitle();
    }
+  }), PULL_REQUEST_REVIEWERS_APPROVED_COUNT(new Resolver() {
+   @Override
+   public String resolve(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction,
+     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
+     Map<PrnfbVariable, Supplier<String>> variables) {
+    return Integer.toString(newArrayList(filter(pullRequest.getReviewers(), isApproved)).size());
+   }
+  }), PULL_REQUEST_PARTICIPANTS_APPROVED_COUNT(new Resolver() {
+   @Override
+   public String resolve(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction,
+     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
+     Map<PrnfbVariable, Supplier<String>> variables) {
+    return Integer.toString(newArrayList(filter(pullRequest.getParticipants(), isApproved)).size());
+   }
   });
+
+  private static final Predicate<PullRequestParticipant> isApproved = new Predicate<PullRequestParticipant>() {
+   @Override
+   public boolean apply(PullRequestParticipant input) {
+    return input.isApproved();
+   }
+  };
 
   private Resolver resolver;
 

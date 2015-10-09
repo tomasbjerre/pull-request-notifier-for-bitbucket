@@ -14,7 +14,8 @@ define('plugin/prnfb/pr-triggerbutton', [
   var $buttonTemplate = $(".triggerManualNotification");
   $buttonTemplate.empty().remove();
   
-  $.get(getResourceUrl(), function(settings) {
+  function loadSettingsAndShowButtons() {
+   $.get(getResourceUrl(), function(settings) {
   	settings.forEach(function(item) {
   	  var $button = $buttonTemplate.clone();
   	  $button.html(item.title);
@@ -35,8 +36,18 @@ define('plugin/prnfb/pr-triggerbutton', [
       
       $buttonArea.append($button);
   	});
+   });
+  }
+  
+  loadSettingsAndShowButtons();
+  
+  //If a reviewer approves the PR, then a button may become visible
+  $('.aui-button.approve').click(function () {
+   setTimeout(function(){
+    $(".triggerManualNotification").remove();
+    loadSettingsAndShowButtons();
+   }, 1000);
   });
-
 });
 
 AJS.$(document).ready(function() {
