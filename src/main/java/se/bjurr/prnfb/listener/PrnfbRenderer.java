@@ -287,6 +287,13 @@ public class PrnfbRenderer {
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     return getOrEmpty(variables, PULL_REQUEST_COMMENT_TEXT);
    }
+  }), PULL_REQUEST_MERGE_COMMIT(new Resolver() {
+   @Override
+   public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfsPullRequestAction,
+     ApplicationUser stashUser, RepositoryService repositoryService, ApplicationPropertiesService propertiesService,
+     PrnfbNotification prnfsNotification, Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
+    return getOrEmpty(variables, PULL_REQUEST_MERGE_COMMIT);
+   }
   }), PULL_REQUEST_USER_DISPLAY_NAME(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,

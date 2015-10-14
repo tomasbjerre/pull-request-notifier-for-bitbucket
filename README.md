@@ -60,6 +60,7 @@ The filter text as well as the URL support variables. These are:
 * ${PULL_REQUEST_AUTHOR_SLUG} Example: admin
 * ${PULL_REQUEST_REVIEWERS_APPROVED_COUNT} Number of reviewers that approved the PR.
 * ${PULL_REQUEST_PARTICIPANTS_APPROVED_COUNT} Number of participants that approved the PR.
+* ${PULL_REQUEST_MERGE_COMMIT} Hash of merged commit (only available for merged-event).
 * ${PULL_REQUEST_FROM_SSH_CLONE_URL} Example: ssh://git@localhost:7999/project_1/rep_1
 * ${PULL_REQUEST_FROM_HTTP_CLONE_URL} Example: http://admin@localhost:7990/bitbucket/scm/project_1/rep_1.git
 * ${PULL_REQUEST_FROM_HASH} Example: 6053a1eaa1c009dd11092d09a72f3c41af1b59ad

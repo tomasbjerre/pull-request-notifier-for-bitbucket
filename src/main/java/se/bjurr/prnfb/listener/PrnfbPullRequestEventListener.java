@@ -13,6 +13,7 @@ import static se.bjurr.prnfb.admin.AdminFormValues.TRIGGER_IF_MERGE.CONFLICTING;
 import static se.bjurr.prnfb.admin.AdminFormValues.TRIGGER_IF_MERGE.NOT_CONFLICTING;
 import static se.bjurr.prnfb.listener.PrnfbPullRequestAction.fromPullRequestEvent;
 import static se.bjurr.prnfb.listener.PrnfbRenderer.PrnfbVariable.PULL_REQUEST_COMMENT_TEXT;
+import static se.bjurr.prnfb.listener.PrnfbRenderer.PrnfbVariable.PULL_REQUEST_MERGE_COMMIT;
 import static se.bjurr.prnfb.listener.UrlInvoker.urlInvoker;
 import static se.bjurr.prnfb.settings.SettingsStorage.getPrnfbSettings;
 
@@ -133,6 +134,13 @@ public class PrnfbPullRequestEventListener {
     if (pullRequestEvent instanceof PullRequestCommentAddedEvent) {
      variables.put(PULL_REQUEST_COMMENT_TEXT, () -> ((PullRequestCommentAddedEvent) pullRequestEvent).getComment()
        .getText());
+    } else if (pullRequestEvent instanceof PullRequestMergedEvent) {
+     variables.put(PULL_REQUEST_MERGE_COMMIT, new Supplier<String>() {
+      @Override
+      public String get() {
+       return ((PullRequestMergedEvent) pullRequestEvent).getCommit().getId();
+      }
+     });
     }
     PrnfbRenderer renderer = new PrnfbRenderer(pullRequestEvent.getPullRequest(), action, pullRequestEvent.getUser(),
       repositoryService, propertiesService, notification, variables);
