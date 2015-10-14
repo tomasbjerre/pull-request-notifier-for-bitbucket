@@ -2,6 +2,10 @@
 
 Changelog of Pull Request Notifier for Stash.
 
+## 1.33
+* New variables
+ * ${PULL_REQUEST_MERGE_COMMIT} Hash of merged commit (only available for merged-event).
+
 ## 1.32
 * New variables
  * ${PULL_REQUEST_REVIEWERS_APPROVED_COUNT} Number of reviewers that approved the PR.

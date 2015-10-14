@@ -258,6 +258,13 @@ public class PrnfsRenderer {
      PrnfsNotification prnfsNotification, Map<PrnfsRenderer.PrnfsVariable, Supplier<String>> variables) {
     return getOrEmpty(variables, PULL_REQUEST_COMMENT_TEXT);
    }
+  }), PULL_REQUEST_MERGE_COMMIT(new Resolver() {
+   @Override
+   public String resolve(PullRequest pullRequest, PrnfsPullRequestAction prnfsPullRequestAction, StashUser stashUser,
+     RepositoryService repositoryService, ApplicationPropertiesService propertiesService,
+     PrnfsNotification prnfsNotification, Map<PrnfsRenderer.PrnfsVariable, Supplier<String>> variables) {
+    return getOrEmpty(variables, PULL_REQUEST_MERGE_COMMIT);
+   }
   }), PULL_REQUEST_USER_DISPLAY_NAME(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfsPullRequestAction prnfsPullRequestAction, StashUser stashUser,
@@ -350,7 +357,7 @@ public class PrnfsRenderer {
     return Integer.toString(newArrayList(filter(pullRequest.getParticipants(), isApproved)).size());
    }
   });
-  ;
+
   private static final Predicate<PullRequestParticipant> isApproved = new Predicate<PullRequestParticipant>() {
    @Override
    public boolean apply(PullRequestParticipant input) {
