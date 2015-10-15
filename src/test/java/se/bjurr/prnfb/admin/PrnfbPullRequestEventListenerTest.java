@@ -289,7 +289,7 @@ public class PrnfbPullRequestEventListenerTest {
          .getPullRequest() //
      ) //
      .triggerButton("The Button") //
-     .invokedUrl(1, "http://bjurr.se/10The%20Button%20Text");
+     .invokedUrl(1, "http://bjurr.se/10The+Button+Text");
   }
  }
 
@@ -333,7 +333,7 @@ public class PrnfbPullRequestEventListenerTest {
         .withCommentText("a text with\nnewline") //
         .build() //
     ) //
-    .invokedUrl(0, "http://bjurr.se/a%20text%20with%20newline");
+    .invokedUrl(0, "http://bjurr.se/a+text+with%0Anewline");
  }
 
  @Test
@@ -358,7 +358,7 @@ public class PrnfbPullRequestEventListenerTest {
         .withPullRequestAction(OPENED) //
         .build() //
     ) //
-    .invokedUrl(0, "http://bjurr.se/feature/branchmodmerge");
+    .invokedUrl(0, "http://bjurr.se/feature%2Fbranchmodmerge");
  }
 
  @Test
@@ -426,7 +426,7 @@ public class PrnfbPullRequestEventListenerTest {
     ) //
     .invokedUrl(
       0,
-      "http://bjurr.se/id=10&action=OPENED&displayName=authorDisplayName&authorEmail=authorEmail&authorId=100&authorName=authorName&authorSlug=authorSlug&pullRequestUrl=http://bitbucket.server/projects/theProject/repos/theRepoName/pull-requests/10" //
+      "http://bjurr.se/id=10&action=OPENED&displayName=authorDisplayName&authorEmail=authorEmail&authorId=100&authorName=authorName&authorSlug=authorSlug&pullRequestUrl=http%3A%2F%2Fbitbucket.server%2Fprojects%2FtheProject%2Frepos%2FtheRepoName%2Fpull-requests%2F10" //
     );
  }
 
@@ -889,7 +889,7 @@ public class PrnfbPullRequestEventListenerTest {
         .withPullRequestAction(COMMENTED) //
         .build() //
     ) //
-    .invokedUrl(0, "http://bjurr.se/?comment=keyword%20A%20nice%20comment&version=0"); //
+    .invokedUrl(0, "http://bjurr.se/?comment=keyword+A+nice+comment&version=0"); //
  }
 
  @Test
@@ -922,7 +922,7 @@ public class PrnfbPullRequestEventListenerTest {
         .withPullRequestAction(COMMENTED) //
         .build() //
     ) //
-    .invokedUrl(0, "http://bjurr.se/?comment=%20keyword%20&version=0");
+    .invokedOnlyUrl("http://bjurr.se/?comment=+keyword+&version=0");
  }
 
  @Test
@@ -1430,7 +1430,7 @@ public class PrnfbPullRequestEventListenerTest {
     ) //
     .store() //
     .triggerButton("Button Form") //
-    .invokedOnlyUrl("http://bjurr.se/Trigger%20notification") //
+    .invokedOnlyUrl("http://bjurr.se/Trigger+notification") //
     .hasButtonsEnabled("Button Form");
  }
 
@@ -1512,7 +1512,7 @@ public class PrnfbPullRequestEventListenerTest {
     ) //
     .store() //
     .triggerButton("Button Form") //
-    .invokedOnlyUrl("http://bjurr.se/?123=button%20text%20123");
+    .invokedOnlyUrl("http://bjurr.se/?123=button+text+123");
  }
 
  @Test
@@ -1547,7 +1547,7 @@ public class PrnfbPullRequestEventListenerTest {
     ) //
     .store() //
     .triggerButton("Button Form") //
-    .invokedOnlyUrl("http://bjurr.se/?123=button%20text%20123");
+    .invokedOnlyUrl("http://bjurr.se/?123=button+text+123");
  }
 
  @Test
@@ -1578,8 +1578,8 @@ public class PrnfbPullRequestEventListenerTest {
         .withFieldValue(button_visibility, EVERYONE.name()).build()) //
     .store() //
     .triggerButton("Button Form") //
-    .invokedUrl(0, "http://bjurr.se/?123=button%20text%20123") //
-    .invokedUrl(1, "http://bjurr.se/?456=button%20text%20123");
+    .invokedUrl(0, "http://bjurr.se/?123=button+text+123") //
+    .invokedUrl(1, "http://bjurr.se/?456=button+text+123");
  }
 
  @Test
@@ -1613,9 +1613,9 @@ public class PrnfbPullRequestEventListenerTest {
     ) //
     .store() //
     .triggerButton("Button Form 1") //
-    .invokedUrl(0, "http://bjurr.se/?button%20text%201") //
+    .invokedUrl(0, "http://bjurr.se/?button+text+1") //
     .triggerButton("Button Form 2") //
-    .invokedUrl(1, "http://bjurr.se/?button%20text%202");
+    .invokedUrl(1, "http://bjurr.se/?button+text+2");
  }
 
  @Test
@@ -1637,7 +1637,7 @@ public class PrnfbPullRequestEventListenerTest {
         .withPullRequestAction(OPENED) //
         .build() //
     ) //
-    .invokedOnlyUrl("http://bjurr.se/?some%20content");
+    .invokedOnlyUrl("http://bjurr.se/?some+content");
  }
 
  @Test

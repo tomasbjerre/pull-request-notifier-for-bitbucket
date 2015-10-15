@@ -2,6 +2,9 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## 2.9
+* Url encoding evaluated values when they are used in URL invocations.
+
 ## 2.8
 * New variables
  * ${PULL_REQUEST_MERGE_COMMIT} Hash of merged commit (only available for merged-event).

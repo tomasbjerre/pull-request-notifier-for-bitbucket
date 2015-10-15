@@ -159,9 +159,9 @@ public class PrnfbPullRequestEventListener {
 
   Optional<String> postContent = absent();
   if (notification.getPostContent().isPresent()) {
-   postContent = of(renderer.render(notification.getPostContent().get()));
+   postContent = of(renderer.render(notification.getPostContent().get(), FALSE));
   }
-  String renderedUrl = renderer.render(notification.getUrl());
+  String renderedUrl = renderer.render(notification.getUrl(), TRUE);
   logger.info(notification.getName() + " > " //
     + pullRequest.getFromRef().getId() + "(" + pullRequest.getFromRef().getLatestCommit() + ") -> " //
     + pullRequest.getToRef().getId() + "(" + pullRequest.getToRef().getLatestCommit() + ")" + " " //
@@ -173,7 +173,7 @@ public class PrnfbPullRequestEventListener {
     .appendBasicAuth(notification);
   for (Header header : notification.getHeaders()) {
    urlInvoker//
-     .withHeader(header.getName(), renderer.render(header.getValue()));
+     .withHeader(header.getName(), renderer.render(header.getValue(), FALSE));
   }
   invoker.invoke(urlInvoker//
     .withProxyServer(notification.getProxyServer()) //
@@ -189,8 +189,8 @@ public class PrnfbPullRequestEventListener {
   }
   if (notification.getFilterRegexp().isPresent()
     && notification.getFilterString().isPresent()
-    && !compile(notification.getFilterRegexp().get()).matcher(renderer.render(notification.getFilterString().get()))
-      .find()) {
+    && !compile(notification.getFilterRegexp().get()).matcher(
+      renderer.render(notification.getFilterString().get(), FALSE)).find()) {
    return FALSE;
   }
 
