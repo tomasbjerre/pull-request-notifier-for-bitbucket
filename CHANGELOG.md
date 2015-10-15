@@ -2,6 +2,9 @@
 
 Changelog of Pull Request Notifier for Stash.
 
+## 1.34
+* Url encoding evaluated values when they are used in URL invocations.
+
 ## 1.33
 * New variables
  * ${PULL_REQUEST_MERGE_COMMIT} Hash of merged commit (only available for merged-event).

@@ -1,7 +1,10 @@
 package se.bjurr.prnfs.listener;
 
+import static com.google.common.base.Charsets.UTF_8;
+import static com.google.common.base.Throwables.propagate;
 import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Lists.newArrayList;
+import static java.net.URLEncoder.encode;
 import static java.util.logging.Logger.getLogger;
 import static java.util.regex.Pattern.compile;
 import static se.bjurr.prnfs.listener.PrnfsRenderer.REPO_PROTOCOL.http;
@@ -9,6 +12,7 @@ import static se.bjurr.prnfs.listener.PrnfsRenderer.REPO_PROTOCOL.ssh;
 import static se.bjurr.prnfs.listener.UrlInvoker.urlInvoker;
 import static se.bjurr.prnfs.listener.UrlInvoker.HTTP_METHOD.GET;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -434,12 +438,17 @@ public class PrnfsRenderer {
   this.variables = variables;
  }
 
- public String render(String string) {
+ public String render(String string, Boolean forUrl) {
   for (final PrnfsVariable variable : PrnfsVariable.values()) {
    final String regExpStr = "\\$\\{" + variable.name() + "\\}";
    if (string.contains(regExpStr.replaceAll("\\\\", ""))) {
-    string = string.replaceAll(regExpStr, variable.resolve(pullRequest, pullRequestAction, stashUser,
-      repositoryService, propertiesService, prnfsNotification, variables));
+    try {
+     String resolved = variable.resolve(pullRequest, pullRequestAction, stashUser, repositoryService,
+       propertiesService, prnfsNotification, variables);
+     string = string.replaceAll(regExpStr, forUrl ? encode(resolved, UTF_8.name()) : resolved);
+    } catch (UnsupportedEncodingException e) {
+     propagate(e);
+    }
    }
   }
   return string;
