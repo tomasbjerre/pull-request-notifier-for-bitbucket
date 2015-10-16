@@ -17,6 +17,7 @@
     <component-import key="pluginSettingsFactory" interface="com.atlassian.sal.api.pluginsettings.PluginSettingsFactory" />
     <component-import key="transactionTemplate" interface="com.atlassian.sal.api.transaction.TransactionTemplate" />
     <component-import key="repositoryService" interface="com.atlassian.stash.repository.RepositoryService" />
+    <component-import key="executorService" interface="java.util.concurrent.ExecutorService"/>
 
     <rest key="rest" path="/prnfs-admin" version="1.0">
         <description>Provides REST resources for the admin UI.</description>

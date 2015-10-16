@@ -155,7 +155,7 @@ public class PrnfsTestBuilder {
   configResource = new ConfigResource(userManager, pluginSettingsFactory, transactionTemplate, securityService);
   pullRequestService = mock(PullRequestService.class);
   listener = new PrnfsPullRequestEventListener(pluginSettingsFactory, repositoryService, propertiesService,
-    pullRequestService);
+    pullRequestService, new SyncExecutorService());
   UserService userService = mock(UserService.class);
   withPullRequest(pullRequestEventBuilder().build().getPullRequest());
   manualResouce = new ManualResource(userManager, userService, pluginSettingsFactory, pullRequestService, listener,
