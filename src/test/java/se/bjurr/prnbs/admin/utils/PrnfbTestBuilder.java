@@ -154,7 +154,7 @@ public class PrnfbTestBuilder {
   configResource = new ConfigResource(userManager, pluginSettingsFactory, transactionTemplate, securityService);
   pullRequestService = mock(PullRequestService.class);
   listener = new PrnfbPullRequestEventListener(pluginSettingsFactory, repositoryService, propertiesService,
-    pullRequestService);
+    pullRequestService, new SyncExecutorService());
   UserService userService = mock(UserService.class);
   withPullRequest(pullRequestEventBuilder().build().getPullRequest());
   manualResouce = new ManualResource(userManager, userService, pluginSettingsFactory, pullRequestService, listener,
@@ -295,7 +295,7 @@ public class PrnfbTestBuilder {
 
  public PrnfbTestBuilder trigger(PullRequestEvent event) {
   setInvoker(urlInvoker -> urlInvokers.add(urlInvoker));
-  listener.handleEvent(event);
+  listener.handleEventAsync(event);
   return this;
  }
 

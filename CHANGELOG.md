@@ -2,6 +2,9 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## 2.10
+* Processing events on Bitbucket Server's event threads.
+
 ## 2.9
 * Url encoding evaluated values when they are used in URL invocations.
 

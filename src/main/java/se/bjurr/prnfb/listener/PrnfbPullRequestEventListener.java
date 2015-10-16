@@ -18,6 +18,7 @@ import static se.bjurr.prnfb.listener.UrlInvoker.urlInvoker;
 import static se.bjurr.prnfb.settings.SettingsStorage.getPrnfbSettings;
 
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 import java.util.logging.Logger;
 
 import se.bjurr.prnfb.listener.PrnfbRenderer.PrnfbVariable;
@@ -54,6 +55,7 @@ public class PrnfbPullRequestEventListener {
  private final RepositoryService repositoryService;
  private final ApplicationPropertiesService propertiesService;
  private final PullRequestService pullRequestService;
+ private final ExecutorService executorService;
  private static final Logger logger = getLogger(PrnfbPullRequestEventListener.class.getName());
 
  private static Invoker invoker = urlInvoker -> urlInvoker.invoke();
@@ -64,65 +66,76 @@ public class PrnfbPullRequestEventListener {
  }
 
  public PrnfbPullRequestEventListener(PluginSettingsFactory pluginSettingsFactory, RepositoryService repositoryService,
-   ApplicationPropertiesService propertiesService, PullRequestService pullRequestService) {
+   ApplicationPropertiesService propertiesService, PullRequestService pullRequestService,
+   ExecutorService executorService) {
   this.pluginSettingsFactory = pluginSettingsFactory;
   this.repositoryService = repositoryService;
   this.propertiesService = propertiesService;
   this.pullRequestService = pullRequestService;
+  this.executorService = executorService;
  }
 
  @EventListener
  public void onEvent(PullRequestApprovedEvent e) {
-  handleEvent(e);
+  handleEventAsync(e);
  }
 
  @EventListener
  public void onEvent(PullRequestCommentAddedEvent e) {
-  handleEvent(e);
+  handleEventAsync(e);
  }
 
  @EventListener
  public void onEvent(PullRequestCommentRepliedEvent e) {
-  handleEvent(e);
+  handleEventAsync(e);
  }
 
  @EventListener
  public void onEvent(PullRequestDeclinedEvent e) {
-  handleEvent(e);
+  handleEventAsync(e);
  }
 
  @EventListener
  public void onEvent(PullRequestMergedEvent e) {
-  handleEvent(e);
+  handleEventAsync(e);
  }
 
  @EventListener
  public void onEvent(PullRequestOpenedEvent e) {
-  handleEvent(e);
+  handleEventAsync(e);
  }
 
  @EventListener
  public void onEvent(PullRequestReopenedEvent e) {
-  handleEvent(e);
+  handleEventAsync(e);
  }
 
  @EventListener
  public void onEvent(final PullRequestRescopedEvent e) {
-  handleEvent(e);
+  handleEventAsync(e);
  }
 
  @EventListener
  public void onEvent(PullRequestUnapprovedEvent e) {
-  handleEvent(e);
+  handleEventAsync(e);
  }
 
  @EventListener
  public void onEvent(PullRequestUpdatedEvent e) {
-  handleEvent(e);
+  handleEventAsync(e);
  }
 
  @VisibleForTesting
- public void handleEvent(final PullRequestEvent pullRequestEvent) {
+ public void handleEventAsync(final PullRequestEvent pullRequestEvent) {
+  executorService.execute(new Runnable() {
+   @Override
+   public void run() {
+    handleEvent(pullRequestEvent);
+   }
+  });
+ }
+
+ private void handleEvent(final PullRequestEvent pullRequestEvent) {
   try {
    if (pullRequestEvent.getPullRequest().isClosed() && pullRequestEvent instanceof PullRequestCommentEvent) {
     return;
