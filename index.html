@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Pull-request-notifier-for-bitbucket : Stash plugin that invokes a custom URL when a pull request event is triggered.">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Pull-request-notifier-for-bitbucket</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket">View on GitHub</a>
+
+          <h1 id="project_title">Pull-request-notifier-for-bitbucket</h1>
+          <h2 id="project_tagline">Stash plugin that invokes a custom URL when a pull request event is triggered.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a id="pull-request-notifier-for-bitbucket-" class="anchor" href="#pull-request-notifier-for-bitbucket-" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pull Request Notifier for Bitbucket <a href="https://travis-ci.org/tomasbjerre/pull-request-notifier-for-bitbucket"><img src="https://travis-ci.org/tomasbjerre/pull-request-notifier-for-bitbucket.svg?branch=master" alt="Build Status"></a>
+</h1>
+
+<p>The original use case was to trigger Jenkins jobs to build pull requests that are created in Bitbucket. The plugin can be configured to trigger different Jenkins jobs for different repositories. It can supply custom parameters to the jenkins job using the variables. It can authenticate with HTTP Basic.</p>
+
+<p>It can, for example, trigger a build in Jenkins. Parameterized Jenkins jobs can be triggered remotely via:</p>
+
+<pre><code>http://server/job/theJob/buildWithParameters?token=TOKEN&amp;PARAMETER=Value
+</code></pre>
+
+<p>The plugin can trigger any system, not only Jenkins. The plugin can notify any system that can be notified with a URL.</p>
+
+<p><a href="https://raw.githubusercontent.com/tomasbjerre/pull-request-notifier-for-bitbucket/master/sandbox/all.png">Here</a> is a screenshot of the admin GUI.</p>
+
+<p><a href="http://bjurr.se/building-atlassian-bitbucket-pull-requests-in-jenkins/">Here</a> is a blog post that includes the plugin.</p>
+
+<p>Available in <a href="https://marketplace.atlassian.com/plugins/se.bjurr.prnfs.pull-request-notifier-for-stash">Atlassian Marketplace</a>.</p>
+
+<h2>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h2>
+
+<p>The Pull Request Notifier for Bitbucket can:</p>
+
+<ul>
+<li>Invoke any URL, or set of URL:s, when a pull request event happens.
+
+<ul>
+<li>With variables available to add necessary parameters.</li>
+<li>HTTP POST, PUT, GET and DELETE. POST and PUT also supports rendered post content. </li>
+</ul>
+</li>
+<li>Be configured to trigger on any <a href="https://developer.atlassian.com/static/javadoc/bitbucket/4.0.0/api/reference/com/atlassian/bitbucket/event/pull/package-summary.html">pull request event</a>. Including extended events:
+
+<ul>
+<li>RESCOPED_FROM, when source branch change</li>
+<li>RESCOPED_TO, when target branch change</li>
+<li>BUTTON_TRIGGER, when trigger button in pull request view is pressed</li>
+</ul>
+</li>
+<li>Can invoke CSRF protected systems, using the ${INJECTION_URL_VALUE} variable. How to to that with Jenkins is described below.</li>
+<li>Be configured to only trigger if the pull request mathches a filter. A filter text is constructed with any combination of the variables and then a regexp is constructed to match that text.</li>
+<li>Add buttons to pull request view in Bitbucket. And map those buttons to URL invocations. This can be done by setting the filter string to ${BUTTON_TRIGGER_TITLE} and the filter regexp to title of button.</li>
+<li>Authenticate with HTTP basic authentication.</li>
+<li>Send custom HTTP headers</li>
+<li>Can optionally use proxy to connect</li>
+<li>Can let users and/or admins do configuration. Or restrict configuration to just system admins. A user will have to browse to the configuration page at <code>http://domain/bitbucket/plugins/servlet/prnfb/admin</code>.</li>
+<li>Can enable trigger
+
+<ul>
+<li>If PR has, or has no, conflicts</li>
+<li>Only if PR has conflicts</li>
+<li>Only if PR has no conflicts</li>
+</ul>
+</li>
+</ul>
+
+<p>The plugin has its own implementation to create the RESCOPED_FROM and RESCOPED_TO events. RESCOPED is transformed to RESCOPED_TO if target branch changed, RESCOPED_FROM if source branch, or both, changed.</p>
+
+<p>The filter text as well as the URL support variables. These are:</p>
+
+<ul>
+<li>${PULL_REQUEST_ID} Example: 1</li>
+<li>${PULL_REQUEST_TITLE} Example: Anything</li>
+<li>${PULL_REQUEST_VERSION} Example: 1</li>
+<li>${PULL_REQUEST_COMMENT_TEXT} Example: A comment</li>
+<li>${PULL_REQUEST_ACTION} Example: OPENED</li>
+<li>${BUTTON_TRIGGER_TITLE} Example: Trigger Notification</li>
+<li>${INJECTION_URL_VALUE} Value retrieved from any URL</li>
+<li>${PULL_REQUEST_URL} Example: http://localhost:7990/projects/PROJECT_1/repos/rep_1/pull-requests/1</li>
+<li>${PULL_REQUEST_USER_DISPLAY_NAME} Example: Some User</li>
+<li>${PULL_REQUEST_USER_EMAIL_ADDRESS} Example: <a href="mailto:some.user@bitbucket.domain">some.user@bitbucket.domain</a>
+</li>
+<li>${PULL_REQUEST_USER_ID} Example: 1</li>
+<li>${PULL_REQUEST_USER_NAME} Example: user.name</li>
+<li>${PULL_REQUEST_USER_SLUG} Example: user.name</li>
+<li>${PULL_REQUEST_AUTHOR_DISPLAY_NAME} Example: Administrator</li>
+<li>${PULL_REQUEST_AUTHOR_EMAIL} Example: <a href="mailto:admin@example.com">admin@example.com</a>
+</li>
+<li>${PULL_REQUEST_AUTHOR_ID} Example: 1</li>
+<li>${PULL_REQUEST_AUTHOR_NAME} Example: admin</li>
+<li>${PULL_REQUEST_AUTHOR_SLUG} Example: admin</li>
+<li>${PULL_REQUEST_REVIEWERS_APPROVED_COUNT} Number of reviewers that approved the PR.</li>
+<li>${PULL_REQUEST_PARTICIPANTS_APPROVED_COUNT} Number of participants that approved the PR.</li>
+<li>${PULL_REQUEST_MERGE_COMMIT} Hash of merged commit (only available for merged-event).</li>
+<li>${PULL_REQUEST_FROM_SSH_CLONE_URL} Example: ssh://git@localhost:7999/project_1/rep_1</li>
+<li>${PULL_REQUEST_FROM_HTTP_CLONE_URL} Example: http://admin@localhost:7990/bitbucket/scm/project_1/rep_1.git</li>
+<li>${PULL_REQUEST_FROM_HASH} Example: 6053a1eaa1c009dd11092d09a72f3c41af1b59ad</li>
+<li>${PULL_REQUEST_FROM_ID} Example: refs/heads/branchmodmerge</li>
+<li>${PULL_REQUEST_FROM_BRANCH} Example: branchmodmerge</li>
+<li>${PULL_REQUEST_FROM_REPO_ID} Example: 1</li>
+<li>${PULL_REQUEST_FROM_REPO_NAME} Example: rep_1</li>
+<li>${PULL_REQUEST_FROM_REPO_PROJECT_ID} Example: 1</li>
+<li>${PULL_REQUEST_FROM_REPO_PROJECT_KEY} Example: PROJECT_1</li>
+<li>${PULL_REQUEST_FROM_REPO_SLUG} Example: rep_1</li>
+<li>And same variables for TO, like: ${PULL_REQUEST_TO_HASH}</li>
+</ul>
+
+<p>The ${PULL_REQUEST_USER...} contains information about the user who issued the event. Who commented it, who rejected it, who approved it...</p>
+
+<p>You may want to use <a href="https://wiki.jenkins-ci.org/display/JENKINS/Violation+Comments+to+Stash+Plugin">Violation Comments to Stash plugin</a> and/or <a href="https://wiki.jenkins-ci.org/display/JENKINS/StashNotifier+Plugin">StashNotifier plugin</a> to report results back to Bitbucket.</p>
+
+<h3>
+<a id="jenkins" class="anchor" href="#jenkins" aria-hidden="true"><span class="octicon octicon-link"></span></a>Jenkins</h3>
+
+<p>Parameterized Jenkins jobs can be triggered remotely via:</p>
+
+<pre><code>http://server/job/theJob/buildWithParameters?token=TOKEN&amp;PARAMETER=Value
+</code></pre>
+
+<p>If you are using a CSRF protection in Jenkins, you can use the <strong>Injection URL</strong> feature.</p>
+
+<ul>
+<li>Set <strong>Injection URL</strong> field to <code>http://JENKINS/crumbIssuer/api/xml?xpath=//crumb/text()</code>. You may get an error like <em>primitive XPath result sets forbidden; implement jenkins.security.SecureRequester</em>. If so, you can set Injection URL to <code>http://JENKINS/crumbIssuer/api/xml?xpath=//crumb</code> in combination with regular expression <code>&lt;crumb&gt;([^&lt;]*)&lt;/crumb&gt;</code>. Or a third option is to checkout <a href="https://wiki.jenkins-ci.org/display/JENKINS/Secure+Requester+Whitelist+Plugin">this</a> Jenkins plugin.</li>
+<li>In the headers section, set header <strong>.crumb</strong> with value <strong>${INJECTION_URL_VALUE}</strong>.</li>
+</ul>
+
+<h2>
+<a id="developer-instructions" class="anchor" href="#developer-instructions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Developer instructions</h2>
+
+<p>Prerequisites:</p>
+
+<ul>
+<li>Atlas SDK <a href="https://developer.atlassian.com/docs/getting-started/set-up-the-atlassian-plugin-sdk-and-build-a-project">(installation instructions)</a>.</li>
+<li>JDK 1.7 or newer</li>
+</ul>
+
+<p>Generate Eclipse project:</p>
+
+<pre><code>atlas-compile eclipse:eclipse
+</code></pre>
+
+<p>Package the plugin:</p>
+
+<pre><code>atlas-package
+</code></pre>
+
+<p>Run Bitbucket, with the plugin, on localhost:</p>
+
+<pre><code>export MAVEN_OPTS=-Dplugin.resource.directories=`pwd`/src/main/resources
+mvn bitbucket:run
+</code></pre>
+
+<p>You can also debug with:</p>
+
+<pre><code>mvn bitbucket:debug
+</code></pre>
+
+<p>Make a release <a href="https://developer.atlassian.com/docs/common-coding-tasks/development-cycle/packaging-and-releasing-your-plugin">(detailed instructions)</a>:</p>
+
+<pre><code>mvn release:prepare
+mvn release:perform
+</code></pre>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Pull-request-notifier-for-bitbucket maintained by <a href="https://github.com/tomasbjerre">tomasbjerre</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
