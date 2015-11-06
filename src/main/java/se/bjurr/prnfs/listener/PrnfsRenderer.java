@@ -380,8 +380,9 @@ public class PrnfsRenderer {
   }
 
   private static String getPullRequestUrl(ApplicationPropertiesService propertiesService, PullRequest pullRequest) {
-   return propertiesService.getBaseUrl() + "/projects/" + pullRequest.getToRef().getRepository().getProject().getKey()
-     + "/repos/" + pullRequest.getToRef().getRepository().getName() + "/pull-requests/" + pullRequest.getId();
+   return (propertiesService.getBaseUrl() + "/projects/" + pullRequest.getToRef().getRepository().getProject().getKey()
+     + "/repos/" + pullRequest.getToRef().getRepository().getName() + "/pull-requests/" + pullRequest.getId())
+     .replaceAll(" ", "-");
   }
 
   PrnfsVariable(Resolver resolver) {

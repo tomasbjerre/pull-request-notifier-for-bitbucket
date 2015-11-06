@@ -2,6 +2,9 @@
 
 Changelog of Pull Request Notifier for Stash.
 
+## 1.36
+* Bugfix: Replacing spaces with dashes in ${PULL_REQUEST_URL}. Was evaluating to wrong URL if repo name included spaces.
+
 ## 1.35
 * Processing events on Bitbucket Server's event threads
 
