@@ -1,4 +1,4 @@
-package se.bjurr.prnbs.admin.utils;
+package se.bjurr.prnbb.admin.utils;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

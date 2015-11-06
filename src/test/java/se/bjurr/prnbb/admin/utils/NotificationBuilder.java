@@ -1,4 +1,4 @@
-package se.bjurr.prnbs.admin.utils;
+package se.bjurr.prnbb.admin.utils;
 
 import static se.bjurr.prnfb.admin.AdminFormValues.NAME;
 import static se.bjurr.prnfb.admin.AdminFormValues.VALUE;

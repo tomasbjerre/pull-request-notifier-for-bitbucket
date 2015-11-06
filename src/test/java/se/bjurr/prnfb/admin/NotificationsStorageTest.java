@@ -1,8 +1,8 @@
 package se.bjurr.prnfb.admin;
 
 import static com.atlassian.bitbucket.pull.PullRequestAction.OPENED;
-import static se.bjurr.prnbs.admin.utils.NotificationBuilder.notificationBuilder;
-import static se.bjurr.prnbs.admin.utils.PrnfbTestBuilder.prnfbTestBuilder;
+import static se.bjurr.prnbb.admin.utils.NotificationBuilder.notificationBuilder;
+import static se.bjurr.prnbb.admin.utils.PrnfbTestBuilder.prnfbTestBuilder;
 import static se.bjurr.prnfb.admin.AdminFormValues.DEFAULT_NAME;
 import static se.bjurr.prnfb.admin.AdminFormValues.FIELDS.FORM_IDENTIFIER;
 import static se.bjurr.prnfb.admin.AdminFormValues.FIELDS.events;

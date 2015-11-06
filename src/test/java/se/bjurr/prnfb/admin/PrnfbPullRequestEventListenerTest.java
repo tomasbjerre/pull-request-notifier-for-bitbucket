@@ -17,13 +17,13 @@ import static java.util.Collections.sort;
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static se.bjurr.prnbs.admin.utils.NotificationBuilder.notificationBuilder;
-import static se.bjurr.prnbs.admin.utils.PrnfbParticipantBuilder.prnfbParticipantBuilder;
-import static se.bjurr.prnbs.admin.utils.PrnfbTestBuilder.prnfbTestBuilder;
-import static se.bjurr.prnbs.admin.utils.PullRequestEventBuilder.PREVIOUS_FROM_HASH;
-import static se.bjurr.prnbs.admin.utils.PullRequestEventBuilder.PREVIOUS_TO_HASH;
-import static se.bjurr.prnbs.admin.utils.PullRequestEventBuilder.pullRequestEventBuilder;
-import static se.bjurr.prnbs.admin.utils.PullRequestRefBuilder.pullRequestRefBuilder;
+import static se.bjurr.prnbb.admin.utils.NotificationBuilder.notificationBuilder;
+import static se.bjurr.prnbb.admin.utils.PrnfbParticipantBuilder.prnfbParticipantBuilder;
+import static se.bjurr.prnbb.admin.utils.PrnfbTestBuilder.prnfbTestBuilder;
+import static se.bjurr.prnbb.admin.utils.PullRequestEventBuilder.PREVIOUS_FROM_HASH;
+import static se.bjurr.prnbb.admin.utils.PullRequestEventBuilder.PREVIOUS_TO_HASH;
+import static se.bjurr.prnbb.admin.utils.PullRequestEventBuilder.pullRequestEventBuilder;
+import static se.bjurr.prnbb.admin.utils.PullRequestRefBuilder.pullRequestRefBuilder;
 import static se.bjurr.prnfb.admin.AdminFormValues.BUTTON_VISIBILITY.EVERYONE;
 import static se.bjurr.prnfb.admin.AdminFormValues.FIELDS.FORM_IDENTIFIER;
 import static se.bjurr.prnfb.admin.AdminFormValues.FIELDS.FORM_TYPE;
@@ -83,9 +83,9 @@ import java.util.regex.Pattern;
 
 import org.junit.Test;
 
-import se.bjurr.prnbs.admin.utils.PrnfbTestBuilder;
-import se.bjurr.prnbs.admin.utils.PullRequestEventBuilder;
-import se.bjurr.prnbs.admin.utils.PullRequestRefBuilder;
+import se.bjurr.prnbb.admin.utils.PrnfbTestBuilder;
+import se.bjurr.prnbb.admin.utils.PullRequestEventBuilder;
+import se.bjurr.prnbb.admin.utils.PullRequestRefBuilder;
 import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
 import se.bjurr.prnfb.listener.PrnfbRenderer.PrnfbVariable;
 
@@ -410,7 +410,7 @@ public class PrnfbPullRequestEventListenerTest {
         .withToRef( //
           pullRequestRefBuilder() //
             .withProjectKey("theProject") //
-            .withRepositoryName("theRepoName") //
+            .withRepositoryName("the Repo Name") //
         ) //
         .withPullRequestAction(OPENED) //
         .withAuthor( //
@@ -426,7 +426,7 @@ public class PrnfbPullRequestEventListenerTest {
     ) //
     .invokedUrl(
       0,
-      "http://bjurr.se/id=10&action=OPENED&displayName=authorDisplayName&authorEmail=authorEmail&authorId=100&authorName=authorName&authorSlug=authorSlug&pullRequestUrl=http%3A%2F%2Fbitbucket.server%2Fprojects%2FtheProject%2Frepos%2FtheRepoName%2Fpull-requests%2F10" //
+      "http://bjurr.se/id=10&action=OPENED&displayName=authorDisplayName&authorEmail=authorEmail&authorId=100&authorName=authorName&authorSlug=authorSlug&pullRequestUrl=http%3A%2F%2Fbitbucket.server%2Fprojects%2FtheProject%2Frepos%2Fthe-Repo-Name%2Fpull-requests%2F10" //
     );
  }
 
