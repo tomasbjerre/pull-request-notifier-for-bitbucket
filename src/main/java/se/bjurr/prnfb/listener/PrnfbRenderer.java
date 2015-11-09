@@ -54,7 +54,7 @@ public class PrnfbRenderer {
   PULL_REQUEST_FROM_HASH(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     return pullRequest.getFromRef().getLatestCommit();
@@ -62,7 +62,7 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_FROM_ID(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     return pullRequest.getFromRef().getId();
@@ -70,7 +70,7 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_FROM_BRANCH(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     return pullRequest.getFromRef().getDisplayId();
@@ -78,7 +78,7 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_FROM_REPO_ID(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     return pullRequest.getFromRef().getRepository().getId() + "";
@@ -86,7 +86,7 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_FROM_REPO_NAME(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     return pullRequest.getFromRef().getRepository().getName() + "";
@@ -94,7 +94,7 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_FROM_REPO_PROJECT_ID(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     return pullRequest.getFromRef().getRepository().getProject().getId() + "";
@@ -102,7 +102,7 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_FROM_REPO_PROJECT_KEY(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     return pullRequest.getFromRef().getRepository().getProject().getKey();
@@ -110,7 +110,7 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_FROM_REPO_SLUG(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     return pullRequest.getFromRef().getRepository().getSlug() + "";
@@ -118,7 +118,7 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_FROM_SSH_CLONE_URL(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     return cloneUrlFromRepository(ssh, pullRequest.getFromRef().getRepository(), repositoryService);
@@ -126,7 +126,7 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_FROM_HTTP_CLONE_URL(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     return cloneUrlFromRepository(http, pullRequest.getFromRef().getRepository(), repositoryService);
@@ -134,7 +134,7 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_ACTION(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     return prnfbPullRequestAction.getName();
@@ -142,7 +142,7 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_URL(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     return getPullRequestUrl(propertiesService, pullRequest);
@@ -150,7 +150,7 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_ID(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     return pullRequest.getId() + "";
@@ -158,7 +158,7 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_VERSION(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     return pullRequest.getVersion() + "";
@@ -166,7 +166,7 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_AUTHOR_ID(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     return pullRequest.getAuthor().getUser().getId() + "";
@@ -174,7 +174,7 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_AUTHOR_DISPLAY_NAME(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     return pullRequest.getAuthor().getUser().getDisplayName();
@@ -182,7 +182,7 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_AUTHOR_NAME(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     return pullRequest.getAuthor().getUser().getName();
@@ -190,7 +190,7 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_AUTHOR_EMAIL(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     return pullRequest.getAuthor().getUser().getEmailAddress();
@@ -198,7 +198,7 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_AUTHOR_SLUG(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     return pullRequest.getAuthor().getUser().getSlug();
@@ -206,7 +206,7 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_TO_HASH(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     return pullRequest.getToRef().getLatestCommit();
@@ -214,7 +214,7 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_TO_ID(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     return pullRequest.getToRef().getId();
@@ -222,7 +222,7 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_TO_BRANCH(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     return pullRequest.getToRef().getDisplayId();
@@ -230,7 +230,7 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_TO_REPO_ID(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     return pullRequest.getToRef().getRepository().getId() + "";
@@ -238,7 +238,7 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_TO_REPO_NAME(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     return pullRequest.getToRef().getRepository().getName() + "";
@@ -246,7 +246,7 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_TO_REPO_PROJECT_ID(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     return pullRequest.getToRef().getRepository().getProject().getId() + "";
@@ -254,7 +254,7 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_TO_REPO_PROJECT_KEY(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     return pullRequest.getToRef().getRepository().getProject().getKey();
@@ -262,7 +262,7 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_TO_REPO_SLUG(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     return pullRequest.getToRef().getRepository().getSlug() + "";
@@ -270,7 +270,7 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_TO_SSH_CLONE_URL(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     return cloneUrlFromRepository(ssh, pullRequest.getToRef().getRepository(), repositoryService);
@@ -278,7 +278,7 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_TO_HTTP_CLONE_URL(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     return cloneUrlFromRepository(http, pullRequest.getToRef().getRepository(), repositoryService);
@@ -286,7 +286,7 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_COMMENT_TEXT(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     return getOrEmpty(variables, PULL_REQUEST_COMMENT_TEXT);
@@ -301,47 +301,47 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_USER_DISPLAY_NAME(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
-    return ApplicationUser.getDisplayName();
+    return applicationUser.getDisplayName();
    }
   }), PULL_REQUEST_USER_EMAIL_ADDRESS(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
-    return ApplicationUser.getEmailAddress();
+    return applicationUser.getEmailAddress();
    }
   }), PULL_REQUEST_USER_ID(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
-    return ApplicationUser.getId() + "";
+    return applicationUser.getId() + "";
    }
   }), PULL_REQUEST_USER_NAME(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
-    return ApplicationUser.getName();
+    return applicationUser.getName();
    }
   }), PULL_REQUEST_USER_SLUG(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
-    return ApplicationUser.getSlug();
+    return applicationUser.getSlug();
    }
   }), BUTTON_TRIGGER_TITLE(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     return getOrEmpty(variables, BUTTON_TRIGGER_TITLE);
@@ -349,7 +349,7 @@ public class PrnfbRenderer {
   }), INJECTION_URL_VALUE(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbRenderer.PrnfbVariable, Supplier<String>> variables) {
     if (!prnfbNotification.getInjectionUrl().isPresent()) {
@@ -379,7 +379,7 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_TITLE(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbVariable, Supplier<String>> variables) {
     return pullRequest.getTitle();
@@ -387,7 +387,7 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_REVIEWERS_APPROVED_COUNT(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbVariable, Supplier<String>> variables) {
     return Integer.toString(newArrayList(filter(pullRequest.getReviewers(), isApproved)).size());
@@ -395,7 +395,7 @@ public class PrnfbRenderer {
   }), PULL_REQUEST_PARTICIPANTS_APPROVED_COUNT(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction,
-     ApplicationUser ApplicationUser, RepositoryService repositoryService,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbVariable, Supplier<String>> variables) {
     return Integer.toString(newArrayList(filter(pullRequest.getParticipants(), isApproved)).size());
@@ -430,10 +430,10 @@ public class PrnfbRenderer {
   }
 
   public String resolve(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction,
-    ApplicationUser ApplicationUser, RepositoryService repositoryService,
+    ApplicationUser applicationUser, RepositoryService repositoryService,
     ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
     Map<PrnfbVariable, Supplier<String>> variables) {
-   return resolver.resolve(pullRequest, pullRequestAction, ApplicationUser, repositoryService, propertiesService,
+   return resolver.resolve(pullRequest, pullRequestAction, applicationUser, repositoryService, propertiesService,
      prnfbNotification, variables);
   }
 
@@ -446,7 +446,7 @@ public class PrnfbRenderer {
  }
 
  public interface Resolver {
-  String resolve(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction, ApplicationUser ApplicationUser,
+  String resolve(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction, ApplicationUser applicationUser,
     RepositoryService repositoryService, ApplicationPropertiesService propertiesService,
     PrnfbNotification prnfbNotification, Map<PrnfbVariable, Supplier<String>> variables);
  }
@@ -455,7 +455,7 @@ public class PrnfbRenderer {
  private final PrnfbNotification prnfbNotification;
  private final PullRequest pullRequest;
  private final PrnfbPullRequestAction pullRequestAction;
- private final ApplicationUser ApplicationUser;
+ private final ApplicationUser applicationUser;
  private final ApplicationPropertiesService propertiesService;
  /**
   * Contains special variables that are only available for specific events like
@@ -469,12 +469,12 @@ public class PrnfbRenderer {
   *         {@link #variables}
   */
  public PrnfbRenderer(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction,
-   ApplicationUser ApplicationUser, RepositoryService repositoryService,
+   ApplicationUser applicationUser, RepositoryService repositoryService,
    ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
    Map<PrnfbVariable, Supplier<String>> variables) {
   this.pullRequest = pullRequest;
   this.pullRequestAction = pullRequestAction;
-  this.ApplicationUser = ApplicationUser;
+  this.applicationUser = applicationUser;
   this.repositoryService = repositoryService;
   this.prnfbNotification = prnfbNotification;
   this.propertiesService = propertiesService;
@@ -486,7 +486,7 @@ public class PrnfbRenderer {
    final String regExpStr = "\\$\\{" + variable.name() + "\\}";
    if (string.contains(regExpStr.replaceAll("\\\\", ""))) {
     try {
-     String resolved = variable.resolve(pullRequest, pullRequestAction, ApplicationUser, repositoryService,
+     String resolved = variable.resolve(pullRequest, pullRequestAction, applicationUser, repositoryService,
        propertiesService, prnfbNotification, variables);
      string = string.replaceAll(regExpStr, forUrl ? encode(resolved, UTF_8.name()) : resolved);
     } catch (UnsupportedEncodingException e) {
