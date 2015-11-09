@@ -414,6 +414,7 @@ public class PrnfsPullRequestEventListenerTest {
           pullRequestRefBuilder() //
             .withProjectKey("theProject") //
             .withRepositoryName("the Repo Name") //
+            .withRepositorySlug("the-repo-name") //
         ) //
         .withPullRequestAction(OPENED) //
         .withAuthor( //
@@ -429,7 +430,7 @@ public class PrnfsPullRequestEventListenerTest {
     ) //
     .invokedUrl(
       0,
-      "http://bjurr.se/id=10&action=OPENED&displayName=authorDisplayName&authorEmail=authorEmail&authorId=100&authorName=authorName&authorSlug=authorSlug&pullRequestUrl=http%3A%2F%2Fstash.server%2Fprojects%2FtheProject%2Frepos%2Fthe-Repo-Name%2Fpull-requests%2F10" //
+      "http://bjurr.se/id=10&action=OPENED&displayName=authorDisplayName&authorEmail=authorEmail&authorId=100&authorName=authorName&authorSlug=authorSlug&pullRequestUrl=http%3A%2F%2Fstash.server%2Fprojects%2FtheProject%2Frepos%2Fthe-repo-name%2Fpull-requests%2F10" //
     );
  }
 
