@@ -2,6 +2,9 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## 2.12
+* Fixing PULL_REQUEST_URL-bug correctly with getSlug.
+
 ## 2.11
 * Bugfix: Replacing spaces with dashes in ${PULL_REQUEST_URL}. Was evaluating to wrong URL if repo name included spaces.
 
