@@ -1,4 +1,4 @@
-package se.bjurr.prnbb.admin.utils;
+package se.bjurr.prnb.admin.utils;
 
 import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.base.Throwables.propagate;
@@ -17,7 +17,7 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static se.bjurr.prnbb.admin.utils.PullRequestEventBuilder.pullRequestEventBuilder;
+import static se.bjurr.prnb.admin.utils.PullRequestEventBuilder.pullRequestEventBuilder;
 import static se.bjurr.prnfb.admin.AdminFormValues.NAME;
 import static se.bjurr.prnfb.admin.AdminFormValues.VALUE;
 import static se.bjurr.prnfb.admin.AdminFormValues.FIELDS.FORM_IDENTIFIER;
@@ -37,7 +37,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.mockito.Matchers;
 
-import se.bjurr.prnbb.admin.data.PluginSettingsImpl;
+import se.bjurr.prnb.admin.data.PluginSettingsImpl;
 import se.bjurr.prnfb.ManualResource;
 import se.bjurr.prnfb.admin.AdminFormError;
 import se.bjurr.prnfb.admin.AdminFormValues;

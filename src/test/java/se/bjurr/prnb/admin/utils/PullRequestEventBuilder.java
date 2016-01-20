@@ -1,4 +1,4 @@
-package se.bjurr.prnbb.admin.utils;
+package se.bjurr.prnb.admin.utils;
 
 import static com.atlassian.bitbucket.pull.PullRequestAction.COMMENTED;
 import static com.atlassian.bitbucket.pull.PullRequestAction.RESCOPED;
@@ -7,7 +7,7 @@ import static com.google.common.collect.Sets.newHashSet;
 import static java.lang.Boolean.TRUE;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static se.bjurr.prnbb.admin.utils.PullRequestRefBuilder.pullRequestRefBuilder;
+import static se.bjurr.prnb.admin.utils.PullRequestRefBuilder.pullRequestRefBuilder;
 
 import java.util.Set;
 

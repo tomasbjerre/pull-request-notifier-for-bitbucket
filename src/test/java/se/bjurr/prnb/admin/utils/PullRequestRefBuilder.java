@@ -1,4 +1,4 @@
-package se.bjurr.prnbb.admin.utils;
+package se.bjurr.prnb.admin.utils;
 
 import static com.google.common.collect.Sets.newHashSet;
 import static org.mockito.Mockito.when;

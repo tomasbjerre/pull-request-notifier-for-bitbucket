@@ -17,13 +17,13 @@ import static java.util.Collections.sort;
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static se.bjurr.prnbb.admin.utils.NotificationBuilder.notificationBuilder;
-import static se.bjurr.prnbb.admin.utils.PrnfbParticipantBuilder.prnfbParticipantBuilder;
-import static se.bjurr.prnbb.admin.utils.PrnfbTestBuilder.prnfbTestBuilder;
-import static se.bjurr.prnbb.admin.utils.PullRequestEventBuilder.PREVIOUS_FROM_HASH;
-import static se.bjurr.prnbb.admin.utils.PullRequestEventBuilder.PREVIOUS_TO_HASH;
-import static se.bjurr.prnbb.admin.utils.PullRequestEventBuilder.pullRequestEventBuilder;
-import static se.bjurr.prnbb.admin.utils.PullRequestRefBuilder.pullRequestRefBuilder;
+import static se.bjurr.prnb.admin.utils.NotificationBuilder.notificationBuilder;
+import static se.bjurr.prnb.admin.utils.PrnfbParticipantBuilder.prnfbParticipantBuilder;
+import static se.bjurr.prnb.admin.utils.PrnfbTestBuilder.prnfbTestBuilder;
+import static se.bjurr.prnb.admin.utils.PullRequestEventBuilder.PREVIOUS_FROM_HASH;
+import static se.bjurr.prnb.admin.utils.PullRequestEventBuilder.PREVIOUS_TO_HASH;
+import static se.bjurr.prnb.admin.utils.PullRequestEventBuilder.pullRequestEventBuilder;
+import static se.bjurr.prnb.admin.utils.PullRequestRefBuilder.pullRequestRefBuilder;
 import static se.bjurr.prnfb.admin.AdminFormValues.BUTTON_VISIBILITY.EVERYONE;
 import static se.bjurr.prnfb.admin.AdminFormValues.FIELDS.FORM_IDENTIFIER;
 import static se.bjurr.prnfb.admin.AdminFormValues.FIELDS.FORM_TYPE;
@@ -83,9 +83,9 @@ import java.util.regex.Pattern;
 
 import org.junit.Test;
 
-import se.bjurr.prnbb.admin.utils.PrnfbTestBuilder;
-import se.bjurr.prnbb.admin.utils.PullRequestEventBuilder;
-import se.bjurr.prnbb.admin.utils.PullRequestRefBuilder;
+import se.bjurr.prnb.admin.utils.PrnfbTestBuilder;
+import se.bjurr.prnb.admin.utils.PullRequestEventBuilder;
+import se.bjurr.prnb.admin.utils.PullRequestRefBuilder;
 import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
 import se.bjurr.prnfb.listener.PrnfbRenderer.PrnfbVariable;
 

@@ -1,4 +1,4 @@
-package se.bjurr.prnbb.admin.utils;
+package se.bjurr.prnb.admin.utils;
 
 import java.util.Collection;
 import java.util.List;

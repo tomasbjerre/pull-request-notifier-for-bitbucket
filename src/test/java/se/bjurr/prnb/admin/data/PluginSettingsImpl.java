@@ -1,4 +1,4 @@
-package se.bjurr.prnbb.admin.data;
+package se.bjurr.prnb.admin.data;
 
 import static com.google.common.collect.Maps.newTreeMap;
 
