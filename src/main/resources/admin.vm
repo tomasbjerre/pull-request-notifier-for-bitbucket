@@ -22,6 +22,20 @@
       </div>
       <div>
         <fieldset>
+          <legend>SSL</legend>
+          <input type="checkbox" name="accept_any_certificate">
+          <label for="accept_any_certificate">Accept any certificate</label><br>
+
+          <p>
+           Custom <a href="https://docs.oracle.com/javase/8/docs/api/java/security/KeyStore.html" target="_blank">KeyStore</a> configuration is optional.
+          </p>
+          <label>Path<input type="text" name="key_store"></label>
+          <label>Type<input type="text" name="key_store_type"></label>
+          <label>Password<input type="password" name="key_store_password"></label>
+        </fieldset>
+      </div>
+      <div>
+        <fieldset>
           <input type="button" name="save" value="Save"/>
           <span class="post"></span>
         </fieldset>

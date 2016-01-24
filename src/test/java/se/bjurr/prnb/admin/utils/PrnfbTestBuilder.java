@@ -9,6 +9,7 @@ import static com.google.common.collect.Maps.newTreeMap;
 import static com.google.common.collect.Maps.uniqueIndex;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -21,8 +22,8 @@ import static se.bjurr.prnb.admin.utils.PullRequestEventBuilder.pullRequestEvent
 import static se.bjurr.prnfb.admin.AdminFormValues.NAME;
 import static se.bjurr.prnfb.admin.AdminFormValues.VALUE;
 import static se.bjurr.prnfb.admin.AdminFormValues.FIELDS.FORM_IDENTIFIER;
+import static se.bjurr.prnfb.http.UrlInvoker.getHeaderValue;
 import static se.bjurr.prnfb.listener.PrnfbPullRequestEventListener.setInvoker;
-import static se.bjurr.prnfb.listener.UrlInvoker.getHeaderValue;
 import static se.bjurr.prnfb.settings.PrnfbPredicates.predicate;
 import static se.bjurr.prnfb.settings.SettingsStorage.fakeRandom;
 import static se.bjurr.prnfb.settings.SettingsStorage.getPrnfbSettings;
@@ -41,14 +42,17 @@ import se.bjurr.prnb.admin.data.PluginSettingsImpl;
 import se.bjurr.prnfb.ManualResource;
 import se.bjurr.prnfb.admin.AdminFormError;
 import se.bjurr.prnfb.admin.AdminFormValues;
+import se.bjurr.prnfb.admin.AdminFormValues.FIELDS;
+import se.bjurr.prnfb.admin.AdminFormValues.FORM_TYPE;
 import se.bjurr.prnfb.admin.ConfigResource;
+import se.bjurr.prnfb.http.UrlInvoker;
+import se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD;
 import se.bjurr.prnfb.listener.PrnfbPullRequestEventListener;
 import se.bjurr.prnfb.listener.PrnfbRenderer;
-import se.bjurr.prnfb.listener.UrlInvoker;
-import se.bjurr.prnfb.listener.UrlInvoker.HTTP_METHOD;
 import se.bjurr.prnfb.settings.Header;
 import se.bjurr.prnfb.settings.PrnfbButton;
 import se.bjurr.prnfb.settings.PrnfbSettings;
+import se.bjurr.prnfb.settings.SettingsStorage;
 
 import com.atlassian.bitbucket.event.pull.PullRequestEvent;
 import com.atlassian.bitbucket.permission.Permission;
@@ -239,6 +243,13 @@ public class PrnfbTestBuilder {
   fail(field + " " + value + " not found");
  }
 
+ public PrnfbTestBuilder hasNoValidationErrors() {
+  for (final AdminFormError e : postResponses) {
+   fail(e.toString());
+  }
+  return this;
+ }
+
  public PrnfbTestBuilder invokedNoUrl() {
   assertEquals(0, urlInvokers.size());
   return this;
@@ -389,7 +400,7 @@ public class PrnfbTestBuilder {
  }
 
  public PrnfbTestBuilder usedProxyPort(int index, Integer port) {
-  assertEquals(port, urlInvokers.get(index).getProxyPort());
+  assertEquals(port, urlInvokers.get(index).getProxyPort().get());
   return this;
  }
 
@@ -431,5 +442,26 @@ public class PrnfbTestBuilder {
   when(value.isConflicted()).thenReturn(conflicting);
   when(pullRequestService.canMerge(anyInt(), anyInt())).thenReturn(value);
   return this;
+ }
+
+ public PrnfbTestBuilder allowedAnyCertificate(boolean should) {
+  for (int i = 0; i < urlInvokers.size(); i++) {
+   assertThat(urlInvokers.get(i).shouldAcceptAnyCertificate()).isEqualTo(should);
+  }
+  return this;
+ }
+
+ public PrnfbTestBuilder hasFieldValueAt(FORM_TYPE formType, FIELDS field, String value) {
+  AdminFormValues globalForm = adminFormValuesMap.get(formType.name());
+  for (Map<String, String> p : globalForm) {
+   if (p.get(NAME).equals(field.name()) && p.get(VALUE).equals(value)) {
+    return this;
+   }
+  }
+  throw new AssertionError("Could not find " + field + " with value " + value);
+ }
+
+ public PrnfbSettings prnfbSettings() throws Exception {
+  return SettingsStorage.getPrnfbSettings(pluginSettings);
  }
 }

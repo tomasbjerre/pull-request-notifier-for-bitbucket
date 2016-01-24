@@ -2,6 +2,10 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## 2.13
+* Allowing SSL certificates to be ignored.
+* Adding settings to configure custom keystore.
+
 ## 2.12
 * Fixing PULL_REQUEST_URL-bug correctly with getSlug.
 
@@ -46,9 +50,10 @@ These can be used to, for example, show a trigger button only if there are non-z
 * Bugfix: Adding Basic Auth headers to injection url request.
 
 ## 2.0
-* Migrated from Stash 3 to Bitbucket 4.
- * The release of Bitbucket 4.0 (2015-09-22) broke all backwards compatibility and made it more ore less impossible to maintain a version that is compatible with both Stash 3.x and Bitbucket 4.x. That is why this plugin changed name and started over with a 1.0 release.
- * Changed name from Pull Request Notifier for Stash to Pull Request Notifier for Bitbucket
+* Migrated from Stash 3 to Bitbucket Server 4.
+ * The release of Bitbucket Server 4.0 (2015-09-22) broke all backwards compatibility and made it more or less impossible to maintain a version that is compatible with both Stash 3.x and Bitbucket Server 4.x. That is why this plugin changed name in 2.0 release.
+ * Changed name from Pull Request Notifier for Stash to Pull Request Notifier for Bitbucket.
+ * 1.x is compatible with Stash 3 and 2.x is compatible with Bitbucket Server 4.
 
 ## 1.28
 * Can enable trigger

@@ -13,7 +13,7 @@ import static se.bjurr.prnfb.admin.AdminFormValues.FIELDS.filter_regexp;
 import static se.bjurr.prnfb.admin.AdminFormValues.FIELDS.filter_string;
 import static se.bjurr.prnfb.admin.AdminFormValues.FORM_TYPE.TRIGGER_CONFIG_FORM;
 import static se.bjurr.prnfb.admin.AdminFormValues.TRIGGER_IF_MERGE.ALWAYS;
-import static se.bjurr.prnfb.listener.UrlInvoker.HTTP_METHOD.GET;
+import static se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD.GET;
 import static se.bjurr.prnfb.settings.PrnfbPredicates.predicate;
 
 import java.net.URL;
@@ -24,8 +24,8 @@ import se.bjurr.prnfb.admin.AdminFormValues;
 import se.bjurr.prnfb.admin.AdminFormValues.FIELDS;
 import se.bjurr.prnfb.admin.AdminFormValues.FORM_TYPE;
 import se.bjurr.prnfb.admin.AdminFormValues.TRIGGER_IF_MERGE;
+import se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD;
 import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
-import se.bjurr.prnfb.listener.UrlInvoker.HTTP_METHOD;
 
 import com.atlassian.bitbucket.pull.PullRequestState;
 import com.google.common.base.Optional;

@@ -31,6 +31,7 @@ import javax.ws.rs.core.Response;
 
 import se.bjurr.prnfb.admin.AdminFormValues;
 import se.bjurr.prnfb.admin.AdminFormValues.BUTTON_VISIBILITY;
+import se.bjurr.prnfb.http.ClientKeyStore;
 import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
 import se.bjurr.prnfb.listener.PrnfbPullRequestEventListener;
 import se.bjurr.prnfb.listener.PrnfbRenderer;
@@ -94,25 +95,27 @@ public class ManualResource {
   }
   List<PrnfbButton> buttons = newArrayList();
   final PrnfbSettings settings = getSettings();
+  ClientKeyStore clientKeyStore = new ClientKeyStore(settings);
   for (PrnfbButton candidate : settings.getButtons()) {
    UserKey userKey = userManager.getRemoteUserKey();
    PrnfbPullRequestAction pullRequestAction = PrnfbPullRequestAction.valueOf(BUTTON_TRIGGER);
    final PullRequest pullRequest = pullRequestService.getById(repositoryId, pullRequestId);
    Map<PrnfbVariable, Supplier<String>> variables = getVariables(settings, candidate.getFormIdentifier());
    if (allowedUseButton(candidate, userManager.isAdmin(userKey), userManager.isSystemAdmin(userKey))
-     && triggeredByAction(settings, pullRequestAction, pullRequest, variables, request)) {
+     && triggeredByAction(clientKeyStore, settings, pullRequestAction, pullRequest, variables, request)) {
     buttons.add(candidate);
    }
   }
   return ok(gson.toJson(buttons), APPLICATION_JSON).build();
  }
 
- private boolean triggeredByAction(PrnfbSettings settings, PrnfbPullRequestAction pullRequestAction,
-   PullRequest pullRequest, Map<PrnfbVariable, Supplier<String>> variables, HttpServletRequest request) {
+ private boolean triggeredByAction(ClientKeyStore clientKeyStore, PrnfbSettings settings,
+   PrnfbPullRequestAction pullRequestAction, PullRequest pullRequest, Map<PrnfbVariable, Supplier<String>> variables,
+   HttpServletRequest request) {
   for (PrnfbNotification prnfbNotification : settings.getNotifications()) {
    PrnfbRenderer renderer = getRenderer(pullRequest, prnfbNotification, pullRequestAction, variables, request);
    if (prnfbPullRequestEventListener.notificationTriggeredByAction(prnfbNotification, pullRequestAction, renderer,
-     pullRequest)) {
+     pullRequest, clientKeyStore, settings.shouldAcceptAnyCertificate())) {
     return TRUE;
    }
   }
@@ -130,14 +133,16 @@ public class ManualResource {
   }
 
   final PrnfbSettings settings = getSettings();
+  ClientKeyStore clientKeyStore = new ClientKeyStore(settings);
   for (PrnfbNotification prnfbNotification : settings.getNotifications()) {
    PrnfbPullRequestAction pullRequestAction = PrnfbPullRequestAction.valueOf(BUTTON_TRIGGER);
    final PullRequest pullRequest = pullRequestService.getById(repositoryId, pullRequestId);
    Map<PrnfbVariable, Supplier<String>> variables = getVariables(settings, formIdentifier);
    PrnfbRenderer renderer = getRenderer(pullRequest, prnfbNotification, pullRequestAction, variables, request);
    if (prnfbPullRequestEventListener.notificationTriggeredByAction(prnfbNotification, pullRequestAction, renderer,
-     pullRequest)) {
-    prnfbPullRequestEventListener.notify(prnfbNotification, pullRequestAction, pullRequest, variables, renderer);
+     pullRequest, clientKeyStore, settings.shouldAcceptAnyCertificate())) {
+    prnfbPullRequestEventListener.notify(prnfbNotification, pullRequestAction, pullRequest, variables, renderer,
+      clientKeyStore, settings.shouldAcceptAnyCertificate());
    }
   }
   return status(OK).build();
