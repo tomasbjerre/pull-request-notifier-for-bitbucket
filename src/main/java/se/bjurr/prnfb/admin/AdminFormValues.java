@@ -53,6 +53,10 @@ public final class AdminFormValues extends ArrayList<Map<String, String>> {
   injection_url, //
   injection_url_regexp, //
   trigger_if_isconflicting, //
-  trigger_ignore_state//
+  trigger_ignore_state, //
+  accept_any_certificate, //
+  key_store, //
+  key_store_type, //
+  key_store_password;
  }
 }

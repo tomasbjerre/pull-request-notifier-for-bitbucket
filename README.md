@@ -28,6 +28,8 @@ The Pull Request Notifier for Bitbucket can:
 * Be configured to only trigger if the pull request mathches a filter. A filter text is constructed with any combination of the variables and then a regexp is constructed to match that text.
 * Add buttons to pull request view in Bitbucket. And map those buttons to URL invocations. This can be done by setting the filter string to ${BUTTON_TRIGGER_TITLE} and the filter regexp to title of button.
 * Authenticate with HTTP basic authentication.
+* Optionally allow any SSL certificate.
+* Use custom SSL key store, type and password.
 * Send custom HTTP headers
 * Can optionally use proxy to connect
 * Can let users and/or admins do configuration. Or restrict configuration to just system admins. A user will have to browse to the configuration page at `http://domain/bitbucket/plugins/servlet/prnfb/admin`.

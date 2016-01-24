@@ -32,12 +32,17 @@ public class PrnfbNotificationBuilder {
  private String injectionUrl;
  private String injectionUrlRegexp;
  private String triggerIfCanMerge;
+ private boolean shouldAcceptAnyCertificate;
 
  private PrnfbNotificationBuilder() {
  }
 
  public PrnfbNotification build() throws ValidationException {
   return new PrnfbNotification(this);
+ }
+
+ public void setShouldAcceptAnyCertificate(boolean shouldAcceptAnyCertificate) {
+  this.shouldAcceptAnyCertificate = shouldAcceptAnyCertificate;
  }
 
  public PrnfbNotificationBuilder withInjectionUrl(String injectionUrl) {
@@ -200,5 +205,9 @@ public class PrnfbNotificationBuilder {
  public PrnfbNotificationBuilder withTriggerIgnoreState(PullRequestState triggerIgnoreState) {
   this.triggerIgnoreStateList.add(checkNotNull(triggerIgnoreState));
   return this;
+ }
+
+ public boolean shouldAcceptAnyCertificate() {
+  return shouldAcceptAnyCertificate;
  }
 }

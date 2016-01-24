@@ -52,6 +52,9 @@ import static se.bjurr.prnfb.admin.AdminFormValues.FORM_TYPE.TRIGGER_CONFIG_FORM
 import static se.bjurr.prnfb.admin.AdminFormValues.TRIGGER_IF_MERGE.ALWAYS;
 import static se.bjurr.prnfb.admin.AdminFormValues.TRIGGER_IF_MERGE.CONFLICTING;
 import static se.bjurr.prnfb.admin.AdminFormValues.TRIGGER_IF_MERGE.NOT_CONFLICTING;
+import static se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD.DELETE;
+import static se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD.GET;
+import static se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD.POST;
 import static se.bjurr.prnfb.listener.PrnfbPullRequestAction.BUTTON_TRIGGER;
 import static se.bjurr.prnfb.listener.PrnfbPullRequestAction.RESCOPED_FROM;
 import static se.bjurr.prnfb.listener.PrnfbPullRequestAction.RESCOPED_TO;
@@ -72,9 +75,6 @@ import static se.bjurr.prnfb.listener.PrnfbRenderer.PrnfbVariable.PULL_REQUEST_U
 import static se.bjurr.prnfb.listener.PrnfbRenderer.PrnfbVariable.PULL_REQUEST_VERSION;
 import static se.bjurr.prnfb.listener.PrnfbRenderer.REPO_PROTOCOL.http;
 import static se.bjurr.prnfb.listener.PrnfbRenderer.REPO_PROTOCOL.ssh;
-import static se.bjurr.prnfb.listener.UrlInvoker.HTTP_METHOD.DELETE;
-import static se.bjurr.prnfb.listener.UrlInvoker.HTTP_METHOD.GET;
-import static se.bjurr.prnfb.listener.UrlInvoker.HTTP_METHOD.POST;
 
 import java.io.IOException;
 import java.net.URL;

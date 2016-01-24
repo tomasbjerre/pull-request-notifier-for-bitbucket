@@ -25,4 +25,9 @@ public class AdminFormError {
  public String getValue() {
   return error;
  }
+
+ @Override
+ public String toString() {
+  return field + " " + error;
+ }
 }

@@ -13,12 +13,25 @@ public class PrnfbSettingsBuilder {
  private final List<PrnfbButton> buttons = newArrayList();
  private boolean usersAllowed;
  private boolean adminsAllowed;
+ private boolean shouldAcceptAnyCertificate;
+ private String keyStore;
+ private String keyStoreType;
+ private String keyStorePassword;
 
  private PrnfbSettingsBuilder() {
  }
 
  public PrnfbSettings build() {
-  return new PrnfbSettings(notifications, buttons, usersAllowed, adminsAllowed);
+  return new PrnfbSettings(this);
+ }
+
+ public PrnfbSettingsBuilder withShouldAcceptAnyCertificate(boolean shouldAcceptAnyCertificate) {
+  this.shouldAcceptAnyCertificate = shouldAcceptAnyCertificate;
+  return this;
+ }
+
+ public boolean shouldAcceptAnyCertificate() {
+  return shouldAcceptAnyCertificate;
  }
 
  public PrnfbSettingsBuilder withNotification(PrnfbNotification notification) {
@@ -54,5 +67,32 @@ public class PrnfbSettingsBuilder {
 
  public boolean isUsersAllowed() {
   return usersAllowed;
+ }
+
+ public String getKeyStore() {
+  return keyStore;
+ }
+
+ public String getKeyStoreType() {
+  return keyStoreType;
+ }
+
+ public String getKeyStorePassword() {
+  return keyStorePassword;
+ }
+
+ public PrnfbSettingsBuilder setKeyStore(String keyStore) {
+  this.keyStore = keyStore;
+  return this;
+ }
+
+ public PrnfbSettingsBuilder setKeyStorePassword(String keyStorePassword) {
+  this.keyStorePassword = keyStorePassword;
+  return this;
+ }
+
+ public PrnfbSettingsBuilder setKeyStoreType(String keyStoreType) {
+  this.keyStoreType = keyStoreType;
+  return this;
  }
 }

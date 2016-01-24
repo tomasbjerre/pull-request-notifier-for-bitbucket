@@ -15,6 +15,7 @@ import static se.bjurr.prnfb.admin.AdminFormValues.NAME;
 import static se.bjurr.prnfb.admin.AdminFormValues.VALUE;
 import static se.bjurr.prnfb.admin.AdminFormValues.BUTTON_VISIBILITY.NONE;
 import static se.bjurr.prnfb.admin.AdminFormValues.FIELDS.FORM_IDENTIFIER;
+import static se.bjurr.prnfb.admin.AdminFormValues.FIELDS.accept_any_certificate;
 import static se.bjurr.prnfb.admin.AdminFormValues.FIELDS.admin_allowed;
 import static se.bjurr.prnfb.admin.AdminFormValues.FIELDS.button_title;
 import static se.bjurr.prnfb.admin.AdminFormValues.FIELDS.button_visibility;
@@ -25,6 +26,9 @@ import static se.bjurr.prnfb.admin.AdminFormValues.FIELDS.header_name;
 import static se.bjurr.prnfb.admin.AdminFormValues.FIELDS.header_value;
 import static se.bjurr.prnfb.admin.AdminFormValues.FIELDS.injection_url;
 import static se.bjurr.prnfb.admin.AdminFormValues.FIELDS.injection_url_regexp;
+import static se.bjurr.prnfb.admin.AdminFormValues.FIELDS.key_store;
+import static se.bjurr.prnfb.admin.AdminFormValues.FIELDS.key_store_password;
+import static se.bjurr.prnfb.admin.AdminFormValues.FIELDS.key_store_type;
 import static se.bjurr.prnfb.admin.AdminFormValues.FIELDS.method;
 import static se.bjurr.prnfb.admin.AdminFormValues.FIELDS.name;
 import static se.bjurr.prnfb.admin.AdminFormValues.FIELDS.password;
@@ -214,8 +218,22 @@ public class SettingsStorage {
    } else {
     prnfbSettingsBuilder.withButton(getPrnfbButton(adminFormValues));
    }
+
    prnfbSettingsBuilder.withUsersAllowed(tryFind(adminFormValues, predicate(user_allowed.name())).isPresent());
    prnfbSettingsBuilder.withAdminsAllowed(tryFind(adminFormValues, predicate(admin_allowed.name())).isPresent());
+
+   prnfbSettingsBuilder//
+     .withShouldAcceptAnyCertificate(tryFind(adminFormValues, predicate(accept_any_certificate.name())).isPresent());
+   if (tryFind(adminFormValues, predicate(key_store.name())).isPresent()) {
+    prnfbSettingsBuilder.setKeyStore(tryFind(adminFormValues, predicate(key_store.name())).get().get(VALUE));
+   }
+   if (tryFind(adminFormValues, predicate(key_store_type.name())).isPresent()) {
+    prnfbSettingsBuilder.setKeyStoreType(tryFind(adminFormValues, predicate(key_store_type.name())).get().get(VALUE));
+   }
+   if (tryFind(adminFormValues, predicate(key_store_password.name())).isPresent()) {
+    prnfbSettingsBuilder.setKeyStorePassword(tryFind(adminFormValues, predicate(key_store_password.name())).get().get(
+      VALUE));
+   }
   }
   return prnfbSettingsBuilder.build();
  }
