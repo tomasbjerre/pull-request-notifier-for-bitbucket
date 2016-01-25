@@ -60,6 +60,9 @@ The filter text as well as the URL support variables. These are:
 * ${PULL_REQUEST_AUTHOR_ID} Example: 1
 * ${PULL_REQUEST_AUTHOR_NAME} Example: admin
 * ${PULL_REQUEST_AUTHOR_SLUG} Example: admin
+* ${PULL_REQUEST_REVIEWERS} Example: Administrator,User
+* ${PULL_REQUEST_REVIEWERS_ID} Example: 1,2
+* ${PULL_REQUEST_REVIEWERS_SLUG} Example: admin,user
 * ${PULL_REQUEST_REVIEWERS_APPROVED_COUNT} Number of reviewers that approved the PR.
 * ${PULL_REQUEST_PARTICIPANTS_APPROVED_COUNT} Number of participants that approved the PR.
 * ${PULL_REQUEST_MERGE_COMMIT} Hash of merged commit (only available for merged-event).

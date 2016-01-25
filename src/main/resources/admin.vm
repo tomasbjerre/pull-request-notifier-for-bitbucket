@@ -47,7 +47,7 @@
 
     <div class="prnfb-BUTTON_CONFIG_FORM">
     </div>
-  
+
     <div>
       <div class="description">
         You can use variables when invoking the URL, when forming the filter string, custom header values or in POST content.
@@ -70,6 +70,9 @@
         <li><b>${PULL_REQUEST_AUTHOR_ID}</b> Example: 1</li>
         <li><b>${PULL_REQUEST_AUTHOR_NAME}</b> Example: admin</li>
         <li><b>${PULL_REQUEST_AUTHOR_SLUG}</b> Example: admin</li>
+        <li><b>${PULL_REQUEST_REVIEWERS}</b> Reviewers list.</li>
+        <li><b>${PULL_REQUEST_REVIEWERS_ID}</b> Reviewers ID list.</li>
+        <li><b>${PULL_REQUEST_REVIEWERS_SLUG}</b> Reviewers slug list.</li>
         <li><b>${PULL_REQUEST_REVIEWERS_APPROVED_COUNT}</b> Number of reviewers that approved the PR.</li>
         <li><b>${PULL_REQUEST_PARTICIPANTS_APPROVED_COUNT}</b> Number of participants that approved the PR.</li>
         <li><b>${PULL_REQUEST_MERGE_COMMIT}</b> Hash of merged commit (only available for merged-event).</li>
@@ -96,10 +99,10 @@
         </ul>
       </div>
     </div>
-    
+
     <div class="prnfb-TRIGGER_CONFIG_FORM">
     </div>
-    
+
     <div class="prnfb-template prnfb-template-BUTTON_CONFIG_FORM">
      <form class="config-area">
        <div class="content">
@@ -133,7 +136,7 @@
        </div>
      </form>
     </div>
-    
+
     <div class="prnfb-template prnfb-template-TRIGGER_CONFIG_FORM">
      <form class="trigger config-area">
       <div class="expandable">
