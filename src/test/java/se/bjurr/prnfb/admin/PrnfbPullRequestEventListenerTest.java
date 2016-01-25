@@ -6,6 +6,7 @@ import static com.atlassian.bitbucket.pull.PullRequestAction.OPENED;
 import static com.atlassian.bitbucket.pull.PullRequestAction.RESCOPED;
 import static com.atlassian.bitbucket.pull.PullRequestRole.AUTHOR;
 import static com.atlassian.bitbucket.pull.PullRequestRole.PARTICIPANT;
+import static com.atlassian.bitbucket.pull.PullRequestRole.REVIEWER;
 import static com.atlassian.bitbucket.pull.PullRequestState.DECLINED;
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Joiner.on;
@@ -107,20 +108,28 @@ public class PrnfbPullRequestEventListenerTest {
  public void testThatAUrlCanHaveSeveralVariables() throws Exception {
   prnfbTestBuilder()
     .isLoggedInAsAdmin()
+    .withPullRequest(//
+      pullRequestEventBuilder()//
+        .withParticipantReviewer(REVIEWER, false, "First Last", "firstlast", 1)//
+        .withParticipantReviewer(REVIEWER, false, "First2 Last2", "firstlast2", 5)//
+        .withParticipant(PARTICIPANT)//
+        .build()//
+        .getPullRequest())
     .withNotification( //
       notificationBuilder() //
         .withFieldValue(
           url,
-          "http://bjurr.se/?PULL_REQUEST_FROM_HASH=${PULL_REQUEST_FROM_HASH}&PULL_REQUEST_TO_HASH=${PULL_REQUEST_TO_HASH}&PULL_REQUEST_FROM_REPO_SLUG=${PULL_REQUEST_FROM_REPO_SLUG}&PULL_REQUEST_TO_REPO_SLUG=${PULL_REQUEST_TO_REPO_SLUG}&revapp=${PULL_REQUEST_REVIEWERS_APPROVED_COUNT}&partapp=${PULL_REQUEST_PARTICIPANTS_APPROVED_COUNT}") //
+          "http://bjurr.se/?PULL_REQUEST_FROM_HASH=${PULL_REQUEST_FROM_HASH}&PULL_REQUEST_TO_HASH=${PULL_REQUEST_TO_HASH}&PULL_REQUEST_FROM_REPO_SLUG=${PULL_REQUEST_FROM_REPO_SLUG}&PULL_REQUEST_TO_REPO_SLUG=${PULL_REQUEST_TO_REPO_SLUG}&revapp=${PULL_REQUEST_REVIEWERS_APPROVED_COUNT}&partapp=${PULL_REQUEST_PARTICIPANTS_APPROVED_COUNT}&reviewers=${PULL_REQUEST_REVIEWERS}&reviewersid=${PULL_REQUEST_REVIEWERS_ID}&reviewersslug=${PULL_REQUEST_REVIEWERS_SLUG}") //
         .withFieldValue(events, OPENED.name()) //
         .build() //
     ) //
     .store() //
     .trigger( //
-      pullRequestEventBuilder().withFromRef( //
-        pullRequestRefBuilder() //
-          .withHash("cde456") //
-          .withRepositorySlug("fromslug") //
+      pullRequestEventBuilder()//
+        .withFromRef( //
+          pullRequestRefBuilder() //
+            .withHash("cde456") //
+            .withRepositorySlug("fromslug") //
         ).withToRef( //
           pullRequestRefBuilder() //
             .withHash("asd123") //
@@ -128,18 +137,54 @@ public class PrnfbPullRequestEventListenerTest {
         ) //
         .withPullRequestId(10L) //
         .withPullRequestAction(OPENED) //
-        .withParticipant(PARTICIPANT, TRUE) //
-        .withParticipant(PARTICIPANT, TRUE) //
-        .withParticipant(PARTICIPANT, TRUE) //
-        .withParticipant(PARTICIPANT, FALSE) //
-        .withParticipant(AUTHOR, TRUE) //
-        .withParticipant(AUTHOR, TRUE) //
-        .withParticipant(AUTHOR, FALSE) //
+        .withParticipantReviewer(PARTICIPANT, TRUE) //
+        .withParticipantReviewer(PARTICIPANT, TRUE) //
+        .withParticipantReviewer(PARTICIPANT, TRUE) //
+        .withParticipantReviewer(PARTICIPANT, FALSE) //
+        .withParticipantReviewer(AUTHOR, TRUE) //
+        .withParticipantReviewer(AUTHOR, TRUE) //
+        .withParticipantReviewer(AUTHOR, FALSE) //
         .build() //
     ) //
     .invokedUrl(
       0,
-      "http://bjurr.se/?PULL_REQUEST_FROM_HASH=cde456&PULL_REQUEST_TO_HASH=asd123&PULL_REQUEST_FROM_REPO_SLUG=fromslug&PULL_REQUEST_TO_REPO_SLUG=toslug&revapp=2&partapp=3") //
+      "http://bjurr.se/?PULL_REQUEST_FROM_HASH=cde456&PULL_REQUEST_TO_HASH=asd123&PULL_REQUEST_FROM_REPO_SLUG=fromslug&PULL_REQUEST_TO_REPO_SLUG=toslug&revapp=2&partapp=3&reviewers=name%2Cname%2Cname&reviewersid=1%2C1%2C1&reviewersslug=username%2Cusername%2Cusername") //
+    .invokedMethod(GET);
+ }
+
+ @Test
+ public void testThatAUrlCanHaveReviewersVariablesWhenNoReviewer() throws Exception {
+  prnfbTestBuilder()
+    .isLoggedInAsAdmin()
+    .withPullRequest(//
+      pullRequestEventBuilder()//
+        .build()//
+        .getPullRequest())
+    .withNotification( //
+      notificationBuilder() //
+        .withFieldValue(
+          url,
+          "http://bjurr.se/?revapp=${PULL_REQUEST_REVIEWERS_APPROVED_COUNT}&partapp=${PULL_REQUEST_PARTICIPANTS_APPROVED_COUNT}&reviewers=${PULL_REQUEST_REVIEWERS}&reviewersid=${PULL_REQUEST_REVIEWERS_ID}&reviewersslug=${PULL_REQUEST_REVIEWERS_SLUG}") //
+        .withFieldValue(events, OPENED.name()) //
+        .build() //
+    ) //
+    .store() //
+    .trigger( //
+      pullRequestEventBuilder()//
+        .withFromRef( //
+          pullRequestRefBuilder() //
+            .withHash("cde456") //
+            .withRepositorySlug("fromslug") //
+        ).withToRef( //
+          pullRequestRefBuilder() //
+            .withHash("asd123") //
+            .withRepositorySlug("toslug") //
+        ) //
+        .withPullRequestId(10L) //
+        .withPullRequestAction(OPENED) //
+        .build() //
+    ) //
+    .invokedUrl(0, "http://bjurr.se/?revapp=0&partapp=0&reviewers=&reviewersid=&reviewersslug=") //
     .invokedMethod(GET);
  }
 

@@ -5,7 +5,10 @@ Changelog of Pull Request Notifier for Bitbucket.
 ## 2.13
 * Allowing SSL certificates to be ignored.
 * Adding settings to configure custom keystore.
-* Add attribute for list of reviewers, reviewers' IDs and reviewers' names.
+* New variables:
+ * ${PULL_REQUEST_REVIEWERS} Example: Administrator,User
+ * ${PULL_REQUEST_REVIEWERS_ID} Example: 1,2
+ * ${PULL_REQUEST_REVIEWERS_SLUG} Example: admin,user
 
 ## 2.12
 * Fixing PULL_REQUEST_URL-bug correctly with getSlug.

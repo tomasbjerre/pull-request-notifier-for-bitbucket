@@ -20,6 +20,7 @@ import com.atlassian.bitbucket.pull.PullRequestAction;
 import com.atlassian.bitbucket.pull.PullRequestParticipant;
 import com.atlassian.bitbucket.pull.PullRequestRole;
 import com.atlassian.bitbucket.pull.PullRequestState;
+import com.atlassian.bitbucket.user.ApplicationUser;
 
 public class PullRequestEventBuilder {
  public static final String PREVIOUS_TO_HASH = "previousToHash";
@@ -46,9 +47,29 @@ public class PullRequestEventBuilder {
   return this;
  }
 
- public PullRequestEventBuilder withParticipant(PullRequestRole role, Boolean isApproved) {
+ public PullRequestEventBuilder withParticipantReviewer(PullRequestRole role, Boolean isApproved) {
+  return withParticipantReviewer(role, isApproved, "name", "username", 1);
+ }
+
+ public PullRequestEventBuilder withParticipantReviewer(PullRequestRole role, Boolean isApproved, String name,
+   String username, Integer id) {
   PullRequestParticipant participant = mock(PullRequestParticipant.class);
   when(participant.isApproved()).thenReturn(isApproved);
+  ApplicationUser user = mock(ApplicationUser.class);
+  when(participant.getUser()).thenReturn(user);
+  when(participant.getUser().getDisplayName()).thenReturn(name);
+  when(participant.getUser().getSlug()).thenReturn(username);
+  when(participant.getUser().getId()).thenReturn(id);
+  if (role == PARTICIPANT) {
+   participants.add(participant);
+  } else {
+   reviewers.add(participant);
+  }
+  return this;
+ }
+
+ public PullRequestEventBuilder withParticipant(PullRequestRole role) {
+  PullRequestParticipant participant = mock(PullRequestParticipant.class);
   if (role == PARTICIPANT) {
    participants.add(participant);
   } else {
