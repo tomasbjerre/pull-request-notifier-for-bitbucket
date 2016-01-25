@@ -15,6 +15,7 @@ import static se.bjurr.prnfb.listener.PrnfbRenderer.REPO_PROTOCOL.ssh;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.Set;
+import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 
@@ -439,6 +440,54 @@ public class PrnfbRenderer {
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbVariable, Supplier<String>> variables, ClientKeyStore clientKeyStore, boolean shouldAcceptAnyCertificate) {
     return pullRequest.getTitle();
+   }
+  }), PULL_REQUEST_REVIEWERS(new Resolver() {
+   @Override
+   public String resolve(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
+     ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
+     Map<PrnfbVariable, Supplier<String>> variables, ClientKeyStore clientKeyStore, boolean shouldAcceptAnyCertificate) {
+    List<PullRequestParticipant> slist = newArrayList(pullRequest.getReviewers());
+    StringBuilder rString = new StringBuilder();
+
+    String sep = ",";
+    for (PullRequestParticipant each : slist) {
+        rString.append(sep).append(each.getUser().getDisplayName());
+    }
+
+    return rString.substring(1);
+   }
+  }), PULL_REQUEST_REVIEWERS_ID(new Resolver() {
+   @Override
+   public String resolve(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
+     ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
+     Map<PrnfbVariable, Supplier<String>> variables, ClientKeyStore clientKeyStore, boolean shouldAcceptAnyCertificate) {
+    List<PullRequestParticipant> slist = newArrayList(pullRequest.getReviewers());
+    StringBuilder rString = new StringBuilder();
+
+    String sep = ",";
+    for (PullRequestParticipant each : slist) {
+        rString.append(sep).append(Integer.toString(each.getUser().getId()));
+    }
+
+    return rString.substring(1);
+   }
+  }), PULL_REQUEST_REVIEWERS_SLUG(new Resolver() {
+   @Override
+   public String resolve(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction,
+     ApplicationUser applicationUser, RepositoryService repositoryService,
+     ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
+     Map<PrnfbVariable, Supplier<String>> variables, ClientKeyStore clientKeyStore, boolean shouldAcceptAnyCertificate) {
+    List<PullRequestParticipant> slist = newArrayList(pullRequest.getReviewers());
+    StringBuilder rString = new StringBuilder();
+
+    String sep = ",";
+    for (PullRequestParticipant each : slist) {
+        rString.append(sep).append(each.getUser().getSlug());
+    }
+
+    return rString.substring(1);
    }
   }), PULL_REQUEST_REVIEWERS_APPROVED_COUNT(new Resolver() {
    @Override
