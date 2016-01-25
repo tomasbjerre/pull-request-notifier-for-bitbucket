@@ -1,9 +1,12 @@
 package se.bjurr.prnfb.listener;
 
 import static com.google.common.base.Charsets.UTF_8;
+import static com.google.common.base.Joiner.on;
 import static com.google.common.base.Throwables.propagate;
 import static com.google.common.collect.Iterables.filter;
+import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Ordering.usingToString;
 import static java.net.URLEncoder.encode;
 import static java.util.logging.Logger.getLogger;
 import static java.util.regex.Pattern.compile;
@@ -447,16 +450,7 @@ public class PrnfbRenderer {
      ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbVariable, Supplier<String>> variables, ClientKeyStore clientKeyStore, boolean shouldAcceptAnyCertificate) {
-    List<PullRequestParticipant> slist = newArrayList(pullRequest.getReviewers());
-
-    if (slist.isEmpty()) {
-     return "";
-    }
-    StringBuilder sb = new StringBuilder();
-    for (PullRequestParticipant each : slist) {
-     sb.append("," + each.getUser().getDisplayName());
-    }
-    return sb.substring(1);
+    return iterableToString(transform(pullRequest.getReviewers(), (p) -> p.getUser().getDisplayName()));
    }
   }), PULL_REQUEST_REVIEWERS_ID(new Resolver() {
    @Override
@@ -464,16 +458,7 @@ public class PrnfbRenderer {
      ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbVariable, Supplier<String>> variables, ClientKeyStore clientKeyStore, boolean shouldAcceptAnyCertificate) {
-    List<PullRequestParticipant> slist = newArrayList(pullRequest.getReviewers());
-
-    if (slist.isEmpty()) {
-     return "";
-    }
-    StringBuilder sb = new StringBuilder();
-    for (PullRequestParticipant each : slist) {
-     sb.append("," + each.getUser().getId());
-    }
-    return sb.substring(1);
+    return iterableToString(transform(pullRequest.getReviewers(), (p) -> Integer.toString(p.getUser().getId())));
    }
   }), PULL_REQUEST_REVIEWERS_SLUG(new Resolver() {
    @Override
@@ -481,17 +466,9 @@ public class PrnfbRenderer {
      ApplicationUser applicationUser, RepositoryService repositoryService,
      ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
      Map<PrnfbVariable, Supplier<String>> variables, ClientKeyStore clientKeyStore, boolean shouldAcceptAnyCertificate) {
-    List<PullRequestParticipant> slist = newArrayList(pullRequest.getReviewers());
-
-    if (slist.isEmpty()) {
-     return "";
-    }
-    StringBuilder sb = new StringBuilder();
-    for (PullRequestParticipant each : slist) {
-     sb.append("," + each.getUser().getSlug());
-    }
-    return sb.substring(1);
+    return iterableToString(transform(pullRequest.getReviewers(), (p) -> p.getUser().getSlug()));
    }
+
   }), PULL_REQUEST_REVIEWERS_APPROVED_COUNT(new Resolver() {
    @Override
    public String resolve(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction,
@@ -516,6 +493,11 @@ public class PrnfbRenderer {
     return input.isApproved();
    }
   };
+
+  private static String iterableToString(Iterable<String> slist) {
+   List<String> sorted = usingToString().sortedCopy(slist);
+   return on(',').join(sorted);
+  }
 
   private Resolver resolver;
 

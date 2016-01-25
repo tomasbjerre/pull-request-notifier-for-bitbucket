@@ -108,13 +108,6 @@ public class PrnfbPullRequestEventListenerTest {
  public void testThatAUrlCanHaveSeveralVariables() throws Exception {
   prnfbTestBuilder()
     .isLoggedInAsAdmin()
-    .withPullRequest(//
-      pullRequestEventBuilder()//
-        .withParticipantReviewer(REVIEWER, false, "First Last", "firstlast", 1)//
-        .withParticipantReviewer(REVIEWER, false, "First2 Last2", "firstlast2", 5)//
-        .withParticipant(PARTICIPANT)//
-        .build()//
-        .getPullRequest())
     .withNotification( //
       notificationBuilder() //
         .withFieldValue(
@@ -144,11 +137,13 @@ public class PrnfbPullRequestEventListenerTest {
         .withParticipantReviewer(AUTHOR, TRUE) //
         .withParticipantReviewer(AUTHOR, TRUE) //
         .withParticipantReviewer(AUTHOR, FALSE) //
+        .withParticipantReviewer(REVIEWER, false, "First Last", "firstlast", 1)//
+        .withParticipantReviewer(REVIEWER, false, "First2 Last2", "firstlast2", 5)//
         .build() //
     ) //
     .invokedUrl(
       0,
-      "http://bjurr.se/?PULL_REQUEST_FROM_HASH=cde456&PULL_REQUEST_TO_HASH=asd123&PULL_REQUEST_FROM_REPO_SLUG=fromslug&PULL_REQUEST_TO_REPO_SLUG=toslug&revapp=2&partapp=3&reviewers=name%2Cname%2Cname&reviewersid=1%2C1%2C1&reviewersslug=username%2Cusername%2Cusername") //
+      "http://bjurr.se/?PULL_REQUEST_FROM_HASH=cde456&PULL_REQUEST_TO_HASH=asd123&PULL_REQUEST_FROM_REPO_SLUG=fromslug&PULL_REQUEST_TO_REPO_SLUG=toslug&revapp=2&partapp=3&reviewers=First+Last%2CFirst2+Last2%2Cname%2Cname%2Cname&reviewersid=1%2C1%2C1%2C1%2C5&reviewersslug=firstlast%2Cfirstlast2%2Cusername%2Cusername%2Cusername") //
     .invokedMethod(GET);
  }
 

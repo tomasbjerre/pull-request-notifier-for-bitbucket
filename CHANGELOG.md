@@ -2,6 +2,9 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## 2.14
+* Bugfix: Fixing IndexOutOfBoundsException if no reviewers and using reviewers variable
+
 ## 2.13
 * Allowing SSL certificates to be ignored.
 * Adding settings to configure custom keystore.
