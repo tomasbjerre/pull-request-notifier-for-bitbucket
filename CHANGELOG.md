@@ -2,6 +2,9 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## 2.15
+* Organizing buttons in a dropdown. Making it more compact when having alot of buttons.
+
 ## 2.14
 * Bugfix: Fixing IndexOutOfBoundsException if no reviewers and using reviewers variable
 

@@ -25,4 +25,9 @@ public class PrnfbButton {
  public String getFormIdentifier() {
   return formIdentifier;
  }
+
+ @Override
+ public String toString() {
+  return "Title: " + title;
+ }
 }

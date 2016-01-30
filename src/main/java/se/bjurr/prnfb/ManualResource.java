@@ -3,6 +3,7 @@ package se.bjurr.prnfb;
 import static com.atlassian.bitbucket.permission.Permission.ADMIN;
 import static com.google.common.collect.Iterables.find;
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Ordering.usingToString;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -106,6 +107,7 @@ public class ManualResource {
     buttons.add(candidate);
    }
   }
+  buttons = usingToString().sortedCopy(buttons);
   return ok(gson.toJson(buttons), APPLICATION_JSON).build();
  }
 
