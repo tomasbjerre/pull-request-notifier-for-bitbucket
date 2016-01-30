@@ -8,34 +8,54 @@ define('plugin/prnfb/pr-triggerbutton', [
     return AJS.contextPath() + '/rest/prnfb-admin/1.0/manual/?repositoryId=' + pageState.getRepository().id + '&pullRequestId=' + pageState.getPullRequest().id;
   };
 
-  var waiting = '<span class="aui-icon aui-icon-wait">Wait</span>';
+  var waiting = '<span class="aui-icon aui-icon-wait aui-icon-small">Wait</span>';
 
   var $buttonArea = $(".triggerManualNotification").parent();
   var $buttonTemplate = $(".triggerManualNotification");
   $buttonTemplate.empty().remove();
   
+  $buttonDropdownArea = $('<div id="triggerManualNotification-actions" class="aui-style-default aui-dropdown2"><ul class="aui-list-truncate"></ul></div>');
+  $buttonDropdownItems = $buttonDropdownArea.find("ul");
+  
+  var $buttonDropdownParent = $buttonTemplate.clone();
+  $buttonDropdownParent.html("Actions");
+  $buttonDropdownParent.attr("aria-owns", "triggerManualNotification-actions");
+  $buttonDropdownParent.attr("aria-haspopup", "true"); 
+  $buttonDropdownParent.addClass("aui-style-default aui-dropdown2-trigger");  
+  $buttonArea.append($buttonDropdownParent);
+  $buttonDropdownParent.hide();
+  
+  $("body").append($buttonDropdownArea)
+  
   function loadSettingsAndShowButtons() {
+   var hasButtons = false;
+   $buttonDropdownItems.empty();
    $.get(getResourceUrl(), function(settings) {
   	settings.forEach(function(item) {
-  	  var $button = $buttonTemplate.clone();
-  	  $button.html(item.title);
-  	  $button.click(function() {
+      hasButtons = true;
+      
+      var $buttonDropdownItem = $('<li><a class="aui-icon-container" href="#">' + item.title + '</a></li>');
+      $buttonDropdownItem.find("a").click(function() {        
         var $this = $(this);
-        var text = $this.text();
-
-        $this.attr("disabled", "disabled").html(waiting + " " + text);
-
+        $this.attr("disabled", "disabled");
+        $this.attr("aria-disabled", "true");
+        $this.prepend(waiting);
+        
         $.post(getResourceUrl()+'&formIdentifier='+item.formIdentifier, function() {
           setTimeout(function() {  
-              $this.removeAttr("disabled").text(text);
+            $this.removeAttr("disabled");
+            $this.removeAttr("aria-disabled");
+            $this.find("span").remove();
           }, 500);
         });
-        
-        return false;
       });
       
-      $buttonArea.append($button);
+      $buttonDropdownItems.append($buttonDropdownItem);
   	});
+
+    if (hasButtons) {
+      $buttonDropdownParent.show();
+    }
    });
   }
   
@@ -44,7 +64,7 @@ define('plugin/prnfb/pr-triggerbutton', [
   //If a reviewer approves the PR, then a button may become visible
   $('.aui-button.approve').click(function () {
    setTimeout(function(){
-    $(".triggerManualNotification").remove();
+    $buttonDropdownParent.hide();
     loadSettingsAndShowButtons();
    }, 1000);
   });
