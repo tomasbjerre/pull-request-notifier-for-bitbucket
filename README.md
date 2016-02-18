@@ -20,7 +20,7 @@ The Pull Request Notifier for Bitbucket can:
 * Invoke any URL, or set of URL:s, when a pull request event happens.
  * With variables available to add necessary parameters.
  * HTTP POST, PUT, GET and DELETE. POST and PUT also supports rendered post content. 
-* Be configured to trigger on any [pull request event](https://developer.atlassian.com/static/javadoc/bitbucket/4.0.0/api/reference/com/atlassian/bitbucket/event/pull/package-summary.html). Including extended events:
+* Be configured to trigger on any [pull request event](https://developer.atlassian.com/static/javadoc/stash.old-perms-pre-feb4/2.0.1/api/reference/com/atlassian/stash/event/pull/package-summary.html). Including extended events:
  * RESCOPED_FROM, when source branch change
  * RESCOPED_TO, when target branch change
  * BUTTON_TRIGGER, when trigger button in pull request view is pressed
@@ -114,9 +114,9 @@ export MAVEN_OPTS=-Dplugin.resource.directories=`pwd`/src/main/resources
 mvn bitbucket:run
 ```
 
-You can also debug with:
+You can also remote debug on port 5005 with:
 ```
-mvn bitbucket:debug
+atlas-debug
 ```
 
 Make a release [(detailed instructions)](https://developer.atlassian.com/docs/common-coding-tasks/development-cycle/packaging-and-releasing-your-plugin):
