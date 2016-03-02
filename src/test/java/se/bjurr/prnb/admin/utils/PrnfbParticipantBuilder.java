@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 
 import com.atlassian.bitbucket.pull.PullRequest;
 import com.atlassian.bitbucket.pull.PullRequestParticipant;
+import com.atlassian.bitbucket.pull.PullRequestParticipantStatus;
 import com.atlassian.bitbucket.pull.PullRequestRole;
 import com.atlassian.bitbucket.user.ApplicationUser;
 
@@ -74,6 +75,16 @@ public class PrnfbParticipantBuilder {
 
    @Override
    public PullRequest getPullRequest() {
+    return null;
+   }
+
+   // Needed for 4.4.0, dont use @Override
+   public int compareTo(PullRequestParticipant arg0) {
+    return 0;
+   }
+
+   // Needed for 4.4.0, dont use @Override
+   public PullRequestParticipantStatus getStatus() {
     return null;
    }
   };

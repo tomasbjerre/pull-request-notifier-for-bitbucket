@@ -12,8 +12,11 @@ before_install:
   - export PATH=opt/atlassian-plugin-sdk/bin:opt/atlassian-plugin-sdk/apache-maven-*/bin:$PATH
   - atlas-version
 install:
+  #Install Atlassian libs in local Maven repo
+  - atlas-mvn -q install -Dstash.version=4.0.0
   - atlas-mvn -q install
 script:
+  - atlas-package -q -Dstash.version=4.0.0
   - atlas-package -q
 notifications:
   email: false

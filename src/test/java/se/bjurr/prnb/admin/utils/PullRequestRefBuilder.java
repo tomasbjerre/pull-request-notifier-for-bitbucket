@@ -128,6 +128,11 @@ public class PullRequestRefBuilder implements PullRequestRef {
      public boolean isPublic() {
       return false;
      }
+
+     // Needed for 4.4.0, dont use @Override
+     public String getNamespace() {
+      return null;
+     }
     };
    }
 
