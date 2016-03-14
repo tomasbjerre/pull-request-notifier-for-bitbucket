@@ -342,7 +342,13 @@ public class UrlInvoker {
 
  private void addHeaders(HttpRequestBase httpRequestBase) {
   for (Header header : headers) {
-   logger.fine("header: \"" + header.getName() + "\" value: \"" + header.getValue() + "\"");
+
+   if (header.getName().equals(AUTHORIZATION)) {
+    logger.fine("header: \"" + header.getName() + "\" value: \"**********\"");
+   } else {
+    logger.fine("header: \"" + header.getName() + "\" value: \"" + header.getValue() + "\"");
+   }
+
    httpRequestBase.addHeader(header.getName(), getHeaderValue(header));
   }
  }
