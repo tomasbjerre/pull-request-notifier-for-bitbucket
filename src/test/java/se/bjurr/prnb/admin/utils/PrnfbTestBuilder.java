@@ -54,6 +54,7 @@ import se.bjurr.prnfb.settings.PrnfbButton;
 import se.bjurr.prnfb.settings.PrnfbSettings;
 import se.bjurr.prnfb.settings.SettingsStorage;
 
+import com.atlassian.bitbucket.auth.AuthenticationContext;
 import com.atlassian.bitbucket.event.pull.PullRequestEvent;
 import com.atlassian.bitbucket.permission.Permission;
 import com.atlassian.bitbucket.pull.PullRequest;
@@ -63,7 +64,6 @@ import com.atlassian.bitbucket.repository.RepositoryService;
 import com.atlassian.bitbucket.server.ApplicationPropertiesService;
 import com.atlassian.bitbucket.user.EscalatedSecurityContext;
 import com.atlassian.bitbucket.user.SecurityService;
-import com.atlassian.bitbucket.user.UserService;
 import com.atlassian.bitbucket.util.Operation;
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
@@ -134,6 +134,8 @@ public class PrnfbTestBuilder {
 
  private PullRequest pullRequest;
 
+ private AuthenticationContext authenticationContext;
+
  private PrnfbTestBuilder() {
   fakeRandomCounter = 0L;
   fakeRandom(new FakeRandom());
@@ -159,10 +161,10 @@ public class PrnfbTestBuilder {
   pullRequestService = mock(PullRequestService.class);
   listener = new PrnfbPullRequestEventListener(pluginSettingsFactory, repositoryService, propertiesService,
     pullRequestService, new SyncExecutorService());
-  UserService userService = mock(UserService.class);
   withPullRequest(pullRequestEventBuilder().build().getPullRequest());
-  manualResouce = new ManualResource(userManager, userService, pluginSettingsFactory, pullRequestService, listener,
-    repositoryService, propertiesService, securityService);
+  authenticationContext = mock(AuthenticationContext.class);
+  manualResouce = new ManualResource(authenticationContext, userManager, pluginSettingsFactory, pullRequestService,
+    listener, repositoryService, propertiesService, securityService);
  }
 
  public PrnfbTestBuilder delete(String id) throws Exception {

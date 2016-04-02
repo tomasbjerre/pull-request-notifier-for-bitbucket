@@ -1603,19 +1603,23 @@ public class PrnfbPullRequestEventListenerTest {
         .withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()) //
         .build() //
     ) //
-    .store().withNotification( //
+    .store()//
+    .withNotification( //
       notificationBuilder() //
         .withFieldValue(url, "http://bjurr.se/?456=${" + BUTTON_TRIGGER_TITLE + "}") //
         .withFieldValue(events, BUTTON_TRIGGER) //
         .withFieldValue(filter_string, "${" + BUTTON_TRIGGER_TITLE + "}") //
         .withFieldValue(filter_regexp, "button") //
-        .withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()).build()) //
-    .store().withNotification( //
+        .withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name())//
+        .build()) //
+    .store()//
+    .withNotification( //
       notificationBuilder() //
         .withFieldValue(FORM_IDENTIFIER, "Button Form") //
         .withFieldValue(FORM_TYPE, BUTTON_CONFIG_FORM.name()) //
         .withFieldValue(button_title, "button text 123") //
-        .withFieldValue(button_visibility, EVERYONE.name()).build()) //
+        .withFieldValue(button_visibility, EVERYONE.name())//
+        .build()) //
     .store() //
     .triggerButton("Button Form") //
     .invokedUrl(0, "http://bjurr.se/?123=button+text+123") //

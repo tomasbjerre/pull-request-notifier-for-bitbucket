@@ -6,7 +6,7 @@ Changelog of Pull Request Notifier for Bitbucket.
 ### No issue
   Using git changelog plugin 1.20
   
-  [2a8a6b934a6a6b2](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/2a8a6b934a6a6b2) Tomas Bjerre *2016-03-15 21:10:32*
+  [97dc36d24773408](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/97dc36d24773408) Tomas Bjerre *2016-03-15 21:15:55*
 
 ## 2.16
 ### GitHub [#103](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/103) Support Bitbucket Server 4.4

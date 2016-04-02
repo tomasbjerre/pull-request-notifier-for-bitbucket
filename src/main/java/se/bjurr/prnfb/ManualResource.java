@@ -42,13 +42,12 @@ import se.bjurr.prnfb.settings.PrnfbNotification;
 import se.bjurr.prnfb.settings.PrnfbSettings;
 
 import com.atlassian.annotations.security.XsrfProtectionExcluded;
+import com.atlassian.bitbucket.auth.AuthenticationContext;
 import com.atlassian.bitbucket.pull.PullRequest;
 import com.atlassian.bitbucket.pull.PullRequestService;
 import com.atlassian.bitbucket.repository.RepositoryService;
 import com.atlassian.bitbucket.server.ApplicationPropertiesService;
-import com.atlassian.bitbucket.user.ApplicationUser;
 import com.atlassian.bitbucket.user.SecurityService;
-import com.atlassian.bitbucket.user.UserService;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.user.UserKey;
 import com.atlassian.sal.api.user.UserManager;
@@ -59,13 +58,13 @@ import com.google.gson.Gson;
 public class ManualResource {
  private static Gson gson = new Gson();
  private final UserManager userManager;
- private final UserService userService;
  private final PullRequestService pullRequestService;
  private final PrnfbPullRequestEventListener prnfbPullRequestEventListener;
  private final SecurityService securityService;
  private final PluginSettingsFactory pluginSettingsFactory;
  private final ApplicationPropertiesService propertiesService;
  private final RepositoryService repositoryService;
+ private final AuthenticationContext authenticationContext;
  private static final List<AdminFormValues.BUTTON_VISIBILITY> adminOk = newArrayList();
  private static final List<AdminFormValues.BUTTON_VISIBILITY> systemAdminOk = newArrayList();
  static {
@@ -74,11 +73,12 @@ public class ManualResource {
   systemAdminOk.add(SYSTEM_ADMIN);
  }
 
- public ManualResource(UserManager userManager, UserService userService, PluginSettingsFactory pluginSettingsFactory,
-   PullRequestService pullRequestService, PrnfbPullRequestEventListener prnfbPullRequestEventListener,
-   RepositoryService repositoryService, ApplicationPropertiesService propertiesService, SecurityService securityService) {
+ public ManualResource(AuthenticationContext authenticationContext, UserManager userManager,
+   PluginSettingsFactory pluginSettingsFactory, PullRequestService pullRequestService,
+   PrnfbPullRequestEventListener prnfbPullRequestEventListener, RepositoryService repositoryService,
+   ApplicationPropertiesService propertiesService, SecurityService securityService) {
+  this.authenticationContext = authenticationContext;
   this.userManager = userManager;
-  this.userService = userService;
   this.pullRequestService = pullRequestService;
   this.prnfbPullRequestEventListener = prnfbPullRequestEventListener;
   this.securityService = securityService;
@@ -159,9 +159,8 @@ public class ManualResource {
 
  private PrnfbRenderer getRenderer(final PullRequest pullRequest, PrnfbNotification prnfbNotification,
    PrnfbPullRequestAction pullRequestAction, Map<PrnfbVariable, Supplier<String>> variables, HttpServletRequest request) {
-  ApplicationUser bitbucketUser = userService.getUserBySlug(userManager.getRemoteUser(request).getUsername());
-  return new PrnfbRenderer(pullRequest, pullRequestAction, bitbucketUser, repositoryService, propertiesService,
-    prnfbNotification, variables);
+  return new PrnfbRenderer(pullRequest, pullRequestAction, authenticationContext.getCurrentUser(), repositoryService,
+    propertiesService, prnfbNotification, variables);
  }
 
  static boolean allowedUseButton(PrnfbButton candidate, boolean isAdmin, boolean isSystemAdmin) {
