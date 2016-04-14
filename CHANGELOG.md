@@ -2,7 +2,14 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
-## Unreleased
+## 2.17
+### GitHub [#107](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/107) java.lang.NullPointerException: null at PrnfbRenderer.java:367
+  Finding current user correctly #107
+
+ * Was looking up currently logged in user with the users username. That caused NullPointerException  if username not same as user slug.
+  
+  [296f894974dd831](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/296f894974dd831) Tomas Bjerre *2016-04-02 07:17:39*
+
 ### No issue
   Using git changelog plugin 1.20
   
@@ -514,15 +521,15 @@ Also:
   
   [4a21a380f1bbe49](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/4a21a380f1bbe49) Tomas Bjerre *2015-04-07 20:49:49*
 
+  fix(admin): change password input to type password
+  
+  [050296e9217f040](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/050296e9217f040) Steven Sojka *2015-04-07 17:33:45*
+
 ## 1.5
 ### No issue
   Adding author related variables
   
   [475f25de338f7bc](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/475f25de338f7bc) Tomas Bjerre *2015-04-07 20:19:04*
-
-  fix(admin): change password input to type password
-  
-  [050296e9217f040](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/050296e9217f040) Steven Sojka *2015-04-07 17:33:45*
 
 ## 1.4
 ### No issue
