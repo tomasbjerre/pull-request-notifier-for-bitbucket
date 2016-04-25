@@ -1,25 +1,32 @@
-package se.bjurr.prnfb.settings;
+package se.bjurr.prnfb.presentation.dto;
 
-import static java.util.UUID.randomUUID;
+import static javax.xml.bind.annotation.XmlAccessType.FIELD;
 
 import java.util.UUID;
 
-public class PrnfbButton implements HasUuid {
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
- private final UUID uuid;
- private final String title;
- private final USER_LEVEL userLevel;
+import se.bjurr.prnfb.settings.USER_LEVEL;
 
- public PrnfbButton(String title, USER_LEVEL userLevel) {
-  this.uuid = randomUUID();
+@XmlRootElement
+@XmlAccessorType(FIELD)
+public class ButtonDTO {
+
+ private String title;
+ private USER_LEVEL userLevel;
+ private UUID uuid;
+
+ public void setTitle(String title) {
   this.title = title;
+ }
+
+ public void setUserLevel(USER_LEVEL userLevel) {
   this.userLevel = userLevel;
  }
 
- public PrnfbButton(UUID uuid, String title, USER_LEVEL userLevel) {
+ public void setUuid(UUID uuid) {
   this.uuid = uuid;
-  this.title = title;
-  this.userLevel = userLevel;
  }
 
  public String getTitle() {
@@ -30,9 +37,13 @@ public class PrnfbButton implements HasUuid {
   return userLevel;
  }
 
- @Override
- public UUID getUuid() {
+ public UUID getUUID() {
   return uuid;
+ }
+
+ @Override
+ public String toString() {
+  return "ButtonDTO [title=" + title + ", userLevel=" + userLevel + ", uuid=" + uuid + "]";
  }
 
  @Override
@@ -40,8 +51,8 @@ public class PrnfbButton implements HasUuid {
   final int prime = 31;
   int result = 1;
   result = prime * result + ((title == null) ? 0 : title.hashCode());
-  result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
   result = prime * result + ((userLevel == null) ? 0 : userLevel.hashCode());
+  result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
   return result;
  }
 
@@ -56,12 +67,15 @@ public class PrnfbButton implements HasUuid {
   if (getClass() != obj.getClass()) {
    return false;
   }
-  PrnfbButton other = (PrnfbButton) obj;
+  ButtonDTO other = (ButtonDTO) obj;
   if (title == null) {
    if (other.title != null) {
     return false;
    }
   } else if (!title.equals(other.title)) {
+   return false;
+  }
+  if (userLevel != other.userLevel) {
    return false;
   }
   if (uuid == null) {
@@ -71,15 +85,7 @@ public class PrnfbButton implements HasUuid {
   } else if (!uuid.equals(other.uuid)) {
    return false;
   }
-  if (userLevel != other.userLevel) {
-   return false;
-  }
   return true;
- }
-
- @Override
- public String toString() {
-  return "PrnfbButton [uuid=" + uuid + ", title=" + title + ", visibility=" + userLevel + "]";
  }
 
 }

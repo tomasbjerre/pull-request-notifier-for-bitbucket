@@ -2,6 +2,7 @@ package se.bjurr.prnfb.http;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.bjurr.prnfb.settings.PrnfbSettingsBuilder.prnfbSettingsBuilder;
+import static se.bjurr.prnfb.settings.PrnfbSettingsDataBuilder.prnfbSettingsDataBuilder;
 
 import org.junit.Test;
 
@@ -14,7 +15,7 @@ public class ClientKeyStoreTest {
   PrnfbSettings settings = prnfbSettingsBuilder()//
     .build();
 
-  ClientKeyStore clientKeyStore = new ClientKeyStore(settings);
+  ClientKeyStore clientKeyStore = new ClientKeyStore(settings.getPrnfbSettingsData());
 
   assertThat(clientKeyStore.getPassword())//
     .isNull();
@@ -25,10 +26,13 @@ public class ClientKeyStoreTest {
  @Test(expected = RuntimeException.class)
  public void testThatExceptionIsThrownIfKeyStoreNotFound() {
   PrnfbSettings settings = prnfbSettingsBuilder()//
-    .setKeyStore("keyStore")//
+    .setPrnfbSettingsData(//
+      prnfbSettingsDataBuilder()//
+        .setKeyStore("keyStore")//
+        .build())//
     .build();
 
-  ClientKeyStore clientKeyStore = new ClientKeyStore(settings);
+  ClientKeyStore clientKeyStore = new ClientKeyStore(settings.getPrnfbSettingsData());
 
   assertThat(clientKeyStore.getPassword())//
     .isNull();
@@ -39,11 +43,14 @@ public class ClientKeyStoreTest {
  @Test(expected = RuntimeException.class)
  public void testThatExceptionIsThrownIfKeyStoreNotFoundAndPasswordSet() {
   PrnfbSettings settings = prnfbSettingsBuilder()//
-    .setKeyStore("keyStore")//
-    .setKeyStorePassword("keyStorePassword")//
+    .setPrnfbSettingsData(//
+      prnfbSettingsDataBuilder()//
+        .setKeyStore("keyStore")//
+        .setKeyStorePassword("keyStorePassword")//
+        .build())//
     .build();
 
-  ClientKeyStore clientKeyStore = new ClientKeyStore(settings);
+  ClientKeyStore clientKeyStore = new ClientKeyStore(settings.getPrnfbSettingsData());
 
   assertThat(clientKeyStore.getPassword())//
     .isNull();

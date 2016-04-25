@@ -47,7 +47,7 @@ import org.apache.http.ssl.SSLContexts;
 import org.apache.http.ssl.TrustStrategy;
 import org.apache.http.util.EntityUtils;
 
-import se.bjurr.prnfb.settings.Header;
+import se.bjurr.prnfb.settings.PrnfbHeader;
 import se.bjurr.prnfb.settings.PrnfbNotification;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -73,7 +73,7 @@ public class UrlInvoker {
  private String urlParam;
  private HTTP_METHOD method = GET;
  private Optional<String> postContent = absent();
- private final List<Header> headers = newArrayList();
+ private final List<PrnfbHeader> headers = newArrayList();
  private Optional<String> proxyUser = absent();
  private Optional<String> proxyPassword = absent();
  private Optional<String> proxyHost = absent();
@@ -90,7 +90,7 @@ public class UrlInvoker {
  }
 
  public UrlInvoker withHeader(String name, String value) {
-  headers.add(new Header(name, value));
+  headers.add(new PrnfbHeader(name, value));
   return this;
  }
 
@@ -173,7 +173,7 @@ public class UrlInvoker {
  }
 
  @VisibleForTesting
- public static String getHeaderValue(Header header) {
+ public static String getHeaderValue(PrnfbHeader header) {
   return header.getValue();
  }
 
@@ -199,7 +199,7 @@ public class UrlInvoker {
   return this;
  }
 
- public List<Header> getHeaders() {
+ public List<PrnfbHeader> getHeaders() {
   return headers;
  }
 
@@ -341,7 +341,7 @@ public class UrlInvoker {
  }
 
  private void addHeaders(HttpRequestBase httpRequestBase) {
-  for (Header header : headers) {
+  for (PrnfbHeader header : headers) {
 
    if (header.getName().equals(AUTHORIZATION)) {
     logger.fine("header: \"" + header.getName() + "\" value: \"**********\"");

@@ -96,7 +96,7 @@ If you are using a CSRF protection in Jenkins, you can use the **Injection URL**
 Prerequisites:
 
 * Atlas SDK [(installation instructions)](https://developer.atlassian.com/docs/getting-started/set-up-the-atlassian-plugin-sdk-and-build-a-project).
-* JDK 1.7 or newer
+* JDK 1.8 or newer
 
 Generate Eclipse project:
 ```

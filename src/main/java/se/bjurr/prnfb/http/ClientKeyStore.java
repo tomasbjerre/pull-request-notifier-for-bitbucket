@@ -7,7 +7,7 @@ import java.io.FileInputStream;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 
-import se.bjurr.prnfb.settings.PrnfbSettings;
+import se.bjurr.prnfb.settings.PrnfbSettingsData;
 
 import com.google.common.base.Optional;
 
@@ -22,7 +22,7 @@ public class ClientKeyStore {
  private KeyStore keyStore = null;
  private char[] password = null;
 
- public ClientKeyStore(PrnfbSettings settings) {
+ public ClientKeyStore(PrnfbSettingsData settings) {
   if (settings.getKeyStore().isPresent()) {
    File keyStoreFile = new File(settings.getKeyStore().get());
    try {
