@@ -4,3 +4,4 @@ target
 .settings
 *~
 .okhttpcache
+node_modules

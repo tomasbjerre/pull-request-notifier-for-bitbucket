@@ -82,6 +82,27 @@ The ${PULL_REQUEST_USER...} contains information about the user who issued the e
 
 You may want to use [Violation Comments to Stash plugin](https://wiki.jenkins-ci.org/display/JENKINS/Violation+Comments+to+Stash+Plugin) and/or [StashNotifier plugin](https://wiki.jenkins-ci.org/display/JENKINS/StashNotifier+Plugin) to report results back to Bitbucket.
 
+### Rest
+Some rest resources are available. You can figure out the JSON structure by looking at the [DTO:s](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/tree/master/src/main/java/se/bjurr/prnfb/presentation/dto).
+
+* `/bitbucket/rest/prnfb-admin/1.0/settings`
+ * `GET` Get all global settings.
+ * `POST` Store all global settings.
+
+* `/bitbucket/rest/prnfb-admin/1.0/settings/notifications`
+ * `DELETE /{uuid}` Deletes notification with *uuid*.
+ * `GET` Get all notifications.
+ * `GET /{uuid}` Get notification with *uuid*.
+ * `POST` Save a notification.
+
+* `/bitbucket/rest/prnfb-admin/1.0/settings/buttons`
+ * `DELETE /{uuid}` Deletes button with *uuid*.
+ * `GET` Get all buttons that the current user is allowed to use.
+ * `GET /{uuid}` Get button with *uuid*.
+ * `GET /repository/{repositoryId}/pullrequest/{pullRequestId}` Get all buttons for repository that the current user is allowed to use.
+ * `POST` Save a button.
+ * `POST /press` Press the button.
+
 ### Jenkins
 Parameterized Jenkins jobs can be triggered remotely via:
 ```
@@ -96,7 +117,7 @@ If you are using a CSRF protection in Jenkins, you can use the **Injection URL**
 Prerequisites:
 
 * Atlas SDK [(installation instructions)](https://developer.atlassian.com/docs/getting-started/set-up-the-atlassian-plugin-sdk-and-build-a-project).
-* JDK 1.7 or newer
+* JDK 1.8 or newer
 
 Generate Eclipse project:
 ```

@@ -7,7 +7,7 @@ import java.io.FileInputStream;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 
-import se.bjurr.prnfb.settings.PrnfbSettings;
+import se.bjurr.prnfb.settings.PrnfbSettingsData;
 
 import com.google.common.base.Optional;
 
@@ -22,17 +22,17 @@ public class ClientKeyStore {
  private KeyStore keyStore = null;
  private char[] password = null;
 
- public ClientKeyStore(PrnfbSettings settings) {
+ public ClientKeyStore(PrnfbSettingsData settings) {
   if (settings.getKeyStore().isPresent()) {
    File keyStoreFile = new File(settings.getKeyStore().get());
    try {
-    keyStore = getKeyStore(settings.getKeyStoreType());
+    this.keyStore = getKeyStore(settings.getKeyStoreType());
 
     if (settings.getKeyStorePassword().isPresent()) {
-     password = settings.getKeyStorePassword().get().toCharArray();
+     this.password = settings.getKeyStorePassword().get().toCharArray();
     }
 
-    keyStore.load(new FileInputStream(keyStoreFile), password);
+    this.keyStore.load(new FileInputStream(keyStoreFile), this.password);
    } catch (Exception e) {
     throw new RuntimeException("Unable to build keystore from " + keyStoreFile.getAbsolutePath(), e);
    }
@@ -40,11 +40,11 @@ public class ClientKeyStore {
  }
 
  public Optional<KeyStore> getKeyStore() {
-  return fromNullable(keyStore);
+  return fromNullable(this.keyStore);
  }
 
  public char[] getPassword() {
-  return password;
+  return this.password;
  }
 
  private KeyStore getKeyStore(String keyStoreType) throws KeyStoreException {

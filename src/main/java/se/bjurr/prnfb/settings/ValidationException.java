@@ -16,15 +16,15 @@ public class ValidationException extends Exception {
  }
 
  public String getError() {
-  return error;
+  return this.error;
  }
 
  public String getField() {
-  return field;
+  return this.field;
  }
 
  @Override
  public String getMessage() {
-  return field + "=" + error;
+  return this.field + "=" + this.error;
  }
 }

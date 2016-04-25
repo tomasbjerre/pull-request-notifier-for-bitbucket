@@ -1,7 +1,10 @@
 package se.bjurr.prnfb.settings;
 
+import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.google.common.collect.Lists.newArrayList;
+import static se.bjurr.prnfb.settings.PrnfbSettingsDataBuilder.prnfbSettingsDataBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PrnfbSettingsBuilder {
@@ -9,90 +12,65 @@ public class PrnfbSettingsBuilder {
   return new PrnfbSettingsBuilder();
  }
 
- private final List<PrnfbNotification> notifications = newArrayList();
- private final List<PrnfbButton> buttons = newArrayList();
- private boolean usersAllowed;
- private boolean adminsAllowed;
- private boolean shouldAcceptAnyCertificate;
- private String keyStore;
- private String keyStoreType;
- private String keyStorePassword;
+ public static PrnfbSettingsBuilder prnfbSettingsBuilder(PrnfbSettings settings) {
+  return new PrnfbSettingsBuilder(settings);
+ }
+
+ private List<PrnfbButton> buttons;
+ private List<PrnfbNotification> notifications;
+ private PrnfbSettingsData prnfbSettingsData;
 
  private PrnfbSettingsBuilder() {
+  this.notifications = newArrayList();
+  this.buttons = newArrayList();
+  this.prnfbSettingsData = prnfbSettingsDataBuilder()//
+    .build();
+ }
+
+ private PrnfbSettingsBuilder(PrnfbSettings settings) {
+  this.notifications = firstNonNull(settings.getNotifications(), new ArrayList<PrnfbNotification>());
+  this.buttons = firstNonNull(settings.getButtons(), new ArrayList<PrnfbButton>());
+  this.prnfbSettingsData = settings.getPrnfbSettingsData();
  }
 
  public PrnfbSettings build() {
   return new PrnfbSettings(this);
  }
 
- public PrnfbSettingsBuilder withShouldAcceptAnyCertificate(boolean shouldAcceptAnyCertificate) {
-  this.shouldAcceptAnyCertificate = shouldAcceptAnyCertificate;
+ public List<PrnfbButton> getButtons() {
+  return this.buttons;
+ }
+
+ public List<PrnfbNotification> getNotifications() {
+  return this.notifications;
+ }
+
+ public PrnfbSettingsData getPrnfbSettingsData() {
+  return this.prnfbSettingsData;
+ }
+
+ public PrnfbSettingsBuilder setButtons(List<PrnfbButton> buttons) {
+  this.buttons = buttons;
   return this;
  }
 
- public boolean shouldAcceptAnyCertificate() {
-  return shouldAcceptAnyCertificate;
+ public PrnfbSettingsBuilder setNotifications(List<PrnfbNotification> notifications) {
+  this.notifications = notifications;
+  return this;
+ }
+
+ public PrnfbSettingsBuilder setPrnfbSettingsData(PrnfbSettingsData prnfbSettingsData) {
+  this.prnfbSettingsData = prnfbSettingsData;
+  return this;
+ }
+
+ public PrnfbSettingsBuilder withButton(PrnfbButton prnfbButton) {
+  this.buttons.add(prnfbButton);
+  return this;
  }
 
  public PrnfbSettingsBuilder withNotification(PrnfbNotification notification) {
   this.notifications.add(notification);
-  return this;
- }
-
- public void withButton(PrnfbButton prnfbButton) {
-  this.buttons.add(prnfbButton);
- }
-
- public List<PrnfbButton> getButtons() {
-  return buttons;
- }
-
- public List<PrnfbNotification> getNotifications() {
-  return notifications;
- }
-
- public PrnfbSettingsBuilder withUsersAllowed(boolean allowed) {
-  this.usersAllowed = allowed;
-  return this;
- }
-
- public PrnfbSettingsBuilder withAdminsAllowed(boolean allowed) {
-  this.adminsAllowed = allowed;
-  return this;
- }
-
- public boolean isAdminsAllowed() {
-  return adminsAllowed;
- }
-
- public boolean isUsersAllowed() {
-  return usersAllowed;
- }
-
- public String getKeyStore() {
-  return keyStore;
- }
-
- public String getKeyStoreType() {
-  return keyStoreType;
- }
-
- public String getKeyStorePassword() {
-  return keyStorePassword;
- }
-
- public PrnfbSettingsBuilder setKeyStore(String keyStore) {
-  this.keyStore = keyStore;
-  return this;
- }
-
- public PrnfbSettingsBuilder setKeyStorePassword(String keyStorePassword) {
-  this.keyStorePassword = keyStorePassword;
-  return this;
- }
-
- public PrnfbSettingsBuilder setKeyStoreType(String keyStoreType) {
-  this.keyStoreType = keyStoreType;
   return this;
  }
 }

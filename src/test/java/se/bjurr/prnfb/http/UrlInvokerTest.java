@@ -23,15 +23,15 @@ import com.google.common.base.Optional;
 
 public class UrlInvokerTest {
 
- private UrlInvoker urlInvoker;
  private HttpRequestBase httpRequestBase;
+ private UrlInvoker urlInvoker;
 
  @Before
  public void before() {
   this.urlInvoker = new UrlInvoker() {
    @Override
    String doInvoke(HttpRequestBase httpRequest, HttpClientBuilder builder) {
-    httpRequestBase = httpRequest;
+    UrlInvokerTest.this.httpRequestBase = httpRequest;
     return "";
    }
   }//
@@ -39,19 +39,42 @@ public class UrlInvokerTest {
  }
 
  @Test
- public void testThatURLCanBeInvokedWithMinimalConfig() throws Exception {
-  urlInvoker//
+ public void testThatHeadersAreAdded() {
+  this.urlInvoker//
+    .withHeader("name", "value")//
     .invoke();
 
-  assertThat(httpRequestBase.getMethod())//
-    .isEqualTo(GET.name());
-  assertThat(httpRequestBase.getURI().toString())//
-    .isEqualTo(new URL("http://url.com/").toString());
+  assertThat(this.httpRequestBase.getAllHeaders())//
+    .hasSize(1);
+  assertThat(this.httpRequestBase.getAllHeaders()[0].getName())//
+    .isEqualTo("name");
+  assertThat(this.httpRequestBase.getAllHeaders()[0].getValue())//
+    .isEqualTo("value");
+ }
+
+ @Test
+ public void testThatHeadersAreAddedForBasicAuth() throws Exception {
+  PrnfbNotification notification = prnfbNotificationBuilder()//
+    .withUrl("http://url.com/")//
+    .withUser("user")//
+    .withPassword("password")//
+    .build();
+
+  this.urlInvoker//
+    .appendBasicAuth(notification)//
+    .invoke();
+
+  assertThat(this.httpRequestBase.getAllHeaders())//
+    .hasSize(1);
+  assertThat(this.httpRequestBase.getAllHeaders()[0].getName())//
+    .isEqualTo("Authorization");
+  assertThat(this.httpRequestBase.getAllHeaders()[0].getValue())//
+    .isEqualTo("Basic dXNlcjpwYXNzd29yZA==");
  }
 
  @Test
  public void testThatHttpEntityEnclosingRequestBaseCanBeCreatedAsPOSTWithoutContent() {
-  HttpRequestBase response = urlInvoker//
+  HttpRequestBase response = this.urlInvoker//
     .withMethod(POST)//
     .newHttpRequestBase();
 
@@ -63,7 +86,7 @@ public class UrlInvokerTest {
 
  @Test
  public void testThatHttpEntityEnclosingRequestBaseCanBeCreatedAsPUTWithContent() {
-  HttpRequestBase response = urlInvoker//
+  HttpRequestBase response = this.urlInvoker//
     .withMethod(PUT)//
     .withPostContent(Optional.of("some content"))//
     .newHttpRequestBase();
@@ -77,7 +100,7 @@ public class UrlInvokerTest {
 
  @Test
  public void testThatHttpRequestBaseCanBeCreatedWithDelete() {
-  HttpRequestBase response = urlInvoker//
+  HttpRequestBase response = this.urlInvoker//
     .withMethod(DELETE)//
     .newHttpRequestBase();
 
@@ -88,55 +111,10 @@ public class UrlInvokerTest {
  }
 
  @Test
- public void testThatHeadersAreAdded() {
-  urlInvoker//
-    .withHeader("name", "value")//
-    .invoke();
-
-  assertThat(httpRequestBase.getAllHeaders())//
-    .hasSize(1);
-  assertThat(httpRequestBase.getAllHeaders()[0].getName())//
-    .isEqualTo("name");
-  assertThat(httpRequestBase.getAllHeaders()[0].getValue())//
-    .isEqualTo("value");
- }
-
- @Test
- public void testThatHeadersAreAddedForBasicAuth() throws Exception {
-  PrnfbNotification notification = prnfbNotificationBuilder()//
-    .withUrl("http://url.com/")//
-    .withUser("user")//
-    .withPassword("password")//
-    .build();
-
-  urlInvoker//
-    .appendBasicAuth(notification)//
-    .invoke();
-
-  assertThat(httpRequestBase.getAllHeaders())//
-    .hasSize(1);
-  assertThat(httpRequestBase.getAllHeaders()[0].getName())//
-    .isEqualTo("Authorization");
-  assertThat(httpRequestBase.getAllHeaders()[0].getValue())//
-    .isEqualTo("Basic dXNlcjpwYXNzd29yZA==");
- }
-
- @Test
- public void testThatSslCanBeConfigured() throws Exception {
-  HttpClientBuilder mockedBuilder = mock(HttpClientBuilder.class);
-
-  urlInvoker//
-    .withUrlParam("https://url.com/")//
-    .configureSsl(mockedBuilder);
-
-  // verify(mockedBuilder).setSSLSocketFactory(Matchers.any());
- }
-
- @Test
  public void testThatNoneSslCanBeConfigured() throws Exception {
   HttpClientBuilder mockedBuilder = mock(HttpClientBuilder.class);
 
-  urlInvoker//
+  this.urlInvoker//
     .withUrlParam("http://url.com/")//
     .configureSsl(mockedBuilder);
 
@@ -147,7 +125,7 @@ public class UrlInvokerTest {
  public void testThatProxyIsConfiguredIfThereIsAHostAndPort() throws Exception {
   HttpClientBuilder mockedBuilder = mock(HttpClientBuilder.class);
 
-  urlInvoker//
+  this.urlInvoker//
     .withUrlParam("http://url.com/")//
     .withProxyServer(of("http://proxy.com/"))//
     .withProxyPort(123)//
@@ -160,7 +138,7 @@ public class UrlInvokerTest {
  public void testThatProxyIsNotConfiguredIfThereIsNoHost() throws Exception {
   HttpClientBuilder mockedBuilder = mock(HttpClientBuilder.class);
 
-  urlInvoker//
+  this.urlInvoker//
     .withUrlParam("http://url.com/")//
     .withProxyPort(123)//
     .configureProxy(mockedBuilder);
@@ -172,7 +150,7 @@ public class UrlInvokerTest {
  public void testThatProxyUserIsConfiguredIfItIsSet() throws Exception {
   HttpClientBuilder mockedBuilder = mock(HttpClientBuilder.class);
 
-  urlInvoker//
+  this.urlInvoker//
     .withUrlParam("http://url.com/")//
     .withProxyServer(of("http://proxy.com/"))//
     .withProxyPort(123)//
@@ -189,7 +167,7 @@ public class UrlInvokerTest {
  public void testThatProxyUserIsNotConfiguredIfNoPasswordSet() throws Exception {
   HttpClientBuilder mockedBuilder = mock(HttpClientBuilder.class);
 
-  urlInvoker//
+  this.urlInvoker//
     .withUrlParam("http://url.com/")//
     .withProxyServer(of("http://proxy.com/"))//
     .withProxyPort(123)//
@@ -199,6 +177,28 @@ public class UrlInvokerTest {
   // verify(mockedBuilder,
   // times(0)).setDefaultCredentialsProvider(Matchers.any());
   // verify(mockedBuilder, times(1)).setProxy(Matchers.any());
+ }
+
+ @Test
+ public void testThatSslCanBeConfigured() throws Exception {
+  HttpClientBuilder mockedBuilder = mock(HttpClientBuilder.class);
+
+  this.urlInvoker//
+    .withUrlParam("https://url.com/")//
+    .configureSsl(mockedBuilder);
+
+  // verify(mockedBuilder).setSSLSocketFactory(Matchers.any());
+ }
+
+ @Test
+ public void testThatURLCanBeInvokedWithMinimalConfig() throws Exception {
+  this.urlInvoker//
+    .invoke();
+
+  assertThat(this.httpRequestBase.getMethod())//
+    .isEqualTo(GET.name());
+  assertThat(this.httpRequestBase.getURI().toString())//
+    .isEqualTo(new URL("http://url.com/").toString());
  }
 
 }

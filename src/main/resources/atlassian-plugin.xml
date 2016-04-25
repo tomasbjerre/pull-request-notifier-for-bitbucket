@@ -1,47 +1,52 @@
 <atlassian-plugin key="se.bjurr.prnfs.pull-request-notifier-for-stash" name="${project.name}" plugins-version="2">
-    <plugin-info>
-        <description>${project.description}</description>
-        <version>${project.version}</version>
-        <vendor name="${project.organization.name}" url="${project.organization.url}" />
-        <param name="atlassian-data-center-compatible">true</param>
-        <param name="plugin-icon">images/pluginIcon.png</param>
-        <param name="plugin-logo">images/pluginLogo.png</param>
-        <param name="configure.url">/plugins/servlet/prnfb/admin</param>
-    </plugin-info>
-    
-    <component key="prnfbPullRequestEventListener" class="se.bjurr.prnfb.listener.PrnfbPullRequestEventListener" />
-    <component-import key="applicationProperties" interface="com.atlassian.sal.api.ApplicationProperties" />   
-    <component-import key="userManager" interface="com.atlassian.sal.api.user.UserManager" />
-    <component-import key="loginUriProvider" interface="com.atlassian.sal.api.auth.LoginUriProvider" />
-    <component-import key="renderer" interface="com.atlassian.templaterenderer.velocity.one.six.VelocityTemplateRenderer" />
-    <component-import key="pluginSettingsFactory" interface="com.atlassian.sal.api.pluginsettings.PluginSettingsFactory" />
-    <component-import key="transactionTemplate" interface="com.atlassian.sal.api.transaction.TransactionTemplate" />
-    <component-import key="repositoryService" interface="com.atlassian.bitbucket.repository.RepositoryService" />
-    <component-import key="executorService" interface="java.util.concurrent.ExecutorService"/>
+ <plugin-info>
+  <description>${project.description}</description>
+  <version>${project.version}</version>
+  <vendor name="${project.organization.name}" url="${project.organization.url}" />
+  <param name="atlassian-data-center-compatible">true</param>
+  <param name="plugin-icon">images/pluginIcon.png</param>
+  <param name="plugin-logo">images/pluginLogo.png</param>
+  <param name="configure.url">/plugins/servlet/prnfb/admin</param>
+ </plugin-info>
 
-    <rest key="rest" path="/prnfb-admin" version="1.0">
-        <description>Provides REST resources for the admin UI.</description>
-    </rest>
+ <component key="prnfbPullRequestEventListener" class="se.bjurr.prnfb.listener.PrnfbPullRequestEventListener" />
+ <component key="buttonsService" class="se.bjurr.prnfb.service.ButtonsService" />
+ <component key="userCheckService" class="se.bjurr.prnfb.service.UserCheckService" />
+ <component key="settingsService" class="se.bjurr.prnfb.service.SettingsService" />
+ <component key="prnfbRendererFactory" class="se.bjurr.prnfb.service.PrnfbRendererFactory" />
+ 
+ <component-import key="applicationProperties" interface="com.atlassian.sal.api.ApplicationProperties" />
+ <component-import key="userManager" interface="com.atlassian.sal.api.user.UserManager" />
+ <component-import key="loginUriProvider" interface="com.atlassian.sal.api.auth.LoginUriProvider" />
+ <component-import key="renderer" interface="com.atlassian.templaterenderer.velocity.one.six.VelocityTemplateRenderer" />
+ <component-import key="pluginSettingsFactory" interface="com.atlassian.sal.api.pluginsettings.PluginSettingsFactory" />
+ <component-import key="transactionTemplate" interface="com.atlassian.sal.api.transaction.TransactionTemplate" />
+ <component-import key="repositoryService" interface="com.atlassian.bitbucket.repository.RepositoryService" />
+ <component-import key="executorService" interface="java.util.concurrent.ExecutorService" />
 
-    <web-resource name="Admin Web Resources" key="resources"> 
-        <dependency>com.atlassian.auiplugin:ajs</dependency> 
-        <resource type="download" name="admin.js" location="admin.js"/> 
-        <resource type="download" name="admin.css" location="admin.css"/> 
-    </web-resource>
+ <rest key="rest" path="/prnfb-admin" version="1.0">
+  <description>Provides REST resources for the admin UI.</description>
+ </rest>
 
-    <servlet key="admin-servlet" class="se.bjurr.prnfb.admin.AdminServlet">
-        <url-pattern>/prnfb/admin</url-pattern>
-    </servlet>
-    
-    <web-item key="se.bjurr.prnfb.triggerbutton" name="Trigger Notification" weight="50" section="bitbucket.pull-request.toolbar.actions">
-        <label key="bitbucket.web.pull-request.toolbar.triggerbutton">Trigger Notification</label>
-        <styleClass>triggerManualNotification</styleClass>
-        <dependency>${project.groupId}-${project.artifactId}:pr-triggerbutton</dependency>
-    </web-item>
-    
-    <web-resource key="pr-triggerbutton">
-        <resource type="download" name="pr-triggerbutton.js" location="/pr-triggerbutton.js" />
-        <dependency>com.atlassian.bitbucket.bitbucket-web-plugin:global</dependency>
-        <context>bitbucket.page.pullRequest.view</context>
-    </web-resource>
+ <web-resource name="Admin Web Resources" key="resources">
+  <dependency>com.atlassian.auiplugin:ajs</dependency>
+  <resource type="download" name="admin.js" location="admin.js" />
+  <resource type="download" name="admin.css" location="admin.css" />
+ </web-resource>
+
+ <servlet key="admin-servlet" class="se.bjurr.prnfb.presentation.GlobalAdminServlet">
+  <url-pattern>/prnfb/admin</url-pattern>
+ </servlet>
+
+ <web-item key="se.bjurr.prnfb.triggerbutton" name="Trigger Notification" weight="50" section="bitbucket.pull-request.toolbar.actions">
+  <label key="bitbucket.web.pull-request.toolbar.triggerbutton">Trigger Notification</label>
+  <styleClass>triggerManualNotification</styleClass>
+  <dependency>${project.groupId}-${project.artifactId}:pr-triggerbutton</dependency>
+ </web-item>
+
+ <web-resource key="pr-triggerbutton">
+  <resource type="download" name="pr-triggerbutton.js" location="/pr-triggerbutton.js" />
+  <dependency>com.atlassian.bitbucket.bitbucket-web-plugin:global</dependency>
+  <context>bitbucket.page.pullRequest.view</context>
+ </web-resource>
 </atlassian-plugin>

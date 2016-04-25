@@ -1,64 +1,77 @@
 package se.bjurr.prnfb.settings;
 
-import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Strings.emptyToNull;
 import static com.google.common.collect.Lists.newArrayList;
 
 import java.util.List;
 
-import com.google.common.base.Optional;
-
 public class PrnfbSettings {
- private List<PrnfbNotification> notifications = newArrayList();
  private final List<PrnfbButton> buttons;
- private final boolean usersAllowed;
- private final boolean adminsAllowed;
- private final String keyStore;
- private final String keyStoreType;
- private final String keyStorePassword;
- private final boolean shouldAcceptAnyCertificate;
+ private List<PrnfbNotification> notifications = newArrayList();
+ private final PrnfbSettingsData prnfbSettingsData;
 
  public PrnfbSettings(PrnfbSettingsBuilder builder) {
   this.notifications = checkNotNull(builder.getNotifications());
   this.buttons = checkNotNull(builder.getButtons());
-  this.usersAllowed = builder.isUsersAllowed();
-  this.adminsAllowed = builder.isAdminsAllowed();
-  this.keyStore = emptyToNull(builder.getKeyStore());
-  this.keyStoreType = builder.getKeyStoreType();
-  this.keyStorePassword = emptyToNull(builder.getKeyStorePassword());
-  this.shouldAcceptAnyCertificate = builder.shouldAcceptAnyCertificate();
+  this.prnfbSettingsData = checkNotNull(builder.getPrnfbSettingsData(), "prnfbSettingsData");
  }
 
- public List<PrnfbNotification> getNotifications() {
-  return notifications;
+ @Override
+ public boolean equals(Object obj) {
+  if (this == obj) {
+   return true;
+  }
+  if (obj == null) {
+   return false;
+  }
+  if (getClass() != obj.getClass()) {
+   return false;
+  }
+  PrnfbSettings other = (PrnfbSettings) obj;
+  if (this.buttons == null) {
+   if (other.buttons != null) {
+    return false;
+   }
+  } else if (!this.buttons.equals(other.buttons)) {
+   return false;
+  }
+  if (this.notifications == null) {
+   if (other.notifications != null) {
+    return false;
+   }
+  } else if (!this.notifications.equals(other.notifications)) {
+   return false;
+  }
+  if (this.prnfbSettingsData == null) {
+   if (other.prnfbSettingsData != null) {
+    return false;
+   }
+  } else if (!this.prnfbSettingsData.equals(other.prnfbSettingsData)) {
+   return false;
+  }
+  return true;
  }
 
  public List<PrnfbButton> getButtons() {
-  return buttons;
+  return this.buttons;
  }
 
- public boolean isUsersAllowed() {
-  return usersAllowed;
+ public List<PrnfbNotification> getNotifications() {
+  return this.notifications;
  }
 
- public boolean isAdminsAllowed() {
-  return adminsAllowed;
+ public PrnfbSettingsData getPrnfbSettingsData() {
+  return this.prnfbSettingsData;
  }
 
- public Optional<String> getKeyStore() {
-  return fromNullable(keyStore);
+ @Override
+ public int hashCode() {
+  final int prime = 31;
+  int result = 1;
+  result = prime * result + ((this.buttons == null) ? 0 : this.buttons.hashCode());
+  result = prime * result + ((this.notifications == null) ? 0 : this.notifications.hashCode());
+  result = prime * result + ((this.prnfbSettingsData == null) ? 0 : this.prnfbSettingsData.hashCode());
+  return result;
  }
 
- public String getKeyStoreType() {
-  return keyStoreType;
- }
-
- public Optional<String> getKeyStorePassword() {
-  return fromNullable(keyStorePassword);
- }
-
- public boolean shouldAcceptAnyCertificate() {
-  return shouldAcceptAnyCertificate;
- }
 }

@@ -2,6 +2,17 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## Unreleased
+### GitHub [#109](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/109) Refactor admin pages
+  Refactoring #109
+  
+  [39e9178185e939a](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/39e9178185e939a) Tomas Bjerre *2016-05-03 15:33:36*
+
+### No issue
+  changelog maven plugin 1.29
+  
+  [25ccd05b465bd4a](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/25ccd05b465bd4a) Tomas Bjerre *2016-04-14 16:36:16*
+
 ## 2.17
 ### GitHub [#107](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/107) java.lang.NullPointerException: null at PrnfbRenderer.java:367
   Finding current user correctly #107
