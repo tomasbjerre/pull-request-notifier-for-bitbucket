@@ -76,7 +76,16 @@ The filter text as well as the URL support variables. These are:
 * ${PULL_REQUEST_FROM_REPO_PROJECT_ID} Example: 1
 * ${PULL_REQUEST_FROM_REPO_PROJECT_KEY} Example: PROJECT_1
 * ${PULL_REQUEST_FROM_REPO_SLUG} Example: rep_1
-* And same variables for TO, like: ${PULL_REQUEST_TO_HASH}
+* ${PULL_REQUEST_TO_SSH_CLONE_URL} Example: ssh://git@localhost:7999/project_1/rep_1
+* ${PULL_REQUEST_TO_HTTP_CLONE_URL} Example: http://admin@localhost:7990/bitbucket/scm/project_1/rep_1.git
+* ${PULL_REQUEST_TO_HASH} Example: 6053a1eaa1c009dd11092d09a72f3c41af1b59ad
+* ${PULL_REQUEST_TO_ID} Example: refs/heads/branchmodmerge
+* ${PULL_REQUEST_TO_BRANCH} Example: branchmodmerge
+* ${PULL_REQUEST_TO_REPO_ID} Example: 1
+* ${PULL_REQUEST_TO_REPO_NAME} Example: rep_1
+* ${PULL_REQUEST_TO_REPO_PROJECT_ID} Example: 1
+* ${PULL_REQUEST_TO_REPO_PROJECT_KEY} Example: PROJECT_1
+* ${PULL_REQUEST_TO_REPO_SLUG} Example: rep_1
 
 The ${PULL_REQUEST_USER...} contains information about the user who issued the event. Who commented it, who rejected it, who approved it...
 

@@ -6,7 +6,16 @@ Changelog of Pull Request Notifier for Bitbucket.
 ### GitHub [#109](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/109) Refactor admin pages
   Refactoring #109
   
-  [39e9178185e939a](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/39e9178185e939a) Tomas Bjerre *2016-05-03 15:33:36*
+  [3e1fddaecb4aab8](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/3e1fddaecb4aab8) Tomas Bjerre *2016-05-03 16:01:52*
+
+### GitHub [#25](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/25) Enable  configuration in per-repository hook screen
+  Adding repo and global admin pages #25
+  
+  [f648c5012cf4706](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/f648c5012cf4706) Tomas Bjerre *2016-05-03 18:16:19*
+
+  Adding project and repo filter to notification #25
+  
+  [1fc12a72100afe8](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/1fc12a72100afe8) Tomas Bjerre *2016-05-03 16:44:25*
 
 ### No issue
   changelog maven plugin 1.29

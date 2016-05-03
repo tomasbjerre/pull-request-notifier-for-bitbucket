@@ -2,380 +2,119 @@
 
 <head>
  <title>Pull Request Notifier for Bitbucket Admin</title>
- <meta name="decorator" content="atl.admin"> $webResourceManager.requireResource("se.bjurr.prnfs.pull-request-notifier-for-stash:resources")
+
+ #if($repository)
+ <meta name="projectKey" content="$repository.project.key">
+ <meta name="repositorySlug" content="$repository.slug">
+ <meta name="decorator" content="bitbucket.repository.settings">
+ <meta name="activeTab" content="se.bjurr.ssfb.repo.synchronization">
+ <!-- //-->
+ #else
+ <!-- //-->
+ <meta name="decorator" content="atl.admin">
+ <!-- //-->
+ #end
+ <!-- //-->
+ $webResourceManager.requireResource("se.bjurr.prnfs.pull-request-notifier-for-stash:resources")
+ <!-- //-->
+ $webResourceManager.requireResource("com.atlassian.auiplugin:aui-select")
 </head>
 
 <body>
- <div class="prnfb-template prnfb-template-GLOBAL_SETTINGS">
-  <form class="trigger config-area">
-   <input type="hidden" name="FORM_IDENTIFIER" value="GLOBAL_SETTINGS">
-   <input type="hidden" name="FORM_TYPE" value="GLOBAL_SETTINGS">
-   <div>
-    <fieldset>
-     <legend>Admin restrictions</legend>
-     <input type="checkbox" id="systemadmin_allowed" checked disabled>
-     <label for="systemadmin_allowed">System administrators</label>
-     <br>
-     <input type="checkbox" name="admin_allowed" value="ADMINS" id="admin_allowed">
-     <label for="admin_allowed">Administrators</label>
-     <br>
-     <input type="checkbox" name="user_allowed" value="USERS" id="user_allowed">
-     <label for="user_allowed">Users</label>
-     <br>
-    </fieldset>
-   </div>
-   <div>
-    <fieldset>
-     <legend>SSL</legend>
-     <input type="checkbox" name="accept_any_certificate">
-     <label for="accept_any_certificate">Accept any certificate</label>
-     <br>
 
-     <p>
-      Custom <a href="https://docs.oracle.com/javase/8/docs/api/java/security/KeyStore.html" target="_blank">KeyStore</a> configuration is optional.
-     </p>
-     <label>Path
-      <input type="text" name="key_store">
-     </label>
-     <label>Type
-      <input type="text" name="key_store_type">
-     </label>
-     <label>Password
-      <input type="password" name="key_store_password">
-     </label>
-    </fieldset>
-   </div>
-   <div>
-    <fieldset>
-     <input type="button" name="save" value="Save" />
-     <span class="post"></span>
-    </fieldset>
-   </div>
-  </form>
- </div>
- <div class="prnfb-GLOBAL_SETTINGS">
- </div>
+ <h3>Usage</h3>
+ <p>
+  The documentation is available on <a href="https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket">GitHub</a>.
+ </p>
+ <p>
+  You can use variables when invoking the URL, when forming the filter string, custom header values or in POST content.
+ </p>
+ <ul>
+  <li><b>${PULL_REQUEST_ID}</b> Example: 1</li>
+  <li><b>${PULL_REQUEST_TITLE}</b> Example: Anything</li>
+  <li><b>${PULL_REQUEST_ACTION}</b> Example: OPENED</li>
+  <li><b>${PULL_REQUEST_URL}</b> Example: http://localhost:7990/projects/PROJECT_1/repos/rep_1/pull-requests/1</li>
+  <li><b>${PULL_REQUEST_VERSION}</b> Example: 1</li>
+  <li><b>${PULL_REQUEST_COMMENT_TEXT}</b> Example: A comment</li>
+  <li><b>${BUTTON_TRIGGER_TITLE}</b> Example: Trigger Notification</li>
+  <li><b>${INJECTION_URL_VALUE}</b> If injection URL configured</li>
+  <li><b>${PULL_REQUEST_USER_DISPLAY_NAME}</b> Example: Some User</li>
+  <li><b>${PULL_REQUEST_USER_EMAIL_ADDRESS}</b> Example: some.user@bitbucket.domain</li>
+  <li><b>${PULL_REQUEST_USER_ID}</b> Example: 1</li>
+  <li><b>${PULL_REQUEST_USER_NAME}</b> Example: some.user</li>
+  <li><b>${PULL_REQUEST_USER_SLUG}</b> Example: some.user</li>
+  <li><b>${PULL_REQUEST_AUTHOR_DISPLAY_NAME}</b> Example: Administrator</li>
+  <li><b>${PULL_REQUEST_AUTHOR_EMAIL}</b> Example: admin@example.com</li>
+  <li><b>${PULL_REQUEST_AUTHOR_ID}</b> Example: 1</li>
+  <li><b>${PULL_REQUEST_AUTHOR_NAME}</b> Example: admin</li>
+  <li><b>${PULL_REQUEST_AUTHOR_SLUG}</b> Example: admin</li>
+  <li><b>${PULL_REQUEST_REVIEWERS}</b> Reviewers list.</li>
+  <li><b>${PULL_REQUEST_REVIEWERS_ID}</b> Reviewers ID list.</li>
+  <li><b>${PULL_REQUEST_REVIEWERS_SLUG}</b> Reviewers slug list.</li>
+  <li><b>${PULL_REQUEST_REVIEWERS_APPROVED_COUNT}</b> Number of reviewers that approved the PR.</li>
+  <li><b>${PULL_REQUEST_PARTICIPANTS_APPROVED_COUNT}</b> Number of participants that approved the PR.</li>
+  <li><b>${PULL_REQUEST_MERGE_COMMIT}</b> Hash of merged commit (only available for merged-event).</li>
+  <li><b>${PULL_REQUEST_FROM_SSH_CLONE_URL}</b> Example: ssh://git@localhost:7999/project_1/rep_1</li>
+  <li><b>${PULL_REQUEST_FROM_HTTP_CLONE_URL}</b> Example: http://admin@localhost:7990/bitbucket/scm/project_1/rep_1.git</li>
+  <li><b>${PULL_REQUEST_FROM_HASH}</b> Example: 6053a1eaa1c009dd11092d09a72f3c41af1b59ad</li>
+  <li><b>${PULL_REQUEST_FROM_ID}</b> Example: refs/heads/branch_mod_merge</li>
+  <li><b>${PULL_REQUEST_FROM_BRANCH}</b> Example: branch_mod_merge</li>
+  <li><b>${PULL_REQUEST_FROM_REPO_ID}</b> Example: 1</li>
+  <li><b>${PULL_REQUEST_FROM_REPO_NAME}</b> Example: rep_1</li>
+  <li><b>${PULL_REQUEST_FROM_REPO_PROJECT_ID}</b> Example: 1</li>
+  <li><b>${PULL_REQUEST_FROM_REPO_PROJECT_KEY}</b> Example: PROJECT_1</li>
+  <li><b>${PULL_REQUEST_FROM_REPO_SLUG}</b> Example: rep_1</li>
+  <li><b>${PULL_REQUEST_TO_SSH_CLONE_URL}</b> Example: ssh://git@localhost:7999/project_1/rep_1</li>
+  <li><b>${PULL_REQUEST_TO_HTTP_CLONE_URL}</b> Example: http://admin@localhost:7990/bitbucket/scm/project_1/rep_1.git</li>
+  <li><b>${PULL_REQUEST_TO_HASH}</b> Example: d6edcbf924697ab811a867421dab60d954ccad99</li>
+  <li><b>${PULL_REQUEST_TO_ID}</b> Example: refs/heads/basic_branching</li>
+  <li><b>${PULL_REQUEST_TO_BRANCH}</b> Example: basic_branching</li>
+  <li><b>${PULL_REQUEST_TO_REPO_ID}</b> Example: 1</li>
+  <li><b>${PULL_REQUEST_TO_REPO_NAME}</b> Example: rep_1</li>
+  <li><b>${PULL_REQUEST_TO_REPO_PROJECT_ID}</b> Example: 1</li>
+  <li><b>${PULL_REQUEST_TO_REPO_PROJECT_KEY}</b> Example: PROJECT_1</li>
+  <li><b>${PULL_REQUEST_TO_REPO_SLUG}</b> Example: rep_1</li>
+ </ul>
 
- <div class="prnfb-BUTTON_CONFIG_FORM">
- </div>
+ <h3>Buttons</h3>
+ <p>
+  Buttons are added in the pull request view. Only buttons that will trigger at least one configured notification is shown.
+ </p>
 
- <div>
-  <div class="description">
-   You can use variables when invoking the URL, when forming the filter string, custom header values or in POST content.
-   <ul>
-    <li><b>${PULL_REQUEST_ID}</b> Example: 1</li>
-    <li><b>${PULL_REQUEST_TITLE}</b> Example: Anything</li>
-    <li><b>${PULL_REQUEST_ACTION}</b> Example: OPENED</li>
-    <li><b>${PULL_REQUEST_URL}</b> Example: http://localhost:7990/projects/PROJECT_1/repos/rep_1/pull-requests/1</li>
-    <li><b>${PULL_REQUEST_VERSION}</b> Example: 1</li>
-    <li><b>${PULL_REQUEST_COMMENT_TEXT}</b> Example: A comment</li>
-    <li><b>${BUTTON_TRIGGER_TITLE}</b> Example: Trigger Notification</li>
-    <li><b>${INJECTION_URL_VALUE}</b> If injection URL configured</li>
-    <li><b>${PULL_REQUEST_USER_DISPLAY_NAME}</b> Example: Some User</li>
-    <li><b>${PULL_REQUEST_USER_EMAIL_ADDRESS}</b> Example: some.user@bitbucket.domain</li>
-    <li><b>${PULL_REQUEST_USER_ID}</b> Example: 1</li>
-    <li><b>${PULL_REQUEST_USER_NAME}</b> Example: some.user</li>
-    <li><b>${PULL_REQUEST_USER_SLUG}</b> Example: some.user</li>
-    <li><b>${PULL_REQUEST_AUTHOR_DISPLAY_NAME}</b> Example: Administrator</li>
-    <li><b>${PULL_REQUEST_AUTHOR_EMAIL}</b> Example: admin@example.com</li>
-    <li><b>${PULL_REQUEST_AUTHOR_ID}</b> Example: 1</li>
-    <li><b>${PULL_REQUEST_AUTHOR_NAME}</b> Example: admin</li>
-    <li><b>${PULL_REQUEST_AUTHOR_SLUG}</b> Example: admin</li>
-    <li><b>${PULL_REQUEST_REVIEWERS}</b> Reviewers list.</li>
-    <li><b>${PULL_REQUEST_REVIEWERS_ID}</b> Reviewers ID list.</li>
-    <li><b>${PULL_REQUEST_REVIEWERS_SLUG}</b> Reviewers slug list.</li>
-    <li><b>${PULL_REQUEST_REVIEWERS_APPROVED_COUNT}</b> Number of reviewers that approved the PR.</li>
-    <li><b>${PULL_REQUEST_PARTICIPANTS_APPROVED_COUNT}</b> Number of participants that approved the PR.</li>
-    <li><b>${PULL_REQUEST_MERGE_COMMIT}</b> Hash of merged commit (only available for merged-event).</li>
-    <li><b>${PULL_REQUEST_FROM_SSH_CLONE_URL}</b> Example: ssh://git@localhost:7999/project_1/rep_1</li>
-    <li><b>${PULL_REQUEST_FROM_HTTP_CLONE_URL}</b> Example: http://admin@localhost:7990/bitbucket/scm/project_1/rep_1.git</li>
-    <li><b>${PULL_REQUEST_FROM_HASH}</b> Example: 6053a1eaa1c009dd11092d09a72f3c41af1b59ad</li>
-    <li><b>${PULL_REQUEST_FROM_ID}</b> Example: refs/heads/branch_mod_merge</li>
-    <li><b>${PULL_REQUEST_FROM_BRANCH}</b> Example: branch_mod_merge</li>
-    <li><b>${PULL_REQUEST_FROM_REPO_ID}</b> Example: 1</li>
-    <li><b>${PULL_REQUEST_FROM_REPO_NAME}</b> Example: rep_1</li>
-    <li><b>${PULL_REQUEST_FROM_REPO_PROJECT_ID}</b> Example: 1</li>
-    <li><b>${PULL_REQUEST_FROM_REPO_PROJECT_KEY}</b> Example: PROJECT_1</li>
-    <li><b>${PULL_REQUEST_FROM_REPO_SLUG}</b> Example: rep_1</li>
-    <li><b>${PULL_REQUEST_TO_SSH_CLONE_URL}</b> Example: ssh://git@localhost:7999/project_1/rep_1</li>
-    <li><b>${PULL_REQUEST_TO_HTTP_CLONE_URL}</b> Example: http://admin@localhost:7990/bitbucket/scm/project_1/rep_1.git</li>
-    <li><b>${PULL_REQUEST_TO_HASH}</b> Example: d6edcbf924697ab811a867421dab60d954ccad99</li>
-    <li><b>${PULL_REQUEST_TO_ID}</b> Example: refs/heads/basic_branching</li>
-    <li><b>${PULL_REQUEST_TO_BRANCH}</b> Example: basic_branching</li>
-    <li><b>${PULL_REQUEST_TO_REPO_ID}</b> Example: 1</li>
-    <li><b>${PULL_REQUEST_TO_REPO_NAME}</b> Example: rep_1</li>
-    <li><b>${PULL_REQUEST_TO_REPO_PROJECT_ID}</b> Example: 1</li>
-    <li><b>${PULL_REQUEST_TO_REPO_PROJECT_KEY}</b> Example: PROJECT_1</li>
-    <li><b>${PULL_REQUEST_TO_REPO_SLUG}</b> Example: rep_1</li>
-   </ul>
-  </div>
- </div>
+ <h3>Notifications</h3>
+ <p>
+  A notification is triggered by an event and will result in a URL invocation. The variables above enables you to send whatever information you want as a parameter in that URL.
+ </p>
 
- <div class="prnfb-TRIGGER_CONFIG_FORM">
- </div>
+ <form id="prnfbadmin" class="aui prnfb">
+  <fieldset class="group">
+   <legend>
+    <span>When to trigger notification</span>
+   </legend>
 
- <div class="prnfb-template prnfb-template-BUTTON_CONFIG_FORM">
-  <form class="config-area">
-   <div class="content">
-    <input type="hidden" name="FORM_IDENTIFIER">
-    <input type="hidden" name="FORM_TYPE" value="BUTTON_CONFIG_FORM">
-    <div>
-     <fieldset>
-      <legend>Trigger button</legend>
-      <p>
-       Button in pull request view.
-      </p>
-      <label>Text to display on button
-       <input type="text" name="button_title">
-      </label>
-     </fieldset>
+   #if($repository)
+   <!-- //-->
+   <input type="hidden" name="repositorySlug" value="$repository.slug" />
+   <input type="hidden" name="projectKey" value="$repository.project.key" />
+   <!-- //-->
+   #else
+   <!-- //-->
+   <select class="select" id="repositorySlug" name="repositorySlug">
+   </select>
+
+   <select class="select" id="projectKey" name="projectKey">
+   </select>
+   <!-- //-->
+   #end
+
+   <fieldset class="group">
+    <div class="aui-buttons">
+     <button class="aui-button aui-button-primary">Save</button>
     </div>
-    <div>
-     <fieldset>
-      <legend>Show button for</legend>
-      <label>
-       <input type="radio" name="button_visibility" value="NONE">None</label>
-      <br>
-      <label>
-       <input type="radio" name="button_visibility" value="SYSTEM_ADMIN">System Admins</label>
-      <br>
-      <label>
-       <input type="radio" name="button_visibility" value="ADMIN">Admins</label>
-      <br>
-      <label>
-       <input type="radio" name="button_visibility" value="EVERYONE">Everyone</label>
-      <br>
-     </fieldset>
-    </div>
-    <div>
-     <fieldset>
-      <input type="button" name="save" value="Save" />
-      <input type="button" name="delete" value="Remove" />
-      <span class="post"></span>
-     </fieldset>
-    </div>
-   </div>
-  </form>
- </div>
+   </fieldset>
+ </form>
 
- <div class="prnfb-template prnfb-template-TRIGGER_CONFIG_FORM">
-  <form class="trigger config-area">
-   <div class="expandable">
-    <div class="title">
-     <a href="javascript:void(0);" class="variable toggle" data-variable="name"></a>
-    </div>
-    <div class="content">
-     <input type="hidden" name="FORM_IDENTIFIER">
-     <input type="hidden" name="FORM_TYPE" value="TRIGGER_CONFIG_FORM">
-     <div>
-      <fieldset>
-       <legend>Name</legend>
-       <label>
-        <input type="text" name="name" value="Unnamed trigger">Name of this trigger. The name will show up in the log when trigger is executed. Other then that, this is just a feature to help you keep track of your triggers.</label>
-       <br/>
-      </fieldset>
-     </div>
-     <div>
-      <fieldset>
-       <legend>Filter (Optional)</legend>
-       <p>
-        Variables above are available.
-       </p>
-       <label>Filter string
-        <input type="text" name="filter_string">
-        <br/>
-       </label>
-       <div class="error filter_string"></div>
-       <label>Filter regexp
-        <input type="text" name="filter_regexp">
-        <br>
-       </label>
-       <div class="error filter_regexp"></div>
-       You can use <a target="_blank" href="http://jex.im/regulex/">http://jex.im/regulex/</a> to fiddle with regular expressions.
-      </fieldset>
-     </div>
-     <div>
-      <fieldset>
-       <legend>Triggers apply</legend>
-       <label>
-        <input type="radio" name="trigger_if_isconflicting" value="ALWAYS">Always</label>
-       <br>
-       <label>
-        <input type="radio" name="trigger_if_isconflicting" value="NOT_CONFLICTING">To PRs without merge conflicts</label>
-       <br>
-       <label>
-        <input type="radio" name="trigger_if_isconflicting" value="CONFLICTING">To PRs with merge conflicts</label>
-       <br>
-      </fieldset>
-     </div>
-     <div>
-      <fieldset>
-       <legend>Triggers do not apply to</legend>
-       <label>
-        <input type="checkbox" name="trigger_ignore_state" value="MERGED">Merged PRs</label>
-       <br>
-       <label>
-        <input type="checkbox" name="trigger_ignore_state" value="DECLINED">Declined PRs</label>
-       <br>
-      </fieldset>
-     </div>
-     <div>
-      <fieldset>
-       <legend>Triggers</legend>
-       <div class="left">
-        <label>
-         <input type="checkbox" name="events" value="APPROVED">APPROVED</label>
-        <br/>
-        <label>
-         <input type="checkbox" name="events" value="COMMENTED">COMMENTED</label>
-        <br/>
-        <label>
-         <input type="checkbox" name="events" value="DECLINED">DECLINED</label>
-        <br/>
-        <label>
-         <input type="checkbox" name="events" value="MERGED">MERGED</label>
-        <br/>
-        <label>
-         <input type="checkbox" name="events" value="OPENED">OPENED</label>
-        <br/>
-        <label>
-         <input type="checkbox" name="events" value="BUTTON_TRIGGER">BUTTON_TRIGGER</label>
-        <br/>
-       </div>
-       <div class="right">
-        <label>
-         <input type="checkbox" name="events" value="REOPENED">REOPENED</label>
-        <br/>
-        <label>
-         <input type="checkbox" name="events" value="RESCOPED_FROM">RESCOPED_FROM</label>
-        <br/>
-        <label>
-         <input type="checkbox" name="events" value="RESCOPED_TO">RESCOPED_TO</label>
-        <br/>
-        <label>
-         <input type="checkbox" name="events" value="UNAPPROVED">UNAPPROVED</label>
-        <br/>
-        <label>
-         <input type="checkbox" name="events" value="UPDATED">UPDATED</label>
-        <br/>
-       </div>
-      </fieldset>
-     </div>
-     <div>
-      <fieldset>
-       <legend>Injection URL (Optional)</legend>
-       <label>URL
-        <input type="text" name="injection_url">
-       </label>
-       <label>Optional regular expression
-        <input type="text" name="injection_url_regexp">
-       </label>
-       <p>
-        The (GET) response from this URL will be available in the ${INJECTION_URL_VALUE} variable.
-       </p>
-      </fieldset>
-     </div>
-     <div>
-      <fieldset>
-       <legend>Basic authentication (Optional)</legend>
-       <label>User
-        <input type="text" name="user">
-        <br/>
-       </label>
-       <div class="error user"></div>
-       <label>Password
-        <input type="password" name="password">
-       </label>
-       <div class="error password"></div>
-      </fieldset>
-     </div>
-     <div>
-      <fieldset>
-       <legend>Proxy (Optional)</legend>
-       <label>User (Optional)
-        <input type="text" name="proxy_user">
-       </label>
-       <div class="error proxy_user"></div>
-       <label>Password (Optional)
-        <input type="password" name="proxy_password">
-       </label>
-       <div class="error proxy_password"></div>
-       <label>Server, IP or hostname
-        <input type="text" name="proxy_server">
-       </label>
-       <div class="error proxy_server"></div>
-       <label>Server port
-        <input type="text" name="proxy_port">
-       </label>
-       <div class="error proxy_port"></div>
-      </fieldset>
-     </div>
-     <div>
-      <fieldset>
-       <legend>Headers (Optional)</legend>
-       <table class="headers">
-        <tr>
-         <th>
-          Name
-         </th>
-         <th>
-          Value
-         </th>
-        </tr>
-        <tr class="header">
-         <td>
-          <input type="text" name="header_name">
-         </td>
-         <td>
-          <input type="text" name="header_value">
-         </td>
-        </tr>
-       </table>
-       <div class="error header_name header_value"></div>
-      </fieldset>
-     </div>
-     <div>
-      <fieldset>
-       <legend>Invoke URL</legend>
-       <label>URL
-        <input type="text" name="url">
-       </label>
-       <div class="error url"></div>
-      </fieldset>
-     </div>
-     <div>
-      <fieldset>
-       <legend>HTTP method</legend>
-       <label>
-        <input type="radio" name="method" value="GET" onClick="jQuery('.method_POST').hide()">GET</label>
-       <br>
-       <label>
-        <input type="radio" name="method" value="POST" onClick="jQuery('.method_POST').show()">POST</label>
-       <br>
-       <label>
-        <input type="radio" name="method" value="PUT" onClick="jQuery('.method_POST').show()">PUT</label>
-       <br>
-       <label>
-        <input type="radio" name="method" value="DELETE" onClick="jQuery('.method_POST').hide()">DELETE</label>
-      </fieldset>
-     </div>
-     <div class="visibleif method_POST method_PUT">
-      <fieldset>
-       <legend>POST content</legend>
-       <textarea name="post_content" rows="6" cols="40"></textarea>
-      </fieldset>
-     </div>
-     <div>
-      <fieldset>
-       <input type="button" name="save" value="Save" />
-       <input type="button" name="delete" value="Remove" />
-       <span class="post"></span>
-      </fieldset>
-     </div>
-    </div>
-   </div>
-  </form>
- </div>
+
 </body>
 
 </html>
