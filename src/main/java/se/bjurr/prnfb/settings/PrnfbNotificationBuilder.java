@@ -51,10 +51,12 @@ public class PrnfbNotificationBuilder {
  private String name;
  private String password;
  private String postContent;
+ private String projectKey;
  private String proxyPassword;
  private Integer proxyPort;
  private String proxyServer;
  private String proxyUser;
+ private String repositorySlug;
  private TRIGGER_IF_MERGE triggerIfCanMerge;
  private List<PullRequestState> triggerIgnoreStateList = newArrayList();
  private List<PrnfbPullRequestAction> triggers = newArrayList();
@@ -106,6 +108,10 @@ public class PrnfbNotificationBuilder {
   return this.postContent;
  }
 
+ public String getProjectKey() {
+  return this.projectKey;
+ }
+
  public String getProxyPassword() {
   return this.proxyPassword;
  }
@@ -120,6 +126,10 @@ public class PrnfbNotificationBuilder {
 
  public String getProxyUser() {
   return this.proxyUser;
+ }
+
+ public String getRepositorySlug() {
+  return this.repositorySlug;
  }
 
  public TRIGGER_IF_MERGE getTriggerIfCanMerge() {
@@ -140,6 +150,10 @@ public class PrnfbNotificationBuilder {
 
  public String getUser() {
   return this.user;
+ }
+
+ public UUID getUuid() {
+  return this.uuid;
  }
 
  public UUID getUUID() {
@@ -206,6 +220,11 @@ public class PrnfbNotificationBuilder {
   return this;
  }
 
+ public PrnfbNotificationBuilder withProjectKey(String projectKey) {
+  this.projectKey = projectKey;
+  return this;
+ }
+
  public PrnfbNotificationBuilder withProxyPassword(String s) {
   this.proxyPassword = checkNotNull(s);
   return this;
@@ -223,6 +242,11 @@ public class PrnfbNotificationBuilder {
 
  public PrnfbNotificationBuilder withProxyUser(String s) {
   this.proxyUser = checkNotNull(s);
+  return this;
+ }
+
+ public PrnfbNotificationBuilder withRepositorySlug(String repositorySlug) {
+  this.repositorySlug = repositorySlug;
   return this;
  }
 

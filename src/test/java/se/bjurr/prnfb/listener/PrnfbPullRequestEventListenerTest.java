@@ -46,9 +46,11 @@ import com.atlassian.bitbucket.commit.MinimalCommit;
 import com.atlassian.bitbucket.event.pull.PullRequestCommentAddedEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestMergedEvent;
+import com.atlassian.bitbucket.project.Project;
 import com.atlassian.bitbucket.pull.PullRequest;
 import com.atlassian.bitbucket.pull.PullRequestRef;
 import com.atlassian.bitbucket.pull.PullRequestService;
+import com.atlassian.bitbucket.repository.Repository;
 import com.google.common.base.Function;
 import com.google.common.base.Supplier;
 
@@ -192,6 +194,51 @@ public class PrnfbPullRequestEventListenerTest {
  }
 
  @Test
+ public void testThatNotifiationIsNotTriggeredByActionIfProjectNotSame() throws ValidationException {
+  PrnfbNotification notification = prnfbNotificationBuilder()//
+    .withTrigger(RESCOPED_FROM)//
+    .withUrl("http://hej.com")//
+    .withProjectKey("pk")//
+    .build();
+  PrnfbPullRequestAction pullRequestAction = RESCOPED_FROM;
+  Repository repository = mock(Repository.class);
+  when(this.toRef.getRepository())//
+    .thenReturn(repository);
+  Project project = mock(Project.class);
+  when(repository.getProject())//
+    .thenReturn(project);
+  when(project.getKey())//
+    .thenReturn("pk2");
+
+  boolean actual = this.sut.isNotificationTriggeredByAction(notification, pullRequestAction, this.renderer,
+    this.pullRequest, this.clientKeyStore, this.shouldAcceptAnyCertificate);
+
+  assertThat(actual)//
+    .isFalse();
+ }
+
+ @Test
+ public void testThatNotifiationIsNotTriggeredByActionIfRepositoryNotSame() throws ValidationException {
+  PrnfbNotification notification = prnfbNotificationBuilder()//
+    .withTrigger(RESCOPED_FROM)//
+    .withUrl("http://hej.com")//
+    .withRepositorySlug("repositorySlug123")//
+    .build();
+  PrnfbPullRequestAction pullRequestAction = RESCOPED_FROM;
+  Repository repository = mock(Repository.class);
+  when(this.toRef.getRepository())//
+    .thenReturn(repository);
+  when(repository.getSlug())//
+    .thenReturn("asdasd");
+
+  boolean actual = this.sut.isNotificationTriggeredByAction(notification, pullRequestAction, this.renderer,
+    this.pullRequest, this.clientKeyStore, this.shouldAcceptAnyCertificate);
+
+  assertThat(actual)//
+    .isFalse();
+ }
+
+ @Test
  public void testThatNotifiationIsNotTriggeredByActionIfThatActionIsATriggerButStateIgnored()
    throws ValidationException {
   PrnfbNotification notification = prnfbNotificationBuilder()//
@@ -234,6 +281,51 @@ public class PrnfbPullRequestEventListenerTest {
     .withFilterString("abc")//
     .build();
   PrnfbPullRequestAction pullRequestAction = RESCOPED_FROM;
+
+  boolean actual = this.sut.isNotificationTriggeredByAction(notification, pullRequestAction, this.renderer,
+    this.pullRequest, this.clientKeyStore, this.shouldAcceptAnyCertificate);
+
+  assertThat(actual)//
+    .isTrue();
+ }
+
+ @Test
+ public void testThatNotifiationIsTriggeredByActionIfProjectSame() throws ValidationException {
+  PrnfbNotification notification = prnfbNotificationBuilder()//
+    .withTrigger(RESCOPED_FROM)//
+    .withUrl("http://hej.com")//
+    .withProjectKey("pk2")//
+    .build();
+  PrnfbPullRequestAction pullRequestAction = RESCOPED_FROM;
+  Repository repository = mock(Repository.class);
+  when(this.toRef.getRepository())//
+    .thenReturn(repository);
+  Project project = mock(Project.class);
+  when(repository.getProject())//
+    .thenReturn(project);
+  when(project.getKey())//
+    .thenReturn("pk2");
+
+  boolean actual = this.sut.isNotificationTriggeredByAction(notification, pullRequestAction, this.renderer,
+    this.pullRequest, this.clientKeyStore, this.shouldAcceptAnyCertificate);
+
+  assertThat(actual)//
+    .isTrue();
+ }
+
+ @Test
+ public void testThatNotifiationIsTriggeredByActionIfRepositorySame() throws ValidationException {
+  PrnfbNotification notification = prnfbNotificationBuilder()//
+    .withTrigger(RESCOPED_FROM)//
+    .withUrl("http://hej.com")//
+    .withRepositorySlug("repositorySlug123")//
+    .build();
+  PrnfbPullRequestAction pullRequestAction = RESCOPED_FROM;
+  Repository repository = mock(Repository.class);
+  when(this.toRef.getRepository())//
+    .thenReturn(repository);
+  when(repository.getSlug())//
+    .thenReturn("repositorySlug123");
 
   boolean actual = this.sut.isNotificationTriggeredByAction(notification, pullRequestAction, this.renderer,
     this.pullRequest, this.clientKeyStore, this.shouldAcceptAnyCertificate);

@@ -31,10 +31,12 @@ public class PrnfbNotification implements HasUuid {
  private final String name;
  private final String password;
  private final String postContent;
+ private final String projectKey;
  private final String proxyPassword;
  private final Integer proxyPort;
  private final String proxyServer;
  private final String proxyUser;
+ private final String repositorySlug;
  private final TRIGGER_IF_MERGE triggerIfCanMerge;
  private final List<PullRequestState> triggerIgnoreStateList;
  private final List<PrnfbPullRequestAction> triggers;
@@ -52,6 +54,8 @@ public class PrnfbNotification implements HasUuid {
   this.postContent = emptyToNull(nullToEmpty(builder.getPostContent()).trim());
   this.method = firstNonNull(builder.getMethod(), GET);
   this.triggerIfCanMerge = firstNonNull(builder.getTriggerIfCanMerge(), ALWAYS);
+  this.repositorySlug = emptyToNull(builder.getRepositorySlug());
+  this.projectKey = emptyToNull(builder.getProjectKey());
   try {
    new URL(builder.getUrl());
   } catch (final Exception e) {
@@ -150,6 +154,13 @@ public class PrnfbNotification implements HasUuid {
   } else if (!this.postContent.equals(other.postContent)) {
    return false;
   }
+  if (this.projectKey == null) {
+   if (other.projectKey != null) {
+    return false;
+   }
+  } else if (!this.projectKey.equals(other.projectKey)) {
+   return false;
+  }
   if (this.proxyPassword == null) {
    if (other.proxyPassword != null) {
     return false;
@@ -176,6 +187,13 @@ public class PrnfbNotification implements HasUuid {
     return false;
    }
   } else if (!this.proxyUser.equals(other.proxyUser)) {
+   return false;
+  }
+  if (this.repositorySlug == null) {
+   if (other.repositorySlug != null) {
+    return false;
+   }
+  } else if (!this.repositorySlug.equals(other.repositorySlug)) {
    return false;
   }
   if (this.triggerIfCanMerge != other.triggerIfCanMerge) {
@@ -255,6 +273,10 @@ public class PrnfbNotification implements HasUuid {
   return fromNullable(this.postContent);
  }
 
+ public Optional<String> getProjectKey() {
+  return fromNullable(this.projectKey);
+ }
+
  public Optional<String> getProxyPassword() {
   return fromNullable(this.proxyPassword);
  }
@@ -269,6 +291,10 @@ public class PrnfbNotification implements HasUuid {
 
  public Optional<String> getProxyUser() {
   return fromNullable(this.proxyUser);
+ }
+
+ public Optional<String> getRepositorySlug() {
+  return fromNullable(this.repositorySlug);
  }
 
  public TRIGGER_IF_MERGE getTriggerIfCanMerge() {
@@ -309,10 +335,12 @@ public class PrnfbNotification implements HasUuid {
   result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
   result = prime * result + ((this.password == null) ? 0 : this.password.hashCode());
   result = prime * result + ((this.postContent == null) ? 0 : this.postContent.hashCode());
+  result = prime * result + ((this.projectKey == null) ? 0 : this.projectKey.hashCode());
   result = prime * result + ((this.proxyPassword == null) ? 0 : this.proxyPassword.hashCode());
   result = prime * result + ((this.proxyPort == null) ? 0 : this.proxyPort.hashCode());
   result = prime * result + ((this.proxyServer == null) ? 0 : this.proxyServer.hashCode());
   result = prime * result + ((this.proxyUser == null) ? 0 : this.proxyUser.hashCode());
+  result = prime * result + ((this.repositorySlug == null) ? 0 : this.repositorySlug.hashCode());
   result = prime * result + ((this.triggerIfCanMerge == null) ? 0 : this.triggerIfCanMerge.hashCode());
   result = prime * result + ((this.triggerIgnoreStateList == null) ? 0 : this.triggerIgnoreStateList.hashCode());
   result = prime * result + ((this.triggers == null) ? 0 : this.triggers.hashCode());
@@ -324,13 +352,14 @@ public class PrnfbNotification implements HasUuid {
 
  @Override
  public String toString() {
-  return "PrnfbNotification [uuid=" + this.uuid + ", filterRegexp=" + this.filterRegexp + ", filterString="
-    + this.filterString + ", password=" + this.password + ", triggers=" + this.triggers + ", url=" + this.url
-    + ", user=" + this.user + ", method=" + this.method + ", postContent=" + this.postContent + ", headers="
-    + this.headers + ", proxyUser=" + this.proxyUser + ", proxyPassword=" + this.proxyPassword + ", proxyServer="
-    + this.proxyServer + ", proxyPort=" + this.proxyPort + ", name=" + this.name + ", injectionUrl="
-    + this.injectionUrl + ", injectionUrlRegexp=" + this.injectionUrlRegexp + ", triggerIfCanMerge="
-    + this.triggerIfCanMerge + ", triggerIgnoreStateList=" + this.triggerIgnoreStateList + "]";
+  return "PrnfbNotification [filterRegexp=" + this.filterRegexp + ", filterString=" + this.filterString + ", headers="
+    + this.headers + ", injectionUrl=" + this.injectionUrl + ", injectionUrlRegexp=" + this.injectionUrlRegexp
+    + ", method=" + this.method + ", name=" + this.name + ", password=" + this.password + ", postContent="
+    + this.postContent + ", projectKey=" + this.projectKey + ", proxyPassword=" + this.proxyPassword + ", proxyPort="
+    + this.proxyPort + ", proxyServer=" + this.proxyServer + ", proxyUser=" + this.proxyUser + ", repositorySlug="
+    + this.repositorySlug + ", triggerIfCanMerge=" + this.triggerIfCanMerge + ", triggerIgnoreStateList="
+    + this.triggerIgnoreStateList + ", triggers=" + this.triggers + ", url=" + this.url + ", user=" + this.user
+    + ", uuid=" + this.uuid + "]";
  }
 
 }

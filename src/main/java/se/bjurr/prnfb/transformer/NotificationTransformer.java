@@ -31,6 +31,8 @@ public class NotificationTransformer {
 
  public static NotificationDTO toNotificationDto(PrnfbNotification from) {
   NotificationDTO to = new NotificationDTO();
+  to.setProjectKey(from.getProjectKey().orNull());
+  to.setRepositorySlug(from.getRepositorySlug().orNull());
   to.setFilterRegexp(from.getFilterRegexp().orNull());
   to.setFilterString(from.getFilterString().orNull());
   to.setHeaders(toHeaderDtoList(from.getHeaders()));
@@ -82,6 +84,8 @@ public class NotificationTransformer {
     .withUrl(from.getUrl())//
     .withUser(from.getUser())//
     .withUuid(from.getUuid())//
+    .withRepositorySlug(from.getRepositorySlug())//
+    .withProjectKey(from.getProjectKey())//
     .build();
  }
 

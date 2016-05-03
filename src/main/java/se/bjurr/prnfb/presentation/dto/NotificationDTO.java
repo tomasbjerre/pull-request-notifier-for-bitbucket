@@ -17,7 +17,6 @@ import com.atlassian.bitbucket.pull.PullRequestState;
 @XmlRootElement
 @XmlAccessorType(FIELD)
 public class NotificationDTO {
-
  private String filterRegexp;
  private String filterString;
  private List<HeaderDTO> headers;
@@ -27,10 +26,12 @@ public class NotificationDTO {
  private String name;
  private String password;
  private String postContent;
+ private String projectKey;
  private String proxyPassword;
  private Integer proxyPort;
  private String proxyServer;
  private String proxyUser;
+ private String repositorySlug;
  private TRIGGER_IF_MERGE triggerIfCanMerge;
  private List<PullRequestState> triggerIgnoreStateList;
  private List<PrnfbPullRequestAction> triggers;
@@ -109,6 +110,13 @@ public class NotificationDTO {
   } else if (!this.postContent.equals(other.postContent)) {
    return false;
   }
+  if (this.projectKey == null) {
+   if (other.projectKey != null) {
+    return false;
+   }
+  } else if (!this.projectKey.equals(other.projectKey)) {
+   return false;
+  }
   if (this.proxyPassword == null) {
    if (other.proxyPassword != null) {
     return false;
@@ -135,6 +143,13 @@ public class NotificationDTO {
     return false;
    }
   } else if (!this.proxyUser.equals(other.proxyUser)) {
+   return false;
+  }
+  if (this.repositorySlug == null) {
+   if (other.repositorySlug != null) {
+    return false;
+   }
+  } else if (!this.repositorySlug.equals(other.repositorySlug)) {
    return false;
   }
   if (this.triggerIfCanMerge != other.triggerIfCanMerge) {
@@ -214,6 +229,10 @@ public class NotificationDTO {
   return this.postContent;
  }
 
+ public String getProjectKey() {
+  return this.projectKey;
+ }
+
  public String getProxyPassword() {
   return this.proxyPassword;
  }
@@ -228,6 +247,10 @@ public class NotificationDTO {
 
  public String getProxyUser() {
   return this.proxyUser;
+ }
+
+ public String getRepositorySlug() {
+  return this.repositorySlug;
  }
 
  public TRIGGER_IF_MERGE getTriggerIfCanMerge() {
@@ -267,10 +290,12 @@ public class NotificationDTO {
   result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
   result = prime * result + ((this.password == null) ? 0 : this.password.hashCode());
   result = prime * result + ((this.postContent == null) ? 0 : this.postContent.hashCode());
+  result = prime * result + ((this.projectKey == null) ? 0 : this.projectKey.hashCode());
   result = prime * result + ((this.proxyPassword == null) ? 0 : this.proxyPassword.hashCode());
   result = prime * result + ((this.proxyPort == null) ? 0 : this.proxyPort.hashCode());
   result = prime * result + ((this.proxyServer == null) ? 0 : this.proxyServer.hashCode());
   result = prime * result + ((this.proxyUser == null) ? 0 : this.proxyUser.hashCode());
+  result = prime * result + ((this.repositorySlug == null) ? 0 : this.repositorySlug.hashCode());
   result = prime * result + ((this.triggerIfCanMerge == null) ? 0 : this.triggerIfCanMerge.hashCode());
   result = prime * result + ((this.triggerIgnoreStateList == null) ? 0 : this.triggerIgnoreStateList.hashCode());
   result = prime * result + ((this.triggers == null) ? 0 : this.triggers.hashCode());
@@ -316,6 +341,10 @@ public class NotificationDTO {
   this.postContent = postContent;
  }
 
+ public void setProjectKey(String projectKey) {
+  this.projectKey = projectKey;
+ }
+
  public void setProxyPassword(String proxyPassword) {
   this.proxyPassword = proxyPassword;
  }
@@ -330,6 +359,10 @@ public class NotificationDTO {
 
  public void setProxyUser(String proxyUser) {
   this.proxyUser = proxyUser;
+ }
+
+ public void setRepositorySlug(String repositorySlug) {
+  this.repositorySlug = repositorySlug;
  }
 
  public void setTriggerIfCanMerge(TRIGGER_IF_MERGE triggerIfCanMerge) {
@@ -360,11 +393,12 @@ public class NotificationDTO {
  public String toString() {
   return "NotificationDTO [filterRegexp=" + this.filterRegexp + ", filterString=" + this.filterString + ", headers="
     + this.headers + ", injectionUrl=" + this.injectionUrl + ", injectionUrlRegexp=" + this.injectionUrlRegexp
-    + ", method=" + this.method + ", password=" + this.password + ", name=" + this.name + ", postContent="
-    + this.postContent + ", proxyPassword=" + this.proxyPassword + ", proxyPort=" + this.proxyPort + ", proxyServer="
-    + this.proxyServer + ", proxyUser=" + this.proxyUser + ", triggerIfCanMerge=" + this.triggerIfCanMerge
-    + ", triggerIgnoreStateList=" + this.triggerIgnoreStateList + ", triggers=" + this.triggers + ", url=" + this.url
-    + ", user=" + this.user + ", uuid=" + this.uuid + "]";
+    + ", method=" + this.method + ", name=" + this.name + ", password=" + this.password + ", postContent="
+    + this.postContent + ", projectKey=" + this.projectKey + ", proxyPassword=" + this.proxyPassword + ", proxyPort="
+    + this.proxyPort + ", proxyServer=" + this.proxyServer + ", proxyUser=" + this.proxyUser + ", repositorySlug="
+    + this.repositorySlug + ", triggerIfCanMerge=" + this.triggerIfCanMerge + ", triggerIgnoreStateList="
+    + this.triggerIgnoreStateList + ", triggers=" + this.triggers + ", url=" + this.url + ", user=" + this.user
+    + ", uuid=" + this.uuid + "]";
  }
 
 }

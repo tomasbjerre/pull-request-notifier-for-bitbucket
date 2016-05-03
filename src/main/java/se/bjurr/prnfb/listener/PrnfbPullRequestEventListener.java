@@ -91,6 +91,19 @@ public class PrnfbPullRequestEventListener {
   if (!notification.getTriggers().contains(pullRequestAction)) {
    return FALSE;
   }
+
+  if (notification.getProjectKey().isPresent()) {
+   if (!notification.getProjectKey().get().equals(pullRequest.getToRef().getRepository().getProject().getKey())) {
+    return FALSE;
+   }
+  }
+
+  if (notification.getRepositorySlug().isPresent()) {
+   if (!notification.getRepositorySlug().get().equals(pullRequest.getToRef().getRepository().getSlug())) {
+    return FALSE;
+   }
+  }
+
   if (notification.getFilterRegexp().isPresent()
     && notification.getFilterString().isPresent()
     && !compile(notification.getFilterRegexp().get()).matcher(
