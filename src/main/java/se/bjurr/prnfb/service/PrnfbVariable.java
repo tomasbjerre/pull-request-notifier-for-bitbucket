@@ -44,6 +44,20 @@ public enum PrnfbVariable {
     Map<PrnfbVariable, Supplier<String>> variables, ClientKeyStore clientKeyStore, boolean shouldAcceptAnyCertificate) {
    return getOrEmpty(variables, BUTTON_TRIGGER_TITLE);
   }
+ }), EVERYTHING_URL(new PrnfbVariableResolver() {
+  @Override
+  public String resolve(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction,
+    ApplicationUser applicationUser, RepositoryService repositoryService,
+    ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
+    Map<PrnfbVariable, Supplier<String>> variables, ClientKeyStore clientKeyStore, boolean shouldAcceptAnyCertificate) {
+   List<String> parts = newArrayList();
+   for (PrnfbVariable v : PrnfbVariable.values()) {
+    if (v != EVERYTHING_URL) {
+     parts.add(v.name() + "=${" + v.name() + "}");
+    }
+   }
+   return on('&').join(parts);
+  }
  }), INJECTION_URL_VALUE(new PrnfbVariableResolver() {
   @Override
   public String resolve(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction,

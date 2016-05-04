@@ -7,6 +7,7 @@ import static se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD.DELETE;
 import static se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD.GET;
 import static se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD.POST;
 import static se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD.PUT;
+import static se.bjurr.prnfb.listener.PrnfbPullRequestAction.APPROVED;
 import static se.bjurr.prnfb.settings.PrnfbNotificationBuilder.prnfbNotificationBuilder;
 
 import java.net.URL;
@@ -58,6 +59,7 @@ public class UrlInvokerTest {
     .withUrl("http://url.com/")//
     .withUser("user")//
     .withPassword("password")//
+    .withTrigger(APPROVED)//
     .build();
 
   this.urlInvoker//

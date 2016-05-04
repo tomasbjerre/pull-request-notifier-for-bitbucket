@@ -2,7 +2,6 @@ package se.bjurr.prnfb.presentation;
 
 import static com.google.common.base.Throwables.propagate;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 import static javax.ws.rs.core.Response.ok;
 import static javax.ws.rs.core.Response.status;
 import static javax.ws.rs.core.Response.Status.OK;
@@ -41,18 +40,21 @@ public class NotificationServlet {
 
  @POST
  @XsrfProtectionExcluded
- @Produces(TEXT_PLAIN)
+ @Produces(APPLICATION_JSON)
  public Response create(NotificationDTO notificationDto) {
   if (!this.userCheckService.isAdminAllowed()) {
    return status(UNAUTHORIZED).build();
   }
   try {
    PrnfbNotification prnfbNotification = toPrnfbNotification(notificationDto);
-   this.settingsService.addOrUpdateNotification(prnfbNotification);
+   PrnfbNotification created = this.settingsService.addOrUpdateNotification(prnfbNotification);
+   NotificationDTO createdDto = toNotificationDto(created);
+   return status(OK)//
+     .entity(createdDto)//
+     .build();
   } catch (Exception e) {
-   propagate(e);
+   throw propagate(e);
   }
-  return status(OK).build();
  }
 
  @DELETE
@@ -74,6 +76,30 @@ public class NotificationServlet {
    return status(UNAUTHORIZED).build();
   }
   List<PrnfbNotification> notifications = this.settingsService.getNotifications();
+  List<NotificationDTO> dtos = toNotificationDtoList(notifications);
+  return ok(dtos).build();
+ }
+
+ @GET
+ @Path("/projectKey/{projectKey}")
+ @Produces(APPLICATION_JSON)
+ public Response get(@PathParam("projectKey") String projectKey) {
+  if (!this.userCheckService.isViewAllowed()) {
+   return status(UNAUTHORIZED).build();
+  }
+  List<PrnfbNotification> notifications = this.settingsService.getNotifications(projectKey);
+  List<NotificationDTO> dtos = toNotificationDtoList(notifications);
+  return ok(dtos).build();
+ }
+
+ @GET
+ @Path("/projectKey/{projectKey}/repositorySlug/{repositorySlug}")
+ @Produces(APPLICATION_JSON)
+ public Response get(@PathParam("projectKey") String projectKey, @PathParam("repositorySlug") String repositorySlug) {
+  if (!this.userCheckService.isViewAllowed()) {
+   return status(UNAUTHORIZED).build();
+  }
+  List<PrnfbNotification> notifications = this.settingsService.getNotifications(projectKey, repositorySlug);
   List<NotificationDTO> dtos = toNotificationDtoList(notifications);
   return ok(dtos).build();
  }

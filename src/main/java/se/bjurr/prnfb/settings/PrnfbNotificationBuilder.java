@@ -1,8 +1,10 @@
 package se.bjurr.prnfb.settings;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.MoreObjects.firstNonNull;
+import static com.google.common.base.Strings.emptyToNull;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.UUID.randomUUID;
+import static se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD.GET;
 
 import java.util.List;
 import java.util.UUID;
@@ -176,32 +178,32 @@ public class PrnfbNotificationBuilder {
  }
 
  public PrnfbNotificationBuilder withFilterRegexp(String filterRegexp) {
-  this.filterRegexp = checkNotNull(filterRegexp);
+  this.filterRegexp = emptyToNull(filterRegexp);
   return this;
  }
 
  public PrnfbNotificationBuilder withFilterString(String filterString) {
-  this.filterString = checkNotNull(filterString);
+  this.filterString = emptyToNull(filterString);
   return this;
  }
 
  public PrnfbNotificationBuilder withHeader(String name, String value) {
-  this.headers.add(new PrnfbHeader(checkNotNull(name), checkNotNull(value)));
+  this.headers.add(new PrnfbHeader(name, value));
   return this;
  }
 
  public PrnfbNotificationBuilder withInjectionUrl(String injectionUrl) {
-  this.injectionUrl = checkNotNull(injectionUrl);
+  this.injectionUrl = emptyToNull(injectionUrl);
   return this;
  }
 
  public PrnfbNotificationBuilder withInjectionUrlRegexp(String injectionUrlRegexp) {
-  this.injectionUrlRegexp = checkNotNull(injectionUrlRegexp);
+  this.injectionUrlRegexp = emptyToNull(injectionUrlRegexp);
   return this;
  }
 
  public PrnfbNotificationBuilder withMethod(HTTP_METHOD method) {
-  this.method = checkNotNull(method);
+  this.method = firstNonNull(method, GET);
   return this;
  }
 
@@ -211,12 +213,12 @@ public class PrnfbNotificationBuilder {
  }
 
  public PrnfbNotificationBuilder withPassword(String password) {
-  this.password = checkNotNull(password);
+  this.password = emptyToNull(password);
   return this;
  }
 
  public PrnfbNotificationBuilder withPostContent(String postContent) {
-  this.postContent = checkNotNull(postContent);
+  this.postContent = emptyToNull(postContent);
   return this;
  }
 
@@ -226,22 +228,22 @@ public class PrnfbNotificationBuilder {
  }
 
  public PrnfbNotificationBuilder withProxyPassword(String s) {
-  this.proxyPassword = checkNotNull(s);
+  this.proxyPassword = emptyToNull(s);
   return this;
  }
 
  public PrnfbNotificationBuilder withProxyPort(Integer s) {
-  this.proxyPort = checkNotNull(s);
+  this.proxyPort = s;
   return this;
  }
 
  public PrnfbNotificationBuilder withProxyServer(String s) {
-  this.proxyServer = checkNotNull(s);
+  this.proxyServer = emptyToNull(s);
   return this;
  }
 
  public PrnfbNotificationBuilder withProxyUser(String s) {
-  this.proxyUser = checkNotNull(s);
+  this.proxyUser = emptyToNull(s);
   return this;
  }
 
@@ -251,7 +253,7 @@ public class PrnfbNotificationBuilder {
  }
 
  public PrnfbNotificationBuilder withTrigger(PrnfbPullRequestAction trigger) {
-  this.triggers.add(checkNotNull(trigger));
+  this.triggers.add(trigger);
   return this;
  }
 
@@ -261,17 +263,17 @@ public class PrnfbNotificationBuilder {
  }
 
  public PrnfbNotificationBuilder withTriggerIgnoreState(PullRequestState triggerIgnoreState) {
-  this.triggerIgnoreStateList.add(checkNotNull(triggerIgnoreState));
+  this.triggerIgnoreStateList.add(triggerIgnoreState);
   return this;
  }
 
  public PrnfbNotificationBuilder withUrl(String url) {
-  this.url = checkNotNull(url);
+  this.url = url;
   return this;
  }
 
  public PrnfbNotificationBuilder withUser(String user) {
-  this.user = checkNotNull(user);
+  this.user = emptyToNull(user);
   return this;
  }
 

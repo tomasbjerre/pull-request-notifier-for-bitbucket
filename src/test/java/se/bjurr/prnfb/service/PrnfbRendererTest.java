@@ -4,6 +4,7 @@ import static com.google.common.collect.Maps.newHashMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static se.bjurr.prnfb.listener.PrnfbPullRequestAction.APPROVED;
 import static se.bjurr.prnfb.service.PrnfbVariable.INJECTION_URL_VALUE;
 import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_COMMENT_TEXT;
 import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_FROM_HASH;
@@ -56,6 +57,7 @@ public class PrnfbRendererTest {
   initMocks(this);
   this.prnfbNotification = prnfbNotificationBuilder()//
     .withUrl("http://hej.com")//
+    .withTrigger(APPROVED)//
     .build();
   this.sut = new PrnfbRenderer(this.pullRequest, this.pullRequestAction, this.applicationUser, this.repositoryService,
     this.propertiesService, this.prnfbNotification, this.variables);
@@ -78,6 +80,7 @@ public class PrnfbRendererTest {
  public void testThatInjectionUrlCanBeRendered() throws ValidationException {
   this.prnfbNotification = prnfbNotificationBuilder(this.prnfbNotification)//
     .withInjectionUrl("http://getValueFrom.com/")//
+    .withTrigger(APPROVED)//
     .build();
   this.sut = new PrnfbRenderer(this.pullRequest, this.pullRequestAction, this.applicationUser, this.repositoryService,
     this.propertiesService, this.prnfbNotification, this.variables);

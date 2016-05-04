@@ -42,6 +42,7 @@ The plugin has its own implementation to create the RESCOPED_FROM and RESCOPED_T
 
 The filter text as well as the URL support variables. These are:
 
+* ${EVERYTHING_URL} Example: PULL_REQUEST_ID=1&PULL_REQUEST_TITLE=some%20thing...
 * ${PULL_REQUEST_ID} Example: 1
 * ${PULL_REQUEST_TITLE} Example: Anything
 * ${PULL_REQUEST_VERSION} Example: 1
@@ -102,6 +103,8 @@ Some rest resources are available. You can figure out the JSON structure by look
  * `DELETE /{uuid}` Deletes notification with *uuid*.
  * `GET` Get all notifications.
  * `GET /{uuid}` Get notification with *uuid*.
+ * `GET /projectKey/{projectKey}` Get all notifications for the project.
+ * `GET /projectKey/{projectKey}/repositorySlug/{repositorySlug}` Get all notifications for the project and repository.
  * `POST` Save a notification.
 
 * `/bitbucket/rest/prnfb-admin/1.0/settings/buttons`
@@ -109,6 +112,8 @@ Some rest resources are available. You can figure out the JSON structure by look
  * `GET` Get all buttons that the current user is allowed to use.
  * `GET /{uuid}` Get button with *uuid*.
  * `GET /repository/{repositoryId}/pullrequest/{pullRequestId}` Get all buttons for repository that the current user is allowed to use.
+ * `GET /projectKey/{projectKey}` Get all buttons for the project.
+ * `GET /projectKey/{projectKey}/repositorySlug/{repositorySlug}` Get all buttons for the project and repository.
  * `POST` Save a button.
  * `POST /press` Press the button.
 

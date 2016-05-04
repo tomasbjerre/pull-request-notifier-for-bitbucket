@@ -1,7 +1,6 @@
 package se.bjurr.prnfb.presentation;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 import static javax.ws.rs.core.Response.ok;
 import static javax.ws.rs.core.Response.status;
 import static javax.ws.rs.core.Response.Status.OK;
@@ -44,21 +43,25 @@ public class ButtonServlet {
 
  @POST
  @XsrfProtectionExcluded
- @Produces(TEXT_PLAIN)
+ @Produces(APPLICATION_JSON)
  public Response create(ButtonDTO buttonDto) {
   if (!this.userCheckService.isAdminAllowed()) {
    return status(UNAUTHORIZED).build();
   }
   PrnfbButton prnfbButton = toPrnfbButton(buttonDto);
-  this.settingsService.addOrUpdateButton(prnfbButton);
-  return status(OK).build();
+  PrnfbButton created = this.settingsService.addOrUpdateButton(prnfbButton);
+  ButtonDTO createdDto = toButtonDto(created);
+
+  return status(OK)//
+    .entity(createdDto)//
+    .build();
  }
 
  @DELETE
  @Path("{uuid}")
  @XsrfProtectionExcluded
  @Produces(APPLICATION_JSON)
- public Response delete(UUID prnfbButton) {
+ public Response delete(@PathParam("uuid") UUID prnfbButton) {
   if (!this.userCheckService.isAdminAllowed()) {
    return status(UNAUTHORIZED).build();
   }
@@ -85,6 +88,30 @@ public class ButtonServlet {
   List<PrnfbButton> buttons = this.buttonsService.getButtons(repositoryId, pullRequestId);
   Iterable<PrnfbButton> allowedButtons = this.userCheckService.filterAllowed(buttons);
   List<ButtonDTO> dtos = toButtonDtoList(allowedButtons);
+  return ok(dtos, APPLICATION_JSON).build();
+ }
+
+ @GET
+ @Path("/projectKey/{projectKey}")
+ @Produces(APPLICATION_JSON)
+ public Response get(@PathParam("projectKey") String projectKey) {
+  if (!this.userCheckService.isViewAllowed()) {
+   return status(UNAUTHORIZED).build();
+  }
+  List<PrnfbButton> buttons = this.settingsService.getButtons(projectKey);
+  List<ButtonDTO> dtos = toButtonDtoList(buttons);
+  return ok(dtos, APPLICATION_JSON).build();
+ }
+
+ @GET
+ @Path("/projectKey/{projectKey}/repositorySlug/{repositorySlug}")
+ @Produces(APPLICATION_JSON)
+ public Response get(@PathParam("projectKey") String projectKey, @PathParam("repositorySlug") String repositorySlug) {
+  if (!this.userCheckService.isViewAllowed()) {
+   return status(UNAUTHORIZED).build();
+  }
+  List<PrnfbButton> buttons = this.settingsService.getButtons(projectKey, repositorySlug);
+  List<ButtonDTO> dtos = toButtonDtoList(buttons);
   return ok(dtos, APPLICATION_JSON).build();
  }
 

@@ -1,34 +1,52 @@
 define('plugin/prnfb/utils', [
  'jquery',
-], function($) {
+ 'plugin/prnfb/3rdparty'
+], function($, trdparty) {
 
- function postForm(url, formId) {
-  var data = $(formId).serializeArray().reduce(function(obj, v) {
-   if (v.value === 'on') {
-    obj[v.name] = true;
-   } else {
-    obj[v.name] = v.value;
-   }
-   return obj;
-  }, {});
-  var jsonString = JSON.stringify(data);
+ function postForm(url, formSelector, whenDone) {
+  $('.statusresponse').empty();
+  var jsonString = $(formSelector).serializeJSON();
   $.ajax({
    url: url,
    type: "POST",
    contentType: "application/json; charset=utf-8",
    dataType: "json",
-   data: jsonString
+   data: jsonString,
+   success: function(data) {
+    whenDone();
+    if (data && data.uuid) {
+     doSetupForm(formSelector, url + '/' + data.uuid);
+    }
+   },
+   error: function(xhr, status, error) {
+    AJS.messages.error(".statusresponse", {
+     title: 'Error',
+     body: '<p>' +
+      'Sent POST ' + url + ':<br/><code>' + jsonString + '</code><br/><br/>' +
+      'Got:<br/><code>' + xhr.responseText + '</code><br/><br/>' +
+      '</p>'
+    });
+    $("html, body").animate({
+     scrollTop: 0
+    }, "slow");
+   }
   });
  }
 
- function populateProjects(data, selected) {
-  $('#fromProject').empty();
+ function populateProjects($form, data, selected) {
+  $('[name=projectKey]', $form).empty();
+  if (!selected) {
+   $('[name=projectKey]', $form).append('<option value="" selected>Any</option>');
+  } else {
+   $('[name=projectKey]', $form).append('<option value="">Any</option>');
+  }
+
   for (var i = 0; i < data.values.length; i++) {
    var projectKey = data.values[i].key;
    if (projectKey === selected) {
-    $('#fromProject').append('<option value="' + projectKey + '" selected>' + projectKey + '</option>');
+    $('[name=projectKey]', $form).append('<option value="' + projectKey + '" selected>' + projectKey + '</option>');
    } else {
-    $('#fromProject').append('<option value="' + projectKey + '">' + projectKey + '</option>');
+    $('[name=projectKey]', $form).append('<option value="' + projectKey + '">' + projectKey + '</option>');
    }
   }
  }
@@ -40,69 +58,191 @@ define('plugin/prnfb/utils', [
   });
  }
 
- function populateRepos(data, selected) {
-  $('#fromRepo').empty();
-  for (var i = 0; i < data.values.length; i++) {
-   var repoSlug = data.values[i].slug;
-   if (repoSlug === selected) {
-    $('#fromRepo').append('<option value="' + repoSlug + '" selected>' + repoSlug + '</option>');
-   } else {
-    $('#fromRepo').append('<option value="' + repoSlug + '">' + repoSlug + '</option>');
+ function populateRepos($form, data, selected) {
+  $('[name=repositorySlug]', $form).empty();
+  if (!selected) {
+   $('[name=repositorySlug]', $form).append('<option value="" selected>Any</option>');
+  } else {
+   $('[name=repositorySlug]', $form).append('<option value="">Any</option>');
+  }
+
+  if (data) {
+   for (var i = 0; i < data.values.length; i++) {
+    var repoSlug = data.values[i].slug;
+    if (repoSlug === selected) {
+     $('[name=repositorySlug]', $form).append('<option value="' + repoSlug + '" selected>' + repoSlug + '</option>');
+    } else {
+     $('[name=repositorySlug]', $form).append('<option value="' + repoSlug + '">' + repoSlug + '</option>');
+    }
    }
   }
  }
 
  function getRepos(projectKey, whenDone) {
+  if (!projectKey) {
+   whenDone();
+   return;
+  }
   var reposUrl = AJS.contextPath() + "/rest/api/1.0/projects/" + projectKey + "/repos?limit=999999"; 
   $.getJSON(reposUrl, function(data) {
    whenDone(data);
   });
  }
 
- function setupRepoSettingsForm(repoSettings) {
+ function setupProjectAndRepoSettingsInForm($form, hasProjectAndRepo) {
   getProjects(function(data) {
-   if (repoSettings) {
-    populateProjects(data, repoSettings.projectKey);
+   if (hasProjectAndRepo && hasProjectAndRepo.projectKey) {
+    populateProjects($form, data, hasProjectAndRepo.projectKey);
    } else {
-    populateProjects(data, undefined);
+    populateProjects($form, data, undefined);
    }
-   getRepos($('#projectKey').val(), function(data) {
-    if (repoSettings) {
-     populateRepos(data, repoSettings.repositorySlug);
+   getRepos($('[name=projectKey]', $form).val(), function(data) {
+    if (hasProjectAndRepo && hasProjectAndRepo.repositorySlug) {
+     populateRepos($form, data, hasProjectAndRepo.repositorySlug);
     } else {
-     populateRepos(data, undefined);
-    }
-   });
-
-   if (repoSettings) {
-    $('#repositoryDetails').attr('checked', repoSettings.repositoryDetails);
-   }
-  });
-
-  $('#projectKey').change(function() {
-   getRepos($('#fromProject').val(), function(data) {
-    if (repoSettings) {
-     populateRepos(data, repoSettings.fromRepo);
-    } else {
-     populateRepos(data, undefined);
+     populateRepos($form, data, undefined);
     }
    });
   });
  }
 
- $(document)
-  .ajaxStart(function() {
-   $('.prnfb button').attr('aria-disabled', 'true');
-  })
-  .ajaxStop(function() {
-   $('.prnfb button').attr('aria-disabled', 'false');
+ function isAllFieldsEmpty($within) {
+  var inputs = $within.find('input');
+  for (var i = 0; i < inputs.length; i++) {
+   if ($(inputs[i]).val()) {
+    return false;
+   }
+  }
+  var textareas = $within.find('textarea');
+  for (var i = 0; i < textareas.length; i++) {
+   if ($(textareas[i]).val()) {
+    return false;
+   }
+  }
+  return true;
+ }
+
+ function listFieldChanged($changedField) {
+  var $listFieldsDiv = $changedField.closest('.listfields');
+  var $listField = $changedField.closest('.listfield');
+  var $listFieldsList = $listFieldsDiv.find('.listfield');
+  var empties = [];
+  $listFieldsList.each(function(index, listFieldEl) {
+   if (isAllFieldsEmpty($(listFieldEl))) {
+    empties.push($(listFieldEl));
+   }
   });
 
+  if (empties.length > 1) {
+   for (var i = 1; i < empties.length; i++) {
+    empties[i].remove();
+   }
+  }
+
+  if (empties.length == 0) {
+   $empty = $listField.clone();
+   $empty.find('input, textarea').val('');
+   $listFieldsDiv.append($empty);
+  }
+ }
+
+ function populateForm(formSelector, data) {
+  $(formSelector).populate(data);
+
+  $(formSelector).find('.template').each(function(index, el) {
+   var template = $(el).data('template');
+   var field = $(el).data('field');
+   var target = $(el).data('target');
+   var rendered = "";
+   for (var i = 0; i < data[field].length; i++)
+    rendered += AJS.template.load(template).fill(data[field][i]);
+   $(target).html(rendered);
+  });
+ }
+
+ function clearForm(formSelector) {
+  $(formSelector).find('input[type=text], textarea, select').val('');
+  $(formSelector).find('input[type=checkbox]').removeAttr('checked');
+  $(formSelector).find('input[type=radio]').prop('checked', false);
+ }
+
+ function setupForm(formSelector, url) {
+  $(formSelector).submit(function(e) {
+   e.preventDefault();
+   postForm(url, formSelector, function() {});
+  });
+
+  doSetupForm(formSelector, url);
+ }
+
+ function doSetupForm(formSelector, url) {
+  $.getJSON(url, function(data) {
+   setupProjectAndRepoSettingsInForm($(formSelector), data);
+   populateForm(formSelector, data);
+  });
+ }
+
+ function setupForms(formSelector, restResource) {
+
+  setupProjectAndRepoSettingsInForm($(formSelector));
+
+  $(formSelector + ' [name=projectKey]').change(function() {
+   var $form = $(this).closest('form');
+   getRepos(this.value, function(data) {
+    populateRepos($form, data, undefined);
+   });
+  });
+
+  function populateSelect() {
+   $.getJSON(restResource, function(data) {
+    $(formSelector + ' [name=uuid]').empty();
+    $(formSelector + ' [name=uuid]').append('<option value="">New</option>');
+    for (var i = 0; i < data.length; i++) {
+     $(formSelector + ' [name=uuid]').append('<option value="' + data[i].uuid + '">' + (data[i].projectKey || '') + ' ' + (data[i].repositorySlug || '') + ' ' + data[i].name + '</option>');
+    }
+   });
+   clearForm(formSelector);
+  }
+  populateSelect();
+
+  $(formSelector + ' [name=uuid]').change(function() {
+   var changedTo = $(this).val();
+   if (changedTo) {
+    doSetupForm(formSelector, restResource+'/'+changedTo);
+   } else {
+    populateSelect();
+   }
+  });
+
+  $(formSelector).submit(function(e) {
+   e.preventDefault();
+   postForm(restResource, formSelector, populateSelect);
+  });
+
+  $(formSelector + ' button[name=delete]').click(function(e) {
+   e.preventDefault();
+   var uuid = $(formSelector).find('[name=uuid]').val();
+   if (uuid) {
+    $.ajax({
+     url: restResource + '/' + uuid,
+     type: 'DELETE',
+     success: function(result) {
+      populateSelect();
+     }
+    });
+   }
+  });
+ }
+
+ $(document).ready(function() {
+  listFieldChanged($(this));
+  $('.listfield').find('input, textarea').live('keyup', function() {
+   listFieldChanged($(this));
+  });
+ });
+
  return {
-  postForm: postForm,
-  getRepos: getRepos,
-  getProjects: getProjects,
-  forAllRepos: forAllRepos,
-  setupRepoSettingsForm: setupRepoSettingsForm
+  setupForm: setupForm,
+  setupForms: setupForms
  }
 });

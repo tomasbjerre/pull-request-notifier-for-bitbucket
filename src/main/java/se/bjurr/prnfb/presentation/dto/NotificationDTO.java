@@ -9,10 +9,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD;
-import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
 import se.bjurr.prnfb.settings.TRIGGER_IF_MERGE;
-
-import com.atlassian.bitbucket.pull.PullRequestState;
 
 @XmlRootElement
 @XmlAccessorType(FIELD)
@@ -33,8 +30,8 @@ public class NotificationDTO {
  private String proxyUser;
  private String repositorySlug;
  private TRIGGER_IF_MERGE triggerIfCanMerge;
- private List<PullRequestState> triggerIgnoreStateList;
- private List<PrnfbPullRequestAction> triggers;
+ private List<String> triggerIgnoreStateList;
+ private List<String> triggers;
  private String url;
  private String user;
  private UUID uuid;
@@ -257,11 +254,11 @@ public class NotificationDTO {
   return this.triggerIfCanMerge;
  }
 
- public List<PullRequestState> getTriggerIgnoreStateList() {
+ public List<String> getTriggerIgnoreStateList() {
   return this.triggerIgnoreStateList;
  }
 
- public List<PrnfbPullRequestAction> getTriggers() {
+ public List<String> getTriggers() {
   return this.triggers;
  }
 
@@ -369,11 +366,11 @@ public class NotificationDTO {
   this.triggerIfCanMerge = triggerIfCanMerge;
  }
 
- public void setTriggerIgnoreStateList(List<PullRequestState> triggerIgnoreStateList) {
+ public void setTriggerIgnoreStateList(List<String> triggerIgnoreStateList) {
   this.triggerIgnoreStateList = triggerIgnoreStateList;
  }
 
- public void setTriggers(List<PrnfbPullRequestAction> triggers) {
+ public void setTriggers(List<String> triggers) {
   this.triggers = triggers;
  }
 
@@ -387,18 +384,6 @@ public class NotificationDTO {
 
  public void setUuid(UUID uuid) {
   this.uuid = uuid;
- }
-
- @Override
- public String toString() {
-  return "NotificationDTO [filterRegexp=" + this.filterRegexp + ", filterString=" + this.filterString + ", headers="
-    + this.headers + ", injectionUrl=" + this.injectionUrl + ", injectionUrlRegexp=" + this.injectionUrlRegexp
-    + ", method=" + this.method + ", name=" + this.name + ", password=" + this.password + ", postContent="
-    + this.postContent + ", projectKey=" + this.projectKey + ", proxyPassword=" + this.proxyPassword + ", proxyPort="
-    + this.proxyPort + ", proxyServer=" + this.proxyServer + ", proxyUser=" + this.proxyUser + ", repositorySlug="
-    + this.repositorySlug + ", triggerIfCanMerge=" + this.triggerIfCanMerge + ", triggerIgnoreStateList="
-    + this.triggerIgnoreStateList + ", triggers=" + this.triggers + ", url=" + this.url + ", user=" + this.user
-    + ", uuid=" + this.uuid + "]";
  }
 
 }

@@ -58,10 +58,12 @@ public class ButtonServletTest {
  @Test
  public void testThatButtonCanBeCreated() throws Exception {
   ButtonDTO button = createButton();
+  PrnfbButton prnfbButton = createPrnfbButton(button);
+  when(this.settingsService.addOrUpdateButton(prnfbButton))//
+    .thenReturn(prnfbButton);
 
   this.sut.create(button);
 
-  PrnfbButton prnfbButton = createPrnfbButton(button);
   verify(this.settingsService)//
     .addOrUpdateButton(prnfbButton);
  }
@@ -106,6 +108,32 @@ public class ButtonServletTest {
  }
 
  @Test
+ public void testThatButtonCanBeListedPerProject() throws Exception {
+  when(this.settingsService.getButtons(this.buttonDto1.getProjectKey()))//
+    .thenReturn(newArrayList(this.button1));
+
+  Response actual = this.sut.get(this.buttonDto1.getProjectKey());
+  @SuppressWarnings("unchecked")
+  Iterable<ButtonDTO> actualList = (Iterable<ButtonDTO>) actual.getEntity();
+
+  assertThat(actualList)//
+    .containsOnly(this.buttonDto1);
+ }
+
+ @Test
+ public void testThatButtonCanBeListedPerProjectAndRepo() throws Exception {
+  when(this.settingsService.getButtons(this.buttonDto1.getProjectKey(), this.buttonDto1.getRepositorySlug()))//
+    .thenReturn(newArrayList(this.button1));
+
+  Response actual = this.sut.get(this.buttonDto1.getProjectKey(), this.buttonDto1.getRepositorySlug());
+  @SuppressWarnings("unchecked")
+  Iterable<ButtonDTO> actualList = (Iterable<ButtonDTO>) actual.getEntity();
+
+  assertThat(actualList)//
+    .containsOnly(this.buttonDto1);
+ }
+
+ @Test
  public void testThatButtonCanBePressed() throws Exception {
   Integer repositoryId = 1;
   Long pullRequestId = 2L;
@@ -124,10 +152,12 @@ public class ButtonServletTest {
  @Test
  public void testThatButtonCanBeUpdated() throws Exception {
   ButtonDTO button = createButton();
+  PrnfbButton prnfbButton = createPrnfbButton(button);
+  when(this.settingsService.addOrUpdateButton(prnfbButton))//
+    .thenReturn(prnfbButton);
 
   this.sut.create(button);
 
-  PrnfbButton prnfbButton = createPrnfbButton(button);
   verify(this.settingsService)//
     .addOrUpdateButton(prnfbButton);
  }
@@ -145,14 +175,16 @@ public class ButtonServletTest {
 
  private ButtonDTO createButton() {
   ButtonDTO button = new ButtonDTO();
-  button.setTitle("title");
+  button.setName("title");
   button.setUserLevel(EVERYONE);
   button.setUuid(UUID.randomUUID());
+  button.setProjectKey("p1");
+  button.setRepositorySlug("r1");
   return button;
  }
 
  private PrnfbButton createPrnfbButton(ButtonDTO button) {
-  PrnfbButton prnfbButton = new PrnfbButton(button.getUUID(), button.getTitle(), button.getUserLevel());
+  PrnfbButton prnfbButton = new PrnfbButton(button.getUUID(), button.getName(), button.getUserLevel(), "p1", "r1");
   return prnfbButton;
  }
 

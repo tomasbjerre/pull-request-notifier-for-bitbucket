@@ -5,12 +5,12 @@ module.exports = function(grunt) {
 
   jsbeautifier: {
    files: ["Gruntfile.js",
-    "**/*.vm",
-    "**/*.xml",
+    "src/**/*.vm",
+    "src/**/*.xml",
     "pom.xml",
-    "**/*.js",
+    "src/**/*.js",
     "Gruntfile.js",
-    "**/*.css"
+    "src/**/*.css"
    ],
    options: {
     html: {

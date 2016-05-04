@@ -5,8 +5,10 @@ import static com.google.common.base.Predicates.not;
 import static com.google.common.base.Throwables.propagate;
 import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.find;
+import static com.google.common.collect.Iterables.tryFind;
 import static com.google.common.collect.Lists.newArrayList;
 import static se.bjurr.prnfb.settings.PrnfbSettingsBuilder.prnfbSettingsBuilder;
+import static se.bjurr.prnfb.settings.PrnfbSettingsDataBuilder.prnfbSettingsDataBuilder;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,6 +18,7 @@ import se.bjurr.prnfb.settings.PrnfbButton;
 import se.bjurr.prnfb.settings.PrnfbNotification;
 import se.bjurr.prnfb.settings.PrnfbSettings;
 import se.bjurr.prnfb.settings.PrnfbSettingsData;
+import se.bjurr.prnfb.settings.USER_LEVEL;
 import se.bjurr.prnfb.settings.ValidationException;
 
 import com.atlassian.bitbucket.user.SecurityService;
@@ -25,6 +28,7 @@ import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.transaction.TransactionCallback;
 import com.atlassian.sal.api.transaction.TransactionTemplate;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.gson.Gson;
 
@@ -43,22 +47,21 @@ public class SettingsService {
   this.securityService = securityService;
  }
 
- public void addOrUpdateButton(PrnfbButton prnfbButton) {
-  inSynchronizedTransaction(new TransactionCallback<Void>() {
+ public PrnfbButton addOrUpdateButton(PrnfbButton prnfbButton) {
+  return inSynchronizedTransaction(new TransactionCallback<PrnfbButton>() {
    @Override
-   public Void doInTransaction() {
-    doAddOrUpdateButton(prnfbButton);
-    return null;
+   public PrnfbButton doInTransaction() {
+    return doAddOrUpdateButton(prnfbButton);
    }
   });
  }
 
- public void addOrUpdateNotification(PrnfbNotification prnfbNotification) throws ValidationException {
-  inSynchronizedTransaction(new TransactionCallback<Void>() {
+ public PrnfbNotification addOrUpdateNotification(PrnfbNotification prnfbNotification) throws ValidationException {
+  return inSynchronizedTransaction(new TransactionCallback<PrnfbNotification>() {
    @Override
-   public Void doInTransaction() {
+   public PrnfbNotification doInTransaction() {
     try {
-     doAddOrUpdateNotification(prnfbNotification);
+     return doAddOrUpdateNotification(prnfbNotification);
     } catch (ValidationException e) {
      propagate(e);
     }
@@ -87,6 +90,14 @@ public class SettingsService {
   });
  }
 
+ public Optional<PrnfbButton> findButton(UUID uuid) {
+  return tryFind(getPrnfbSettings().getButtons(), withUuid(uuid));
+ }
+
+ public Optional<PrnfbNotification> findNotification(UUID notificationUuid) {
+  return tryFind(getPrnfbSettings().getNotifications(), withUuid(notificationUuid));
+ }
+
  public PrnfbButton getButton(UUID buttionUuid) {
   return find(getButtons(), withUuid(buttionUuid));
  }
@@ -95,17 +106,54 @@ public class SettingsService {
   return getPrnfbSettings().getButtons();
  }
 
- public PrnfbNotification getNotification(UUID notificationUuid) {
-  for (PrnfbNotification prnfbNotification : getPrnfbSettings().getNotifications()) {
-   if (prnfbNotification.getUuid().equals(notificationUuid)) {
-    return prnfbNotification;
+ public List<PrnfbButton> getButtons(String projectKey) {
+  List<PrnfbButton> found = newArrayList();
+  for (PrnfbButton candidate : getPrnfbSettings().getButtons()) {
+   if (candidate.getProjectKey().isPresent() && candidate.getProjectKey().get().equals(projectKey)) {
+    found.add(candidate);
    }
   }
-  throw new RuntimeException("Cant find notification " + notificationUuid);
+  return found;
+ }
+
+ public List<PrnfbButton> getButtons(String projectKey, String repositorySlug) {
+  List<PrnfbButton> found = newArrayList();
+  for (PrnfbButton candidate : getPrnfbSettings().getButtons()) {
+   if (candidate.getProjectKey().isPresent() && candidate.getProjectKey().get().equals(projectKey)//
+     && candidate.getRepositorySlug().isPresent() && candidate.getRepositorySlug().get().equals(repositorySlug)) {
+    found.add(candidate);
+   }
+  }
+  return found;
+ }
+
+ public PrnfbNotification getNotification(UUID notificationUuid) {
+  return find(getPrnfbSettings().getNotifications(), withUuid(notificationUuid));
  }
 
  public List<PrnfbNotification> getNotifications() {
   return getPrnfbSettings().getNotifications();
+ }
+
+ public List<PrnfbNotification> getNotifications(String projectKey) {
+  List<PrnfbNotification> found = newArrayList();
+  for (PrnfbNotification candidate : getPrnfbSettings().getNotifications()) {
+   if (candidate.getProjectKey().isPresent() && candidate.getProjectKey().get().equals(projectKey)) {
+    found.add(candidate);
+   }
+  }
+  return found;
+ }
+
+ public List<PrnfbNotification> getNotifications(String projectKey, String repositorySlug) {
+  List<PrnfbNotification> found = newArrayList();
+  for (PrnfbNotification candidate : getPrnfbSettings().getNotifications()) {
+   if (candidate.getProjectKey().isPresent() && candidate.getProjectKey().get().equals(projectKey)//
+     && candidate.getRepositorySlug().isPresent() && candidate.getRepositorySlug().get().equals(repositorySlug)) {
+    found.add(candidate);
+   }
+  }
+  return found;
  }
 
  @VisibleForTesting
@@ -136,8 +184,10 @@ public class SettingsService {
   });
  }
 
- private void doAddOrUpdateButton(PrnfbButton prnfbButton) {
-  doDeleteButton(prnfbButton.getUuid());
+ private PrnfbButton doAddOrUpdateButton(PrnfbButton prnfbButton) {
+  if (findButton(prnfbButton.getUuid()).isPresent()) {
+   doDeleteButton(prnfbButton.getUuid());
+  }
 
   PrnfbSettings originalSettings = doGetPrnfbSettings();
   PrnfbSettings updated = prnfbSettingsBuilder(originalSettings)//
@@ -145,10 +195,13 @@ public class SettingsService {
     .build();
 
   doSetPrnfbSettings(updated);
+  return prnfbButton;
  }
 
- private void doAddOrUpdateNotification(PrnfbNotification prnfbNotification) throws ValidationException {
-  doDeleteNotification(prnfbNotification.getUuid());
+ private PrnfbNotification doAddOrUpdateNotification(PrnfbNotification prnfbNotification) throws ValidationException {
+  if (findNotification(prnfbNotification.getUuid()).isPresent()) {
+   doDeleteNotification(prnfbNotification.getUuid());
+  }
 
   PrnfbSettings originalSettings = doGetPrnfbSettings();
   PrnfbSettings updated = prnfbSettingsBuilder(originalSettings)//
@@ -156,6 +209,7 @@ public class SettingsService {
     .build();
 
   doSetPrnfbSettings(updated);
+  return prnfbNotification;
  }
 
  private void doDeleteButton(UUID uuid) {
@@ -179,7 +233,12 @@ public class SettingsService {
  private PrnfbSettings doGetPrnfbSettings() {
   Object storedSettings = this.pluginSettings.get(STORAGE_KEY);
   if (storedSettings == null) {
-   return prnfbSettingsBuilder().build();
+   return prnfbSettingsBuilder()//
+     .setPrnfbSettingsData(//
+       prnfbSettingsDataBuilder()//
+         .setAdminRestriction(USER_LEVEL.ADMIN)//
+         .build())//
+     .build();
   }
   return gson.fromJson(storedSettings.toString(), PrnfbSettings.class);
  }

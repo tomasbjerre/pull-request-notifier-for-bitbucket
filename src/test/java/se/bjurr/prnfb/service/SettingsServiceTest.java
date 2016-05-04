@@ -3,6 +3,7 @@ package se.bjurr.prnfb.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static se.bjurr.prnfb.listener.PrnfbPullRequestAction.APPROVED;
 import static se.bjurr.prnfb.service.SettingsService.STORAGE_KEY;
 import static se.bjurr.prnfb.settings.PrnfbNotificationBuilder.prnfbNotificationBuilder;
 import static se.bjurr.prnfb.settings.PrnfbSettingsBuilder.prnfbSettingsBuilder;
@@ -10,6 +11,7 @@ import static se.bjurr.prnfb.settings.PrnfbSettingsDataBuilder.prnfbSettingsData
 import static se.bjurr.prnfb.settings.USER_LEVEL.ADMIN;
 import static se.bjurr.prnfb.settings.USER_LEVEL.EVERYONE;
 
+import java.util.List;
 import java.util.Set;
 
 import org.junit.Before;
@@ -20,6 +22,7 @@ import se.bjurr.prnfb.settings.PrnfbButton;
 import se.bjurr.prnfb.settings.PrnfbNotification;
 import se.bjurr.prnfb.settings.PrnfbSettings;
 import se.bjurr.prnfb.settings.ValidationException;
+import uk.co.jemos.podam.api.PodamFactoryImpl;
 
 import com.atlassian.bitbucket.permission.Permission;
 import com.atlassian.bitbucket.user.EscalatedSecurityContext;
@@ -32,6 +35,7 @@ import com.google.gson.Gson;
 
 public class SettingsServiceTest {
  private EscalatedSecurityContext escalatedSecurityContext;
+ private PrnfbNotification notification1;
  private final PluginSettingsMap pluginSettings = new PluginSettingsMap();
  @Mock
  private PluginSettingsFactory pluginSettingsFactory;
@@ -41,7 +45,7 @@ public class SettingsServiceTest {
  private TransactionTemplate transactionTemplate;
 
  @Before
- public void before() {
+ public void before() throws ValidationException {
   initMocks(this);
   when(this.pluginSettingsFactory.createGlobalSettings())//
     .thenReturn(this.pluginSettings);
@@ -79,11 +83,18 @@ public class SettingsServiceTest {
    }
   };
   this.sut = new SettingsService(this.pluginSettingsFactory, this.transactionTemplate, this.securityService);
+
+  this.notification1 = prnfbNotificationBuilder()//
+    .withUrl("http://hej.com/")//
+    .withProjectKey("projectKey")//
+    .withRepositorySlug("repositorySlug")//
+    .withTrigger(APPROVED)//
+    .build();
  }
 
  @Test
  public void testThatButtonCanBeAddedUpdatedAndDeleted() {
-  PrnfbButton button1 = new PrnfbButton("title", EVERYONE);
+  PrnfbButton button1 = new PrnfbButton(null, "title", EVERYONE, "p1", "r1");
   assertThat(this.sut.getButtons())//
     .isEmpty();
 
@@ -91,12 +102,12 @@ public class SettingsServiceTest {
   assertThat(this.sut.getButtons())//
     .containsExactly(button1);
 
-  PrnfbButton button2 = new PrnfbButton("title", EVERYONE);
+  PrnfbButton button2 = new PrnfbButton(null, "title", EVERYONE, "p1", "r1");
   this.sut.addOrUpdateButton(button2);
   assertThat(this.sut.getButtons())//
     .containsExactly(button1, button2);
 
-  PrnfbButton updated = new PrnfbButton(button1.getUuid(), "title2", ADMIN);
+  PrnfbButton updated = new PrnfbButton(button1.getUuid(), "title2", ADMIN, "p1", "r1");
   this.sut.addOrUpdateButton(updated);
   assertThat(this.sut.getButtons())//
     .containsExactly(button2, updated);
@@ -115,39 +126,91 @@ public class SettingsServiceTest {
  }
 
  @Test
+ public void testThatButtonsCanBeRetrievedByProject() {
+  PrnfbButton button1 = new PodamFactoryImpl().manufacturePojo(PrnfbButton.class);
+  this.sut.addOrUpdateButton(button1);
+
+  List<PrnfbButton> actual = this.sut.getButtons(button1.getProjectKey().get());
+
+  assertThat(actual)//
+    .containsOnly(button1);
+ }
+
+ @Test
+ public void testThatButtonsCanBeRetrievedByProjectAndRepo() {
+  PrnfbButton button1 = new PodamFactoryImpl().manufacturePojo(PrnfbButton.class);
+  this.sut.addOrUpdateButton(button1);
+
+  List<PrnfbButton> actual = this.sut.getButtons(button1.getProjectKey().get(), button1.getRepositorySlug().get());
+
+  assertThat(actual)//
+    .containsOnly(button1);
+ }
+
+ @Test
  public void testThatNotificationCanBeAddedUpdatedAndDeleted() throws ValidationException {
-  PrnfbNotification notification1 = prnfbNotificationBuilder()//
-    .withUrl("http://hej.com/")//
-    .build();
   assertThat(this.sut.getButtons())//
     .isEmpty();
 
-  this.sut.addOrUpdateNotification(notification1);
+  this.sut.addOrUpdateNotification(this.notification1);
   assertThat(this.sut.getNotifications())//
-    .containsExactly(notification1);
+    .containsExactly(this.notification1);
 
   PrnfbNotification notification2 = prnfbNotificationBuilder()//
     .withUrl("http://hej.com/")//
+    .withTrigger(APPROVED)//
     .build();
   this.sut.addOrUpdateNotification(notification2);
   assertThat(this.sut.getNotifications())//
-    .containsExactly(notification1, notification2);
+    .containsExactly(this.notification1, notification2);
 
   PrnfbNotification updated = prnfbNotificationBuilder()//
-    .withUuid(notification1.getUuid())//
+    .withUuid(this.notification1.getUuid())//
     .withUrl("http://hej2.com/")//
+    .withTrigger(APPROVED)//
     .build();
   this.sut.addOrUpdateNotification(updated);
   assertThat(this.sut.getNotifications())//
     .containsExactly(notification2, updated);
 
-  this.sut.deleteNotification(notification1.getUuid());
+  this.sut.deleteNotification(this.notification1.getUuid());
   assertThat(this.sut.getNotifications())//
     .containsExactly(notification2);
   assertThat(this.sut.getNotifications().get(0).toString())//
     .isEqualTo(notification2.toString());
   assertThat(this.sut.getNotifications().get(0).hashCode())//
     .isEqualTo(notification2.hashCode());
+ }
+
+ @Test
+ public void testThatNotificationsCanBeRetrievedByProject() throws ValidationException {
+  this.sut.addOrUpdateNotification(this.notification1);
+
+  List<PrnfbNotification> actual = this.sut.getNotifications(this.notification1.getProjectKey().orNull());
+
+  assertThat(actual)//
+    .containsOnly(this.notification1);
+ }
+
+ @Test
+ public void testThatNotificationsCanBeRetrievedByProjectAndRepo() throws ValidationException {
+  this.sut.addOrUpdateNotification(this.notification1);
+
+  List<PrnfbNotification> actual = this.sut.getNotifications(this.notification1.getProjectKey().orNull(),
+    this.notification1.getRepositorySlug().orNull());
+
+  assertThat(actual)//
+    .containsOnly(this.notification1);
+ }
+
+ @Test
+ public void testThatNotificationsCanBeRetrievedByUuid() throws ValidationException {
+  this.sut.addOrUpdateNotification(this.notification1);
+
+  PrnfbNotification actual = this.sut.getNotification(this.notification1.getUuid());
+
+  assertThat(actual)//
+    .isEqualTo(this.notification1);
  }
 
  @Test

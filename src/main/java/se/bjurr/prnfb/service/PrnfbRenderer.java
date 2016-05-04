@@ -3,6 +3,7 @@ package se.bjurr.prnfb.service;
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Throwables.propagate;
 import static java.net.URLEncoder.encode;
+import static se.bjurr.prnfb.service.PrnfbVariable.EVERYTHING_URL;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
@@ -45,17 +46,40 @@ public class PrnfbRenderer {
  }
 
  public String render(String string, Boolean forUrl, ClientKeyStore clientKeyStore, Boolean shouldAcceptAnyCertificate) {
+  string = renderVariable(string, false, clientKeyStore, shouldAcceptAnyCertificate, EVERYTHING_URL);
+
   for (final PrnfbVariable variable : PrnfbVariable.values()) {
-   final String regExpStr = "\\$\\{" + variable.name() + "\\}";
-   if (string.contains(regExpStr.replaceAll("\\\\", ""))) {
-    try {
-     String resolved = variable.resolve(this.pullRequest, this.pullRequestAction, this.applicationUser,
-       this.repositoryService, this.propertiesService, this.prnfbNotification, this.variables, clientKeyStore,
-       shouldAcceptAnyCertificate);
-     string = string.replaceAll(regExpStr, forUrl ? encode(resolved, UTF_8.name()) : resolved);
-    } catch (UnsupportedEncodingException e) {
-     propagate(e);
-    }
+   string = renderVariable(string, forUrl, clientKeyStore, shouldAcceptAnyCertificate, variable);
+  }
+  return string;
+ }
+
+ private boolean containsVariable(String string, final String regExpStr) {
+  return string.contains(regExpStr.replaceAll("\\\\", ""));
+ }
+
+ private String getRenderedString(String string, Boolean forUrl, ClientKeyStore clientKeyStore,
+   Boolean shouldAcceptAnyCertificate, final PrnfbVariable variable, final String regExpStr)
+   throws UnsupportedEncodingException {
+  String resolved = variable.resolve(this.pullRequest, this.pullRequestAction, this.applicationUser,
+    this.repositoryService, this.propertiesService, this.prnfbNotification, this.variables, clientKeyStore,
+    shouldAcceptAnyCertificate);
+  string = string.replaceAll(regExpStr, forUrl ? encode(resolved, UTF_8.name()) : resolved);
+  return string;
+ }
+
+ private String regexp(PrnfbVariable variable) {
+  return "\\$\\{" + variable.name() + "\\}";
+ }
+
+ private String renderVariable(String string, Boolean forUrl, ClientKeyStore clientKeyStore,
+   Boolean shouldAcceptAnyCertificate, final PrnfbVariable variable) {
+  final String regExpStr = regexp(variable);
+  if (containsVariable(string, regExpStr)) {
+   try {
+    string = getRenderedString(string, forUrl, clientKeyStore, shouldAcceptAnyCertificate, variable, regExpStr);
+   } catch (UnsupportedEncodingException e) {
+    propagate(e);
    }
   }
   return string;

@@ -18,9 +18,14 @@
  $webResourceManager.requireResource("se.bjurr.prnfs.pull-request-notifier-for-stash:resources")
  <!-- //-->
  $webResourceManager.requireResource("com.atlassian.auiplugin:aui-select")
+ <!-- //-->
+ $webResourceManager.requireResource("com.atlassian.auiplugin:aui-experimental-expander")
 </head>
 
 <body>
+
+ <div class="statusresponse"></div>
+
 
  <h3>Usage</h3>
  <p>
@@ -29,91 +34,469 @@
  <p>
   You can use variables when invoking the URL, when forming the filter string, custom header values or in POST content.
  </p>
- <ul>
-  <li><b>${PULL_REQUEST_ID}</b> Example: 1</li>
-  <li><b>${PULL_REQUEST_TITLE}</b> Example: Anything</li>
-  <li><b>${PULL_REQUEST_ACTION}</b> Example: OPENED</li>
-  <li><b>${PULL_REQUEST_URL}</b> Example: http://localhost:7990/projects/PROJECT_1/repos/rep_1/pull-requests/1</li>
-  <li><b>${PULL_REQUEST_VERSION}</b> Example: 1</li>
-  <li><b>${PULL_REQUEST_COMMENT_TEXT}</b> Example: A comment</li>
-  <li><b>${BUTTON_TRIGGER_TITLE}</b> Example: Trigger Notification</li>
-  <li><b>${INJECTION_URL_VALUE}</b> If injection URL configured</li>
-  <li><b>${PULL_REQUEST_USER_DISPLAY_NAME}</b> Example: Some User</li>
-  <li><b>${PULL_REQUEST_USER_EMAIL_ADDRESS}</b> Example: some.user@bitbucket.domain</li>
-  <li><b>${PULL_REQUEST_USER_ID}</b> Example: 1</li>
-  <li><b>${PULL_REQUEST_USER_NAME}</b> Example: some.user</li>
-  <li><b>${PULL_REQUEST_USER_SLUG}</b> Example: some.user</li>
-  <li><b>${PULL_REQUEST_AUTHOR_DISPLAY_NAME}</b> Example: Administrator</li>
-  <li><b>${PULL_REQUEST_AUTHOR_EMAIL}</b> Example: admin@example.com</li>
-  <li><b>${PULL_REQUEST_AUTHOR_ID}</b> Example: 1</li>
-  <li><b>${PULL_REQUEST_AUTHOR_NAME}</b> Example: admin</li>
-  <li><b>${PULL_REQUEST_AUTHOR_SLUG}</b> Example: admin</li>
-  <li><b>${PULL_REQUEST_REVIEWERS}</b> Reviewers list.</li>
-  <li><b>${PULL_REQUEST_REVIEWERS_ID}</b> Reviewers ID list.</li>
-  <li><b>${PULL_REQUEST_REVIEWERS_SLUG}</b> Reviewers slug list.</li>
-  <li><b>${PULL_REQUEST_REVIEWERS_APPROVED_COUNT}</b> Number of reviewers that approved the PR.</li>
-  <li><b>${PULL_REQUEST_PARTICIPANTS_APPROVED_COUNT}</b> Number of participants that approved the PR.</li>
-  <li><b>${PULL_REQUEST_MERGE_COMMIT}</b> Hash of merged commit (only available for merged-event).</li>
-  <li><b>${PULL_REQUEST_FROM_SSH_CLONE_URL}</b> Example: ssh://git@localhost:7999/project_1/rep_1</li>
-  <li><b>${PULL_REQUEST_FROM_HTTP_CLONE_URL}</b> Example: http://admin@localhost:7990/bitbucket/scm/project_1/rep_1.git</li>
-  <li><b>${PULL_REQUEST_FROM_HASH}</b> Example: 6053a1eaa1c009dd11092d09a72f3c41af1b59ad</li>
-  <li><b>${PULL_REQUEST_FROM_ID}</b> Example: refs/heads/branch_mod_merge</li>
-  <li><b>${PULL_REQUEST_FROM_BRANCH}</b> Example: branch_mod_merge</li>
-  <li><b>${PULL_REQUEST_FROM_REPO_ID}</b> Example: 1</li>
-  <li><b>${PULL_REQUEST_FROM_REPO_NAME}</b> Example: rep_1</li>
-  <li><b>${PULL_REQUEST_FROM_REPO_PROJECT_ID}</b> Example: 1</li>
-  <li><b>${PULL_REQUEST_FROM_REPO_PROJECT_KEY}</b> Example: PROJECT_1</li>
-  <li><b>${PULL_REQUEST_FROM_REPO_SLUG}</b> Example: rep_1</li>
-  <li><b>${PULL_REQUEST_TO_SSH_CLONE_URL}</b> Example: ssh://git@localhost:7999/project_1/rep_1</li>
-  <li><b>${PULL_REQUEST_TO_HTTP_CLONE_URL}</b> Example: http://admin@localhost:7990/bitbucket/scm/project_1/rep_1.git</li>
-  <li><b>${PULL_REQUEST_TO_HASH}</b> Example: d6edcbf924697ab811a867421dab60d954ccad99</li>
-  <li><b>${PULL_REQUEST_TO_ID}</b> Example: refs/heads/basic_branching</li>
-  <li><b>${PULL_REQUEST_TO_BRANCH}</b> Example: basic_branching</li>
-  <li><b>${PULL_REQUEST_TO_REPO_ID}</b> Example: 1</li>
-  <li><b>${PULL_REQUEST_TO_REPO_NAME}</b> Example: rep_1</li>
-  <li><b>${PULL_REQUEST_TO_REPO_PROJECT_ID}</b> Example: 1</li>
-  <li><b>${PULL_REQUEST_TO_REPO_PROJECT_KEY}</b> Example: PROJECT_1</li>
-  <li><b>${PULL_REQUEST_TO_REPO_SLUG}</b> Example: rep_1</li>
- </ul>
+ <div id="prnfb-expander-variables" class="aui-expander-content">
+  <ul>
 
+   <li><b>${EVERYTHING_URL}</b> Example: PULL_REQUEST_ID=1&PULL_REQUEST_TITLE=some%20thing...</li>
+   <li><b>${PULL_REQUEST_ID}</b> Example: 1</li>
+   <li><b>${PULL_REQUEST_TITLE}</b> Example: Anything</li>
+   <li><b>${PULL_REQUEST_ACTION}</b> Example: OPENED</li>
+   <li><b>${PULL_REQUEST_URL}</b> Example: http://localhost:7990/projects/PROJECT_1/repos/rep_1/pull-requests/1</li>
+   <li><b>${PULL_REQUEST_VERSION}</b> Example: 1</li>
+   <li><b>${PULL_REQUEST_COMMENT_TEXT}</b> Example: A comment</li>
+   <li><b>${BUTTON_TRIGGER_TITLE}</b> Example: Trigger Notification</li>
+   <li><b>${INJECTION_URL_VALUE}</b> If injection URL configured</li>
+   <li><b>${PULL_REQUEST_USER_DISPLAY_NAME}</b> Example: Some User</li>
+   <li><b>${PULL_REQUEST_USER_EMAIL_ADDRESS}</b> Example: some.user@bitbucket.domain</li>
+   <li><b>${PULL_REQUEST_USER_ID}</b> Example: 1</li>
+   <li><b>${PULL_REQUEST_USER_NAME}</b> Example: some.user</li>
+   <li><b>${PULL_REQUEST_USER_SLUG}</b> Example: some.user</li>
+   <li><b>${PULL_REQUEST_AUTHOR_DISPLAY_NAME}</b> Example: Administrator</li>
+   <li><b>${PULL_REQUEST_AUTHOR_EMAIL}</b> Example: admin@example.com</li>
+   <li><b>${PULL_REQUEST_AUTHOR_ID}</b> Example: 1</li>
+   <li><b>${PULL_REQUEST_AUTHOR_NAME}</b> Example: admin</li>
+   <li><b>${PULL_REQUEST_AUTHOR_SLUG}</b> Example: admin</li>
+   <li><b>${PULL_REQUEST_REVIEWERS}</b> Reviewers list.</li>
+   <li><b>${PULL_REQUEST_REVIEWERS_ID}</b> Reviewers ID list.</li>
+   <li><b>${PULL_REQUEST_REVIEWERS_SLUG}</b> Reviewers slug list.</li>
+   <li><b>${PULL_REQUEST_REVIEWERS_APPROVED_COUNT}</b> Number of reviewers that approved the PR.</li>
+   <li><b>${PULL_REQUEST_PARTICIPANTS_APPROVED_COUNT}</b> Number of participants that approved the PR.</li>
+   <li><b>${PULL_REQUEST_MERGE_COMMIT}</b> Hash of merged commit (only available for merged-event).</li>
+   <li><b>${PULL_REQUEST_FROM_SSH_CLONE_URL}</b> Example: ssh://git@localhost:7999/project_1/rep_1</li>
+   <li><b>${PULL_REQUEST_FROM_HTTP_CLONE_URL}</b> Example: http://admin@localhost:7990/bitbucket/scm/project_1/rep_1.git</li>
+   <li><b>${PULL_REQUEST_FROM_HASH}</b> Example: 6053a1eaa1c009dd11092d09a72f3c41af1b59ad</li>
+   <li><b>${PULL_REQUEST_FROM_ID}</b> Example: refs/heads/branch_mod_merge</li>
+   <li><b>${PULL_REQUEST_FROM_BRANCH}</b> Example: branch_mod_merge</li>
+   <li><b>${PULL_REQUEST_FROM_REPO_ID}</b> Example: 1</li>
+   <li><b>${PULL_REQUEST_FROM_REPO_NAME}</b> Example: rep_1</li>
+   <li><b>${PULL_REQUEST_FROM_REPO_PROJECT_ID}</b> Example: 1</li>
+   <li><b>${PULL_REQUEST_FROM_REPO_PROJECT_KEY}</b> Example: PROJECT_1</li>
+   <li><b>${PULL_REQUEST_FROM_REPO_SLUG}</b> Example: rep_1</li>
+   <li><b>${PULL_REQUEST_TO_SSH_CLONE_URL}</b> Example: ssh://git@localhost:7999/project_1/rep_1</li>
+   <li><b>${PULL_REQUEST_TO_HTTP_CLONE_URL}</b> Example: http://admin@localhost:7990/bitbucket/scm/project_1/rep_1.git</li>
+   <li><b>${PULL_REQUEST_TO_HASH}</b> Example: d6edcbf924697ab811a867421dab60d954ccad99</li>
+   <li><b>${PULL_REQUEST_TO_ID}</b> Example: refs/heads/basic_branching</li>
+   <li><b>${PULL_REQUEST_TO_BRANCH}</b> Example: basic_branching</li>
+   <li><b>${PULL_REQUEST_TO_REPO_ID}</b> Example: 1</li>
+   <li><b>${PULL_REQUEST_TO_REPO_NAME}</b> Example: rep_1</li>
+   <li><b>${PULL_REQUEST_TO_REPO_PROJECT_ID}</b> Example: 1</li>
+   <li><b>${PULL_REQUEST_TO_REPO_PROJECT_KEY}</b> Example: PROJECT_1</li>
+   <li><b>${PULL_REQUEST_TO_REPO_SLUG}</b> Example: rep_1</li>
+  </ul>
+ </div>
+ <a id="replace-text-trigger" data-replace-text="Read less" class="aui-expander-trigger" aria-controls="prnfb-expander-variables">Read more</a> #if(!$repository)
+ <!-- //-->
+ <h3>Global settings</h3>
+ <p>
+  Some shared settings.
+ </p>
+
+ <div class="aui-flatpack-example">
+  <form id="prnfbsettingsadmin" class="aui prnfb">
+   <fieldset class="group">
+    <legend>
+     <span>Admin restriction</span>
+    </legend>
+    <div class="radio">
+     <label>
+      <input class="radio" type="radio" name="adminRestriction" value="ADMIN"> System administrators</label>
+    </div>
+    <div class="radio">
+     <label>
+      <input class="radio" type="radio" name="adminRestriction" value="SYSTEM_ADMIN"> Administrators and system administrators</label>
+    </div>
+    <div class="radio">
+     <label>
+      <input class="radio" type="radio" name="adminRestriction" value="EVERYONE"> Everyone
+     </label>
+    </div>
+   </fieldset>
+
+   <fieldset class="group">
+    <div class="checkbox">
+     <label>
+      <input class="checkbox" type="checkbox" name="shouldAcceptAnyCertificate" value="true"> Accept any certificate</label>
+     <div class="description">Will make the client invoking any URL accept any certificate.</div>
+    </div>
+
+    <div class="field-group">
+     <label>Keystore path </label>
+     <input class="text long-field" type="text" name="keyStore">
+     <div class="description">Optional filesystem path to a keystore to use.</div>
+    </div>
+    <div class="field-group">
+     <label>Keystore password </label>
+     <input class="text long-field" type="text" name="keyStorePassword">
+     <div class="description">Optional password to use for custom keystore.</div>
+    </div>
+    <div class="field-group">
+     <label>Keystore type </label>
+     <input class="text long-field" type="text" name="keyStoreType">
+     <div class="description">Type of specified custom keystore.</div>
+    </div>
+   </fieldset>
+
+   <fieldset class="group">
+
+    <div class="aui-buttons">
+     <button class="aui-button aui-button-primary">Save</button>
+    </div>
+   </fieldset>
+  </form>
+ </div>
+ <!-- //-->
+ #end
+
+
+ <!-- //-->
  <h3>Buttons</h3>
  <p>
   Buttons are added in the pull request view. Only buttons that will trigger at least one configured notification is shown.
  </p>
+ <div class="aui-flatpack-example">
+  <form id="prnfbbuttonadmin" class="aui prnfb">
+   <div class="field-group">
+    <label>Button </label>
+    <select class="select" name="uuid">
+    </select>
+    <div class="description">These are all configured buttons.</div>
+   </div>
+
+   #if($repository)
+   <!-- //-->
+   <input type="hidden" name="projectKey" value="$repository.project.key" />
+   <input type="hidden" name="repositorySlug" value="$repository.slug" />
+   <!-- //-->
+   #else
+   <!-- //-->
+   <div class="field-group">
+    <label>Project
+    </label>
+    <select class="select" name="projectKey">
+     <option value="">Any</option>
+    </select>
+    <div class="description">If project selected, this notification will only trigger for pull requests to that project.</div>
+   </div>
+
+   <div class="field-group">
+    <label>Repository </label>
+    <select class="select" name="repositorySlug">
+     <option value="">Any</option>
+    </select>
+    <div class="description">If repository selected, this notification will only trigger for pull requests to that repository.</div>
+   </div>
+
+   <!-- //-->
+   #end
+
+   <fieldset class="group">
+    <legend>
+     <span>Visibility</span>
+    </legend>
+    <div class="radio">
+     <label>
+      <input class="radio" type="radio" name="userLevel" value="SYSTEM_ADMIN"> System administrators</label>
+    </div>
+    <div class="radio">
+     <label>
+      <input class="radio" type="radio" name="userLevel" value="ADMIN"> Administrators and system administrators</label>
+    </div>
+    <div class="radio">
+     <label>
+      <input class="radio" type="radio" name="userLevel" value="EVERYONE"> Everyone
+     </label>
+    </div>
+   </fieldset>
+
+   <fieldset class="group">
+    <div class="field-group">
+     <label>Title </label>
+     <input class="text long-field" type="text" name="name">
+     <div class="description">The title of the button.</div>
+    </div>
+
+    <div class="aui-buttons">
+     <button class="aui-button aui-button-primary">Save</button>
+     <button class="aui-button aui-button" name="delete">Delete</button>
+    </div>
+   </fieldset>
+  </form>
+ </div>
 
  <h3>Notifications</h3>
  <p>
   A notification is triggered by an event and will result in a URL invocation. The variables above enables you to send whatever information you want as a parameter in that URL.
  </p>
 
- <form id="prnfbadmin" class="aui prnfb">
-  <fieldset class="group">
-   <legend>
-    <span>When to trigger notification</span>
-   </legend>
-
-   #if($repository)
-   <!-- //-->
-   <input type="hidden" name="repositorySlug" value="$repository.slug" />
-   <input type="hidden" name="projectKey" value="$repository.project.key" />
-   <!-- //-->
-   #else
-   <!-- //-->
-   <select class="select" id="repositorySlug" name="repositorySlug">
-   </select>
-
-   <select class="select" id="projectKey" name="projectKey">
-   </select>
-   <!-- //-->
-   #end
+ <div class="aui-flatpack-example">
+  <form id="prnfbnotificationadmin" class="aui prnfb">
+   <div class="field-group">
+    <label>Notification </label>
+    <select class="select" name="uuid">
+    </select>
+    <div class="description">These are all configured notifications. Only the notifications for the repository is shown in repository view.</div>
+   </div>
 
    <fieldset class="group">
-    <div class="aui-buttons">
-     <button class="aui-button aui-button-primary">Save</button>
+    <div class="field-group">
+     <label>Name </label>
+     <input class="text long-field" type="text" name="name">
+     <div class="description">Name of this trigger. This has no other function then just letting the administrator make a note of what this notification does.</div>
     </div>
    </fieldset>
- </form>
 
+   <h4>Trigger</h4>
+   <p>These are configuration options that determine if the notification should be triggered when an event happens.</p>
+   <fieldset class="group">
+
+    #if($repository)
+    <!-- //-->
+    <input type="hidden" name="projectKey" value="$repository.project.key" />
+    <input type="hidden" name="repositorySlug" value="$repository.slug" />
+    <!-- //-->
+    #else
+    <!-- //-->
+    <div class="field-group">
+     <label>Project
+     </label>
+     <select class="select" name="projectKey">
+      <option value="">Any</option>
+     </select>
+     <div class="description">If project selected, this notification will only trigger for pull requests to that project.</div>
+    </div>
+
+    <div class="field-group">
+     <label>Repository </label>
+     <select class="select" name="repositorySlug">
+      <option value="">Any</option>
+     </select>
+     <div class="description">If repository selected, this notification will only trigger for pull requests to that repository.</div>
+    </div>
+
+    <!-- //-->
+    #end
+
+    <div class="field-group">
+     <label>Filter string </label>
+     <input class="text long-field" type="text" name="filterString">
+     <div class="description">A string where you can use the variables mentioned above.</div>
+    </div>
+    <div class="field-group">
+     <label>Filter regexp </label>
+     <input class="text long-field" type="text" name="filterRegexp">
+     <div class="description">The notification will only trigger if this regular expression matches the resolved string above.</div>
+    </div>
+   </fieldset>
+
+   <fieldset class="group">
+    <legend>
+     <span>Merge condition</span>
+    </legend>
+    <div class="radio">
+     <label>
+      <input class="radio" type="radio" name="ALWAYS"> trigger for any merge condition</label>
+    </div>
+    <div class="radio">
+     <label>
+      <input class="radio" type="radio" name="CONFLICTING"> trigger only when merge is conflicting</label>
+    </div>
+    <div class="radio">
+     <label>
+      <input class="radio" type="radio" name="NOT_CONFLICTING"> trigger only when merge is not conflicting</label>
+    </div>
+   </fieldset>
+
+   <fieldset class="group">
+    <legend>
+     <span>State</span>
+    </legend>
+    <div class="checkbox">
+     <label>
+      <input class="checkbox" type="checkbox" name="triggerIgnoreStateList[]" value="DECLINED"> Pull request is declined</label>
+    </div>
+    <div class="checkbox">
+     <label>
+      <input class="checkbox" type="checkbox" name="triggerIgnoreStateList[]" value="MERGED"> Pull request is merged</label>
+    </div>
+   </fieldset>
+
+   <fieldset class="group">
+    <legend>
+     <span>Triggers</span>
+    </legend>
+    <div class="checkbox">
+     <label>
+      <input class="checkbox" type="checkbox" name="triggers[]" value="APPROVED">APPROVED</label>
+    </div>
+    <div class="checkbox">
+     <label>
+      <input class="checkbox" type="checkbox" name="triggers[]" value="COMMENTED">COMMENTED</label>
+    </div>
+    <div class="checkbox">
+     <label>
+      <input class="checkbox" type="checkbox" name="triggers[]" value="DECLINED">DECLINED</label>
+    </div>
+    <div class="checkbox">
+     <label>
+      <input class="checkbox" type="checkbox" name="triggers[]" value="MERGED">MERGED</label>
+    </div>
+    <div class="checkbox">
+     <label>
+      <input class="checkbox" type="checkbox" name="triggers[]" value="OPENED">OPENED</label>
+    </div>
+    <div class="checkbox">
+     <label>
+      <input class="checkbox" type="checkbox" name="triggers[]" value="BUTTON_TRIGGER">BUTTON_TRIGGER, a button was pressed. Use filter and <b>${BUTTON_TRIGGER_TITLE}</b> to trigger for a specific button.</label>
+    </div>
+    <div class="checkbox">
+     <label>
+      <input class="checkbox" type="checkbox" name="triggers[]" value="REOPENED">REOPENED</label>
+    </div>
+    <div class="checkbox">
+     <label>
+      <input class="checkbox" type="checkbox" name="triggers[]" value="RESCOPED_FROM">RESCOPED_FROM, new commits on source branch.</label>
+    </div>
+    <div class="checkbox">
+     <label>
+      <input class="checkbox" type="checkbox" name="triggers[]" value="RESCOPED_TO">RESCOPED_TO, new commits on target branch.</label>
+    </div>
+    <div class="checkbox">
+     <label>
+      <input class="checkbox" type="checkbox" name="triggers[]" value="UNAPPROVED">UNAPPROVED</label>
+    </div>
+    <div class="checkbox">
+     <label>
+      <input class="checkbox" type="checkbox" name="triggers[]" value="UPDATED">UPDATED</label>
+    </div>
+   </fieldset>
+
+   <h4>Injection URL</h4>
+   <p>Optional configuration for retrieving a value from a pre URL invocation. A Jenkins installation may require the value of <i>http://JENKINS/crumbIssuer/api/xml?xpath=//crumb/text()</i> to be used in a request.</p>
+   <fieldset class="group">
+    <div class="field-group">
+     <label>Injection URL </label>
+     <input class="text long-field" type="text" name="injectionUrl">
+     <div class="description">The (GET) response from this URL will be available in the <b>${INJECTION_URL_VALUE}</b> variable.</div>
+    </div>
+    <div class="field-group">
+     <label>Injection URL regexp </label>
+     <input class="text long-field" type="text" name="injectionUrlRegexp">
+     <div class="description">Optinoal regular expression to extract part of response as value of <b>${INJECTION_URL_VALUE}</b> variable.</div>
+    </div>
+   </fieldset>
+
+   <h4>Basic authentication</h4>
+   <p>Optional basic authentication details.</p>
+   <fieldset class="group">
+    <div class="field-group">
+     <label>Username </label>
+     <input class="text long-field" type="text" name="user">
+     <div class="description"></div>
+    </div>
+    <div class="field-group">
+     <label>Password </label>
+     <input class="text long-field" type="password" name="password">
+     <div class="description"></div>
+    </div>
+   </fieldset>
+
+   <h4>Proxy</h4>
+   <p>Optional proxy details.</p>
+   <fieldset class="group">
+    <div class="field-group">
+     <label>Username </label>
+     <input class="text long-field" type="text" name="proxyUser">
+     <div class="description"></div>
+    </div>
+    <div class="field-group">
+     <label>Password </label>
+     <input class="text long-field" type="password" name="proxyPassword">
+     <div class="description"></div>
+    </div>
+    <div class="field-group">
+     <label>Server </label>
+     <input class="text long-field" type="password" name="proxyServer">
+     <div class="description"></div>
+    </div>
+    <div class="field-group">
+     <label>Port </label>
+     <input class="text long-field" type="password" name="proxyPort">
+     <div class="description"></div>
+    </div>
+   </fieldset>
+
+
+   <h4>URL</h4>
+   <p>The URL to invoke when notification is triggered.</p>
+   <fieldset class="group">
+    <div class="field-group">
+     <label>URL </label>
+     <textarea class="textarea" rows="4" name="url"></textarea>
+     <div class="description">The URL to invoke.</div>
+    </div>
+   </fieldset>
+
+   <fieldset class="group">
+    <legend>
+     <span>Method</span>
+    </legend>
+    <div class="radio">
+     <label>
+      <input class="radio" type="radio" name="method" value="GET"> GET
+     </label>
+    </div>
+    <div class="radio">
+     <label>
+      <input class="radio" type="radio" name="method" value="POST"> POST
+     </label>
+    </div>
+    <div class="radio">
+     <label>
+      <input class="radio" type="radio" name="method" value="DELETE"> DELETE
+     </label>
+    </div>
+    <div class="radio">
+     <label>
+      <input class="radio" type="radio" name="method" value="PUT"> PUT
+     </label>
+    </div>
+   </fieldset>
+
+   <fieldset class="group">
+    <div class="field-group">
+     <label>Post content</label>
+     <textarea class="textarea" rows="6" cols="10" name="postContent"></textarea>
+     <div class="description">This will be used if POST or PUT is selected above.</div>
+    </div>
+   </fieldset>
+
+   <h4>Headers</h4>
+   <p>Optional HTTP headers to send with URL.</p>
+   <fieldset class="group">
+    <legend>
+     <span>Headers</span>
+    </legend>
+    <script type="text/x-template" title="header-template">
+     <div class="field-group listfield">
+      <input class="text text-field" type="text" name="headers[][name]" value="{name}">
+      <input class="text text-field" type="text" name="headers[][value]" value="{value}">
+     </div>
+    </script>
+    <div class="listfields template" data-template="header-template" data-field="headers" data-target=".listfields">
+     <div class="field-group listfield">
+      <input class="text text-field" type="text" name="headers[][name]">
+      <input class="text text-field" type="text" name="headers[][value]">
+     </div>
+    </div>
+   </fieldset>
+
+   <div class="aui-buttons">
+    <button class="aui-button aui-button-primary">Save</button>
+    <button class="aui-button aui-button" name="delete">Delete</button>
+   </div>
+   </fieldset>
+  </form>
+ </div>
 
 </body>
 

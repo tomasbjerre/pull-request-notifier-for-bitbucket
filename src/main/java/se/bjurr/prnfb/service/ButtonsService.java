@@ -111,7 +111,7 @@ public class ButtonsService {
  Map<PrnfbVariable, Supplier<String>> getVariables(final UUID uuid) {
   Map<PrnfbVariable, Supplier<String>> variables = new HashMap<PrnfbVariable, Supplier<String>>();
   PrnfbButton button = this.settingsService.getButton(uuid);
-  variables.put(BUTTON_TRIGGER_TITLE, Suppliers.ofInstance(button.getTitle()));
+  variables.put(BUTTON_TRIGGER_TITLE, Suppliers.ofInstance(button.getName()));
   return variables;
  }
 

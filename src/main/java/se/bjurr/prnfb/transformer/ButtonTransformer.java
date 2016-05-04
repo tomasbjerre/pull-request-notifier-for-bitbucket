@@ -11,9 +11,11 @@ public class ButtonTransformer {
 
  public static ButtonDTO toButtonDto(PrnfbButton from) {
   ButtonDTO to = new ButtonDTO();
-  to.setTitle(from.getTitle());
+  to.setName(from.getName());
   to.setUserLevel(from.getUserLevel());
   to.setUuid(from.getUuid());
+  to.setProjectKey(from.getProjectKey().orNull());
+  to.setRepositorySlug(from.getRepositorySlug().orNull());
   return to;
  }
 
@@ -28,8 +30,10 @@ public class ButtonTransformer {
  public static PrnfbButton toPrnfbButton(ButtonDTO buttonDto) {
   return new PrnfbButton(//
     buttonDto.getUUID(), //
-    buttonDto.getTitle(), //
-    buttonDto.getUserLevel());//
+    buttonDto.getName(), //
+    buttonDto.getUserLevel(),//
+    buttonDto.getProjectKey(),//
+    buttonDto.getRepositorySlug());//
  }
 
 }

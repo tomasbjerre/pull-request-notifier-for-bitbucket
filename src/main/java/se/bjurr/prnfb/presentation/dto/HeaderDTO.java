@@ -2,8 +2,6 @@ package se.bjurr.prnfb.presentation.dto;
 
 import static javax.xml.bind.annotation.XmlAccessType.FIELD;
 
-import java.util.UUID;
-
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -12,7 +10,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class HeaderDTO {
 
  private String name;
- private UUID uuid;
  private String value;
 
  @Override
@@ -34,13 +31,6 @@ public class HeaderDTO {
   } else if (!this.name.equals(other.name)) {
    return false;
   }
-  if (this.uuid == null) {
-   if (other.uuid != null) {
-    return false;
-   }
-  } else if (!this.uuid.equals(other.uuid)) {
-   return false;
-  }
   if (this.value == null) {
    if (other.value != null) {
     return false;
@@ -55,10 +45,6 @@ public class HeaderDTO {
   return this.name;
  }
 
- public UUID getUuid() {
-  return this.uuid;
- }
-
  public String getValue() {
   return this.value;
  }
@@ -68,7 +54,6 @@ public class HeaderDTO {
   final int prime = 31;
   int result = 1;
   result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
-  result = prime * result + ((this.uuid == null) ? 0 : this.uuid.hashCode());
   result = prime * result + ((this.value == null) ? 0 : this.value.hashCode());
   return result;
  }
@@ -77,17 +62,13 @@ public class HeaderDTO {
   this.name = name;
  }
 
- public void setUuid(UUID uuid) {
-  this.uuid = uuid;
- }
-
  public void setValue(String value) {
   this.value = value;
  }
 
  @Override
  public String toString() {
-  return "HeaderDTO [name=" + this.name + ", uuid=" + this.uuid + ", value=" + this.value + "]";
+  return "HeaderDTO [name=" + this.name + ", value=" + this.value + "]";
  }
 
 }

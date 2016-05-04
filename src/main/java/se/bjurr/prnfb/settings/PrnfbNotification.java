@@ -5,6 +5,7 @@ import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.emptyToNull;
 import static com.google.common.base.Strings.nullToEmpty;
+import static java.util.UUID.randomUUID;
 import static java.util.regex.Pattern.compile;
 import static se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD.GET;
 import static se.bjurr.prnfb.settings.TRIGGER_IF_MERGE.ALWAYS;
@@ -45,7 +46,7 @@ public class PrnfbNotification implements HasUuid {
  private final UUID uuid;
 
  public PrnfbNotification(PrnfbNotificationBuilder builder) throws ValidationException {
-  this.uuid = builder.getUUID();
+  this.uuid = firstNonNull(builder.getUUID(), randomUUID());
   this.proxyUser = emptyToNull(nullToEmpty(builder.getProxyUser()).trim());
   this.proxyPassword = emptyToNull(nullToEmpty(builder.getProxyPassword()).trim());
   this.proxyServer = emptyToNull(nullToEmpty(builder.getProxyServer()).trim());
@@ -74,7 +75,10 @@ public class PrnfbNotification implements HasUuid {
   this.url = builder.getUrl();
   this.user = emptyToNull(nullToEmpty(builder.getUser()).trim());
   this.password = emptyToNull(nullToEmpty(builder.getPassword()).trim());
-  this.triggers = checkNotNull(builder.getTriggers());
+  this.triggers = checkNotNull(builder.getTriggers(), "triggers");
+  if (this.triggers.isEmpty()) {
+   throw new ValidationException("triggers", "At least one trigger must be selected.");
+  }
   this.filterString = builder.getFilterString();
   this.filterRegexp = builder.getFilterRegexp();
   this.name = firstNonNull(emptyToNull(nullToEmpty(builder.getName()).trim()), DEFAULT_NAME);
