@@ -208,7 +208,7 @@ define('plugin/prnfb/utils', [
   $(formSelector + ' [name=uuid]').change(function() {
    var changedTo = $(this).val();
    if (changedTo) {
-    doSetupForm(formSelector, restResource+'/'+changedTo);
+    doSetupForm(formSelector, restResource + '/' + changedTo);
    } else {
     populateSelect();
    }

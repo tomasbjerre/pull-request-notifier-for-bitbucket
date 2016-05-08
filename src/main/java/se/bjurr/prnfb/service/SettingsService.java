@@ -7,20 +7,31 @@ import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.find;
 import static com.google.common.collect.Iterables.tryFind;
 import static com.google.common.collect.Lists.newArrayList;
+import static se.bjurr.prnfb.settings.PrnfbNotificationBuilder.prnfbNotificationBuilder;
 import static se.bjurr.prnfb.settings.PrnfbSettingsBuilder.prnfbSettingsBuilder;
 import static se.bjurr.prnfb.settings.PrnfbSettingsDataBuilder.prnfbSettingsDataBuilder;
 
 import java.util.List;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
 import se.bjurr.prnfb.settings.HasUuid;
 import se.bjurr.prnfb.settings.PrnfbButton;
 import se.bjurr.prnfb.settings.PrnfbNotification;
+import se.bjurr.prnfb.settings.PrnfbNotificationBuilder;
 import se.bjurr.prnfb.settings.PrnfbSettings;
 import se.bjurr.prnfb.settings.PrnfbSettingsData;
+import se.bjurr.prnfb.settings.TRIGGER_IF_MERGE;
 import se.bjurr.prnfb.settings.USER_LEVEL;
 import se.bjurr.prnfb.settings.ValidationException;
+import se.bjurr.prnfb.settings.legacy.AdminFormValues.BUTTON_VISIBILITY;
+import se.bjurr.prnfb.settings.legacy.Header;
+import se.bjurr.prnfb.settings.legacy.SettingsStorage;
 
+import com.atlassian.bitbucket.pull.PullRequestState;
 import com.atlassian.bitbucket.user.SecurityService;
 import com.atlassian.bitbucket.util.Operation;
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
@@ -36,6 +47,7 @@ public class SettingsService {
 
  public static final String STORAGE_KEY = "se.bjurr.prnfb.pull-request-notifier-for-bitbucket-3";
  private static Gson gson = new Gson();
+ private final Logger logger = LoggerFactory.getLogger(SettingsService.class);
  private final PluginSettings pluginSettings;
  private final SecurityService securityService;
  private final TransactionTemplate transactionTemplate;
@@ -233,6 +245,88 @@ public class SettingsService {
  private PrnfbSettings doGetPrnfbSettings() {
   Object storedSettings = this.pluginSettings.get(STORAGE_KEY);
   if (storedSettings == null) {
+   try {
+    se.bjurr.prnfb.settings.legacy.PrnfbSettings oldSettings = SettingsStorage.getPrnfbSettings(this.pluginSettings);
+
+    String ks = oldSettings.getKeyStore().orNull();
+    String ksp = oldSettings.getKeyStorePassword().orNull();
+    String kst = oldSettings.getKeyStoreType();
+    USER_LEVEL adminRestr = USER_LEVEL.SYSTEM_ADMIN;
+    if (oldSettings.isAdminsAllowed()) {
+     adminRestr = USER_LEVEL.ADMIN;
+    }
+    if (oldSettings.isUsersAllowed()) {
+     adminRestr = USER_LEVEL.EVERYONE;
+    }
+
+    boolean shouldAcceptAnyCertificate = false;
+
+    List<PrnfbButton> newButtons = newArrayList();
+    for (se.bjurr.prnfb.settings.legacy.PrnfbButton oldButton : oldSettings.getButtons()) {
+     USER_LEVEL userLevel = USER_LEVEL.SYSTEM_ADMIN;
+     if (oldButton.getVisibility() == BUTTON_VISIBILITY.ADMIN) {
+      userLevel = USER_LEVEL.ADMIN;
+     }
+     if (oldButton.getVisibility() == BUTTON_VISIBILITY.EVERYONE) {
+      userLevel = USER_LEVEL.EVERYONE;
+     }
+     newButtons.add(new PrnfbButton(UUID.randomUUID(), oldButton.getTitle(), userLevel, null, null));
+    }
+
+    List<PrnfbNotification> newNotifications = newArrayList();
+    for (se.bjurr.prnfb.settings.legacy.PrnfbNotification oldNotification : oldSettings.getNotifications()) {
+     try {
+      PrnfbNotificationBuilder builder = prnfbNotificationBuilder()//
+        .withFilterRegexp(oldNotification.getFilterRegexp().orNull())//
+        .withFilterString(oldNotification.getFilterString().orNull())//
+        .withInjectionUrl(oldNotification.getInjectionUrl().orNull())//
+        .withInjectionUrlRegexp(oldNotification.getInjectionUrlRegexp().orNull())//
+        .withMethod(oldNotification.getMethod())//
+        .withName(oldNotification.getName())//
+        .withPassword(oldNotification.getPassword().orNull())//
+        .withPostContent(oldNotification.getPostContent().orNull())//
+        .withProxyPassword(oldNotification.getProxyPassword().orNull())//
+        .withProxyPort(oldNotification.getProxyPort())//
+        .withProxyServer(oldNotification.getProxyServer().orNull())//
+        .withProxyUser(oldNotification.getProxyUser().orNull())//
+        .withTriggerIfCanMerge(TRIGGER_IF_MERGE.valueOf(oldNotification.getTriggerIfCanMerge().name()))//
+        .withUrl(oldNotification.getUrl())//
+        .withUser(oldNotification.getUser().orNull());
+
+      for (Header h : oldNotification.getHeaders()) {
+       builder.withHeader(h.getName(), h.getValue());
+      }
+
+      for (PullRequestState t : oldNotification.getTriggerIgnoreStateList()) {
+       builder.withTriggerIgnoreState(t);
+      }
+
+      for (PrnfbPullRequestAction t : oldNotification.getTriggers()) {
+       builder.withTrigger(t);
+      }
+
+      newNotifications.add(builder.build());
+     } catch (ValidationException e) {
+      this.logger.error("", e);
+     }
+    }
+
+    return prnfbSettingsBuilder()//
+      .setPrnfbSettingsData(//
+        prnfbSettingsDataBuilder()//
+          .setAdminRestriction(adminRestr)//
+          .setKeyStore(ks)//
+          .setKeyStorePassword(ksp)//
+          .setKeyStoreType(kst)//
+          .setShouldAcceptAnyCertificate(shouldAcceptAnyCertificate)//
+          .build())//
+      .setButtons(newButtons)//
+      .setNotifications(newNotifications)//
+      .build();
+
+   } catch (se.bjurr.prnfb.settings.legacy.ValidationException e) {
+    this.logger.error("", e);
+   }
    return prnfbSettingsBuilder()//
      .setPrnfbSettingsData(//
        prnfbSettingsDataBuilder()//

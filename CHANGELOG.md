@@ -12,7 +12,7 @@ Changelog of Pull Request Notifier for Bitbucket.
 
  * Also adding EVERYTHING_URL variable . Resolved to every other variable.
   
-  [f52d8ae78aaa0e7](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/f52d8ae78aaa0e7) Tomas Bjerre *2016-05-07 12:53:31*
+  [da4e64ab06398ff](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/da4e64ab06398ff) Tomas Bjerre *2016-05-08 08:16:03*
 
   Refactoring
   
@@ -23,14 +23,14 @@ Changelog of Pull Request Notifier for Bitbucket.
 
  * Also adding EVERYTHING_URL variable . Resolved to every other variable.
   
-  [f52d8ae78aaa0e7](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/f52d8ae78aaa0e7) Tomas Bjerre *2016-05-07 12:53:31*
+  [da4e64ab06398ff](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/da4e64ab06398ff) Tomas Bjerre *2016-05-08 08:16:03*
 
 ### GitHub [#25](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/25) Enable  configuration in per-repository hook screen
   Admin GUI   
 
  * Also adding EVERYTHING_URL variable . Resolved to every other variable.
   
-  [f52d8ae78aaa0e7](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/f52d8ae78aaa0e7) Tomas Bjerre *2016-05-07 12:53:31*
+  [da4e64ab06398ff](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/da4e64ab06398ff) Tomas Bjerre *2016-05-08 08:16:03*
 
   Adding repo and global admin pages
   
@@ -45,9 +45,13 @@ Changelog of Pull Request Notifier for Bitbucket.
 
  * Also adding EVERYTHING_URL variable . Resolved to every other variable.
   
-  [f52d8ae78aaa0e7](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/f52d8ae78aaa0e7) Tomas Bjerre *2016-05-07 12:53:31*
+  [da4e64ab06398ff](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/da4e64ab06398ff) Tomas Bjerre *2016-05-08 08:16:03*
 
 ### No issue
+  Adding migration code for old settings format
+  
+  [515086b440e76de](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/515086b440e76de) Tomas Bjerre *2016-05-08 08:48:18*
+
   changelog maven plugin 1.29
   
   [25ccd05b465bd4a](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/25ccd05b465bd4a) Tomas Bjerre *2016-04-14 16:36:16*
