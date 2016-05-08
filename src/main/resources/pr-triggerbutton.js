@@ -4,9 +4,7 @@ define('plugin/prnfb/pr-triggerbutton', [
  'bitbucket/util/state'
 ], function($, AJS, pageState) {
 
- var getResourceUrl = function() {
-  return AJS.contextPath() + '/rest/prnfb-admin/1.0/manual/?repositoryId=' + pageState.getRepository().id + '&pullRequestId=' + pageState.getPullRequest().id;
- };
+ var buttonsAdminUrl = AJS.contextPath() + "/rest/prnfb-admin/1.0/settings/buttons"; 
 
  var waiting = '<span class="aui-icon aui-icon-wait aui-icon-small">Wait</span>';
 
@@ -30,18 +28,18 @@ define('plugin/prnfb/pr-triggerbutton', [
  function loadSettingsAndShowButtons() {
   var hasButtons = false;
   $buttonDropdownItems.empty();
-  $.get(getResourceUrl(), function(settings) {
+  $.get(buttonsAdminUrl + '/repository/' + pageState.getRepository().id + '/pullrequest/' + pageState.getPullRequest().id, function(settings) {
    settings.forEach(function(item) {
     hasButtons = true;
 
-    var $buttonDropdownItem = $('<li><a class="aui-icon-container" href="#">' + item.title + '</a></li>');
+    var $buttonDropdownItem = $('<li><a class="aui-icon-container" href="#">' + item.name + '</a></li>');
     $buttonDropdownItem.find("a").click(function() {
      var $this = $(this);
      $this.attr("disabled", "disabled");
      $this.attr("aria-disabled", "true");
      $this.prepend(waiting);
 
-     $.post(getResourceUrl() + '&formIdentifier=' + item.formIdentifier, function() {
+     $.post(buttonsAdminUrl + '/' + item.uuid + '/press/repository/' + pageState.getRepository().id + '/pullrequest/' + pageState.getPullRequest().id, function() {
       setTimeout(function() {
        $this.removeAttr("disabled");
        $this.removeAttr("aria-disabled");

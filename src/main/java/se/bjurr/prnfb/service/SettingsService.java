@@ -1,6 +1,7 @@
 package se.bjurr.prnfb.service;
 
 import static com.atlassian.bitbucket.permission.Permission.ADMIN;
+import static com.google.common.base.Joiner.on;
 import static com.google.common.base.Predicates.not;
 import static com.google.common.base.Throwables.propagate;
 import static com.google.common.collect.Iterables.filter;
@@ -111,7 +112,11 @@ public class SettingsService {
  }
 
  public PrnfbButton getButton(UUID buttionUuid) {
-  return find(getButtons(), withUuid(buttionUuid));
+  Optional<PrnfbButton> foundOpt = findButton(buttionUuid);
+  if (!foundOpt.isPresent()) {
+   throw new RuntimeException(buttionUuid + " not fond in:\n" + on('\n').join(getButtons()));
+  }
+  return foundOpt.get();
  }
 
  public List<PrnfbButton> getButtons() {

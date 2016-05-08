@@ -16,6 +16,7 @@ import com.atlassian.bitbucket.pull.PullRequest;
 import com.atlassian.bitbucket.repository.RepositoryService;
 import com.atlassian.bitbucket.server.ApplicationPropertiesService;
 import com.atlassian.bitbucket.user.ApplicationUser;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Supplier;
 
 public class PrnfbRenderer {
@@ -64,12 +65,7 @@ public class PrnfbRenderer {
   String resolved = variable.resolve(this.pullRequest, this.pullRequestAction, this.applicationUser,
     this.repositoryService, this.propertiesService, this.prnfbNotification, this.variables, clientKeyStore,
     shouldAcceptAnyCertificate);
-  string = string.replaceAll(regExpStr, forUrl ? encode(resolved, UTF_8.name()) : resolved);
-  return string;
- }
-
- private String regexp(PrnfbVariable variable) {
-  return "\\$\\{" + variable.name() + "\\}";
+  return getRenderedStringResolved(string, forUrl, regExpStr, resolved);
  }
 
  private String renderVariable(String string, Boolean forUrl, ClientKeyStore clientKeyStore,
@@ -83,5 +79,22 @@ public class PrnfbRenderer {
    }
   }
   return string;
+ }
+
+ @VisibleForTesting
+ String getRenderedStringResolved(String string, Boolean forUrl, final String regExpStr, String resolved)
+   throws UnsupportedEncodingException {
+  String replaceWith = forUrl ? encode(resolved, UTF_8.name()) : resolved;
+  try {
+   string = string.replaceAll(regExpStr, replaceWith);
+  } catch (IllegalArgumentException e) {
+   throw new RuntimeException("Tried to replace " + regExpStr + " with " + replaceWith, e);
+  }
+  return string;
+ }
+
+ @VisibleForTesting
+ String regexp(PrnfbVariable variable) {
+  return "\\$\\{" + variable.name() + "\\}";
  }
 }

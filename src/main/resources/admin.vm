@@ -294,15 +294,15 @@
     </legend>
     <div class="radio">
      <label>
-      <input class="radio" type="radio" name="ALWAYS"> trigger for any merge condition</label>
+      <input class="radio" type="radio" name="triggerIfCanMerge" value="ALWAYS"> trigger for any merge condition</label>
     </div>
     <div class="radio">
      <label>
-      <input class="radio" type="radio" name="CONFLICTING"> trigger only when merge is conflicting</label>
+      <input class="radio" type="radio" name="triggerIfCanMerge" value="CONFLICTING"> trigger only when merge is conflicting</label>
     </div>
     <div class="radio">
      <label>
-      <input class="radio" type="radio" name="NOT_CONFLICTING"> trigger only when merge is not conflicting</label>
+      <input class="radio" type="radio" name="triggerIfCanMerge" value="NOT_CONFLICTING"> trigger only when merge is not conflicting</label>
     </div>
    </fieldset>
 
@@ -482,11 +482,8 @@
       <input class="text text-field" type="text" name="headers[][value]" value="{value}">
      </div>
     </script>
-    <div class="listfields template" data-template="header-template" data-field="headers" data-target=".listfields">
-     <div class="field-group listfield">
-      <input class="text text-field" type="text" name="headers[][name]">
-      <input class="text text-field" type="text" name="headers[][value]">
-     </div>
+    <div class="listfields template" data-template="header-template" data-field="headers" data-target=".listfields" data-empty="{'name':'','value':''}">
+
     </div>
    </fieldset>
 

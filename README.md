@@ -115,7 +115,7 @@ Some rest resources are available. You can figure out the JSON structure by look
  * `GET /projectKey/{projectKey}` Get all buttons for the project.
  * `GET /projectKey/{projectKey}/repositorySlug/{repositorySlug}` Get all buttons for the project and repository.
  * `POST` Save a button.
- * `POST /press` Press the button.
+ * `POST {uuid}/press/repository/{repositoryId}/pullrequest/{pullRequestId}` Press the button.
 
 ### Jenkins
 Parameterized Jenkins jobs can be triggered remotely via:

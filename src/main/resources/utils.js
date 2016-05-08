@@ -153,9 +153,15 @@ define('plugin/prnfb/utils', [
    var template = $(el).data('template');
    var field = $(el).data('field');
    var target = $(el).data('target');
+   var emptyJson = $(el).data('empty').replace(/\'/g, '"');
+   var empty = JSON.parse(emptyJson);
    var rendered = "";
-   for (var i = 0; i < data[field].length; i++)
-    rendered += AJS.template.load(template).fill(data[field][i]);
+   if (data[field]) {
+    for (var i = 0; i < data[field].length; i++) {
+     rendered += AJS.template.load(template).fill(data[field][i]);
+    }
+   }
+   rendered += AJS.template.load(template).fill(empty);
    $(target).html(rendered);
   });
  }
@@ -213,6 +219,8 @@ define('plugin/prnfb/utils', [
     populateSelect();
    }
   });
+
+  populateForm(formSelector, {});
 
   $(formSelector).submit(function(e) {
    e.preventDefault();

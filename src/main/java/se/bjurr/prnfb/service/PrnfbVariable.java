@@ -53,7 +53,7 @@ public enum PrnfbVariable {
    List<String> parts = newArrayList();
    for (PrnfbVariable v : PrnfbVariable.values()) {
     if (v != EVERYTHING_URL) {
-     parts.add(v.name() + "=${" + v.name() + "}");
+     parts.add(v.name() + "=\\${" + v.name() + "}");
     }
    }
    return on('&').join(parts);

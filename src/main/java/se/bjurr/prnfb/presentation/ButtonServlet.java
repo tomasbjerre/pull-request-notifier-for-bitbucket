@@ -18,7 +18,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import se.bjurr.prnfb.presentation.dto.ButtonDTO;
@@ -128,11 +127,11 @@ public class ButtonServlet {
  }
 
  @POST
- @Path("/press")
+ @Path("{uuid}/press/repository/{repositoryId}/pullrequest/{pullRequestId}")
  @XsrfProtectionExcluded
  @Produces(APPLICATION_JSON)
- public Response press(@QueryParam("repositoryId") Integer repositoryId,
-   @QueryParam("pullRequestId") Long pullRequestId, @QueryParam("uuid") final UUID buttionUuid) {
+ public Response press(@PathParam("repositoryId") Integer repositoryId, @PathParam("pullRequestId") Long pullRequestId,
+   @PathParam("uuid") final UUID buttionUuid) {
   PrnfbButton button = this.settingsService.getButton(buttionUuid);
   if (!this.userCheckService.isAllowedUseButton(button)) {
    return status(UNAUTHORIZED).build();

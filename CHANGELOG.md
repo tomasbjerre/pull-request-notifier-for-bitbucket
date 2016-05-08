@@ -4,33 +4,26 @@ Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
 ### GitHub [#109](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/109) Refactor admin pages
+  Adding buttons after refactoring
+  
+  [4647eea2af4d8f7](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/4647eea2af4d8f7) Tomas Bjerre *2016-05-08 20:22:34*
+
   Adding migration code for old settings format
   
-  [103427258c50c4b](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/103427258c50c4b) Tomas Bjerre *2016-05-08 11:55:28*
+  [d937d3cc18bdfd0](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/d937d3cc18bdfd0) Tomas Bjerre *2016-05-08 13:08:07*
 
-  Admin GUI   
-
- * Also adding EVERYTHING_URL variable . Resolved to every other variable.
+  Admin GUI
   
-  [da4e64ab06398ff](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/da4e64ab06398ff) Tomas Bjerre *2016-05-08 08:16:03*
+  [319f5de5c123e06](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/319f5de5c123e06) Tomas Bjerre *2016-05-08 13:07:55*
 
   Refactoring
   
   [3e1fddaecb4aab8](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/3e1fddaecb4aab8) Tomas Bjerre *2016-05-03 16:01:52*
 
-### GitHub [#114](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/114) variable which contains all valid variables?
-  Admin GUI   
-
- * Also adding EVERYTHING_URL variable . Resolved to every other variable.
-  
-  [da4e64ab06398ff](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/da4e64ab06398ff) Tomas Bjerre *2016-05-08 08:16:03*
-
 ### GitHub [#25](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/25) Enable  configuration in per-repository hook screen
-  Admin GUI   
-
- * Also adding EVERYTHING_URL variable . Resolved to every other variable.
+  Admin GUI
   
-  [da4e64ab06398ff](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/da4e64ab06398ff) Tomas Bjerre *2016-05-08 08:16:03*
+  [319f5de5c123e06](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/319f5de5c123e06) Tomas Bjerre *2016-05-08 13:07:55*
 
   Adding repo and global admin pages
   
@@ -41,17 +34,11 @@ Changelog of Pull Request Notifier for Bitbucket.
   [1fc12a72100afe8](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/1fc12a72100afe8) Tomas Bjerre *2016-05-03 16:44:25*
 
 ### GitHub [#55](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/55) remove width limit
-  Admin GUI   
-
- * Also adding EVERYTHING_URL variable . Resolved to every other variable.
+  Admin GUI
   
-  [da4e64ab06398ff](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/da4e64ab06398ff) Tomas Bjerre *2016-05-08 08:16:03*
+  [319f5de5c123e06](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/319f5de5c123e06) Tomas Bjerre *2016-05-08 13:07:55*
 
 ### No issue
-  Adding migration code for old settings format
-  
-  [515086b440e76de](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/515086b440e76de) Tomas Bjerre *2016-05-08 08:48:18*
-
   changelog maven plugin 1.29
   
   [25ccd05b465bd4a](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/25ccd05b465bd4a) Tomas Bjerre *2016-04-14 16:36:16*
