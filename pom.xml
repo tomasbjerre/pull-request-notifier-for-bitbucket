@@ -151,6 +151,7 @@
        <gitHubToken>${GITHUB_OAUTH2TOKEN}</gitHubToken>
        <gitHubIssuePattern>#([0-9]*)</gitHubIssuePattern>
        <filePath>CHANGELOG.md</filePath>
+       <ignoreTagsIfNameMatches>.*RC.*</ignoreTagsIfNameMatches>
        <removeIssueFromMessage>true</removeIssueFromMessage>
        <templateContent>
         <![CDATA[

@@ -37,6 +37,9 @@ The Pull Request Notifier for Bitbucket can:
  * If PR has, or has no, conflicts
  * Only if PR has conflicts
  * Only if PR has no conflicts
+* Nice configuration GUI.
+ * Global at */bitbucket/plugins/servlet/prnfb/admin*
+ * Repo level at */bitbucket/plugins/servlet/prnfb/admin/PROJECT_1/rep_1*
 
 The plugin has its own implementation to create the RESCOPED_FROM and RESCOPED_TO events. RESCOPED is transformed to RESCOPED_TO if target branch changed, RESCOPED_FROM if source branch, or both, changed.
 
