@@ -17,10 +17,6 @@ public class PrnfbRendererFactory {
  private final ApplicationPropertiesService propertiesService;
  private final RepositoryService repositoryService;
 
- /**
-  * @param variables
-  *         {@link #variables}
-  */
  public PrnfbRendererFactory(RepositoryService repositoryService, ApplicationPropertiesService propertiesService,
    AuthenticationContext authenticationContext) {
   this.repositoryService = repositoryService;

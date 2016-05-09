@@ -85,6 +85,9 @@ public enum PrnfbVariable {
     if (!m.find()) {
      return "";
     }
+    if (m.groupCount() == 0) {
+     return m.group();
+    }
     return m.group(1);
    } else {
     return rawResponse;
