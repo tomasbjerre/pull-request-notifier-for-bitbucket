@@ -126,7 +126,7 @@
     </div>
     <div class="field-group">
      <label>Keystore password </label>
-     <input class="text long-field" type="text" name="keyStorePassword">
+     <input class="text long-field" type="password" name="keyStorePassword">
      <div class="description">Optional password to use for custom keystore.</div>
     </div>
     <div class="field-group">

@@ -4,9 +4,17 @@ Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
 ### No issue
+  Using password type for keystore password field
+  
+  [2ed60daaa8fe1a2](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/2ed60daaa8fe1a2) Tomas Bjerre *2016-05-10 15:57:28*
+
   doc
   
-  [55f19dc010bf728](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/55f19dc010bf728) Tomas Bjerre *2016-05-09 16:10:09*
+  [934453f12768a51](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/934453f12768a51) Tomas Bjerre *2016-05-10 15:51:17*
+
+  Change proxy url/port fields to text
+  
+  [27750702101f275](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/27750702101f275) Stefan Anzinger *2016-05-10 15:22:41*
 
 ## 2.18
 ### GitHub [#109](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/109) Refactor admin pages
