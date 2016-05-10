@@ -415,12 +415,12 @@
     </div>
     <div class="field-group">
      <label>Server </label>
-     <input class="text long-field" type="password" name="proxyServer">
+     <input class="text long-field" type="text" name="proxyServer">
      <div class="description"></div>
     </div>
     <div class="field-group">
      <label>Port </label>
-     <input class="text long-field" type="password" name="proxyPort">
+     <input class="text long-field" type="text" name="proxyPort">
      <div class="description"></div>
     </div>
    </fieldset>
