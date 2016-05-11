@@ -2,11 +2,11 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
-## Unreleased
+## 2.19
 ### No issue
   Using password type for keystore password field
   
-  [2ed60daaa8fe1a2](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/2ed60daaa8fe1a2) Tomas Bjerre *2016-05-10 15:57:28*
+  [d24afe75aa36f0d](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/d24afe75aa36f0d) Tomas Bjerre *2016-05-10 15:57:49*
 
   doc
   
