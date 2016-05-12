@@ -3,6 +3,16 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
+### No issue
+  Doc
+  
+  [bf28a8fad66abda](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/bf28a8fad66abda) Tomas Bjerre *2016-05-12 17:22:42*
+
+  Reusing Podam factory, to use caching
+  
+  [53eff487fbacd3b](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/53eff487fbacd3b) Tomas Bjerre *2016-05-12 17:18:11*
+
+## 2.20
 ### GitHub [#116](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/116) Not saving configuration
   Linting with JSHint
 

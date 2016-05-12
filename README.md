@@ -120,6 +120,28 @@ Some rest resources are available. You can figure out the JSON structure by look
  * `POST` Save a button.
  * `POST {uuid}/press/repository/{repositoryId}/pullrequest/{pullRequestId}` Press the button.
 
+A new notification to trigger on *COMMENTED* can be added like this.
+```
+curl -u admin:admin 'http://localhost:7990/bitbucket/rest/prnfb-admin/1.0/settings/notifications' -H 'Content-Type: application/json; charset=UTF-8' -H 'Accept: application/json, text/javascript, */*; q=0.01' --data-binary '{"uuid":"","name":"","projectKey":"","repositorySlug":"","filterString":"","filterRegexp":"","triggers":["COMMENTED"],"injectionUrl":"","injectionUrlRegexp":"","user":"","password":"","proxyUser":"","proxyPassword":"","proxyServer":"","proxyPort":"","url":"http://localhost:80/?abc","method":"GET","postContent":"","headers":[{"name":"","value":""}]}'
+```
+
+It will respond with something like this.
+```
+{"headers":[],"method":"GET","name":"Notification","triggerIfCanMerge":"ALWAYS","triggerIgnoreStateList":[],"triggers":["COMMENTED"],"url":"http://localhost:80/?abc","uuid":"b1306a3a-5a87-4145-80b7-660bc986dd25"}
+```
+
+It can then be changed to trigger on *RESCOPED_FROM* and *RESCOPED_TO* like this.
+```
+curl -u admin:admin 'http://localhost:7990/bitbucket/rest/prnfb-admin/1.0/settings/notifications' -H 'Content-Type: application/json; charset=UTF-8' -H 'Accept: application/json, text/javascript, */*; q=0.01' --data-binary '{"uuid":"b1306a3a-5a87-4145-80b7-660bc986dd25","name":"Notification","projectKey":"","repositorySlug":"","filterString":"","filterRegexp":"","triggerIfCanMerge":"ALWAYS","triggers":["RESCOPED_FROM","RESCOPED_TO"],"injectionUrl":"","injectionUrlRegexp":"","user":"","password":"","proxyUser":"","proxyPassword":"","proxyServer":"","proxyPort":"","url":"http://localhost:80/?abc","method":"GET","postContent":"","headers":[{"name":"","value":""}]}' --compressed
+```
+
+It will respond with something like this.
+```
+{"headers":[],"method":"GET","name":"Notification","triggerIfCanMerge":"ALWAYS","triggerIgnoreStateList":[],"triggers":["RESCOPED_FROM","RESCOPED_TO"],"url":"http://localhost:80/?abc","uuid":"b1306a3a-5a87-4145-80b7-660bc986dd25"}
+```
+
+You may use Chrome and Developer Tools (press F12) to view rest calls while editing in GUI to find more examples.
+
 ### Jenkins
 Parameterized Jenkins jobs can be triggered remotely via:
 ```
@@ -131,6 +153,8 @@ If you are using a CSRF protection in Jenkins, you can use the **Injection URL**
 * In the headers section, set header **.crumb** with value **${INJECTION_URL_VALUE}**.
 
 ## Developer instructions
+The .travis.yml is setting up Atlas SDK and building the plugin. It may help you setup your environment.
+
 Prerequisites:
 
 * Atlas SDK [(installation instructions)](https://developer.atlassian.com/docs/getting-started/set-up-the-atlassian-plugin-sdk-and-build-a-project).
@@ -159,6 +183,5 @@ atlas-debug
 
 Make a release [(detailed instructions)](https://developer.atlassian.com/docs/common-coding-tasks/development-cycle/packaging-and-releasing-your-plugin):
 ```
-mvn release:prepare
-mvn release:perform
+mvn -B release:prepare -DperformRelease=true release:perform
 ```
