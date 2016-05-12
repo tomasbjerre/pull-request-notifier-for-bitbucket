@@ -2,6 +2,16 @@ module.exports = function(grunt) {
  grunt.initConfig({
   pkg: grunt.file.readJSON('package.json'),
 
+  jshint: {
+   all: [
+    'src/main/resources/pr-triggerbutton.js',
+    'src/main/resources/admin.js',
+    'src/main/resources/utils.js'
+   ],
+   options: {
+    esversion: 3
+   }
+  },
 
   jsbeautifier: {
    files: ["Gruntfile.js",
@@ -29,6 +39,7 @@ module.exports = function(grunt) {
  });
 
  grunt.loadNpmTasks("grunt-jsbeautifier");
+ grunt.loadNpmTasks('grunt-contrib-jshint');
 
- grunt.registerTask('default', ['jsbeautifier']);
+ grunt.registerTask('default', ['jsbeautifier', 'jshint']);
 };

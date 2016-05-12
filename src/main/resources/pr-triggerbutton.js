@@ -23,7 +23,7 @@ define('plugin/prnfb/pr-triggerbutton', [
  $buttonArea.append($buttonDropdownParent);
  $buttonDropdownParent.hide();
 
- $("body").append($buttonDropdownArea)
+ $("body").append($buttonDropdownArea);
 
  function loadSettingsAndShowButtons() {
   var hasButtons = false;

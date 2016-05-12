@@ -114,8 +114,8 @@ define('plugin/prnfb/utils', [
    }
   }
   var textareas = $within.find('textarea');
-  for (var i = 0; i < textareas.length; i++) {
-   if ($(textareas[i]).val()) {
+  for (var j = 0; j < textareas.length; j++) {
+   if ($(textareas[j]).val()) {
     return false;
    }
   }
@@ -139,7 +139,7 @@ define('plugin/prnfb/utils', [
    }
   }
 
-  if (empties.length == 0) {
+  if (empties.length === 0) {
    $empty = $listField.clone();
    $empty.find('input, textarea').val('');
    $listFieldsDiv.append($empty);
@@ -252,5 +252,5 @@ define('plugin/prnfb/utils', [
  return {
   setupForm: setupForm,
   setupForms: setupForms
- }
+ };
 });

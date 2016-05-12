@@ -1,5 +1,5 @@
 define('plugin/prnfb/3rdparty', [
- 'jquery',
+ 'jquery'
 ], function($) {
 
  /**
