@@ -13,7 +13,7 @@ Changelog of Pull Request Notifier for Bitbucket.
 ### No issue
   Defaulting proxy port to null
   
-  [b47ee2751e43fdf](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/b47ee2751e43fdf) Tomas Bjerre *2016-05-12 16:18:16*
+  [4761aa53d58cf06](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/4761aa53d58cf06) Tomas Bjerre *2016-05-12 16:37:39*
 
   doc
   

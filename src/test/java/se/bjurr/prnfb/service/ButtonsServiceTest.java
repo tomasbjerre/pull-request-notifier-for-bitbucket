@@ -11,6 +11,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 import static se.bjurr.prnfb.listener.PrnfbPullRequestAction.BUTTON_TRIGGER;
 import static se.bjurr.prnfb.listener.PrnfbPullRequestAction.MERGED;
+import static se.bjurr.prnfb.test.Podam.populatedInstanceOf;
 import static se.bjurr.prnfb.transformer.ButtonTransformer.toPrnfbButton;
 import static se.bjurr.prnfb.transformer.NotificationTransformer.toPrnfbNotification;
 
@@ -29,7 +30,6 @@ import se.bjurr.prnfb.presentation.dto.NotificationDTO;
 import se.bjurr.prnfb.settings.PrnfbButton;
 import se.bjurr.prnfb.settings.PrnfbNotification;
 import se.bjurr.prnfb.settings.ValidationException;
-import uk.co.jemos.podam.api.PodamFactoryImpl;
 
 import com.atlassian.bitbucket.auth.AuthenticationContext;
 import com.atlassian.bitbucket.pull.PullRequest;
@@ -86,10 +86,10 @@ public class ButtonsServiceTest {
       any(PrnfbNotification.class), anyMap()))//
     .thenReturn(this.renderer);
 
-  this.buttonDto1 = new PodamFactoryImpl().manufacturePojo(ButtonDTO.class);
+  this.buttonDto1 = populatedInstanceOf(ButtonDTO.class);
   this.buttonDto1.setProjectKey("a");
   this.button1 = toPrnfbButton(this.buttonDto1);
-  this.buttonDto2 = new PodamFactoryImpl().manufacturePojo(ButtonDTO.class);
+  this.buttonDto2 = populatedInstanceOf(ButtonDTO.class);
   this.buttonDto2.setProjectKey("b");
   this.button2 = toPrnfbButton(this.buttonDto2);
 
@@ -98,13 +98,13 @@ public class ButtonsServiceTest {
   when(this.settingsService.getButton(this.button2.getUuid()))//
     .thenReturn(this.button2);
 
-  this.notificationDto1 = new PodamFactoryImpl().manufacturePojo(NotificationDTO.class);
+  this.notificationDto1 = populatedInstanceOf(NotificationDTO.class);
   this.notificationDto1.setUrl("http://hej.com");
   this.notificationDto1.setTriggerIgnoreStateList(Lists.newArrayList(DECLINED.name()));
   this.notificationDto1.setTriggers(newArrayList(MERGED.name()));
   this.notification1 = toPrnfbNotification(this.notificationDto1);
 
-  this.notificationDto2 = new PodamFactoryImpl().manufacturePojo(NotificationDTO.class);
+  this.notificationDto2 = populatedInstanceOf(NotificationDTO.class);
   this.notificationDto2.setUrl("http://hej.com");
   this.notificationDto2.setTriggerIgnoreStateList(Lists.newArrayList(DECLINED.name()));
   this.notificationDto2.setTriggers(newArrayList(MERGED.name()));

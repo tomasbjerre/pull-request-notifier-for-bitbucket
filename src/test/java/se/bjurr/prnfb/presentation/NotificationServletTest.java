@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static se.bjurr.prnfb.listener.PrnfbPullRequestAction.MERGED;
+import static se.bjurr.prnfb.test.Podam.populatedInstanceOf;
 import static se.bjurr.prnfb.transformer.NotificationTransformer.toPrnfbNotification;
 
 import java.util.List;
@@ -23,7 +24,6 @@ import se.bjurr.prnfb.presentation.dto.NotificationDTO;
 import se.bjurr.prnfb.service.SettingsService;
 import se.bjurr.prnfb.service.UserCheckService;
 import se.bjurr.prnfb.settings.PrnfbNotification;
-import uk.co.jemos.podam.api.PodamFactoryImpl;
 
 import com.google.common.collect.Lists;
 
@@ -46,11 +46,11 @@ public class NotificationServletTest {
   when(this.userCheckService.isAdminAllowed())//
     .thenReturn(true);
   this.sut = new NotificationServlet(this.settingsService, this.userCheckService);
-  this.notificationDto1 = new PodamFactoryImpl().manufacturePojo(NotificationDTO.class);
+  this.notificationDto1 = populatedInstanceOf(NotificationDTO.class);
   this.notificationDto1.setUrl("http://hej.com/");
   this.notificationDto1.setTriggerIgnoreStateList(newArrayList(DECLINED.name()));
   this.notificationDto1.setTriggers(newArrayList(MERGED.name()));
-  this.notificationDto2 = new PodamFactoryImpl().manufacturePojo(NotificationDTO.class);
+  this.notificationDto2 = populatedInstanceOf(NotificationDTO.class);
   this.notificationDto2.setUrl("http://hej.com/");
   this.notificationDto2.setTriggerIgnoreStateList(Lists.newArrayList(DECLINED.name()));
   this.notificationDto2.setTriggers(newArrayList(MERGED.name()));
@@ -60,7 +60,7 @@ public class NotificationServletTest {
 
  @Test
  public void testNotificationCanBeCreated() throws Exception {
-  NotificationDTO incomingDto = new PodamFactoryImpl().manufacturePojo(NotificationDTO.class);
+  NotificationDTO incomingDto = populatedInstanceOf(NotificationDTO.class);
   incomingDto.setUrl("http://hej.com/");
   incomingDto.setTriggerIgnoreStateList(newArrayList(DECLINED.name()));
   incomingDto.setTriggers(newArrayList(MERGED.name()));

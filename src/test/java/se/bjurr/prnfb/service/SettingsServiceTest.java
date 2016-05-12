@@ -10,6 +10,7 @@ import static se.bjurr.prnfb.settings.PrnfbSettingsBuilder.prnfbSettingsBuilder;
 import static se.bjurr.prnfb.settings.PrnfbSettingsDataBuilder.prnfbSettingsDataBuilder;
 import static se.bjurr.prnfb.settings.USER_LEVEL.ADMIN;
 import static se.bjurr.prnfb.settings.USER_LEVEL.EVERYONE;
+import static se.bjurr.prnfb.test.Podam.populatedInstanceOf;
 
 import java.util.List;
 import java.util.Set;
@@ -22,7 +23,6 @@ import se.bjurr.prnfb.settings.PrnfbButton;
 import se.bjurr.prnfb.settings.PrnfbNotification;
 import se.bjurr.prnfb.settings.PrnfbSettings;
 import se.bjurr.prnfb.settings.ValidationException;
-import uk.co.jemos.podam.api.PodamFactoryImpl;
 
 import com.atlassian.bitbucket.permission.Permission;
 import com.atlassian.bitbucket.user.EscalatedSecurityContext;
@@ -127,7 +127,7 @@ public class SettingsServiceTest {
 
  @Test
  public void testThatButtonsCanBeRetrievedByProject() {
-  PrnfbButton button1 = new PodamFactoryImpl().manufacturePojo(PrnfbButton.class);
+  PrnfbButton button1 = populatedInstanceOf(PrnfbButton.class);
   this.sut.addOrUpdateButton(button1);
 
   List<PrnfbButton> actual = this.sut.getButtons(button1.getProjectKey().get());
@@ -138,7 +138,7 @@ public class SettingsServiceTest {
 
  @Test
  public void testThatButtonsCanBeRetrievedByProjectAndRepo() {
-  PrnfbButton button1 = new PodamFactoryImpl().manufacturePojo(PrnfbButton.class);
+  PrnfbButton button1 = populatedInstanceOf(PrnfbButton.class);
   this.sut.addOrUpdateButton(button1);
 
   List<PrnfbButton> actual = this.sut.getButtons(button1.getProjectKey().get(), button1.getRepositorySlug().get());

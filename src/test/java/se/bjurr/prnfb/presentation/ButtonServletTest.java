@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static se.bjurr.prnfb.settings.USER_LEVEL.EVERYONE;
+import static se.bjurr.prnfb.test.Podam.populatedInstanceOf;
 import static se.bjurr.prnfb.transformer.ButtonTransformer.toPrnfbButton;
 
 import java.util.List;
@@ -25,7 +26,6 @@ import se.bjurr.prnfb.service.ButtonsService;
 import se.bjurr.prnfb.service.SettingsService;
 import se.bjurr.prnfb.service.UserCheckService;
 import se.bjurr.prnfb.settings.PrnfbButton;
-import uk.co.jemos.podam.api.PodamFactoryImpl;
 
 public class ButtonServletTest {
  private PrnfbButton button1;
@@ -49,9 +49,9 @@ public class ButtonServletTest {
     .thenReturn(true);
   this.sut = new ButtonServlet(this.buttonsService, this.settingsService, this.userCheckService);
 
-  this.buttonDto1 = new PodamFactoryImpl().manufacturePojo(ButtonDTO.class);
+  this.buttonDto1 = populatedInstanceOf(ButtonDTO.class);
   this.button1 = toPrnfbButton(this.buttonDto1);
-  this.buttonDto2 = new PodamFactoryImpl().manufacturePojo(ButtonDTO.class);
+  this.buttonDto2 = populatedInstanceOf(ButtonDTO.class);
   this.button2 = toPrnfbButton(this.buttonDto2);
  }
 
