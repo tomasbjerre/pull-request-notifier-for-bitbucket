@@ -3,7 +3,18 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
+### GitHub [#116](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/116) Not saving configuration
+  Linting with JSHint
+
+ * Found JS that may crashes in IE9.
+  
+  [807d483c0c9b9f9](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/807d483c0c9b9f9) Tomas Bjerre *2016-05-12 16:04:16*
+
 ### No issue
+  Defaulting proxy port to null
+  
+  [b47ee2751e43fdf](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/b47ee2751e43fdf) Tomas Bjerre *2016-05-12 16:18:16*
+
   doc
   
   [6e92abeebfaae7b](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/6e92abeebfaae7b) Tomas Bjerre *2016-05-11 15:36:41*

@@ -50,7 +50,7 @@ public class PrnfbNotification implements HasUuid {
   this.proxyUser = emptyToNull(nullToEmpty(builder.getProxyUser()).trim());
   this.proxyPassword = emptyToNull(nullToEmpty(builder.getProxyPassword()).trim());
   this.proxyServer = emptyToNull(nullToEmpty(builder.getProxyServer()).trim());
-  this.proxyPort = firstNonNull(builder.getProxyPort(), -1);
+  this.proxyPort = builder.getProxyPort();
   this.headers = checkNotNull(builder.getHeaders());
   this.postContent = emptyToNull(nullToEmpty(builder.getPostContent()).trim());
   this.method = firstNonNull(builder.getMethod(), GET);
