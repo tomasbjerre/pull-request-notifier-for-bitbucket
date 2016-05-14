@@ -3,10 +3,22 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
-### No issue
-  Doc
+### GitHub [#117](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/117) PULL_REQUEST_TO_HASH
+  Adding missing consumes annotation on REST resources 
+
+ * Adding integration test for REST API.
   
-  [bf28a8fad66abda](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/bf28a8fad66abda) Tomas Bjerre *2016-05-12 17:22:42*
+  [e8f7cc71c9a97d3](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/e8f7cc71c9a97d3) Tomas Bjerre *2016-05-14 22:04:19*
+
+### No issue
+  Avoiding looking for legacy settings if no such keys
+
+ * Also adding Curl examples to README.
+ * Documenting REST API.
+
+Logging legacy settings
+  
+  [b8600f3a7d972c4](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/b8600f3a7d972c4) Tomas Bjerre *2016-05-14 15:35:56*
 
   Reusing Podam factory, to use caching
   

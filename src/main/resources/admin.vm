@@ -99,11 +99,11 @@
     </legend>
     <div class="radio">
      <label>
-      <input class="radio" type="radio" name="adminRestriction" value="ADMIN"> System administrators</label>
+      <input class="radio" type="radio" name="adminRestriction" value="SYSTEM_ADMIN"> System administrators</label>
     </div>
     <div class="radio">
      <label>
-      <input class="radio" type="radio" name="adminRestriction" value="SYSTEM_ADMIN"> Administrators and system administrators</label>
+      <input class="radio" type="radio" name="adminRestriction" value="ADMIN"> Administrators and system administrators</label>
     </div>
     <div class="radio">
      <label>

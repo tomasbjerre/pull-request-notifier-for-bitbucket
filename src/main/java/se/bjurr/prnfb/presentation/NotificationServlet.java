@@ -13,6 +13,7 @@ import static se.bjurr.prnfb.transformer.NotificationTransformer.toPrnfbNotifica
 import java.util.List;
 import java.util.UUID;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -40,6 +41,7 @@ public class NotificationServlet {
 
  @POST
  @XsrfProtectionExcluded
+ @Consumes(APPLICATION_JSON)
  @Produces(APPLICATION_JSON)
  public Response create(NotificationDTO notificationDto) {
   if (!this.userCheckService.isAdminAllowed()) {

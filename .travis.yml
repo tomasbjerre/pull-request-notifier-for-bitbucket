@@ -18,5 +18,6 @@ install:
 script:
   - atlas-package -q -Dstash.version=4.0.0
   - atlas-package -q
+#  - ./integration-test.sh
 notifications:
   email: false

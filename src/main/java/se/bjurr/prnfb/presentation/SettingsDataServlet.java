@@ -1,7 +1,6 @@
 package se.bjurr.prnfb.presentation;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 import static javax.ws.rs.core.Response.noContent;
 import static javax.ws.rs.core.Response.ok;
 import static javax.ws.rs.core.Response.status;
@@ -49,7 +48,7 @@ public class SettingsDataServlet {
  @POST
  @XsrfProtectionExcluded
  @Consumes(APPLICATION_JSON)
- @Produces(TEXT_PLAIN)
+ @Produces(APPLICATION_JSON)
  public Response post(SettingsDataDTO settingsDataDto) {
   if (!this.userCheckService.isAdminAllowed()) {
    return status(UNAUTHORIZED).build();

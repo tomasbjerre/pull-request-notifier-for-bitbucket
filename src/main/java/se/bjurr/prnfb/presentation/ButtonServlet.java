@@ -12,6 +12,7 @@ import static se.bjurr.prnfb.transformer.ButtonTransformer.toPrnfbButton;
 import java.util.List;
 import java.util.UUID;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -42,6 +43,7 @@ public class ButtonServlet {
 
  @POST
  @XsrfProtectionExcluded
+ @Consumes(APPLICATION_JSON)
  @Produces(APPLICATION_JSON)
  public Response create(ButtonDTO buttonDto) {
   if (!this.userCheckService.isAdminAllowed()) {
