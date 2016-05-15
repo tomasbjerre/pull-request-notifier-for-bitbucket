@@ -6,7 +6,7 @@ Changelog of Pull Request Notifier for Bitbucket.
 ### No issue
   Docker
   
-  [85abd1f93c4bae7](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/85abd1f93c4bae7) Tomas Bjerre *2016-05-15 07:01:56*
+  [76aa6838a73a556](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/76aa6838a73a556) Tomas Bjerre *2016-05-15 10:24:55*
 
 ## 2.21
 ### GitHub [#117](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/117) PULL_REQUEST_TO_HASH resolved to old commit
