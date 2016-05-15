@@ -153,6 +153,14 @@ If you are using a CSRF protection in Jenkins, you can use the **Injection URL**
 * In the headers section, set header **.crumb** with value **${INJECTION_URL_VALUE}**.
 
 ## Developer instructions
+There are some scripts to help working with the plugin.
+
+ * `./setup-atlassian-sdk.sh` Setup Atlassian SDK.
+ * `./docker-build.sh` Build Docker container.
+ * `./docker-run.sh` Run the Docker container.
+ * `./integration-test-local.sh` Run integration tests against localhost.
+ * `./integration-test.sh` Start Docker container and then runs integration tests against it.
+
 The .travis.yml is setting up Atlas SDK and building the plugin. It may help you setup your environment.
 
 Prerequisites:
@@ -173,7 +181,7 @@ atlas-package
 Run Bitbucket, with the plugin, on localhost:
 ```
 export MAVEN_OPTS=-Dplugin.resource.directories=`pwd`/src/main/resources
-mvn bitbucket:run
+atlas-run
 ```
 
 You can also remote debug on port 5005 with:

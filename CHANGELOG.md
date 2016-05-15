@@ -3,12 +3,18 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
-### GitHub [#117](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/117) PULL_REQUEST_TO_HASH
+### No issue
+  Docker
+  
+  [85abd1f93c4bae7](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/85abd1f93c4bae7) Tomas Bjerre *2016-05-15 07:01:56*
+
+## 2.21
+### GitHub [#117](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/117) PULL_REQUEST_TO_HASH resolved to old commit
   Adding missing consumes annotation on REST resources 
 
  * Adding integration test for REST API.
   
-  [e8f7cc71c9a97d3](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/e8f7cc71c9a97d3) Tomas Bjerre *2016-05-14 22:04:19*
+  [843a1d6cb7cc3d6](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/843a1d6cb7cc3d6) Tomas Bjerre *2016-05-14 22:04:48*
 
 ### No issue
   Avoiding looking for legacy settings if no such keys

@@ -9,7 +9,7 @@ function build_clean {
   echo "Bitbucket Server is running at $KILLPID, killing it"
   kill $KILLPID || echo;
  done
- atlas-mvn clean
+ atlas-mvn -q clean
 }
 
 function on_exit {
@@ -21,7 +21,8 @@ build_clean
 #
 # Start Bitbucket Server
 #
-atlas-run -q  || exit 1 &
+./docker-build.sh
+./docker-run.sh  || exit 1 &
 
 BITBUCKET_URL=http://localhost:7990/bitbucket
 until $(curl --output /dev/null --silent --head --fail $BITBUCKET_URL); do
