@@ -21,6 +21,7 @@ import se.bjurr.prnfb.settings.PrnfbSettingsData;
 
 import com.atlassian.bitbucket.pull.PullRequest;
 import com.atlassian.bitbucket.pull.PullRequestService;
+import com.atlassian.bitbucket.repository.Repository;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
@@ -74,6 +75,35 @@ public class ButtonsService {
   return FALSE;
  }
 
+ /**
+  * Checks if the given button is visible in the given repository.
+  * 
+  * @param button Button under test
+  * @param repository Repository to check for
+  * @return True if the button is either globally visible or matches with the given repository
+  */
+ private boolean isVisibleOnRepository(PrnfbButton button, Repository repository) {
+  if(button.getRepositorySlug().isPresent()) {
+   boolean visible = false;
+   do {
+    visible |= button.getProjectKey().get().equals(repository.getProject().getKey())
+      && button.getRepositorySlug().get().equals(repository.getSlug());
+   } while(!visible && (repository = repository.getOrigin()) != null);
+   return visible;
+  } else {
+   return TRUE;
+  }
+ }
+
+ /**
+  * Checks if the given button is visible on the pull request by either the from or to repository.
+  */
+ private boolean isVisibleOnPullRequest(PrnfbButton button, PullRequest pullRequest) {
+  return 
+    (pullRequest.getFromRef() != null && isVisibleOnRepository(button, pullRequest.getFromRef().getRepository()))
+    || (pullRequest.getToRef() != null && isVisibleOnRepository(button, pullRequest.getToRef().getRepository()));
+ }
+
  @VisibleForTesting
  List<PrnfbButton> doGetButtons(List<PrnfbNotification> notifications, ClientKeyStore clientKeyStore,
    final PullRequest pullRequest, boolean shouldAcceptAnyCertificate) {
@@ -83,7 +113,8 @@ public class ButtonsService {
    PrnfbPullRequestAction pullRequestAction = BUTTON_TRIGGER;
    if (this.userCheckService.isAllowedUseButton(candidate)
      && isTriggeredByAction(clientKeyStore, notifications, shouldAcceptAnyCertificate, pullRequestAction, pullRequest,
-       variables)) {
+       variables)
+     && (isVisibleOnPullRequest(candidate, pullRequest))) {
     allFoundButtons.add(candidate);
    }
   }
