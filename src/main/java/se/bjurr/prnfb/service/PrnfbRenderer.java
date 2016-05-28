@@ -16,6 +16,7 @@ import com.atlassian.bitbucket.pull.PullRequest;
 import com.atlassian.bitbucket.repository.RepositoryService;
 import com.atlassian.bitbucket.server.ApplicationPropertiesService;
 import com.atlassian.bitbucket.user.ApplicationUser;
+import com.atlassian.bitbucket.user.SecurityService;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Supplier;
 
@@ -27,6 +28,7 @@ public class PrnfbRenderer {
  private final PullRequest pullRequest;
  private final PrnfbPullRequestAction pullRequestAction;
  private final RepositoryService repositoryService;
+ private final SecurityService securityService;
  /**
   * Contains special variables that are only available for specific events like
   * {@link PrnfbVariable#BUTTON_TRIGGER_TITLE} and
@@ -36,7 +38,7 @@ public class PrnfbRenderer {
 
  PrnfbRenderer(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction, ApplicationUser applicationUser,
    RepositoryService repositoryService, ApplicationPropertiesService propertiesService,
-   PrnfbNotification prnfbNotification, Map<PrnfbVariable, Supplier<String>> variables) {
+   PrnfbNotification prnfbNotification, Map<PrnfbVariable, Supplier<String>> variables, SecurityService securityService) {
   this.pullRequest = pullRequest;
   this.pullRequestAction = pullRequestAction;
   this.applicationUser = applicationUser;
@@ -44,6 +46,7 @@ public class PrnfbRenderer {
   this.prnfbNotification = prnfbNotification;
   this.propertiesService = propertiesService;
   this.variables = variables;
+  this.securityService = securityService;
  }
 
  public String render(String string, Boolean forUrl, ClientKeyStore clientKeyStore, Boolean shouldAcceptAnyCertificate) {
@@ -64,7 +67,7 @@ public class PrnfbRenderer {
    throws UnsupportedEncodingException {
   String resolved = variable.resolve(this.pullRequest, this.pullRequestAction, this.applicationUser,
     this.repositoryService, this.propertiesService, this.prnfbNotification, this.variables, clientKeyStore,
-    shouldAcceptAnyCertificate);
+    shouldAcceptAnyCertificate, this.securityService);
   return getRenderedStringResolved(string, forUrl, regExpStr, resolved);
  }
 

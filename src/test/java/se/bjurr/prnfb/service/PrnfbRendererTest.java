@@ -31,6 +31,7 @@ import com.atlassian.bitbucket.pull.PullRequestRef;
 import com.atlassian.bitbucket.repository.RepositoryService;
 import com.atlassian.bitbucket.server.ApplicationPropertiesService;
 import com.atlassian.bitbucket.user.ApplicationUser;
+import com.atlassian.bitbucket.user.SecurityService;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 
@@ -50,6 +51,7 @@ public class PrnfbRendererTest {
  private PrnfbPullRequestAction pullRequestAction;
  @Mock
  private RepositoryService repositoryService;
+ private SecurityService securityService;
  private final Boolean shouldAcceptAnyCertificate = true;
  private PrnfbRenderer sut;
  private final Map<PrnfbVariable, Supplier<String>> variables = newHashMap();
@@ -62,7 +64,7 @@ public class PrnfbRendererTest {
     .withTrigger(APPROVED)//
     .build();
   this.sut = new PrnfbRenderer(this.pullRequest, this.pullRequestAction, this.applicationUser, this.repositoryService,
-    this.propertiesService, this.prnfbNotification, this.variables);
+    this.propertiesService, this.prnfbNotification, this.variables, this.securityService);
 
   when(this.pullRequest.getFromRef())//
     .thenReturn(this.fromRef);
@@ -82,7 +84,7 @@ public class PrnfbRendererTest {
   String actual = this.sut.getRenderedStringResolved("asd ${" + EVERYTHING_URL.name() + "} asd", this.forUrl, this.sut
     .regexp(EVERYTHING_URL), EVERYTHING_URL.resolve(this.pullRequest, this.pullRequestAction, this.applicationUser,
     this.repositoryService, this.propertiesService, this.prnfbNotification, this.variables, this.clientKeyStore,
-    this.shouldAcceptAnyCertificate));
+    this.shouldAcceptAnyCertificate, this.securityService));
 
   assertThat(actual)//
     .isEqualTo(
@@ -96,7 +98,7 @@ public class PrnfbRendererTest {
     .withTrigger(APPROVED)//
     .build();
   this.sut = new PrnfbRenderer(this.pullRequest, this.pullRequestAction, this.applicationUser, this.repositoryService,
-    this.propertiesService, this.prnfbNotification, this.variables);
+    this.propertiesService, this.prnfbNotification, this.variables, this.securityService);
 
   String actual = this.sut.render("my ${" + INJECTION_URL_VALUE + "} string", this.forUrl, this.clientKeyStore,
     this.shouldAcceptAnyCertificate);

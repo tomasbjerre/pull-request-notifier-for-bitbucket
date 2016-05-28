@@ -10,6 +10,7 @@ import com.atlassian.bitbucket.pull.PullRequest;
 import com.atlassian.bitbucket.repository.RepositoryService;
 import com.atlassian.bitbucket.server.ApplicationPropertiesService;
 import com.atlassian.bitbucket.user.ApplicationUser;
+import com.atlassian.bitbucket.user.SecurityService;
 import com.google.common.base.Supplier;
 
 public interface PrnfbVariableResolver {
@@ -17,5 +18,5 @@ public interface PrnfbVariableResolver {
  String resolve(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction, ApplicationUser applicationUser,
    RepositoryService repositoryService, ApplicationPropertiesService propertiesService,
    PrnfbNotification prnfbNotification, Map<PrnfbVariable, Supplier<String>> variables, ClientKeyStore clientKeyStore,
-   boolean shouldAcceptAnyCertificate);
+   boolean shouldAcceptAnyCertificate, SecurityService securityService);
 }
