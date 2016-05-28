@@ -32,10 +32,14 @@ import se.bjurr.prnfb.settings.PrnfbNotification;
 import se.bjurr.prnfb.settings.ValidationException;
 
 import com.atlassian.bitbucket.auth.AuthenticationContext;
+import com.atlassian.bitbucket.project.Project;
 import com.atlassian.bitbucket.pull.PullRequest;
+import com.atlassian.bitbucket.pull.PullRequestRef;
 import com.atlassian.bitbucket.pull.PullRequestService;
+import com.atlassian.bitbucket.repository.Repository;
 import com.atlassian.bitbucket.repository.RepositoryService;
 import com.atlassian.bitbucket.server.ApplicationPropertiesService;
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
 public class ButtonsServiceTest {
@@ -44,8 +48,10 @@ public class ButtonsServiceTest {
  private AuthenticationContext authenticationContext;
  private PrnfbButton button1;
  private PrnfbButton button2;
+ private PrnfbButton button3;
  private ButtonDTO buttonDto1;
  private ButtonDTO buttonDto2;
+ private ButtonDTO buttonDto3;
  @Mock
  private ClientKeyStore clientKeyStore;
  private PrnfbNotification notification1;
@@ -74,6 +80,14 @@ public class ButtonsServiceTest {
  private ButtonsService sut;
  @Mock
  private UserCheckService userCheckService;
+ @Mock
+ private PullRequestRef prRef;
+ @Mock
+ private Repository repository;
+ @Mock
+ private Repository originRepo;
+ @Mock
+ private Project project;
 
  @SuppressWarnings("unchecked")
  @Before
@@ -87,16 +101,22 @@ public class ButtonsServiceTest {
     .thenReturn(this.renderer);
 
   this.buttonDto1 = populatedInstanceOf(ButtonDTO.class);
-  this.buttonDto1.setProjectKey("a");
+  this.buttonDto1.setProjectKey(null);
+  this.buttonDto1.setRepositorySlug(null);
   this.button1 = toPrnfbButton(this.buttonDto1);
   this.buttonDto2 = populatedInstanceOf(ButtonDTO.class);
-  this.buttonDto2.setProjectKey("b");
+  this.buttonDto2.setProjectKey(null);
+  this.buttonDto2.setRepositorySlug(null);
   this.button2 = toPrnfbButton(this.buttonDto2);
+  this.buttonDto3 = populatedInstanceOf(ButtonDTO.class);
+  this.button3 = toPrnfbButton(this.buttonDto3);
 
   when(this.settingsService.getButton(this.button1.getUuid()))//
     .thenReturn(this.button1);
   when(this.settingsService.getButton(this.button2.getUuid()))//
-    .thenReturn(this.button2);
+  .thenReturn(this.button2);
+  when(this.settingsService.getButton(this.button3.getUuid()))//
+  .thenReturn(this.button3);
 
   this.notificationDto1 = populatedInstanceOf(NotificationDTO.class);
   this.notificationDto1.setUrl("http://hej.com");
@@ -117,14 +137,15 @@ public class ButtonsServiceTest {
 
  @Test
  public void testThatButtonsCanBeRetrievedWhenAllAllowed() {
-
-  List<PrnfbButton> candidates = newArrayList(this.button1, this.button2);
+  List<PrnfbButton> candidates = newArrayList(this.button1, this.button2, this.button3);
   when(this.settingsService.getButtons())//
     .thenReturn(candidates);
   when(this.userCheckService.isAllowedUseButton(this.button1))//
     .thenReturn(true);
   when(this.userCheckService.isAllowedUseButton(this.button2))//
-    .thenReturn(true);
+  .thenReturn(true);
+  when(this.userCheckService.isAllowedUseButton(this.button3))//
+  .thenReturn(true);
   when(
     this.prnfbPullRequestEventListener.isNotificationTriggeredByAction(this.notification1, this.pullRequestAction,
       this.renderer, this.pullRequest, this.clientKeyStore, this.shouldAcceptAnyCertificate))//
@@ -133,12 +154,32 @@ public class ButtonsServiceTest {
     this.prnfbPullRequestEventListener.isNotificationTriggeredByAction(this.notification2, this.pullRequestAction,
       this.renderer, this.pullRequest, this.clientKeyStore, this.shouldAcceptAnyCertificate))//
     .thenReturn(true);
+  when(this.pullRequest.getToRef()).thenReturn(prRef);
+  when(this.prRef.getRepository()).thenReturn(repository);
+  when(this.repository.getSlug()).thenReturn(button3.getRepositorySlug().get());
+  when(this.repository.getProject()).thenReturn(project);
+  when(this.project.getKey()).thenReturn(button3.getProjectKey().get());
 
   List<PrnfbButton> actual = this.sut.doGetButtons(this.notifications, this.clientKeyStore, this.pullRequest,
     this.shouldAcceptAnyCertificate);
-
   assertThat(actual)//
-    .containsExactly(this.button1, this.button2);
+    .containsOnly(this.button1, this.button2, this.button3);
+
+  // Now do the same with another repository - button3 should disappear
+  when(this.repository.getSlug()).thenReturn("otherrepository");
+  actual = this.sut.doGetButtons(this.notifications, this.clientKeyStore, this.pullRequest,
+    this.shouldAcceptAnyCertificate);
+  assertThat(actual)//
+    .containsOnly(this.button1, this.button2);
+
+  // Now check if the button is inherited from the origin repo
+  when(this.repository.getOrigin()).thenReturn(originRepo);
+  when(this.originRepo.getSlug()).thenReturn(button3.getRepositorySlug().get());
+  when(this.originRepo.getProject()).thenReturn(project);
+  actual = this.sut.doGetButtons(this.notifications, this.clientKeyStore, this.pullRequest,
+    this.shouldAcceptAnyCertificate);
+  assertThat(actual)//
+    .containsOnly(this.button1, this.button2, this.button3);
  }
 
  @Test
