@@ -56,22 +56,38 @@ import com.google.gson.Gson;
 
 @Path("/manual")
 public class ManualResource {
- private static Gson gson = new Gson();
- private final UserManager userManager;
- private final UserService userService;
- private final PullRequestService pullRequestService;
- private final PrnfsPullRequestEventListener prnfsPullRequestEventListener;
- private final SecurityService securityService;
- private final PluginSettingsFactory pluginSettingsFactory;
- private final ApplicationPropertiesService propertiesService;
- private final RepositoryService repositoryService;
  private static final List<AdminFormValues.BUTTON_VISIBILITY> adminOk = newArrayList();
+ private static Gson gson = new Gson();
  private static final List<AdminFormValues.BUTTON_VISIBILITY> systemAdminOk = newArrayList();
  static {
   adminOk.add(BUTTON_VISIBILITY.ADMIN);
   adminOk.add(SYSTEM_ADMIN);
   systemAdminOk.add(SYSTEM_ADMIN);
  }
+
+ static boolean allowedUseButton(PrnfsButton candidate, boolean isAdmin, boolean isSystemAdmin) {
+  if (candidate.getVisibility().equals(EVERYONE)) {
+   return TRUE;
+  }
+  if (isSystemAdmin && systemAdminOk.contains(candidate.getVisibility())) {
+   return TRUE;
+  } else if (isAdmin && adminOk.contains(candidate.getVisibility())) {
+   return TRUE;
+  } else if (candidate.getVisibility().equals(EVERYONE)) {
+   return TRUE;
+  }
+  return FALSE;
+ }
+
+ private final PluginSettingsFactory pluginSettingsFactory;
+ private final PrnfsPullRequestEventListener prnfsPullRequestEventListener;
+ private final ApplicationPropertiesService propertiesService;
+ private final PullRequestService pullRequestService;
+ private final RepositoryService repositoryService;
+ private final SecurityService securityService;
+ private final UserManager userManager;
+
+ private final UserService userService;
 
  public ManualResource(UserManager userManager, UserService userService, PluginSettingsFactory pluginSettingsFactory,
    PullRequestService pullRequestService, PrnfsPullRequestEventListener prnfsPullRequestEventListener,
@@ -90,17 +106,17 @@ public class ManualResource {
  @Produces(APPLICATION_JSON)
  public Response get(@Context HttpServletRequest request, @QueryParam("repositoryId") Integer repositoryId,
    @QueryParam("pullRequestId") Long pullRequestId) throws Exception {
-  if (userManager.getRemoteUser(request) == null) {
+  if (this.userManager.getRemoteUser(request) == null) {
    return status(UNAUTHORIZED).build();
   }
   List<PrnfsButton> buttons = newArrayList();
   final PrnfsSettings settings = getSettings();
   for (PrnfsButton candidate : settings.getButtons()) {
-   UserKey userKey = userManager.getRemoteUserKey();
+   UserKey userKey = this.userManager.getRemoteUserKey();
    PrnfsPullRequestAction pullRequestAction = PrnfsPullRequestAction.valueOf(BUTTON_TRIGGER);
-   final PullRequest pullRequest = pullRequestService.getById(repositoryId, pullRequestId);
+   final PullRequest pullRequest = this.pullRequestService.getById(repositoryId, pullRequestId);
    Map<PrnfsVariable, Supplier<String>> variables = getVariables(settings, candidate.getFormIdentifier());
-   if (allowedUseButton(candidate, userManager.isAdmin(userKey), userManager.isSystemAdmin(userKey))
+   if (allowedUseButton(candidate, this.userManager.isAdmin(userKey), this.userManager.isSystemAdmin(userKey))
      && triggeredByAction(settings, pullRequestAction, pullRequest, variables, request)) {
     buttons.add(candidate);
    }
@@ -108,39 +124,45 @@ public class ManualResource {
   return ok(gson.toJson(buttons), APPLICATION_JSON).build();
  }
 
- private boolean triggeredByAction(PrnfsSettings settings, PrnfsPullRequestAction pullRequestAction,
-   PullRequest pullRequest, Map<PrnfsVariable, Supplier<String>> variables, HttpServletRequest request) {
-  for (PrnfsNotification prnfsNotification : settings.getNotifications()) {
-   PrnfsRenderer renderer = getRenderer(pullRequest, prnfsNotification, pullRequestAction, variables, request);
-   if (prnfsPullRequestEventListener.notificationTriggeredByAction(prnfsNotification, pullRequestAction, renderer,
-     pullRequest)) {
-    return TRUE;
-   }
-  }
-  return FALSE;
- }
-
  @POST
  @Produces(APPLICATION_JSON)
  public Response post(@Context HttpServletRequest request, @QueryParam("repositoryId") Integer repositoryId,
    @QueryParam("pullRequestId") Long pullRequestId, @QueryParam("formIdentifier") final String formIdentifier)
    throws Exception {
-  if (userManager.getRemoteUser(request) == null) {
+  if (this.userManager.getRemoteUser(request) == null) {
    return status(UNAUTHORIZED).build();
   }
 
   final PrnfsSettings settings = getSettings();
   for (PrnfsNotification prnfsNotification : settings.getNotifications()) {
    PrnfsPullRequestAction pullRequestAction = PrnfsPullRequestAction.valueOf(BUTTON_TRIGGER);
-   final PullRequest pullRequest = pullRequestService.getById(repositoryId, pullRequestId);
+   final PullRequest pullRequest = this.pullRequestService.getById(repositoryId, pullRequestId);
    Map<PrnfsVariable, Supplier<String>> variables = getVariables(settings, formIdentifier);
    PrnfsRenderer renderer = getRenderer(pullRequest, prnfsNotification, pullRequestAction, variables, request);
-   if (prnfsPullRequestEventListener.notificationTriggeredByAction(prnfsNotification, pullRequestAction, renderer,
+   if (this.prnfsPullRequestEventListener.notificationTriggeredByAction(prnfsNotification, pullRequestAction, renderer,
      pullRequest)) {
-    prnfsPullRequestEventListener.notify(prnfsNotification, pullRequestAction, pullRequest, variables, renderer);
+    this.prnfsPullRequestEventListener.notify(prnfsNotification, pullRequestAction, pullRequest, variables, renderer);
    }
   }
   return status(OK).build();
+ }
+
+ private PrnfsRenderer getRenderer(final PullRequest pullRequest, PrnfsNotification prnfsNotification,
+   PrnfsPullRequestAction pullRequestAction, Map<PrnfsVariable, Supplier<String>> variables, HttpServletRequest request) {
+  StashUser stashUser = this.userService.getUserBySlug(this.userManager.getRemoteUser(request).getUsername());
+  return new PrnfsRenderer(pullRequest, pullRequestAction, stashUser, this.repositoryService, this.propertiesService,
+    prnfsNotification, variables, this.securityService);
+ }
+
+ private PrnfsSettings getSettings() throws Exception {
+  final PrnfsSettings settings = this.securityService.withPermission(ADMIN, "Getting config").call(
+    new Operation<PrnfsSettings, Exception>() {
+     @Override
+     public PrnfsSettings perform() throws Exception {
+      return getPrnfsSettings(ManualResource.this.pluginSettingsFactory.createGlobalSettings());
+     }
+    });
+  return settings;
  }
 
  private Map<PrnfsVariable, Supplier<String>> getVariables(final PrnfsSettings settings, final String formIdentifier) {
@@ -159,35 +181,15 @@ public class ManualResource {
   return variables;
  }
 
- private PrnfsRenderer getRenderer(final PullRequest pullRequest, PrnfsNotification prnfsNotification,
-   PrnfsPullRequestAction pullRequestAction, Map<PrnfsVariable, Supplier<String>> variables, HttpServletRequest request) {
-  StashUser stashUser = userService.getUserBySlug(userManager.getRemoteUser(request).getUsername());
-  return new PrnfsRenderer(pullRequest, pullRequestAction, stashUser, repositoryService, propertiesService,
-    prnfsNotification, variables);
- }
-
- static boolean allowedUseButton(PrnfsButton candidate, boolean isAdmin, boolean isSystemAdmin) {
-  if (candidate.getVisibility().equals(EVERYONE)) {
-   return TRUE;
-  }
-  if (isSystemAdmin && systemAdminOk.contains(candidate.getVisibility())) {
-   return TRUE;
-  } else if (isAdmin && adminOk.contains(candidate.getVisibility())) {
-   return TRUE;
-  } else if (candidate.getVisibility().equals(EVERYONE)) {
-   return TRUE;
+ private boolean triggeredByAction(PrnfsSettings settings, PrnfsPullRequestAction pullRequestAction,
+   PullRequest pullRequest, Map<PrnfsVariable, Supplier<String>> variables, HttpServletRequest request) {
+  for (PrnfsNotification prnfsNotification : settings.getNotifications()) {
+   PrnfsRenderer renderer = getRenderer(pullRequest, prnfsNotification, pullRequestAction, variables, request);
+   if (this.prnfsPullRequestEventListener.notificationTriggeredByAction(prnfsNotification, pullRequestAction, renderer,
+     pullRequest)) {
+    return TRUE;
+   }
   }
   return FALSE;
- }
-
- private PrnfsSettings getSettings() throws Exception {
-  final PrnfsSettings settings = securityService.withPermission(ADMIN, "Getting config").call(
-    new Operation<PrnfsSettings, Exception>() {
-     @Override
-     public PrnfsSettings perform() throws Exception {
-      return getPrnfsSettings(pluginSettingsFactory.createGlobalSettings());
-     }
-    });
-  return settings;
  }
 }

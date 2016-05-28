@@ -99,6 +99,8 @@ public class PrnfsTestBuilder {
 
  private final ConfigResource configResource;
 
+ private EscalatedSecurityContext escalatedSecurityContext;
+
  private PrnfsPullRequestEventListener listener;
 
  private final ManualResource manualResouce;
@@ -107,9 +109,15 @@ public class PrnfsTestBuilder {
 
  private final PluginSettingsFactory pluginSettingsFactory;
 
- private final RepositoryService repositoryService;
+ private List<AdminFormError> postResponses;
 
  private final ApplicationPropertiesService propertiesService;
+
+ private PullRequest pullRequest;
+
+ private PullRequestService pullRequestService;
+
+ private final RepositoryService repositoryService;
 
  private HttpServletRequest request;
 
@@ -123,90 +131,85 @@ public class PrnfsTestBuilder {
 
  private final UserProfile userProfile;
 
- private List<AdminFormError> postResponses;
-
- private EscalatedSecurityContext escalatedSecurityContext;
-
- private PullRequestService pullRequestService;
-
- private PullRequest pullRequest;
-
  private PrnfsTestBuilder() {
   fakeRandomCounter = 0L;
   fakeRandom(new FakeRandom());
-  pluginSettings = new PluginSettingsImpl();
-  userProfile = mock(UserProfile.class);
-  userKey = new UserKey("asd");
-  userManager = mock(UserManager.class);
-  pluginSettingsFactory = mock(PluginSettingsFactory.class);
-  repositoryService = mock(RepositoryService.class);
-  propertiesService = mock(ApplicationPropertiesService.class);
-  transactionTemplate = new TransactionTemplate() {
+  this.pluginSettings = new PluginSettingsImpl();
+  this.userProfile = mock(UserProfile.class);
+  this.userKey = new UserKey("asd");
+  this.userManager = mock(UserManager.class);
+  this.pluginSettingsFactory = mock(PluginSettingsFactory.class);
+  this.repositoryService = mock(RepositoryService.class);
+  this.propertiesService = mock(ApplicationPropertiesService.class);
+  this.transactionTemplate = new TransactionTemplate() {
    @Override
    public <T> T execute(TransactionCallback<T> action) {
     return action.doInTransaction();
    }
   };
-  when(pluginSettingsFactory.createGlobalSettings()).thenReturn(pluginSettings);
+  when(this.pluginSettingsFactory.createGlobalSettings()).thenReturn(this.pluginSettings);
   SecurityService securityService = mock(SecurityService.class);
-  escalatedSecurityContext = mock(EscalatedSecurityContext.class);
+  this.escalatedSecurityContext = mock(EscalatedSecurityContext.class);
   when(securityService.withPermission(Matchers.any(Permission.class), Matchers.anyString())).thenReturn(
-    escalatedSecurityContext);
-  configResource = new ConfigResource(userManager, pluginSettingsFactory, transactionTemplate, securityService);
-  pullRequestService = mock(PullRequestService.class);
-  listener = new PrnfsPullRequestEventListener(pluginSettingsFactory, repositoryService, propertiesService,
-    pullRequestService, new SyncExecutorService());
+    this.escalatedSecurityContext);
+  this.configResource = new ConfigResource(this.userManager, this.pluginSettingsFactory, this.transactionTemplate,
+    securityService);
+  this.pullRequestService = mock(PullRequestService.class);
+  this.listener = new PrnfsPullRequestEventListener(this.pluginSettingsFactory, this.repositoryService,
+    this.propertiesService, this.pullRequestService, new SyncExecutorService(), securityService);
   UserService userService = mock(UserService.class);
   withPullRequest(pullRequestEventBuilder().build().getPullRequest());
-  manualResouce = new ManualResource(userManager, userService, pluginSettingsFactory, pullRequestService, listener,
-    repositoryService, propertiesService, securityService);
+  this.manualResouce = new ManualResource(this.userManager, userService, this.pluginSettingsFactory,
+    this.pullRequestService, this.listener, this.repositoryService, this.propertiesService, securityService);
  }
 
  public PrnfsTestBuilder delete(String id) throws Exception {
-  configResource.delete(id, request);
+  this.configResource.delete(id, this.request);
+  return this;
+ }
+
+ public PrnfsTestBuilder didNotSendHeader(int index, String name) {
+  assertFalse(index + " " + name, toMap(this.urlInvokers.get(index).getHeaders()).containsKey(name));
   return this;
  }
 
  public PrnfsTestBuilder didNotSendHeaders() {
-  for (UrlInvoker u : urlInvokers) {
+  for (UrlInvoker u : this.urlInvokers) {
    assertTrue(toMap(u.getHeaders()).isEmpty());
   }
   return this;
  }
 
- public PrnfsTestBuilder didNotSendHeader(int index, String name) {
-  assertFalse(index + " " + name, toMap(urlInvokers.get(index).getHeaders()).containsKey(name));
-  return this;
+ public void didNotSendPostContentAt(int i) {
+  assertFalse(this.urlInvokers.get(i).shouldPostContent());
  }
 
- public PrnfsTestBuilder usedHeader(int index, String name, String value) {
-  Map<String, Header> headerMap = toMap(urlInvokers.get(index).getHeaders());
-  if (headerMap.containsKey(name)) {
-   assertEquals(index + " " + name, value, getHeaderValue(headerMap.get(name)));
-  } else {
-   fail(Joiner.on(", ").join(headerMap.keySet()));
+ public void didSendPostContentAt(int i, String string) {
+  assertTrue(this.urlInvokers.get(i).shouldPostContent());
+  assertEquals(string, this.urlInvokers.get(i).getPostContent().get());
+ }
+
+ public RepositoryService getRepositoryService() {
+  return this.repositoryService;
+ }
+
+ public PrnfsTestBuilder hasButtonsEnabled(final String... formIdentifiers) throws Exception {
+  Integer repositoryId = 0;
+  Long pullRequestId = 0L;
+  List<PrnfsButton> enabledButtons = new Gson().fromJson(
+    (String) this.manualResouce.get(this.request, repositoryId, pullRequestId).getEntity(),
+    new TypeToken<List<PrnfsButton>>() {
+    }.getType());
+  assertEquals(formIdentifiers.length, enabledButtons.size());
+  for (final String formIdentifier : formIdentifiers) {
+   assertTrue(tryFind(enabledButtons, new Predicate<PrnfsButton>() {
+    @Override
+    public boolean apply(PrnfsButton input) {
+     return input.getFormIdentifier().equals(formIdentifier);
+    }
+   }).isPresent());
   }
   return this;
- }
-
- private Map<String, Header> toMap(List<Header> headers) {
-  return uniqueIndex(headers, new Function<Header, String>() {
-   @Override
-   public String apply(Header input) {
-    return input.getName();
-   }
-  });
- }
-
- @SuppressWarnings("unchecked")
- private Map<String, AdminFormValues> getAdminFormFields() throws Exception {
-  return uniqueIndex((List<AdminFormValues>) configResource.get(request).getEntity(),
-    new Function<AdminFormValues, String>() {
-     @Override
-     public String apply(AdminFormValues input) {
-      return find(input, predicate(AdminFormValues.FIELDS.FORM_IDENTIFIER.name())).get(VALUE);
-     }
-    });
  }
 
  public PrnfsTestBuilder hasFieldValueAt(AdminFormValues.FIELDS field, String value, String id) throws Exception {
@@ -217,6 +220,10 @@ public class PrnfsTestBuilder {
   }
   fail("Could not find " + field + " " + value + " at " + id);
   return this;
+ }
+
+ public PrnfsTestBuilder hasNoButtonsEnabled() throws Exception {
+  return hasButtonsEnabled();
  }
 
  public PrnfsTestBuilder hasNoneEmptyFieldAt(AdminFormValues.FIELDS field, String id) throws Exception {
@@ -240,7 +247,7 @@ public class PrnfsTestBuilder {
 
  public void hasValidationError(AdminFormValues.FIELDS field, String value) {
   logger.info("Looking for " + field + "=" + value);
-  for (final AdminFormError e : postResponses) {
+  for (final AdminFormError e : this.postResponses) {
    if (e.getField().equals(field.name())) {
     assertEquals(value, e.getValue());
     return;
@@ -250,24 +257,8 @@ public class PrnfsTestBuilder {
   fail(field + " " + value + " not found");
  }
 
- public PrnfsTestBuilder invokedNoUrl() {
-  assertEquals(0, urlInvokers.size());
-  return this;
- }
-
- public PrnfsTestBuilder invokedOnlyUrl(String url) {
-  assertEquals(1, urlInvokers.size());
-  assertEquals(url, urlInvokers.get(0).getUrlParam());
-  return this;
- }
-
- public PrnfsTestBuilder invokedUrl(int index, String url) {
-  assertEquals(url, urlInvokers.get(index).getUrlParam());
-  return this;
- }
-
  public PrnfsTestBuilder invokedMethod(HTTP_METHOD method) {
-  for (UrlInvoker u : urlInvokers) {
+  for (UrlInvoker u : this.urlInvokers) {
    if (method.equals(u.getMethod())) {
     return this;
    }
@@ -276,29 +267,49 @@ public class PrnfsTestBuilder {
   return this;
  }
 
- public PrnfsTestBuilder isLoggedInAsAdmin() {
-  when(userProfile.getUserKey()).thenReturn(userKey);
-  when(userManager.isSystemAdmin(Matchers.any(UserKey.class))).thenReturn(TRUE);
-  when(userManager.getRemoteUser(Matchers.any(HttpServletRequest.class))).thenReturn(userProfile);
+ public PrnfsTestBuilder invokedNoUrl() {
+  assertEquals(0, this.urlInvokers.size());
   return this;
  }
 
- public PrnfsTestBuilder withBaseUrl(String baseUrl) throws Exception {
-  when(propertiesService.getBaseUrl()).thenReturn(new URI(baseUrl));
+ public PrnfsTestBuilder invokedOnlyUrl(String url) {
+  assertEquals(1, this.urlInvokers.size());
+  assertEquals(url, this.urlInvokers.get(0).getUrlParam());
   return this;
+ }
+
+ public PrnfsTestBuilder invokedUrl(int index, String url) {
+  assertEquals(url, this.urlInvokers.get(index).getUrlParam());
+  return this;
+ }
+
+ public PrnfsTestBuilder isConflicting() {
+  return isConflicting(TRUE);
+ }
+
+ public PrnfsTestBuilder isLoggedInAsAdmin() {
+  when(this.userProfile.getUserKey()).thenReturn(this.userKey);
+  when(this.userManager.isSystemAdmin(Matchers.any(UserKey.class))).thenReturn(TRUE);
+  when(this.userManager.getRemoteUser(Matchers.any(HttpServletRequest.class))).thenReturn(this.userProfile);
+  return this;
+ }
+
+ public PrnfsTestBuilder isNotConflicting() {
+  return isConflicting(FALSE);
  }
 
  public PrnfsTestBuilder isNotLoggedInAsAdmin() {
-  when(userProfile.getUserKey()).thenReturn(null);
+  when(this.userProfile.getUserKey()).thenReturn(null);
   return this;
  }
 
  public PrnfsTestBuilder store() throws Exception {
-  postResponses = newArrayList();
-  for (final AdminFormValues adminFormValues : adminFormValuesMap.values()) {
-   final Optional<Object> postResponseOpt = fromNullable(configResource.post(adminFormValues, request).getEntity());
+  this.postResponses = newArrayList();
+  for (final AdminFormValues adminFormValues : this.adminFormValuesMap.values()) {
+   final Optional<Object> postResponseOpt = fromNullable(this.configResource.post(adminFormValues, this.request)
+     .getEntity());
    if (postResponseOpt.isPresent()) {
-    postResponses.add((AdminFormError) postResponseOpt.get());
+    this.postResponses.add((AdminFormError) postResponseOpt.get());
    }
   }
   return this;
@@ -308,62 +319,94 @@ public class PrnfsTestBuilder {
   setInvoker(new Invoker() {
    @Override
    public void invoke(UrlInvoker urlInvoker) {
-    urlInvokers.add(urlInvoker);
+    PrnfsTestBuilder.this.urlInvokers.add(urlInvoker);
    }
   });
-  listener.handleEvent(event);
-  return this;
- }
-
- public PrnfsTestBuilder withPullRequest(PullRequest pullRequest) {
-  this.pullRequest = pullRequest;
+  this.listener.handleEvent(event);
   return this;
  }
 
  public PrnfsTestBuilder triggerButton(String formIdentifier) throws Exception {
-  when(pullRequestService.getById(anyInt(), anyLong())).thenReturn(pullRequest);
+  when(this.pullRequestService.getById(anyInt(), anyLong())).thenReturn(this.pullRequest);
   try {
-   PrnfsSettings prnfsSettings = getPrnfsSettings(pluginSettings);
-   when(escalatedSecurityContext.call(Matchers.any(Operation.class))).thenReturn(prnfsSettings);
+   PrnfsSettings prnfsSettings = getPrnfsSettings(this.pluginSettings);
+   when(this.escalatedSecurityContext.call(Matchers.any(Operation.class))).thenReturn(prnfsSettings);
   } catch (Throwable e) {
    propagate(e);
   }
   setInvoker(new Invoker() {
    @Override
    public void invoke(UrlInvoker urlInvoker) {
-    urlInvokers.add(urlInvoker);
+    PrnfsTestBuilder.this.urlInvokers.add(urlInvoker);
    }
   });
   Integer repositoryId = 0;
   Long pullRequestId = 0L;
-  manualResouce.post(request, repositoryId, pullRequestId, formIdentifier);
-  return this;
- }
-
- public PrnfsTestBuilder hasNoButtonsEnabled() throws Exception {
-  return hasButtonsEnabled();
- }
-
- public PrnfsTestBuilder hasButtonsEnabled(final String... formIdentifiers) throws Exception {
-  Integer repositoryId = 0;
-  Long pullRequestId = 0L;
-  List<PrnfsButton> enabledButtons = new Gson().fromJson(
-    (String) manualResouce.get(request, repositoryId, pullRequestId).getEntity(), new TypeToken<List<PrnfsButton>>() {
-    }.getType());
-  assertEquals(formIdentifiers.length, enabledButtons.size());
-  for (final String formIdentifier : formIdentifiers) {
-   assertTrue(tryFind(enabledButtons, new Predicate<PrnfsButton>() {
-    @Override
-    public boolean apply(PrnfsButton input) {
-     return input.getFormIdentifier().equals(formIdentifier);
-    }
-   }).isPresent());
-  }
+  this.manualResouce.post(this.request, repositoryId, pullRequestId, formIdentifier);
   return this;
  }
 
  public PullRequestEventBuilder triggerPullRequestEventBuilder() {
   return pullRequestEventBuilder(this);
+ }
+
+ public PrnfsTestBuilder usedHeader(int index, String name, String value) {
+  Map<String, Header> headerMap = toMap(this.urlInvokers.get(index).getHeaders());
+  if (headerMap.containsKey(name)) {
+   assertEquals(index + " " + name, value, getHeaderValue(headerMap.get(name)));
+  } else {
+   fail(Joiner.on(", ").join(headerMap.keySet()));
+  }
+  return this;
+ }
+
+ public PrnfsTestBuilder usedNoProxy(int index) {
+  assertFalse(this.urlInvokers.get(index).shouldUseProxy());
+  return this;
+ }
+
+ public PrnfsTestBuilder usedNoProxyAuthentication(int index) {
+  assertFalse(this.urlInvokers.get(index).shouldAuthenticateProxy());
+  return this;
+ }
+
+ public PrnfsTestBuilder usedNoProxyPassword(int index) {
+  assertFalse(this.urlInvokers.get(index).getProxyPassword().isPresent());
+  assertFalse(this.urlInvokers.get(index).shouldAuthenticateProxy());
+  return this;
+ }
+
+ public PrnfsTestBuilder usedNoProxyUser(int index) {
+  assertFalse(this.urlInvokers.get(index).getProxyUser().isPresent());
+  assertFalse(this.urlInvokers.get(index).shouldAuthenticateProxy());
+  return this;
+ }
+
+ public PrnfsTestBuilder usedProxyHost(int index, String host) {
+  assertEquals(host, this.urlInvokers.get(index).getProxyHost().get());
+  return this;
+ }
+
+ public PrnfsTestBuilder usedProxyPassword(int i, String password) {
+  assertEquals(password, this.urlInvokers.get(i).getProxyPassword().get());
+  assertTrue(this.urlInvokers.get(i).shouldAuthenticateProxy());
+  return this;
+ }
+
+ public PrnfsTestBuilder usedProxyPort(int index, Integer port) {
+  assertEquals(port, this.urlInvokers.get(index).getProxyPort());
+  return this;
+ }
+
+ public PrnfsTestBuilder usedProxyUser(int i, String user) {
+  assertEquals(user, this.urlInvokers.get(i).getProxyUser().get());
+  assertTrue(this.urlInvokers.get(i).shouldAuthenticateProxy());
+  return this;
+ }
+
+ public PrnfsTestBuilder withBaseUrl(String baseUrl) throws Exception {
+  when(this.propertiesService.getBaseUrl()).thenReturn(new URI(baseUrl));
+  return this;
  }
 
  public PrnfsTestBuilder withNotification(AdminFormValues adminFormValues) {
@@ -372,66 +415,14 @@ public class PrnfsTestBuilder {
   if (existing.isPresent()) {
    this.adminFormValuesMap.put(existing.get().get(VALUE), adminFormValues);
   } else {
-   this.adminFormValuesMap.put((adminFormValuesMapCounter++) + "", adminFormValues);
+   this.adminFormValuesMap.put((this.adminFormValuesMapCounter++) + "", adminFormValues);
   }
   return this;
  }
 
- public void didNotSendPostContentAt(int i) {
-  assertFalse(urlInvokers.get(i).shouldPostContent());
- }
-
- public void didSendPostContentAt(int i, String string) {
-  assertTrue(urlInvokers.get(i).shouldPostContent());
-  assertEquals(string, urlInvokers.get(i).getPostContent().get());
- }
-
- public PrnfsTestBuilder usedNoProxy(int index) {
-  assertFalse(urlInvokers.get(index).shouldUseProxy());
+ public PrnfsTestBuilder withPullRequest(PullRequest pullRequest) {
+  this.pullRequest = pullRequest;
   return this;
- }
-
- public PrnfsTestBuilder usedNoProxyUser(int index) {
-  assertFalse(urlInvokers.get(index).getProxyUser().isPresent());
-  assertFalse(urlInvokers.get(index).shouldAuthenticateProxy());
-  return this;
- }
-
- public PrnfsTestBuilder usedNoProxyPassword(int index) {
-  assertFalse(urlInvokers.get(index).getProxyPassword().isPresent());
-  assertFalse(urlInvokers.get(index).shouldAuthenticateProxy());
-  return this;
- }
-
- public PrnfsTestBuilder usedNoProxyAuthentication(int index) {
-  assertFalse(urlInvokers.get(index).shouldAuthenticateProxy());
-  return this;
- }
-
- public PrnfsTestBuilder usedProxyHost(int index, String host) {
-  assertEquals(host, urlInvokers.get(index).getProxyHost().get());
-  return this;
- }
-
- public PrnfsTestBuilder usedProxyPort(int index, Integer port) {
-  assertEquals(port, urlInvokers.get(index).getProxyPort());
-  return this;
- }
-
- public PrnfsTestBuilder usedProxyUser(int i, String user) {
-  assertEquals(user, urlInvokers.get(i).getProxyUser().get());
-  assertTrue(urlInvokers.get(i).shouldAuthenticateProxy());
-  return this;
- }
-
- public PrnfsTestBuilder usedProxyPassword(int i, String password) {
-  assertEquals(password, urlInvokers.get(i).getProxyPassword().get());
-  assertTrue(urlInvokers.get(i).shouldAuthenticateProxy());
-  return this;
- }
-
- public RepositoryService getRepositoryService() {
-  return repositoryService;
  }
 
  public PrnfsTestBuilder withResponse(final String url, final String response) {
@@ -446,18 +437,30 @@ public class PrnfsTestBuilder {
   return this;
  }
 
- public PrnfsTestBuilder isConflicting() {
-  return isConflicting(TRUE);
- }
-
- public PrnfsTestBuilder isNotConflicting() {
-  return isConflicting(FALSE);
+ @SuppressWarnings("unchecked")
+ private Map<String, AdminFormValues> getAdminFormFields() throws Exception {
+  return uniqueIndex((List<AdminFormValues>) this.configResource.get(this.request).getEntity(),
+    new Function<AdminFormValues, String>() {
+     @Override
+     public String apply(AdminFormValues input) {
+      return find(input, predicate(AdminFormValues.FIELDS.FORM_IDENTIFIER.name())).get(VALUE);
+     }
+    });
  }
 
  private PrnfsTestBuilder isConflicting(Boolean conflicting) {
   PullRequestMergeability value = mock(PullRequestMergeability.class);
   when(value.isConflicted()).thenReturn(conflicting);
-  when(pullRequestService.canMerge(anyInt(), anyInt())).thenReturn(value);
+  when(this.pullRequestService.canMerge(anyInt(), anyInt())).thenReturn(value);
   return this;
+ }
+
+ private Map<String, Header> toMap(List<Header> headers) {
+  return uniqueIndex(headers, new Function<Header, String>() {
+   @Override
+   public String apply(Header input) {
+    return input.getName();
+   }
+  });
  }
 }

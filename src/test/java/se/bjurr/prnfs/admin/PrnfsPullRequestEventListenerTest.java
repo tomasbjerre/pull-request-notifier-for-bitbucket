@@ -65,13 +65,10 @@ import static se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable.PULL_REQUEST_A
 import static se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable.PULL_REQUEST_AUTHOR_SLUG;
 import static se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable.PULL_REQUEST_COMMENT_TEXT;
 import static se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable.PULL_REQUEST_FROM_BRANCH;
-import static se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable.PULL_REQUEST_FROM_SSH_CLONE_URL;
 import static se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable.PULL_REQUEST_ID;
 import static se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable.PULL_REQUEST_TO_ID;
 import static se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable.PULL_REQUEST_URL;
 import static se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable.PULL_REQUEST_VERSION;
-import static se.bjurr.prnfs.listener.PrnfsRenderer.REPO_PROTOCOL.http;
-import static se.bjurr.prnfs.listener.PrnfsRenderer.REPO_PROTOCOL.ssh;
 import static se.bjurr.prnfs.listener.UrlInvoker.HTTP_METHOD.DELETE;
 import static se.bjurr.prnfs.listener.UrlInvoker.HTTP_METHOD.GET;
 import static se.bjurr.prnfs.listener.UrlInvoker.HTTP_METHOD.POST;
@@ -83,9 +80,6 @@ import java.util.regex.Pattern;
 
 import org.junit.Test;
 
-import se.bjurr.prnfs.admin.utils.PrnfsTestBuilder;
-import se.bjurr.prnfs.admin.utils.PullRequestEventBuilder;
-import se.bjurr.prnfs.admin.utils.PullRequestRefBuilder;
 import se.bjurr.prnfs.listener.PrnfsPullRequestAction;
 import se.bjurr.prnfs.listener.PrnfsRenderer.PrnfsVariable;
 
@@ -101,6 +95,50 @@ public class PrnfsPullRequestEventListenerTest {
   for (final AdminFormValues.FIELDS field : AdminFormValues.FIELDS.values()) {
    assertTrue(field.name() + " in " + resource.toString(), adminVmContent.contains("name=\"" + field.name() + "\""));
   }
+ }
+
+ @Test
+ public void testThatAllURLsMatchingEventsAreTriggered() throws Exception {
+  prnfsTestBuilder() //
+    .isLoggedInAsAdmin() //
+    .withNotification( //
+      notificationBuilder() //
+        .withFieldValue(url, "http://bjurr.se/${" + PULL_REQUEST_ACTION.name() + "}") //
+        .withFieldValue(events, RESCOPED_FROM) //
+        .build() //
+    ) //
+    .store() //
+    .withNotification( //
+      notificationBuilder() //
+        .withFieldValue(url, "http://bjurr.se/${" + PULL_REQUEST_ACTION.name() + "}") //
+        .withFieldValue(events, RESCOPED_TO) //
+        .build() //
+    ) //
+    .store() //
+    .withNotification( //
+      notificationBuilder() //
+        .withFieldValue(url, "http://bjurr.se/${" + PULL_REQUEST_ACTION.name() + "}") //
+        .withFieldValue(events, RESCOPED_FROM) //
+        .withFieldValue(events, RESCOPED_TO) //
+        .build() //
+    ) //
+    .store() //
+    .trigger( //
+      pullRequestEventBuilder() //
+        .withFromRef( //
+          pullRequestRefBuilder() //
+            .withHash("fromHash") //
+        ) //
+        .withToRef( //
+          pullRequestRefBuilder() //
+            .withHash("toHash") //
+        ) //
+        .withPullRequestAction(RESCOPED) //
+        .build() //
+    ) //
+    .invokedUrl(0, "http://bjurr.se/RESCOPED_FROM") //
+    .invokedUrl(1, "http://bjurr.se/RESCOPED_TO") //
+    .invokedUrl(2, "http://bjurr.se/RESCOPED_FROM");
  }
 
  @Test
@@ -170,156 +208,6 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatClosedPullRequestsAreNotIgnoredForMergedEvent() throws Exception {
-  prnfsTestBuilder() //
-    .isLoggedInAsAdmin() //
-    .withNotification( //
-      notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/") //
-        .withFieldValue(events, MERGED.name()) //
-        .build() //
-    ) //
-    .store() //
-    .trigger( //
-      pullRequestEventBuilder() //
-        .beingClosed() //
-        .withToRef( //
-          pullRequestRefBuilder() //
-        ) //
-        .withPullRequestAction(MERGED) //
-        .build() //
-    ) //
-    .invokedOnlyUrl("http://bjurr.se/");
- }
-
- @Test
- public void testThatClosedPullRequestsAreIgnoredForCommentEvent() throws Exception {
-  prnfsTestBuilder() //
-    .isLoggedInAsAdmin() //
-    .withNotification( //
-      notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/") //
-        .withFieldValue(events, COMMENTED.name()) //
-        .build() //
-    ) //
-    .store() //
-    .trigger( //
-      pullRequestEventBuilder() //
-        .beingClosed() //
-        .withToRef( //
-          pullRequestRefBuilder() //
-        ) //
-        .withPullRequestAction(COMMENTED) //
-        .build() //
-    ) //
-    .invokedNoUrl();
- }
-
- @Test
- public void testThatAUrlWithoutVariablesCanBeInvoked() throws Exception {
-  prnfsTestBuilder() //
-    .isLoggedInAsAdmin() //
-    .withNotification( //
-      notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/") //
-        .withFieldValue(events, OPENED.name()) //
-        .build() //
-    ) //
-    .store() //
-    .trigger( //
-      pullRequestEventBuilder() //
-        .withPullRequestAction(OPENED) //
-        .build() //
-    ) //
-    .invokedUrl(0, "http://bjurr.se/");
- }
-
- @Test
- public void testThatAUrlWithVariablesFromAndToCanBeInvoked() throws Exception {
-  for (final PrnfsVariable prnfsVariable : PrnfsVariable.values()) {
-   if (!prnfsVariable.name().contains("_FROM_") && !prnfsVariable.name().contains("_TO_")) {
-    continue;
-   }
-   PrnfsTestBuilder builder = prnfsTestBuilder() //
-     .isLoggedInAsAdmin() //
-     .withNotification( //
-       notificationBuilder() //
-         .withFieldValue(FORM_IDENTIFIER, "The Button") //
-         .withFieldValue(FORM_TYPE, BUTTON_CONFIG_FORM.name()) //
-         .withFieldValue(button_title, "The Button Text") //
-         .withFieldValue(button_visibility, EVERYONE.name()) //
-         .build() //
-     ) //
-     .withNotification( //
-       notificationBuilder() //
-         .withFieldValue(url, "http://bjurr.se/${" + prnfsVariable.name() + "}${" + BUTTON_TRIGGER_TITLE.name() + "}") //
-         .withFieldValue(events, OPENED.name()) //
-         .withFieldValue(events, BUTTON_TRIGGER) //
-         .build() //
-     ) //
-     .store();
-   PullRequestEventBuilder eventBuilder = builder.triggerPullRequestEventBuilder();
-
-   PullRequestRefBuilder refBuilder;
-   if (prnfsVariable.name().contains("_FROM_")) {
-    refBuilder = eventBuilder.withFromRefPullRequestRefBuilder();
-   } else {
-    refBuilder = eventBuilder.withToRefPullRequestRefBuilder();
-   }
-
-   PullRequestEventBuilder pullRequestEventBuilder = refBuilder //
-     .withHash("10") //
-     .withId("10") //
-     .withProjectId(10) //
-     .withProjectKey("10") //
-     .withRepositoryId(10) //
-     .withRepositoryName("10") //
-     .withRepositorySlug("10") //
-     .withCloneUrl(http, "10") //
-     .withCloneUrl(ssh, "10") //
-     .withDisplayId("10") //
-     .build() //
-     .withPullRequestId(10L);
-   pullRequestEventBuilder //
-     .withPullRequestAction(OPENED) //
-     .triggerEvent() //
-     .invokedOnlyUrl("http://bjurr.se/10");
-
-   builder //
-     .withPullRequest( //
-       pullRequestEventBuilder //
-         .build() //
-         .getPullRequest() //
-     ) //
-     .triggerButton("The Button") //
-     .invokedUrl(1, "http://bjurr.se/10The+Button+Text");
-  }
- }
-
- @Test
- public void testThatRepoUrlReturnsEmptyIfThereIsNotUrlWithThatProtocol() throws Exception {
-  prnfsTestBuilder() //
-    .isLoggedInAsAdmin() //
-    .withNotification( //
-      notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/${" + PULL_REQUEST_FROM_SSH_CLONE_URL + "}") //
-        .withFieldValue(events, OPENED.name()) //
-        .build() //
-    ) //
-    .store() //
-    .trigger( //
-      pullRequestEventBuilder() //
-        .withFromRef( //
-          pullRequestRefBuilder() //
-        ) //
-        .withPullRequestId(10L) //
-        .withPullRequestAction(OPENED) //
-        .build() //
-    ) //
-    .invokedUrl(0, "http://bjurr.se/");
- }
-
- @Test
  public void testThatAUrlWithCommentVariableHasSpacesReplaced() throws Exception {
   prnfsTestBuilder() //
     .isLoggedInAsAdmin() //
@@ -340,28 +228,22 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatAUrlWithVariableFromBranchCanBeInvokedWhenBranchIdContainsSlashes() throws Exception {
+ public void testThatAUrlWithoutVariablesCanBeInvoked() throws Exception {
   prnfsTestBuilder() //
     .isLoggedInAsAdmin() //
     .withNotification( //
       notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/${" + PULL_REQUEST_FROM_BRANCH.name() + "}") //
+        .withFieldValue(url, "http://bjurr.se/") //
         .withFieldValue(events, OPENED.name()) //
         .build() //
     ) //
     .store() //
     .trigger( //
       pullRequestEventBuilder() //
-        .withFromRef( //
-          pullRequestRefBuilder() //
-            .withId("refs/heads/feature/branchmodmerge") //
-            .withDisplayId("feature/branchmodmerge") //
-        ) //
-        .withPullRequestId(10L) //
         .withPullRequestAction(OPENED) //
         .build() //
     ) //
-    .invokedUrl(0, "http://bjurr.se/feature%2Fbranchmodmerge");
+    .invokedUrl(0, "http://bjurr.se/");
  }
 
  @Test
@@ -387,6 +269,31 @@ public class PrnfsPullRequestEventListenerTest {
         .build() //
     ) //
     .invokedUrl(0, "http://bjurr.se/branchmodmerge");
+ }
+
+ @Test
+ public void testThatAUrlWithVariableFromBranchCanBeInvokedWhenBranchIdContainsSlashes() throws Exception {
+  prnfsTestBuilder() //
+    .isLoggedInAsAdmin() //
+    .withNotification( //
+      notificationBuilder() //
+        .withFieldValue(url, "http://bjurr.se/${" + PULL_REQUEST_FROM_BRANCH.name() + "}") //
+        .withFieldValue(events, OPENED.name()) //
+        .build() //
+    ) //
+    .store() //
+    .trigger( //
+      pullRequestEventBuilder() //
+        .withFromRef( //
+          pullRequestRefBuilder() //
+            .withId("refs/heads/feature/branchmodmerge") //
+            .withDisplayId("feature/branchmodmerge") //
+        ) //
+        .withPullRequestId(10L) //
+        .withPullRequestAction(OPENED) //
+        .build() //
+    ) //
+    .invokedUrl(0, "http://bjurr.se/feature%2Fbranchmodmerge");
  }
 
  @Test
@@ -435,14 +342,15 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatPostContentIsNotSentIfMethodIsNotSet() throws Exception {
+ public void testThatBasicAuthenticationHeaderIsNotSentIfThePasswordContainsOnlySpace() throws Exception {
   prnfsTestBuilder() //
     .isLoggedInAsAdmin() //
     .withNotification( //
       notificationBuilder() //
         .withFieldValue(url, "http://bjurr.se/") //
-        .withFieldValue(post_content, "should not be sent") //
         .withFieldValue(events, OPENED.name()) //
+        .withFieldValue(user, "theuser") //
+        .withFieldValue(password, " ") //
         .build() //
     ) //
     .store() //
@@ -452,20 +360,19 @@ public class PrnfsPullRequestEventListenerTest {
         .build() //
     ) //
     .invokedUrl(0, "http://bjurr.se/") //
-    .invokedMethod(GET) //
-    .didNotSendPostContentAt(0);
+    .didNotSendHeaders();
  }
 
  @Test
- public void testThatPostContentIsNotSentIfMethodIsPOSTButThereIsNotPostContent() throws Exception {
+ public void testThatBasicAuthenticationHeaderIsNotSentIfThereIsNoPassword() throws Exception {
   prnfsTestBuilder() //
     .isLoggedInAsAdmin() //
     .withNotification( //
       notificationBuilder() //
         .withFieldValue(url, "http://bjurr.se/") //
         .withFieldValue(events, OPENED.name()) //
-        .withFieldValue(post_content, " ") //
-        .withFieldValue(method, "POST") //
+        .withFieldValue(user, "theuser") //
+        .withFieldValue(password, "") //
         .build() //
     ) //
     .store() //
@@ -475,20 +382,19 @@ public class PrnfsPullRequestEventListenerTest {
         .build() //
     ) //
     .invokedUrl(0, "http://bjurr.se/") //
-    .invokedMethod(POST) //
-    .didNotSendPostContentAt(0);
+    .didNotSendHeaders();
  }
 
  @Test
- public void testThatPostContentIsNotSentIfMethodIsGETAndThereIsPostContent() throws Exception {
+ public void testThatBasicAuthenticationHeaderIsNotSentIfThereIsNoUser() throws Exception {
   prnfsTestBuilder() //
     .isLoggedInAsAdmin() //
     .withNotification( //
       notificationBuilder() //
         .withFieldValue(url, "http://bjurr.se/") //
         .withFieldValue(events, OPENED.name()) //
-        .withFieldValue(post_content, "some content") //
-        .withFieldValue(method, GET.name()) //
+        .withFieldValue(user, "") //
+        .withFieldValue(password, "thepassword") //
         .build() //
     ) //
     .store() //
@@ -498,20 +404,19 @@ public class PrnfsPullRequestEventListenerTest {
         .build() //
     ) //
     .invokedUrl(0, "http://bjurr.se/") //
-    .invokedMethod(GET) //
-    .didNotSendPostContentAt(0);
+    .didNotSendHeaders();
  }
 
  @Test
- public void testThatPostContentIsNotSentIfMethodIsDELETEAndThereIsPostContent() throws Exception {
+ public void testThatBasicAuthenticationHeaderIsNotSentIfTheUserContainsOnlySpace() throws Exception {
   prnfsTestBuilder() //
     .isLoggedInAsAdmin() //
     .withNotification( //
       notificationBuilder() //
         .withFieldValue(url, "http://bjurr.se/") //
         .withFieldValue(events, OPENED.name()) //
-        .withFieldValue(post_content, "some content") //
-        .withFieldValue(method, "DELETE") //
+        .withFieldValue(user, " ") //
+        .withFieldValue(password, "thepassword") //
         .build() //
     ) //
     .store() //
@@ -521,20 +426,23 @@ public class PrnfsPullRequestEventListenerTest {
         .build() //
     ) //
     .invokedUrl(0, "http://bjurr.se/") //
-    .invokedMethod(DELETE) //
-    .didNotSendPostContentAt(0);
+    .didNotSendHeaders();
  }
 
  @Test
- public void testThatPostContentIsSentIfMethodIsPOSTAndThereIsPostContent() throws Exception {
+ public void testThatBasicAuthenticationHeaderIsSentAlongWithCustomHeaders() throws Exception {
   prnfsTestBuilder() //
     .isLoggedInAsAdmin() //
     .withNotification( //
       notificationBuilder() //
         .withFieldValue(url, "http://bjurr.se/") //
         .withFieldValue(events, OPENED.name()) //
-        .withFieldValue(post_content, "some content") //
-        .withFieldValue(method, "POST") //
+        .withFieldValue(user, "theuser") //
+        .withFieldValue(password, "thepassword") //
+        .withFieldValue(header_name, "CustomHeader1") //
+        .withFieldValue(header_value, "custom value1") //
+        .withFieldValue(header_name, "CustomHeader2") //
+        .withFieldValue(header_value, "theuser:thepassword") //
         .build() //
     ) //
     .store() //
@@ -544,19 +452,21 @@ public class PrnfsPullRequestEventListenerTest {
         .build() //
     ) //
     .invokedUrl(0, "http://bjurr.se/") //
-    .didSendPostContentAt(0, "some content");
+    .usedHeader(0, AUTHORIZATION, "Basic dGhldXNlcjp0aGVwYXNzd29yZA==") //
+    .usedHeader(0, "CustomHeader1", "custom value1") //
+    .usedHeader(0, "CustomHeader2", "theuser:thepassword");
  }
 
  @Test
- public void testThatPostContentIsSentIfMethodIsPUTAndThereIsPostContent() throws Exception {
+ public void testThatBasicAuthenticationHeaderIsSentIfThereIsAUser() throws Exception {
   prnfsTestBuilder() //
     .isLoggedInAsAdmin() //
     .withNotification( //
       notificationBuilder() //
         .withFieldValue(url, "http://bjurr.se/") //
         .withFieldValue(events, OPENED.name()) //
-        .withFieldValue(post_content, "some content") //
-        .withFieldValue(method, "PUT") //
+        .withFieldValue(user, "theuser") //
+        .withFieldValue(password, "thepassword") //
         .build() //
     ) //
     .store() //
@@ -566,29 +476,132 @@ public class PrnfsPullRequestEventListenerTest {
         .build() //
     ) //
     .invokedUrl(0, "http://bjurr.se/") //
-    .didSendPostContentAt(0, "some content");
+    .usedHeader(0, AUTHORIZATION, "Basic dGhldXNlcjp0aGVwYXNzd29yZA==");
  }
 
  @Test
- public void testThatPostContentIsSentAndRenderedIfMethodIsPOSTAndThereIsPostContent() throws Exception {
+ public void testThatButtonCanBeUsedForTriggeringEvent() throws Exception {
+  prnfsTestBuilder() //
+    .isLoggedInAsAdmin() //
+    .withNotification( //
+      notificationBuilder() //
+        .withFieldValue(url, "http://bjurr.se/${" + BUTTON_TRIGGER_TITLE + "}") //
+        .withFieldValue(events, BUTTON_TRIGGER) //
+        .withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()) //
+        .build() //
+    ) //
+    .store() //
+    .withNotification( //
+      notificationBuilder() //
+        .withFieldValue(FORM_IDENTIFIER, "Button Form") //
+        .withFieldValue(FORM_TYPE, BUTTON_CONFIG_FORM.name()) //
+        .withFieldValue(button_title, "Trigger notification") //
+        .withFieldValue(button_visibility, EVERYONE.name()) //
+        .build() //
+    ) //
+    .store() //
+    .triggerButton("Button Form") //
+    .invokedOnlyUrl("http://bjurr.se/Trigger+notification") //
+    .hasButtonsEnabled("Button Form");
+ }
+
+ @Test
+ public void testThatButtonIsHiddenIfNoConfiguredNotificationForItWhenNotificationSetToButtonTriggered()
+   throws Exception {
+  prnfsTestBuilder() //
+    .isLoggedInAsAdmin() //
+    .withNotification( //
+      notificationBuilder() //
+        .withFieldValue(url, "http://bjurr.se/${" + BUTTON_TRIGGER_TITLE + "}") //
+        .withFieldValue(events, BUTTON_TRIGGER) //
+        .withFieldValue(filter_string, "${" + BUTTON_TRIGGER_TITLE + "}") //
+        .withFieldValue(filter_regexp, "123") //
+        .withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()) //
+        .build() //
+    ) //
+    .store() //
+    .withNotification( //
+      notificationBuilder() //
+        .withFieldValue(FORM_IDENTIFIER, "Button Form") //
+        .withFieldValue(FORM_TYPE, BUTTON_CONFIG_FORM.name()) //
+        .withFieldValue(button_title, "Trigger notification") //
+        .withFieldValue(button_visibility, EVERYONE.name()) //
+        .build() //
+    ) //
+    .store() //
+    .triggerButton("Button Form") //
+    .hasNoButtonsEnabled();
+ }
+
+ @Test
+ public void testThatButtonIsHiddenIfNoConfiguredNotificationForItWhenNotificationSetToOpened() throws Exception {
+  prnfsTestBuilder() //
+    .isLoggedInAsAdmin() //
+    .withNotification( //
+      notificationBuilder() //
+        .withFieldValue(url, "http://bjurr.se/${" + BUTTON_TRIGGER_TITLE + "}") //
+        .withFieldValue(events, OPENED.name()) //
+        .withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()) //
+        .build() //
+    ) //
+    .store() //
+    .withNotification( //
+      notificationBuilder() //
+        .withFieldValue(FORM_IDENTIFIER, "Button Form") //
+        .withFieldValue(FORM_TYPE, BUTTON_CONFIG_FORM.name()) //
+        .withFieldValue(button_title, "Trigger notification") //
+        .withFieldValue(button_visibility, EVERYONE.name()) //
+        .build() //
+    ) //
+    .store() //
+    .triggerButton("Button Form") //
+    .hasNoButtonsEnabled();
+ }
+
+ @Test
+ public void testThatClosedPullRequestsAreIgnoredForCommentEvent() throws Exception {
   prnfsTestBuilder() //
     .isLoggedInAsAdmin() //
     .withNotification( //
       notificationBuilder() //
         .withFieldValue(url, "http://bjurr.se/") //
-        .withFieldValue(events, OPENED.name()) //
-        .withFieldValue(post_content, "some ${" + PULL_REQUEST_ACTION.name() + "} content") //
-        .withFieldValue(method, "POST") //
+        .withFieldValue(events, COMMENTED.name()) //
         .build() //
     ) //
     .store() //
     .trigger( //
       pullRequestEventBuilder() //
-        .withPullRequestAction(OPENED) //
+        .beingClosed() //
+        .withToRef( //
+          pullRequestRefBuilder() //
+        ) //
+        .withPullRequestAction(COMMENTED) //
         .build() //
     ) //
-    .invokedUrl(0, "http://bjurr.se/") //
-    .didSendPostContentAt(0, "some OPENED content");
+    .invokedNoUrl();
+ }
+
+ @Test
+ public void testThatClosedPullRequestsAreNotIgnoredForMergedEvent() throws Exception {
+  prnfsTestBuilder() //
+    .isLoggedInAsAdmin() //
+    .withNotification( //
+      notificationBuilder() //
+        .withFieldValue(url, "http://bjurr.se/") //
+        .withFieldValue(events, MERGED.name()) //
+        .build() //
+    ) //
+    .store() //
+    .trigger( //
+      pullRequestEventBuilder() //
+        .beingClosed() //
+        .withToRef( //
+          pullRequestRefBuilder() //
+        ) //
+        .withPullRequestAction(MERGED) //
+        .build() //
+    ) //
+    .invokedOnlyUrl("http://bjurr.se/");
  }
 
  @Test
@@ -658,141 +671,107 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatBasicAuthenticationHeaderIsSentIfThereIsAUser() throws Exception {
-  prnfsTestBuilder() //
-    .isLoggedInAsAdmin() //
-    .withNotification( //
-      notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/") //
-        .withFieldValue(events, OPENED.name()) //
-        .withFieldValue(user, "theuser") //
-        .withFieldValue(password, "thepassword") //
-        .build() //
-    ) //
-    .store() //
-    .trigger( //
-      pullRequestEventBuilder() //
-        .withPullRequestAction(OPENED) //
-        .build() //
-    ) //
-    .invokedUrl(0, "http://bjurr.se/") //
-    .usedHeader(0, AUTHORIZATION, "Basic dGhldXNlcjp0aGVwYXNzd29yZA==");
+ public void testThatEventsAreMentionedInAdminGUI() throws IOException {
+  final URL resource = getResource("admin.vm");
+  final String adminVmContent = Resources.toString(resource, UTF_8);
+  for (final PrnfsPullRequestAction prnfsAction : PrnfsPullRequestAction.values()) {
+   assertTrue(prnfsAction.getName() + " in " + resource.toString(), adminVmContent.contains(prnfsAction.getName()));
+  }
  }
 
  @Test
- public void testThatBasicAuthenticationHeaderIsSentAlongWithCustomHeaders() throws Exception {
+ public void testThatEventTriggeredByButtonCanBeFiltered() throws Exception {
   prnfsTestBuilder() //
     .isLoggedInAsAdmin() //
     .withNotification( //
       notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/") //
-        .withFieldValue(events, OPENED.name()) //
-        .withFieldValue(user, "theuser") //
-        .withFieldValue(password, "thepassword") //
-        .withFieldValue(header_name, "CustomHeader1") //
-        .withFieldValue(header_value, "custom value1") //
-        .withFieldValue(header_name, "CustomHeader2") //
-        .withFieldValue(header_value, "theuser:thepassword") //
+        .withFieldValue(url, "http://bjurr.se/?123=${" + BUTTON_TRIGGER_TITLE + "}") //
+        .withFieldValue(events, BUTTON_TRIGGER) //
+        .withFieldValue(filter_string, "${" + BUTTON_TRIGGER_TITLE + "}") //
+        .withFieldValue(filter_regexp, "123") //
+        .withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name() //
+        ) //
         .build() //
     ) //
     .store() //
-    .trigger( //
-      pullRequestEventBuilder() //
-        .withPullRequestAction(OPENED) //
+    .withNotification( //
+      notificationBuilder() //
+        .withFieldValue(FORM_IDENTIFIER, "Button Form") //
+        .withFieldValue(FORM_TYPE, BUTTON_CONFIG_FORM.name()) //
+        .withFieldValue(button_title, "button text 123") //
+        .withFieldValue(button_visibility, EVERYONE.name()) //
         .build() //
     ) //
-    .invokedUrl(0, "http://bjurr.se/") //
-    .usedHeader(0, AUTHORIZATION, "Basic dGhldXNlcjp0aGVwYXNzd29yZA==") //
-    .usedHeader(0, "CustomHeader1", "custom value1") //
-    .usedHeader(0, "CustomHeader2", "theuser:thepassword");
+    .store() //
+    .triggerButton("Button Form") //
+    .invokedOnlyUrl("http://bjurr.se/?123=button+text+123");
  }
 
  @Test
- public void testThatBasicAuthenticationHeaderIsNotSentIfThereIsNoUser() throws Exception {
+ public void testThatEventTriggeredByButtonCanBeIgnoredByFilterWhileAnotherIsNotIgnored() throws Exception {
   prnfsTestBuilder() //
     .isLoggedInAsAdmin() //
     .withNotification( //
       notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/") //
-        .withFieldValue(events, OPENED.name()) //
-        .withFieldValue(user, "") //
-        .withFieldValue(password, "thepassword") //
+        .withFieldValue(url, "http://bjurr.se/?123=${" + BUTTON_TRIGGER_TITLE + "}") //
+        .withFieldValue(events, BUTTON_TRIGGER) //
+        .withFieldValue(filter_string, "${" + BUTTON_TRIGGER_TITLE + "}") //
+        .withFieldValue(filter_regexp, "123") //
+        .withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()) //
+        .build() //
+    )//
+    .store()//
+    .withNotification( //
+      notificationBuilder() //
+        .withFieldValue(url, "http://bjurr.se/?456=${" + BUTTON_TRIGGER_TITLE + "}") //
+        .withFieldValue(events, BUTTON_TRIGGER) //
+        .withFieldValue(filter_string, "${" + BUTTON_TRIGGER_TITLE + "}").withFieldValue(filter_regexp, "456") //
+        .withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()) //
         .build() //
     ) //
     .store() //
-    .trigger( //
-      pullRequestEventBuilder() //
-        .withPullRequestAction(OPENED) //
-        .build() //
+    .withNotification(notificationBuilder() //
+      .withFieldValue(FORM_IDENTIFIER, "Button Form") //
+      .withFieldValue(FORM_TYPE, BUTTON_CONFIG_FORM.name()) //
+      .withFieldValue(button_title, "button text 123") //
+      .withFieldValue(button_visibility, EVERYONE.name()) //
+      .build() //
     ) //
-    .invokedUrl(0, "http://bjurr.se/") //
-    .didNotSendHeaders();
+    .store() //
+    .triggerButton("Button Form") //
+    .invokedOnlyUrl("http://bjurr.se/?123=button+text+123");
  }
 
  @Test
- public void testThatBasicAuthenticationHeaderIsNotSentIfThereIsNoPassword() throws Exception {
+ public void testThatEventTriggeredByButtonCanResultInSeveralNotifications() throws Exception {
   prnfsTestBuilder() //
     .isLoggedInAsAdmin() //
     .withNotification( //
       notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/") //
-        .withFieldValue(events, OPENED.name()) //
-        .withFieldValue(user, "theuser") //
-        .withFieldValue(password, "") //
+        .withFieldValue(url, "http://bjurr.se/?123=${" + BUTTON_TRIGGER_TITLE + "}") //
+        .withFieldValue(events, BUTTON_TRIGGER) //
+        .withFieldValue(filter_string, "${" + BUTTON_TRIGGER_TITLE + "}")//
+        .withFieldValue(filter_regexp, "button") //
+        .withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()) //
         .build() //
     ) //
-    .store() //
-    .trigger( //
-      pullRequestEventBuilder() //
-        .withPullRequestAction(OPENED) //
-        .build() //
-    ) //
-    .invokedUrl(0, "http://bjurr.se/") //
-    .didNotSendHeaders();
- }
-
- @Test
- public void testThatBasicAuthenticationHeaderIsNotSentIfTheUserContainsOnlySpace() throws Exception {
-  prnfsTestBuilder() //
-    .isLoggedInAsAdmin() //
-    .withNotification( //
+    .store().withNotification( //
       notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/") //
-        .withFieldValue(events, OPENED.name()) //
-        .withFieldValue(user, " ") //
-        .withFieldValue(password, "thepassword") //
-        .build() //
-    ) //
-    .store() //
-    .trigger( //
-      pullRequestEventBuilder() //
-        .withPullRequestAction(OPENED) //
-        .build() //
-    ) //
-    .invokedUrl(0, "http://bjurr.se/") //
-    .didNotSendHeaders();
- }
-
- @Test
- public void testThatBasicAuthenticationHeaderIsNotSentIfThePasswordContainsOnlySpace() throws Exception {
-  prnfsTestBuilder() //
-    .isLoggedInAsAdmin() //
-    .withNotification( //
+        .withFieldValue(url, "http://bjurr.se/?456=${" + BUTTON_TRIGGER_TITLE + "}") //
+        .withFieldValue(events, BUTTON_TRIGGER) //
+        .withFieldValue(filter_string, "${" + BUTTON_TRIGGER_TITLE + "}") //
+        .withFieldValue(filter_regexp, "button") //
+        .withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()).build()) //
+    .store().withNotification( //
       notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/") //
-        .withFieldValue(events, OPENED.name()) //
-        .withFieldValue(user, "theuser") //
-        .withFieldValue(password, " ") //
-        .build() //
-    ) //
+        .withFieldValue(FORM_IDENTIFIER, "Button Form") //
+        .withFieldValue(FORM_TYPE, BUTTON_CONFIG_FORM.name()) //
+        .withFieldValue(button_title, "button text 123") //
+        .withFieldValue(button_visibility, EVERYONE.name()).build()) //
     .store() //
-    .trigger( //
-      pullRequestEventBuilder() //
-        .withPullRequestAction(OPENED) //
-        .build() //
-    ) //
-    .invokedUrl(0, "http://bjurr.se/") //
-    .didNotSendHeaders();
+    .triggerButton("Button Form") //
+    .invokedUrl(0, "http://bjurr.se/?123=button+text+123") //
+    .invokedUrl(1, "http://bjurr.se/?456=button+text+123");
  }
 
  @Test
@@ -834,15 +813,42 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatFilterCanIncludeRescopedFrom() throws Exception {
+ public void testThatFilterCanBeUsedToIgnoreEventsThatAreOnAnotherProjectAnBranch() throws Exception {
+  prnfsTestBuilder()//
+    .isLoggedInAsAdmin()//
+    .withNotification(//
+      notificationBuilder()//
+        .withFieldValue(url, "http://bjurr.se/")//
+        .withFieldValue(events, OPENED.name())//
+        .withFieldValue(filter_string, "${PULL_REQUEST_FROM_REPO_PROJECT_KEY} ${PULL_REQUEST_FROM_ID}")//
+        .withFieldValue(filter_regexp, "EXP my_branch")//
+        .build()//
+    )//
+    .store()//
+    .trigger(//
+      pullRequestEventBuilder()//
+        .withFromRef(//
+          pullRequestRefBuilder()//
+            .withProjectKey("ABC")//
+            .withId("my_therbranch")//
+        )//
+        .withPullRequestId(10L)//
+        .withPullRequestAction(OPENED)//
+        .build()//
+    )//
+    .invokedNoUrl();
+ }
+
+ @Test
+ public void testThatFilterCanBeUsedToTriggerEventsThatAreOnAnotherProject() throws Exception {
   prnfsTestBuilder() //
     .isLoggedInAsAdmin() //
     .withNotification( //
       notificationBuilder() //
         .withFieldValue(url, "http://bjurr.se/") //
-        .withFieldValue(events, RESCOPED_FROM) //
-        .withFieldValue(filter_string, "${" + PULL_REQUEST_ACTION.name() + "}") //
-        .withFieldValue(filter_regexp, RESCOPED_FROM) //
+        .withFieldValue(events, OPENED.name()) //
+        .withFieldValue(filter_string, "${PULL_REQUEST_FROM_REPO_PROJECT_KEY}") //
+        .withFieldValue(filter_regexp, "EXP") //
         .build() //
     ) //
     .store() //
@@ -850,14 +856,37 @@ public class PrnfsPullRequestEventListenerTest {
       pullRequestEventBuilder() //
         .withFromRef( //
           pullRequestRefBuilder() //
-            .withHash("from") //
-        ) //
-        .withToRef( //
-          pullRequestRefBuilder() //
-            .withHash(PREVIOUS_TO_HASH) //
+            .withProjectKey("EXP") //
         ) //
         .withPullRequestId(10L) //
-        .withPullRequestAction(RESCOPED) //
+        .withPullRequestAction(OPENED) //
+        .build() //
+    ) //
+    .invokedUrl(0, "http://bjurr.se/");
+ }
+
+ @Test
+ public void testThatFilterCanBeUsedToTriggerOnEventsThatAreOnAnotherProjectAnBranch() throws Exception {
+  prnfsTestBuilder() //
+    .isLoggedInAsAdmin() //
+    .withNotification( //
+      notificationBuilder() //
+        .withFieldValue(url, "http://bjurr.se/") //
+        .withFieldValue(events, OPENED.name()) //
+        .withFieldValue(filter_string, "${PULL_REQUEST_FROM_REPO_PROJECT_KEY} ${PULL_REQUEST_FROM_ID}") //
+        .withFieldValue(filter_regexp, "EXP my_branch") //
+        .build() //
+    ) //
+    .store() //
+    .trigger( //
+      pullRequestEventBuilder() //
+        .withFromRef( //
+          pullRequestRefBuilder() //
+            .withProjectKey("EXP") //
+            .withId("my_branch") //
+        ) //
+        .withPullRequestId(10L) //
+        .withPullRequestAction(OPENED) //
         .build() //
     ) //
     .invokedUrl(0, "http://bjurr.se/");
@@ -963,34 +992,15 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatStringWithVariableCommentIsEmptyIfNotACommentEvent() throws Exception {
-  prnfsTestBuilder()
-    .isLoggedInAsAdmin()
-    .withNotification( //
-      notificationBuilder()
-        //
-        .withFieldValue(url, "http://bjurr.se/?comment=${" + PULL_REQUEST_COMMENT_TEXT + "}")
-        .withFieldValue(events, OPENED.name()) //
-        .build() //
-    ) //
-    .store() //
-    .trigger( //
-      pullRequestEventBuilder() //
-        .withPullRequestId(10L) //
-        .withPullRequestAction(OPENED) //
-        .build() //
-    ) //
-    .invokedUrl(0, "http://bjurr.se/?comment=");
- }
-
- @Test
- public void testThatURLCanIncludeRescopedFrom() throws Exception {
+ public void testThatFilterCanIncludeRescopedFrom() throws Exception {
   prnfsTestBuilder() //
     .isLoggedInAsAdmin() //
     .withNotification( //
       notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/${" + PULL_REQUEST_ACTION.name() + "}") //
+        .withFieldValue(url, "http://bjurr.se/") //
         .withFieldValue(events, RESCOPED_FROM) //
+        .withFieldValue(filter_string, "${" + PULL_REQUEST_ACTION.name() + "}") //
+        .withFieldValue(filter_regexp, RESCOPED_FROM) //
         .build() //
     ) //
     .store() //
@@ -1004,240 +1014,8 @@ public class PrnfsPullRequestEventListenerTest {
           pullRequestRefBuilder() //
             .withHash(PREVIOUS_TO_HASH) //
         ) //
-        .withPullRequestAction(RESCOPED) //
-        .build() //
-    ) //
-    .invokedUrl(0, "http://bjurr.se/RESCOPED_FROM");
- }
-
- @Test
- public void testThatURLCanIncludeRescopedTo() throws Exception {
-  prnfsTestBuilder() //
-    .isLoggedInAsAdmin() //
-    .withNotification( //
-      notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/${" + PULL_REQUEST_ACTION.name() + "}") //
-        .withFieldValue(events, RESCOPED_TO) //
-        .build() //
-    ) //
-    .store() //
-    .trigger( //
-      pullRequestEventBuilder() //
-        .withFromRef( //
-          pullRequestRefBuilder() //
-            .withHash(PREVIOUS_FROM_HASH) //
-        ) //
-        .withToRef( //
-          pullRequestRefBuilder() //
-            .withHash("toHash") //
-        ) //
-        .withPullRequestAction(RESCOPED) //
-        .build() //
-    ) //
-    .invokedOnlyUrl("http://bjurr.se/RESCOPED_TO");
- }
-
- @Test
- public void testThatURLCanIncludeRescopedFromWhenBothFromAndToChanges() throws Exception {
-  prnfsTestBuilder() //
-    .isLoggedInAsAdmin() //
-    .withNotification( //
-      notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/${" + PULL_REQUEST_ACTION.name() + "}") //
-        .withFieldValue(events, RESCOPED_FROM) //
-        .build() //
-    ) //
-    .store() //
-    .trigger( //
-      pullRequestEventBuilder() //
-        .withFromRef( //
-          pullRequestRefBuilder() //
-            .withHash("fromHash") //
-        ) //
-        .withToRef( //
-          pullRequestRefBuilder() //
-            .withHash("toHash") //
-        ) //
-        .withPullRequestAction(RESCOPED) //
-        .build() //
-    ) //
-    .invokedOnlyUrl("http://bjurr.se/RESCOPED_FROM");
- }
-
- @Test
- public void testThatAllURLsMatchingEventsAreTriggered() throws Exception {
-  prnfsTestBuilder() //
-    .isLoggedInAsAdmin() //
-    .withNotification( //
-      notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/${" + PULL_REQUEST_ACTION.name() + "}") //
-        .withFieldValue(events, RESCOPED_FROM) //
-        .build() //
-    ) //
-    .store() //
-    .withNotification( //
-      notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/${" + PULL_REQUEST_ACTION.name() + "}") //
-        .withFieldValue(events, RESCOPED_TO) //
-        .build() //
-    ) //
-    .store() //
-    .withNotification( //
-      notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/${" + PULL_REQUEST_ACTION.name() + "}") //
-        .withFieldValue(events, RESCOPED_FROM) //
-        .withFieldValue(events, RESCOPED_TO) //
-        .build() //
-    ) //
-    .store() //
-    .trigger( //
-      pullRequestEventBuilder() //
-        .withFromRef( //
-          pullRequestRefBuilder() //
-            .withHash("fromHash") //
-        ) //
-        .withToRef( //
-          pullRequestRefBuilder() //
-            .withHash("toHash") //
-        ) //
-        .withPullRequestAction(RESCOPED) //
-        .build() //
-    ) //
-    .invokedUrl(0, "http://bjurr.se/RESCOPED_FROM") //
-    .invokedUrl(1, "http://bjurr.se/RESCOPED_TO") //
-    .invokedUrl(2, "http://bjurr.se/RESCOPED_FROM");
- }
-
- @Test
- public void testThatURLCanIncludeRescopedFromWhenBothFromAndToChangesAndBothFromAndToAreConfigured() throws Exception {
-  prnfsTestBuilder() //
-    .isLoggedInAsAdmin() //
-    .withNotification( //
-      notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/${" + PULL_REQUEST_ACTION.name() + "}") //
-        .withFieldValue(events, RESCOPED_FROM) //
-        .withFieldValue(events, RESCOPED_TO) //
-        .build() //
-    ) //
-    .store() //
-    .trigger( //
-      pullRequestEventBuilder() //
-        .withFromRef( //
-          pullRequestRefBuilder() //
-            .withHash("fromHash") //
-        ) //
-        .withToRef( //
-          pullRequestRefBuilder() //
-            .withHash("toHash") //
-        ) //
-        .withPullRequestAction(RESCOPED) //
-        .build() //
-    ) //
-    .invokedUrl(0, "http://bjurr.se/RESCOPED_FROM");
- }
-
- @Test
- public void testThatURLCanIncludeRescopedToWhenBothFromAndToChanges() throws Exception {
-  prnfsTestBuilder() //
-    .isLoggedInAsAdmin() //
-    .withNotification( //
-      notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/${" + PULL_REQUEST_ACTION.name() + "}") //
-        .withFieldValue(events, RESCOPED_TO) //
-        .build() //
-    ) //
-    .store() //
-    .trigger( //
-      pullRequestEventBuilder() //
-        .withFromRef( //
-          pullRequestRefBuilder() //
-            .withHash("fromHash") //
-        ) //
-        .withToRef( //
-          pullRequestRefBuilder() //
-            .withHash("toHash") //
-        ) //
-        .withPullRequestAction(RESCOPED) //
-        .build() //
-    ) //
-    .invokedUrl(0, "http://bjurr.se/RESCOPED_TO");
- }
-
- @Test
- public void testThatFilterCanBeUsedToIgnoreEventsThatAreOnAnotherProjectAnBranch() throws Exception {
-  prnfsTestBuilder()//
-    .isLoggedInAsAdmin()//
-    .withNotification(//
-      notificationBuilder()//
-        .withFieldValue(url, "http://bjurr.se/")//
-        .withFieldValue(events, OPENED.name())//
-        .withFieldValue(filter_string, "${PULL_REQUEST_FROM_REPO_PROJECT_KEY} ${PULL_REQUEST_FROM_ID}")//
-        .withFieldValue(filter_regexp, "EXP my_branch")//
-        .build()//
-    )//
-    .store()//
-    .trigger(//
-      pullRequestEventBuilder()//
-        .withFromRef(//
-          pullRequestRefBuilder()//
-            .withProjectKey("ABC")//
-            .withId("my_therbranch")//
-        )//
-        .withPullRequestId(10L)//
-        .withPullRequestAction(OPENED)//
-        .build()//
-    )//
-    .invokedNoUrl();
- }
-
- @Test
- public void testThatFilterCanBeUsedToTriggerEventsThatAreOnAnotherProject() throws Exception {
-  prnfsTestBuilder() //
-    .isLoggedInAsAdmin() //
-    .withNotification( //
-      notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/") //
-        .withFieldValue(events, OPENED.name()) //
-        .withFieldValue(filter_string, "${PULL_REQUEST_FROM_REPO_PROJECT_KEY}") //
-        .withFieldValue(filter_regexp, "EXP") //
-        .build() //
-    ) //
-    .store() //
-    .trigger( //
-      pullRequestEventBuilder() //
-        .withFromRef( //
-          pullRequestRefBuilder() //
-            .withProjectKey("EXP") //
-        ) //
         .withPullRequestId(10L) //
-        .withPullRequestAction(OPENED) //
-        .build() //
-    ) //
-    .invokedUrl(0, "http://bjurr.se/");
- }
-
- @Test
- public void testThatFilterCanBeUsedToTriggerOnEventsThatAreOnAnotherProjectAnBranch() throws Exception {
-  prnfsTestBuilder() //
-    .isLoggedInAsAdmin() //
-    .withNotification( //
-      notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/") //
-        .withFieldValue(events, OPENED.name()) //
-        .withFieldValue(filter_string, "${PULL_REQUEST_FROM_REPO_PROJECT_KEY} ${PULL_REQUEST_FROM_ID}") //
-        .withFieldValue(filter_regexp, "EXP my_branch") //
-        .build() //
-    ) //
-    .store() //
-    .trigger( //
-      pullRequestEventBuilder() //
-        .withFromRef( //
-          pullRequestRefBuilder() //
-            .withProjectKey("EXP") //
-            .withId("my_branch") //
-        ) //
-        .withPullRequestId(10L) //
-        .withPullRequestAction(OPENED) //
+        .withPullRequestAction(RESCOPED) //
         .build() //
     ) //
     .invokedUrl(0, "http://bjurr.se/");
@@ -1271,6 +1049,163 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
+ public void testThatPostContentIsNotSentIfMethodIsDELETEAndThereIsPostContent() throws Exception {
+  prnfsTestBuilder() //
+    .isLoggedInAsAdmin() //
+    .withNotification( //
+      notificationBuilder() //
+        .withFieldValue(url, "http://bjurr.se/") //
+        .withFieldValue(events, OPENED.name()) //
+        .withFieldValue(post_content, "some content") //
+        .withFieldValue(method, "DELETE") //
+        .build() //
+    ) //
+    .store() //
+    .trigger( //
+      pullRequestEventBuilder() //
+        .withPullRequestAction(OPENED) //
+        .build() //
+    ) //
+    .invokedUrl(0, "http://bjurr.se/") //
+    .invokedMethod(DELETE) //
+    .didNotSendPostContentAt(0);
+ }
+
+ @Test
+ public void testThatPostContentIsNotSentIfMethodIsGETAndThereIsPostContent() throws Exception {
+  prnfsTestBuilder() //
+    .isLoggedInAsAdmin() //
+    .withNotification( //
+      notificationBuilder() //
+        .withFieldValue(url, "http://bjurr.se/") //
+        .withFieldValue(events, OPENED.name()) //
+        .withFieldValue(post_content, "some content") //
+        .withFieldValue(method, GET.name()) //
+        .build() //
+    ) //
+    .store() //
+    .trigger( //
+      pullRequestEventBuilder() //
+        .withPullRequestAction(OPENED) //
+        .build() //
+    ) //
+    .invokedUrl(0, "http://bjurr.se/") //
+    .invokedMethod(GET) //
+    .didNotSendPostContentAt(0);
+ }
+
+ @Test
+ public void testThatPostContentIsNotSentIfMethodIsNotSet() throws Exception {
+  prnfsTestBuilder() //
+    .isLoggedInAsAdmin() //
+    .withNotification( //
+      notificationBuilder() //
+        .withFieldValue(url, "http://bjurr.se/") //
+        .withFieldValue(post_content, "should not be sent") //
+        .withFieldValue(events, OPENED.name()) //
+        .build() //
+    ) //
+    .store() //
+    .trigger( //
+      pullRequestEventBuilder() //
+        .withPullRequestAction(OPENED) //
+        .build() //
+    ) //
+    .invokedUrl(0, "http://bjurr.se/") //
+    .invokedMethod(GET) //
+    .didNotSendPostContentAt(0);
+ }
+
+ @Test
+ public void testThatPostContentIsNotSentIfMethodIsPOSTButThereIsNotPostContent() throws Exception {
+  prnfsTestBuilder() //
+    .isLoggedInAsAdmin() //
+    .withNotification( //
+      notificationBuilder() //
+        .withFieldValue(url, "http://bjurr.se/") //
+        .withFieldValue(events, OPENED.name()) //
+        .withFieldValue(post_content, " ") //
+        .withFieldValue(method, "POST") //
+        .build() //
+    ) //
+    .store() //
+    .trigger( //
+      pullRequestEventBuilder() //
+        .withPullRequestAction(OPENED) //
+        .build() //
+    ) //
+    .invokedUrl(0, "http://bjurr.se/") //
+    .invokedMethod(POST) //
+    .didNotSendPostContentAt(0);
+ }
+
+ @Test
+ public void testThatPostContentIsSentAndRenderedIfMethodIsPOSTAndThereIsPostContent() throws Exception {
+  prnfsTestBuilder() //
+    .isLoggedInAsAdmin() //
+    .withNotification( //
+      notificationBuilder() //
+        .withFieldValue(url, "http://bjurr.se/") //
+        .withFieldValue(events, OPENED.name()) //
+        .withFieldValue(post_content, "some ${" + PULL_REQUEST_ACTION.name() + "} content") //
+        .withFieldValue(method, "POST") //
+        .build() //
+    ) //
+    .store() //
+    .trigger( //
+      pullRequestEventBuilder() //
+        .withPullRequestAction(OPENED) //
+        .build() //
+    ) //
+    .invokedUrl(0, "http://bjurr.se/") //
+    .didSendPostContentAt(0, "some OPENED content");
+ }
+
+ @Test
+ public void testThatPostContentIsSentIfMethodIsPOSTAndThereIsPostContent() throws Exception {
+  prnfsTestBuilder() //
+    .isLoggedInAsAdmin() //
+    .withNotification( //
+      notificationBuilder() //
+        .withFieldValue(url, "http://bjurr.se/") //
+        .withFieldValue(events, OPENED.name()) //
+        .withFieldValue(post_content, "some content") //
+        .withFieldValue(method, "POST") //
+        .build() //
+    ) //
+    .store() //
+    .trigger( //
+      pullRequestEventBuilder() //
+        .withPullRequestAction(OPENED) //
+        .build() //
+    ) //
+    .invokedUrl(0, "http://bjurr.se/") //
+    .didSendPostContentAt(0, "some content");
+ }
+
+ @Test
+ public void testThatPostContentIsSentIfMethodIsPUTAndThereIsPostContent() throws Exception {
+  prnfsTestBuilder() //
+    .isLoggedInAsAdmin() //
+    .withNotification( //
+      notificationBuilder() //
+        .withFieldValue(url, "http://bjurr.se/") //
+        .withFieldValue(events, OPENED.name()) //
+        .withFieldValue(post_content, "some content") //
+        .withFieldValue(method, "PUT") //
+        .build() //
+    ) //
+    .store() //
+    .trigger( //
+      pullRequestEventBuilder() //
+        .withPullRequestAction(OPENED) //
+        .build() //
+    ) //
+    .invokedUrl(0, "http://bjurr.se/") //
+    .didSendPostContentAt(0, "some content");
+ }
+
+ @Test
  public void testThatProxyCanBeUsedWhenInvokingUrl() throws Exception {
   prnfsTestBuilder() //
     .isLoggedInAsAdmin() //
@@ -1293,50 +1228,6 @@ public class PrnfsPullRequestEventListenerTest {
     .usedNoProxyPassword(0) //
     .usedProxyHost(0, "proxyhost") //
     .usedProxyPort(0, 1234);
- }
-
- @Test
- public void testThatProxyPortIsNeeded() throws Exception {
-  prnfsTestBuilder() //
-    .isLoggedInAsAdmin() //
-    .withNotification( //
-      notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/") //
-        .withFieldValue(events, OPENED.name()) //
-        .withFieldValue(proxy_server, "proxyhost") //
-        .withFieldValue(proxy_port, " ") //
-        .build() //
-    ) //
-    .store() //
-    .trigger( //
-      pullRequestEventBuilder() //
-        .withPullRequestAction(OPENED) //
-        .build() //
-    ) //
-    .invokedUrl(0, "http://bjurr.se/") //
-    .usedNoProxy(0);
- }
-
- @Test
- public void testThatProxyHostIsNeeded() throws Exception {
-  prnfsTestBuilder() //
-    .isLoggedInAsAdmin() //
-    .withNotification( //
-      notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/") //
-        .withFieldValue(events, OPENED.name()) //
-        .withFieldValue(proxy_server, "") //
-        .withFieldValue(proxy_port, "123") //
-        .build() //
-    ) //
-    .store() //
-    .trigger( //
-      pullRequestEventBuilder() //
-        .withPullRequestAction(OPENED) //
-        .build() //
-    ) //
-    .invokedUrl(0, "http://bjurr.se/") //
-    .usedNoProxy(0);
  }
 
  @Test
@@ -1365,30 +1256,6 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatProxyDoesNotAuthenticateIfNoUser() throws Exception {
-  prnfsTestBuilder() //
-    .isLoggedInAsAdmin() //
-    .withNotification( //
-      notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/") //
-        .withFieldValue(events, OPENED.name()) //
-        .withFieldValue(proxy_server, "proxyhost") //
-        .withFieldValue(proxy_port, "123") //
-        .withFieldValue(proxy_user, " ") //
-        .withFieldValue(proxy_password, "proxypassword") //
-        .build() //
-    ) //
-    .store() //
-    .trigger( //
-      pullRequestEventBuilder() //
-        .withPullRequestAction(OPENED) //
-        .build() //
-    ) //
-    .invokedUrl(0, "http://bjurr.se/") //
-    .usedNoProxyAuthentication(0);
- }
-
- @Test
  public void testThatProxyDoesNotAuthenticateIfNoPassword() throws Exception {
   prnfsTestBuilder() //
     .isLoggedInAsAdmin() //
@@ -1413,177 +1280,112 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatButtonCanBeUsedForTriggeringEvent() throws Exception {
+ public void testThatProxyDoesNotAuthenticateIfNoUser() throws Exception {
   prnfsTestBuilder() //
     .isLoggedInAsAdmin() //
     .withNotification( //
       notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/${" + BUTTON_TRIGGER_TITLE + "}") //
-        .withFieldValue(events, BUTTON_TRIGGER) //
-        .withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()) //
-        .build() //
-    ) //
-    .store() //
-    .withNotification( //
-      notificationBuilder() //
-        .withFieldValue(FORM_IDENTIFIER, "Button Form") //
-        .withFieldValue(FORM_TYPE, BUTTON_CONFIG_FORM.name()) //
-        .withFieldValue(button_title, "Trigger notification") //
-        .withFieldValue(button_visibility, EVERYONE.name()) //
-        .build() //
-    ) //
-    .store() //
-    .triggerButton("Button Form") //
-    .invokedOnlyUrl("http://bjurr.se/Trigger+notification") //
-    .hasButtonsEnabled("Button Form");
- }
-
- @Test
- public void testThatButtonIsHiddenIfNoConfiguredNotificationForItWhenNotificationSetToOpened() throws Exception {
-  prnfsTestBuilder() //
-    .isLoggedInAsAdmin() //
-    .withNotification( //
-      notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/${" + BUTTON_TRIGGER_TITLE + "}") //
+        .withFieldValue(url, "http://bjurr.se/") //
         .withFieldValue(events, OPENED.name()) //
-        .withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()) //
+        .withFieldValue(proxy_server, "proxyhost") //
+        .withFieldValue(proxy_port, "123") //
+        .withFieldValue(proxy_user, " ") //
+        .withFieldValue(proxy_password, "proxypassword") //
         .build() //
     ) //
     .store() //
-    .withNotification( //
-      notificationBuilder() //
-        .withFieldValue(FORM_IDENTIFIER, "Button Form") //
-        .withFieldValue(FORM_TYPE, BUTTON_CONFIG_FORM.name()) //
-        .withFieldValue(button_title, "Trigger notification") //
-        .withFieldValue(button_visibility, EVERYONE.name()) //
+    .trigger( //
+      pullRequestEventBuilder() //
+        .withPullRequestAction(OPENED) //
         .build() //
     ) //
-    .store() //
-    .triggerButton("Button Form") //
-    .hasNoButtonsEnabled();
+    .invokedUrl(0, "http://bjurr.se/") //
+    .usedNoProxyAuthentication(0);
  }
 
  @Test
- public void testThatButtonIsHiddenIfNoConfiguredNotificationForItWhenNotificationSetToButtonTriggered()
-   throws Exception {
+ public void testThatProxyHostIsNeeded() throws Exception {
   prnfsTestBuilder() //
     .isLoggedInAsAdmin() //
     .withNotification( //
       notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/${" + BUTTON_TRIGGER_TITLE + "}") //
-        .withFieldValue(events, BUTTON_TRIGGER) //
-        .withFieldValue(filter_string, "${" + BUTTON_TRIGGER_TITLE + "}") //
-        .withFieldValue(filter_regexp, "123") //
-        .withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()) //
+        .withFieldValue(url, "http://bjurr.se/") //
+        .withFieldValue(events, OPENED.name()) //
+        .withFieldValue(proxy_server, "") //
+        .withFieldValue(proxy_port, "123") //
         .build() //
     ) //
     .store() //
-    .withNotification( //
-      notificationBuilder() //
-        .withFieldValue(FORM_IDENTIFIER, "Button Form") //
-        .withFieldValue(FORM_TYPE, BUTTON_CONFIG_FORM.name()) //
-        .withFieldValue(button_title, "Trigger notification") //
-        .withFieldValue(button_visibility, EVERYONE.name()) //
+    .trigger( //
+      pullRequestEventBuilder() //
+        .withPullRequestAction(OPENED) //
         .build() //
     ) //
-    .store() //
-    .triggerButton("Button Form") //
-    .hasNoButtonsEnabled();
+    .invokedUrl(0, "http://bjurr.se/") //
+    .usedNoProxy(0);
  }
 
  @Test
- public void testThatEventTriggeredByButtonCanBeFiltered() throws Exception {
-  prnfsTestBuilder() //
-    .isLoggedInAsAdmin() //
-    .withNotification( //
-      notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/?123=${" + BUTTON_TRIGGER_TITLE + "}") //
-        .withFieldValue(events, BUTTON_TRIGGER) //
-        .withFieldValue(filter_string, "${" + BUTTON_TRIGGER_TITLE + "}") //
-        .withFieldValue(filter_regexp, "123") //
-        .withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name() //
-        ) //
-        .build() //
-    ) //
-    .store() //
-    .withNotification( //
-      notificationBuilder() //
-        .withFieldValue(FORM_IDENTIFIER, "Button Form") //
-        .withFieldValue(FORM_TYPE, BUTTON_CONFIG_FORM.name()) //
-        .withFieldValue(button_title, "button text 123") //
-        .withFieldValue(button_visibility, EVERYONE.name()) //
-        .build() //
-    ) //
-    .store() //
-    .triggerButton("Button Form") //
-    .invokedOnlyUrl("http://bjurr.se/?123=button+text+123");
- }
-
- @Test
- public void testThatEventTriggeredByButtonCanBeIgnoredByFilterWhileAnotherIsNotIgnored() throws Exception {
-  prnfsTestBuilder() //
-    .isLoggedInAsAdmin() //
-    .withNotification( //
-      notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/?123=${" + BUTTON_TRIGGER_TITLE + "}") //
-        .withFieldValue(events, BUTTON_TRIGGER) //
-        .withFieldValue(filter_string, "${" + BUTTON_TRIGGER_TITLE + "}") //
-        .withFieldValue(filter_regexp, "123") //
-        .withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()) //
-        .build() //
+ public void testThatProxyMayNotBeUsedWhenInvokingUrl() throws Exception {
+  prnfsTestBuilder()//
+    .isLoggedInAsAdmin()//
+    .withNotification(//
+      notificationBuilder()//
+        .withFieldValue(url, "http://bjurr.se/")//
+        .withFieldValue(events, OPENED.name())//
+        .build()//
     )//
     .store()//
-    .withNotification( //
-      notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/?456=${" + BUTTON_TRIGGER_TITLE + "}") //
-        .withFieldValue(events, BUTTON_TRIGGER) //
-        .withFieldValue(filter_string, "${" + BUTTON_TRIGGER_TITLE + "}").withFieldValue(filter_regexp, "456") //
-        .withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()) //
-        .build() //
-    ) //
-    .store() //
-    .withNotification(notificationBuilder() //
-      .withFieldValue(FORM_IDENTIFIER, "Button Form") //
-      .withFieldValue(FORM_TYPE, BUTTON_CONFIG_FORM.name()) //
-      .withFieldValue(button_title, "button text 123") //
-      .withFieldValue(button_visibility, EVERYONE.name()) //
-      .build() //
-    ) //
-    .store() //
-    .triggerButton("Button Form") //
-    .invokedOnlyUrl("http://bjurr.se/?123=button+text+123");
+    .trigger(//
+      pullRequestEventBuilder()//
+        .withPullRequestAction(OPENED)//
+        .build()//
+    )//
+    .invokedUrl(0, "http://bjurr.se/")//
+    .usedNoProxy(0);
  }
 
  @Test
- public void testThatEventTriggeredByButtonCanResultInSeveralNotifications() throws Exception {
+ public void testThatProxyPortIsNeeded() throws Exception {
   prnfsTestBuilder() //
     .isLoggedInAsAdmin() //
     .withNotification( //
       notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/?123=${" + BUTTON_TRIGGER_TITLE + "}") //
-        .withFieldValue(events, BUTTON_TRIGGER) //
-        .withFieldValue(filter_string, "${" + BUTTON_TRIGGER_TITLE + "}")//
-        .withFieldValue(filter_regexp, "button") //
-        .withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()) //
+        .withFieldValue(url, "http://bjurr.se/") //
+        .withFieldValue(events, OPENED.name()) //
+        .withFieldValue(proxy_server, "proxyhost") //
+        .withFieldValue(proxy_port, " ") //
         .build() //
     ) //
-    .store().withNotification( //
-      notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/?456=${" + BUTTON_TRIGGER_TITLE + "}") //
-        .withFieldValue(events, BUTTON_TRIGGER) //
-        .withFieldValue(filter_string, "${" + BUTTON_TRIGGER_TITLE + "}") //
-        .withFieldValue(filter_regexp, "button") //
-        .withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()).build()) //
-    .store().withNotification( //
-      notificationBuilder() //
-        .withFieldValue(FORM_IDENTIFIER, "Button Form") //
-        .withFieldValue(FORM_TYPE, BUTTON_CONFIG_FORM.name()) //
-        .withFieldValue(button_title, "button text 123") //
-        .withFieldValue(button_visibility, EVERYONE.name()).build()) //
     .store() //
-    .triggerButton("Button Form") //
-    .invokedUrl(0, "http://bjurr.se/?123=button+text+123") //
-    .invokedUrl(1, "http://bjurr.se/?456=button+text+123");
+    .trigger( //
+      pullRequestEventBuilder() //
+        .withPullRequestAction(OPENED) //
+        .build() //
+    ) //
+    .invokedUrl(0, "http://bjurr.se/") //
+    .usedNoProxy(0);
+ }
+
+ @Test
+ public void testThatStringWithVariableCommentIsEmptyIfNotACommentEvent() throws Exception {
+  prnfsTestBuilder()
+    .isLoggedInAsAdmin()
+    .withNotification( //
+      notificationBuilder()
+        //
+        .withFieldValue(url, "http://bjurr.se/?comment=${" + PULL_REQUEST_COMMENT_TEXT + "}")
+        .withFieldValue(events, OPENED.name()) //
+        .build() //
+    ) //
+    .store() //
+    .trigger( //
+      pullRequestEventBuilder() //
+        .withPullRequestId(10L) //
+        .withPullRequestAction(OPENED) //
+        .build() //
+    ) //
+    .invokedUrl(0, "http://bjurr.se/?comment=");
  }
 
  @Test
@@ -1623,70 +1425,139 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatValueFromUrlCanBeUsedInInvocation() throws Exception {
+ public void testThatURLCanIncludeRescopedFrom() throws Exception {
   prnfsTestBuilder() //
     .isLoggedInAsAdmin() //
     .withNotification( //
       notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/?${" + INJECTION_URL_VALUE + "}") //
-        .withFieldValue(events, OPENED.name()) //
-        .withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()) //
-        .withFieldValue(injection_url, "http://bjurr.se/get") //
+        .withFieldValue(url, "http://bjurr.se/${" + PULL_REQUEST_ACTION.name() + "}") //
+        .withFieldValue(events, RESCOPED_FROM) //
         .build() //
     ) //
     .store() //
-    .withResponse("http://bjurr.se/get", " \n some content \n ") //
     .trigger( //
       pullRequestEventBuilder() //
-        .withPullRequestAction(OPENED) //
+        .withFromRef( //
+          pullRequestRefBuilder() //
+            .withHash("from") //
+        ) //
+        .withToRef( //
+          pullRequestRefBuilder() //
+            .withHash(PREVIOUS_TO_HASH) //
+        ) //
+        .withPullRequestAction(RESCOPED) //
         .build() //
     ) //
-    .invokedOnlyUrl("http://bjurr.se/?some+content");
+    .invokedUrl(0, "http://bjurr.se/RESCOPED_FROM");
  }
 
  @Test
- public void testThatValueFromUrlAndRegexpCanBeUsedInInvocation() throws Exception {
+ public void testThatURLCanIncludeRescopedFromWhenBothFromAndToChanges() throws Exception {
   prnfsTestBuilder() //
     .isLoggedInAsAdmin() //
     .withNotification( //
       notificationBuilder() //
-        .withFieldValue(url, "http://bjurr.se/?${" + INJECTION_URL_VALUE + "}") //
-        .withFieldValue(events, OPENED.name()) //
-        .withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()) //
-        .withFieldValue(injection_url, "http://bjurr.se/get") //
-        .withFieldValue(injection_url_regexp, "<crumb>([^<]*)</crumb>") //
+        .withFieldValue(url, "http://bjurr.se/${" + PULL_REQUEST_ACTION.name() + "}") //
+        .withFieldValue(events, RESCOPED_FROM) //
         .build() //
     ) //
     .store() //
-    .withResponse(
-      "http://bjurr.se/get",
-      " \n <defaultCrumbIssuer><crumb>986a2d65b7987258434da5583c9f5337</crumb><crumbRequestField>.crumb</crumbRequestField></defaultCrumbIssuer> \n ") //
     .trigger( //
       pullRequestEventBuilder() //
-        .withPullRequestAction(OPENED) //
+        .withFromRef( //
+          pullRequestRefBuilder() //
+            .withHash("fromHash") //
+        ) //
+        .withToRef( //
+          pullRequestRefBuilder() //
+            .withHash("toHash") //
+        ) //
+        .withPullRequestAction(RESCOPED) //
         .build() //
     ) //
-    .invokedOnlyUrl("http://bjurr.se/?986a2d65b7987258434da5583c9f5337");
+    .invokedOnlyUrl("http://bjurr.se/RESCOPED_FROM");
  }
 
  @Test
- public void testThatProxyMayNotBeUsedWhenInvokingUrl() throws Exception {
-  prnfsTestBuilder()//
-    .isLoggedInAsAdmin()//
-    .withNotification(//
-      notificationBuilder()//
-        .withFieldValue(url, "http://bjurr.se/")//
-        .withFieldValue(events, OPENED.name())//
-        .build()//
-    )//
-    .store()//
-    .trigger(//
-      pullRequestEventBuilder()//
-        .withPullRequestAction(OPENED)//
-        .build()//
-    )//
-    .invokedUrl(0, "http://bjurr.se/")//
-    .usedNoProxy(0);
+ public void testThatURLCanIncludeRescopedFromWhenBothFromAndToChangesAndBothFromAndToAreConfigured() throws Exception {
+  prnfsTestBuilder() //
+    .isLoggedInAsAdmin() //
+    .withNotification( //
+      notificationBuilder() //
+        .withFieldValue(url, "http://bjurr.se/${" + PULL_REQUEST_ACTION.name() + "}") //
+        .withFieldValue(events, RESCOPED_FROM) //
+        .withFieldValue(events, RESCOPED_TO) //
+        .build() //
+    ) //
+    .store() //
+    .trigger( //
+      pullRequestEventBuilder() //
+        .withFromRef( //
+          pullRequestRefBuilder() //
+            .withHash("fromHash") //
+        ) //
+        .withToRef( //
+          pullRequestRefBuilder() //
+            .withHash("toHash") //
+        ) //
+        .withPullRequestAction(RESCOPED) //
+        .build() //
+    ) //
+    .invokedUrl(0, "http://bjurr.se/RESCOPED_FROM");
+ }
+
+ @Test
+ public void testThatURLCanIncludeRescopedTo() throws Exception {
+  prnfsTestBuilder() //
+    .isLoggedInAsAdmin() //
+    .withNotification( //
+      notificationBuilder() //
+        .withFieldValue(url, "http://bjurr.se/${" + PULL_REQUEST_ACTION.name() + "}") //
+        .withFieldValue(events, RESCOPED_TO) //
+        .build() //
+    ) //
+    .store() //
+    .trigger( //
+      pullRequestEventBuilder() //
+        .withFromRef( //
+          pullRequestRefBuilder() //
+            .withHash(PREVIOUS_FROM_HASH) //
+        ) //
+        .withToRef( //
+          pullRequestRefBuilder() //
+            .withHash("toHash") //
+        ) //
+        .withPullRequestAction(RESCOPED) //
+        .build() //
+    ) //
+    .invokedOnlyUrl("http://bjurr.se/RESCOPED_TO");
+ }
+
+ @Test
+ public void testThatURLCanIncludeRescopedToWhenBothFromAndToChanges() throws Exception {
+  prnfsTestBuilder() //
+    .isLoggedInAsAdmin() //
+    .withNotification( //
+      notificationBuilder() //
+        .withFieldValue(url, "http://bjurr.se/${" + PULL_REQUEST_ACTION.name() + "}") //
+        .withFieldValue(events, RESCOPED_TO) //
+        .build() //
+    ) //
+    .store() //
+    .trigger( //
+      pullRequestEventBuilder() //
+        .withFromRef( //
+          pullRequestRefBuilder() //
+            .withHash("fromHash") //
+        ) //
+        .withToRef( //
+          pullRequestRefBuilder() //
+            .withHash("toHash") //
+        ) //
+        .withPullRequestAction(RESCOPED) //
+        .build() //
+    ) //
+    .invokedUrl(0, "http://bjurr.se/RESCOPED_TO");
  }
 
  @Test
@@ -1702,6 +1573,70 @@ public class PrnfsPullRequestEventListenerTest {
     )//
     .store()//
     .isConflicting()//
+    .trigger(//
+      pullRequestEventBuilder()//
+        .withPullRequestAction(OPENED)//
+        .build()//
+    )//
+    .invokedUrl(0, "http://bjurr.se/");
+ }
+
+ @Test
+ public void testThatUrlMayBeInvokedWhenIsMergedAndDeclinedIsIgnored() throws Exception {
+  prnfsTestBuilder()//
+    .isLoggedInAsAdmin()//
+    .withNotification(//
+      notificationBuilder()//
+        .withFieldValue(url, "http://bjurr.se/")//
+        .withFieldValue(events, COMMENTED.name())//
+        .withFieldValue(trigger_ignore_state, DECLINED.name())//
+        .build()//
+    )//
+    .store()//
+    .trigger(//
+      pullRequestEventBuilder()//
+        .withPullRequestAction(COMMENTED)//
+        .withPullRequestInState(PullRequestState.MERGED)//
+        .build()//
+    )//
+    .invokedUrl(0, "http://bjurr.se/");
+ }
+
+ @Test
+ public void testThatUrlMayBeInvokedWhenIsNotConflicting() throws Exception {
+  prnfsTestBuilder()//
+    .isLoggedInAsAdmin()//
+    .withNotification(//
+      notificationBuilder()//
+        .withFieldValue(url, "http://bjurr.se/")//
+        .withFieldValue(events, OPENED.name())//
+        .withFieldValue(trigger_if_isconflicting, NOT_CONFLICTING.name())//
+        .build()//
+    )//
+    .store()//
+    .isNotConflicting()//
+    .trigger(//
+      pullRequestEventBuilder()//
+        .withPullRequestAction(OPENED)//
+        .withToRefPullRequestRefBuilder()//
+        .build()//
+        .build() //
+    )//
+    .invokedUrl(0, "http://bjurr.se/");
+ }
+
+ @Test
+ public void testThatUrlMayBeInvokedWhenIsOrIsNotConflicting() throws Exception {
+  prnfsTestBuilder()//
+    .isLoggedInAsAdmin()//
+    .withNotification(//
+      notificationBuilder()//
+        .withFieldValue(url, "http://bjurr.se/")//
+        .withFieldValue(events, OPENED.name())//
+        .withFieldValue(trigger_if_isconflicting, ALWAYS.name())//
+        .build()//
+    )//
+    .store()//
     .trigger(//
       pullRequestEventBuilder()//
         .withPullRequestAction(OPENED)//
@@ -1729,70 +1664,6 @@ public class PrnfsPullRequestEventListenerTest {
         .build()//
     )//
     .invokedNoUrl();
- }
-
- @Test
- public void testThatUrlMayBeInvokedWhenIsNotConflicting() throws Exception {
-  prnfsTestBuilder()//
-    .isLoggedInAsAdmin()//
-    .withNotification(//
-      notificationBuilder()//
-        .withFieldValue(url, "http://bjurr.se/")//
-        .withFieldValue(events, OPENED.name())//
-        .withFieldValue(trigger_if_isconflicting, NOT_CONFLICTING.name())//
-        .build()//
-    )//
-    .store()//
-    .isNotConflicting()//
-    .trigger(//
-      pullRequestEventBuilder()//
-        .withPullRequestAction(OPENED)//
-        .withToRefPullRequestRefBuilder()//
-        .build()//
-        .build() //
-    )//
-    .invokedUrl(0, "http://bjurr.se/");
- }
-
- @Test
- public void testThatUrlMayNotBeInvokedWhenIsNotConflicting() throws Exception {
-  prnfsTestBuilder()//
-    .isLoggedInAsAdmin()//
-    .withNotification(//
-      notificationBuilder()//
-        .withFieldValue(url, "http://bjurr.se/")//
-        .withFieldValue(events, OPENED.name())//
-        .withFieldValue(trigger_if_isconflicting, CONFLICTING.name())//
-        .build()//
-    )//
-    .store()//
-    .isNotConflicting()//
-    .trigger(//
-      pullRequestEventBuilder()//
-        .withPullRequestAction(OPENED)//
-        .build()//
-    )//
-    .invokedNoUrl();
- }
-
- @Test
- public void testThatUrlMayBeInvokedWhenIsOrIsNotConflicting() throws Exception {
-  prnfsTestBuilder()//
-    .isLoggedInAsAdmin()//
-    .withNotification(//
-      notificationBuilder()//
-        .withFieldValue(url, "http://bjurr.se/")//
-        .withFieldValue(events, OPENED.name())//
-        .withFieldValue(trigger_if_isconflicting, ALWAYS.name())//
-        .build()//
-    )//
-    .store()//
-    .trigger(//
-      pullRequestEventBuilder()//
-        .withPullRequestAction(OPENED)//
-        .build()//
-    )//
-    .invokedUrl(0, "http://bjurr.se/");
  }
 
  @Test
@@ -1838,24 +1709,71 @@ public class PrnfsPullRequestEventListenerTest {
  }
 
  @Test
- public void testThatUrlMayBeInvokedWhenIsMergedAndDeclinedIsIgnored() throws Exception {
+ public void testThatUrlMayNotBeInvokedWhenIsNotConflicting() throws Exception {
   prnfsTestBuilder()//
     .isLoggedInAsAdmin()//
     .withNotification(//
       notificationBuilder()//
         .withFieldValue(url, "http://bjurr.se/")//
-        .withFieldValue(events, COMMENTED.name())//
-        .withFieldValue(trigger_ignore_state, DECLINED.name())//
+        .withFieldValue(events, OPENED.name())//
+        .withFieldValue(trigger_if_isconflicting, CONFLICTING.name())//
         .build()//
     )//
     .store()//
+    .isNotConflicting()//
     .trigger(//
       pullRequestEventBuilder()//
-        .withPullRequestAction(COMMENTED)//
-        .withPullRequestInState(PullRequestState.MERGED)//
+        .withPullRequestAction(OPENED)//
         .build()//
     )//
-    .invokedUrl(0, "http://bjurr.se/");
+    .invokedNoUrl();
+ }
+
+ @Test
+ public void testThatValueFromUrlAndRegexpCanBeUsedInInvocation() throws Exception {
+  prnfsTestBuilder() //
+    .isLoggedInAsAdmin() //
+    .withNotification( //
+      notificationBuilder() //
+        .withFieldValue(url, "http://bjurr.se/?${" + INJECTION_URL_VALUE + "}") //
+        .withFieldValue(events, OPENED.name()) //
+        .withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()) //
+        .withFieldValue(injection_url, "http://bjurr.se/get") //
+        .withFieldValue(injection_url_regexp, "<crumb>([^<]*)</crumb>") //
+        .build() //
+    ) //
+    .store() //
+    .withResponse(
+      "http://bjurr.se/get",
+      " \n <defaultCrumbIssuer><crumb>986a2d65b7987258434da5583c9f5337</crumb><crumbRequestField>.crumb</crumbRequestField></defaultCrumbIssuer> \n ") //
+    .trigger( //
+      pullRequestEventBuilder() //
+        .withPullRequestAction(OPENED) //
+        .build() //
+    ) //
+    .invokedOnlyUrl("http://bjurr.se/?986a2d65b7987258434da5583c9f5337");
+ }
+
+ @Test
+ public void testThatValueFromUrlCanBeUsedInInvocation() throws Exception {
+  prnfsTestBuilder() //
+    .isLoggedInAsAdmin() //
+    .withNotification( //
+      notificationBuilder() //
+        .withFieldValue(url, "http://bjurr.se/?${" + INJECTION_URL_VALUE + "}") //
+        .withFieldValue(events, OPENED.name()) //
+        .withFieldValue(FORM_TYPE, TRIGGER_CONFIG_FORM.name()) //
+        .withFieldValue(injection_url, "http://bjurr.se/get") //
+        .build() //
+    ) //
+    .store() //
+    .withResponse("http://bjurr.se/get", " \n some content \n ") //
+    .trigger( //
+      pullRequestEventBuilder() //
+        .withPullRequestAction(OPENED) //
+        .build() //
+    ) //
+    .invokedOnlyUrl("http://bjurr.se/?some+content");
  }
 
  @Test
@@ -1880,15 +1798,6 @@ public class PrnfsPullRequestEventListenerTest {
   final String adminVmContent = Resources.toString(resource, UTF_8);
   for (final PrnfsVariable prnfsVariable : PrnfsVariable.values()) {
    assertTrue(prnfsVariable.name() + " in " + resource.toString(), adminVmContent.contains(prnfsVariable.name()));
-  }
- }
-
- @Test
- public void testThatEventsAreMentionedInAdminGUI() throws IOException {
-  final URL resource = getResource("admin.vm");
-  final String adminVmContent = Resources.toString(resource, UTF_8);
-  for (final PrnfsPullRequestAction prnfsAction : PrnfsPullRequestAction.values()) {
-   assertTrue(prnfsAction.getName() + " in " + resource.toString(), adminVmContent.contains(prnfsAction.getName()));
   }
  }
 }
