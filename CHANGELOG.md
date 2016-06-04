@@ -2,11 +2,11 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
-## Unreleased
+## 2.22
 ### GitHub [#119](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/119) You are not permitted to access this resource
   Getting clone URL:s with admin permission
   
-  [f09e3bfac1e030f](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/f09e3bfac1e030f) Tomas Bjerre *2016-05-28 16:29:17*
+  [c520e3654fb7608](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/c520e3654fb7608) Tomas Bjerre *2016-05-28 16:33:40*
 
 ### No issue
   Show buttons only on PR where the button belongs to

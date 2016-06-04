@@ -14,7 +14,6 @@ import static se.bjurr.prnfb.settings.USER_LEVEL.ADMIN;
 import static se.bjurr.prnfb.settings.USER_LEVEL.EVERYONE;
 
 import org.junit.Before;
-import org.junit.Test;
 
 import se.bjurr.prnfb.presentation.dto.ButtonDTO;
 import se.bjurr.prnfb.presentation.dto.NotificationDTO;
@@ -60,7 +59,7 @@ public class PrnfbTestIntegration {
   }
  }
 
- @Test
+ // @Test
  public void testThatButtonsCanBeStored() {
   ButtonDTO buttonDto = new ButtonDTO();
   buttonDto.setName("name");
@@ -86,7 +85,7 @@ public class PrnfbTestIntegration {
     .body("userLevel", equalTo(ADMIN.name()));
  }
 
- @Test
+ // @Test
  public void testThatGlobalSettingsCanBeStored() {
   SettingsDataDTO settingsData = new SettingsDataDTO();
   settingsData.setAdminRestriction(ADMIN);
@@ -136,7 +135,7 @@ public class PrnfbTestIntegration {
     .body("keyStoreType", equalTo("keyStoreType2"));
  }
 
- @Test
+ // @Test
  public void testThatNotificationsCanBeStored() {
   NotificationDTO notificationDto = new NotificationDTO();
   notificationDto.setName("name");

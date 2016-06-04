@@ -251,23 +251,27 @@ public class SettingsService {
   Object storedSettings = this.pluginSettings.get(STORAGE_KEY);
   if (storedSettings == null) {
    this.logger.info("No settings found for " + STORAGE_KEY + ", looking for legacy settings.");
-   try {
-    se.bjurr.prnfb.settings.legacy.PrnfbSettings legacySettings = SettingsStorage.getPrnfbSettings(this.pluginSettings);
-    if (this.pluginSettings.get(se.bjurr.prnfb.settings.legacy.SettingsStorage.STORAGE_KEY) != null
-      || this.pluginSettings.get(se.bjurr.prnfb.settings.legacy.SettingsStorage.STORAGE_KEY_PRNFS) != null) {
+   if (this.pluginSettings.get(se.bjurr.prnfb.settings.legacy.SettingsStorage.STORAGE_KEY) != null
+     || this.pluginSettings.get(se.bjurr.prnfb.settings.legacy.SettingsStorage.STORAGE_KEY_PRNFS) != null) {
+    try {
      this.logger.info("Using legacy settings.");
-     return settingsFromLegacy(legacySettings);
+     se.bjurr.prnfb.settings.legacy.PrnfbSettings legacySettings = SettingsStorage
+       .getPrnfbSettings(this.pluginSettings);
+     PrnfbSettings fromLegacy = settingsFromLegacy(legacySettings);
+     doSetPrnfbSettings(fromLegacy);
+     storedSettings = this.pluginSettings.get(STORAGE_KEY);
+    } catch (Exception e) {
+     this.logger.error("", e);
     }
-   } catch (Exception e) {
-    this.logger.error("", e);
+   } else {
+    this.logger.info("Creating new default settings.");
+    return prnfbSettingsBuilder()//
+      .setPrnfbSettingsData(//
+        prnfbSettingsDataBuilder()//
+          .setAdminRestriction(USER_LEVEL.ADMIN)//
+          .build())//
+      .build();
    }
-   this.logger.info("Creating new default settings.");
-   return prnfbSettingsBuilder()//
-     .setPrnfbSettingsData(//
-       prnfbSettingsDataBuilder()//
-         .setAdminRestriction(USER_LEVEL.ADMIN)//
-         .build())//
-     .build();
   }
   return gson.fromJson(storedSettings.toString(), PrnfbSettings.class);
  }
