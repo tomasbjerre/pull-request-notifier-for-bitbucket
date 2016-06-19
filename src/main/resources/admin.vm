@@ -193,14 +193,19 @@
     <legend>
      <span>Visibility</span>
     </legend>
+    #if($isSystemAdmin)
     <div class="radio">
      <label>
       <input class="radio" type="radio" name="userLevel" value="SYSTEM_ADMIN"> System administrators</label>
     </div>
+    #end
+    <!-- //-->
+    #if($isAdmin)
     <div class="radio">
      <label>
       <input class="radio" type="radio" name="userLevel" value="ADMIN"> Administrators and system administrators</label>
     </div>
+    #end
     <div class="radio">
      <label>
       <input class="radio" type="radio" name="userLevel" value="EVERYONE"> Everyone

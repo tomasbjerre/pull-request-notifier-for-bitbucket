@@ -16,12 +16,21 @@ import org.mockito.Mock;
 
 import se.bjurr.prnfb.settings.PrnfbButton;
 
+import com.atlassian.bitbucket.permission.PermissionService;
+import com.atlassian.bitbucket.project.ProjectService;
+import com.atlassian.bitbucket.repository.RepositoryService;
 import com.atlassian.sal.api.user.UserKey;
 import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.sal.api.user.UserProfile;
 
 public class UserCheckServiceTest {
 
+ @Mock
+ private PermissionService permissionService;
+ @Mock
+ private ProjectService projectService;
+ @Mock
+ private RepositoryService repositoryService;
  @Mock
  private SettingsService settingsService;
  private UserCheckService sut;
@@ -34,12 +43,13 @@ public class UserCheckServiceTest {
  @Before
  public void before() {
   initMocks(this);
-  this.sut = new UserCheckService(this.userManager, this.settingsService);
+  this.sut = new UserCheckService(this.permissionService, this.userManager, this.settingsService,
+    this.repositoryService, this.projectService);
  }
 
  @Test
  public void testThatAdminAllowedCanBeChecked() {
-  this.sut.isAdminAllowed();
+  this.sut.isAdminAllowed(null, null);
  }
 
  @Test
@@ -65,7 +75,7 @@ public class UserCheckServiceTest {
  }
 
  @Test
- public void testThatButtonAllowedCanBeChecked() {
+ public void testThatAllowedCanBeChecked() {
   when(this.userManager.getRemoteUser())//
     .thenReturn(this.user);
   when(this.userManager.getRemoteUser().getUserKey())//
@@ -76,11 +86,11 @@ public class UserCheckServiceTest {
   assertThat(this.sut.isAllowedUseButton(candidate))//
     .isTrue();
 
-  assertThat(this.sut.isAdminAllowedUseButton(ADMIN, true, false))//
+  assertThat(this.sut.isAdminAllowedCheck(ADMIN, true, false))//
     .isTrue();
-  assertThat(this.sut.isAdminAllowedUseButton(EVERYONE, false, false))//
+  assertThat(this.sut.isAdminAllowedCheck(EVERYONE, false, false))//
     .isTrue();
-  assertThat(this.sut.isAdminAllowedUseButton(SYSTEM_ADMIN, false, true))//
+  assertThat(this.sut.isAdminAllowedCheck(SYSTEM_ADMIN, false, true))//
     .isTrue();
  }
 

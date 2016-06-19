@@ -10,6 +10,7 @@ import static se.bjurr.prnfb.transformer.NotificationTransformer.toNotificationD
 import static se.bjurr.prnfb.transformer.NotificationTransformer.toNotificationDtoList;
 import static se.bjurr.prnfb.transformer.NotificationTransformer.toPrnfbNotification;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,7 +45,7 @@ public class NotificationServlet {
  @Consumes(APPLICATION_JSON)
  @Produces(APPLICATION_JSON)
  public Response create(NotificationDTO notificationDto) {
-  if (!this.userCheckService.isAdminAllowed()) {
+  if (!this.userCheckService.isAdminAllowed(notificationDto.getProjectKey(), notificationDto.getRepositorySlug())) {
    return status(UNAUTHORIZED).build();
   }
   try {
@@ -64,7 +65,10 @@ public class NotificationServlet {
  @XsrfProtectionExcluded
  @Produces(APPLICATION_JSON)
  public Response delete(@PathParam("uuid") UUID notification) {
-  if (!this.userCheckService.isAdminAllowed()) {
+  PrnfbNotification notificationDto = this.settingsService.getNotification(notification);
+  if (!this.userCheckService.isAdminAllowed(//
+    notificationDto.getProjectKey().orNull(), //
+    notificationDto.getRepositorySlug().orNull())) {
    return status(UNAUTHORIZED).build();
   }
   this.settingsService.deleteNotification(notification);
@@ -79,6 +83,7 @@ public class NotificationServlet {
   }
   List<PrnfbNotification> notifications = this.settingsService.getNotifications();
   List<NotificationDTO> dtos = toNotificationDtoList(notifications);
+  Collections.sort(dtos);
   return ok(dtos).build();
  }
 
@@ -91,6 +96,7 @@ public class NotificationServlet {
   }
   List<PrnfbNotification> notifications = this.settingsService.getNotifications(projectKey);
   List<NotificationDTO> dtos = toNotificationDtoList(notifications);
+  Collections.sort(dtos);
   return ok(dtos).build();
  }
 
@@ -103,6 +109,7 @@ public class NotificationServlet {
   }
   List<PrnfbNotification> notifications = this.settingsService.getNotifications(projectKey, repositorySlug);
   List<NotificationDTO> dtos = toNotificationDtoList(notifications);
+  Collections.sort(dtos);
   return ok(dtos).build();
  }
 

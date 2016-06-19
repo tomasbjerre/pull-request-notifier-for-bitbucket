@@ -23,6 +23,7 @@
  <component-import key="transactionTemplate" interface="com.atlassian.sal.api.transaction.TransactionTemplate" />
  <component-import key="repositoryService" interface="com.atlassian.bitbucket.repository.RepositoryService" />
  <component-import key="executorService" interface="java.util.concurrent.ExecutorService" />
+ <component-import key="permissionService" interface="com.atlassian.bitbucket.permission.PermissionService" />
 
  <rest key="rest" path="/prnfb-admin" version="1.0">
   <description>Provides REST resources for the admin UI.</description>

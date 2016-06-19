@@ -1,6 +1,7 @@
 package se.bjurr.prnfb.presentation;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -30,7 +31,7 @@ public class SettingsDataServletTest {
   initMocks(this);
   when(this.userCheckService.isViewAllowed())//
     .thenReturn(true);
-  when(this.userCheckService.isAdminAllowed())//
+  when(this.userCheckService.isAdminAllowed(anyString(), anyString()))//
     .thenReturn(true);
   this.sut = new SettingsDataServlet(this.userCheckService, this.settingsService);
  }

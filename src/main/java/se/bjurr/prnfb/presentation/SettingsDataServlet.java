@@ -50,7 +50,7 @@ public class SettingsDataServlet {
  @Consumes(APPLICATION_JSON)
  @Produces(APPLICATION_JSON)
  public Response post(SettingsDataDTO settingsDataDto) {
-  if (!this.userCheckService.isAdminAllowed()) {
+  if (!this.userCheckService.isAdminAllowed(null, null)) {
    return status(UNAUTHORIZED).build();
   }
 

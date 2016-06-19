@@ -3,6 +3,7 @@ package se.bjurr.prnfb.presentation;
 import static com.atlassian.bitbucket.pull.PullRequestState.DECLINED;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -12,7 +13,6 @@ import static se.bjurr.prnfb.test.Podam.populatedInstanceOf;
 import static se.bjurr.prnfb.transformer.NotificationTransformer.toPrnfbNotification;
 
 import java.util.List;
-import java.util.UUID;
 
 import javax.ws.rs.core.Response;
 
@@ -43,7 +43,7 @@ public class NotificationServletTest {
   initMocks(this);
   when(this.userCheckService.isViewAllowed())//
     .thenReturn(true);
-  when(this.userCheckService.isAdminAllowed())//
+  when(this.userCheckService.isAdminAllowed(anyString(), anyString()))//
     .thenReturn(true);
   this.sut = new NotificationServlet(this.settingsService, this.userCheckService);
   this.notificationDto1 = populatedInstanceOf(NotificationDTO.class);
@@ -76,12 +76,13 @@ public class NotificationServletTest {
 
  @Test
  public void testNotificationCanBeDeleted() throws Exception {
-  UUID notificationUid = UUID.randomUUID();
+  when(this.settingsService.getNotification(this.notification1.getUuid()))//
+    .thenReturn(this.notification1);
 
-  this.sut.delete(notificationUid);
+  this.sut.delete(this.notification1.getUuid());
 
   verify(this.settingsService)//
-    .deleteNotification(notificationUid);
+    .deleteNotification(this.notification1.getUuid());
  }
 
  @SuppressWarnings("unchecked")

@@ -9,15 +9,22 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import se.bjurr.prnfb.settings.USER_LEVEL;
 
+import com.google.common.base.Optional;
+
 @XmlRootElement
 @XmlAccessorType(FIELD)
-public class ButtonDTO {
+public class ButtonDTO implements Comparable<ButtonDTO> {
 
  private String name;
  private String projectKey;
  private String repositorySlug;
  private USER_LEVEL userLevel;
  private UUID uuid;
+
+ @Override
+ public int compareTo(ButtonDTO o) {
+  return this.name.compareTo(o.name);
+ }
 
  @Override
  public boolean equals(Object obj) {
@@ -69,12 +76,12 @@ public class ButtonDTO {
   return this.name;
  }
 
- public String getProjectKey() {
-  return this.projectKey;
+ public Optional<String> getProjectKey() {
+  return Optional.fromNullable(this.projectKey);
  }
 
- public String getRepositorySlug() {
-  return this.repositorySlug;
+ public Optional<String> getRepositorySlug() {
+  return Optional.fromNullable(this.repositorySlug);
  }
 
  public USER_LEVEL getUserLevel() {

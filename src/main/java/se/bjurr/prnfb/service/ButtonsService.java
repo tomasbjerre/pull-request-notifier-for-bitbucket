@@ -76,32 +76,35 @@ public class ButtonsService {
  }
 
  /**
+  * Checks if the given button is visible on the pull request by either the from
+  * or to repository.
+  */
+ private boolean isVisibleOnPullRequest(PrnfbButton button, PullRequest pullRequest) {
+  return (pullRequest.getFromRef() != null && isVisibleOnRepository(button, pullRequest.getFromRef().getRepository()))
+    || (pullRequest.getToRef() != null && isVisibleOnRepository(button, pullRequest.getToRef().getRepository()));
+ }
+
+ /**
   * Checks if the given button is visible in the given repository.
-  * 
-  * @param button Button under test
-  * @param repository Repository to check for
-  * @return True if the button is either globally visible or matches with the given repository
+  *
+  * @param button
+  *         Button under test
+  * @param repository
+  *         Repository to check for
+  * @return True if the button is either globally visible or matches with the
+  *         given repository
   */
  private boolean isVisibleOnRepository(PrnfbButton button, Repository repository) {
-  if(button.getRepositorySlug().isPresent()) {
+  if (button.getRepositorySlug().isPresent()) {
    boolean visible = false;
    do {
     visible |= button.getProjectKey().get().equals(repository.getProject().getKey())
       && button.getRepositorySlug().get().equals(repository.getSlug());
-   } while(!visible && (repository = repository.getOrigin()) != null);
+   } while (!visible && (repository = repository.getOrigin()) != null);
    return visible;
   } else {
    return TRUE;
   }
- }
-
- /**
-  * Checks if the given button is visible on the pull request by either the from or to repository.
-  */
- private boolean isVisibleOnPullRequest(PrnfbButton button, PullRequest pullRequest) {
-  return 
-    (pullRequest.getFromRef() != null && isVisibleOnRepository(button, pullRequest.getFromRef().getRepository()))
-    || (pullRequest.getToRef() != null && isVisibleOnRepository(button, pullRequest.getToRef().getRepository()));
  }
 
  @VisibleForTesting
@@ -111,9 +114,9 @@ public class ButtonsService {
   for (PrnfbButton candidate : this.settingsService.getButtons()) {
    Map<PrnfbVariable, Supplier<String>> variables = getVariables(candidate.getUuid());
    PrnfbPullRequestAction pullRequestAction = BUTTON_TRIGGER;
-   if (this.userCheckService.isAllowedUseButton(candidate)
+   if (this.userCheckService.isAllowedUseButton(candidate)//
      && isTriggeredByAction(clientKeyStore, notifications, shouldAcceptAnyCertificate, pullRequestAction, pullRequest,
-       variables)
+       variables) //
      && (isVisibleOnPullRequest(candidate, pullRequest))) {
     allFoundButtons.add(candidate);
    }

@@ -2,6 +2,24 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## Unreleased
+### GitHub [#123](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/123) Question on the configuration permissions.
+  Checking for admin permission on the repo/project 
+
+ * If a user is only admin in one repo, the user should not be able to administrate the plugin in another repo.
+ * Hiding admin restriction levels, in buttons config, that the user does not have access to. So that the user cannot create buttons that the user cannot see.
+ * Sorting notifications and buttons by name in REST API.
+  
+  [8eb180033a79346](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/8eb180033a79346) Tomas Bjerre *2016-06-20 17:32:05*
+
+## 2.23
+### GitHub [#122](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/122) Preserving configs when upgrading from stash 3.x to bitbucket 4.x
+  Loading legacy settings correctly 
+
+ * Did not save loaded legacy settings in new format when found. Got new UUID:s on every load.
+  
+  [56827de4eb8310d](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/56827de4eb8310d) Tomas Bjerre *2016-06-04 21:25:42*
+
 ## 2.22
 ### GitHub [#119](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/119) You are not permitted to access this resource
   Getting clone URL:s with admin permission

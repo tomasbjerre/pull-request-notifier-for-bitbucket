@@ -13,7 +13,7 @@ import se.bjurr.prnfb.settings.TRIGGER_IF_MERGE;
 
 @XmlRootElement
 @XmlAccessorType(FIELD)
-public class NotificationDTO {
+public class NotificationDTO implements Comparable<NotificationDTO> {
  private String filterRegexp;
  private String filterString;
  private List<HeaderDTO> headers;
@@ -35,6 +35,11 @@ public class NotificationDTO {
  private String url;
  private String user;
  private UUID uuid;
+
+ @Override
+ public int compareTo(NotificationDTO o) {
+  return this.name.compareTo(o.name);
+ }
 
  @Override
  public boolean equals(Object obj) {

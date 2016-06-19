@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import se.bjurr.prnfb.service.UserCheckService;
+
 import com.atlassian.bitbucket.repository.Repository;
 import com.atlassian.bitbucket.repository.RepositoryService;
 import com.atlassian.sal.api.auth.LoginUriProvider;
@@ -27,14 +29,16 @@ public class GlobalAdminServlet extends HttpServlet {
  private final LoginUriProvider loginUriProvider;
  private final TemplateRenderer renderer;
  private final RepositoryService repositoryService;
+ private final UserCheckService userCheckService;
  private final UserManager userManager;
 
  public GlobalAdminServlet(UserManager userManager, LoginUriProvider loginUriProvider, TemplateRenderer renderer,
-   RepositoryService repositoryService) {
+   RepositoryService repositoryService, UserCheckService userCheckService) {
   this.userManager = userManager;
   this.loginUriProvider = loginUriProvider;
   this.renderer = renderer;
   this.repositoryService = repositoryService;
+  this.userCheckService = userCheckService;
  }
 
  @Override
@@ -47,11 +51,21 @@ public class GlobalAdminServlet extends HttpServlet {
    }
 
    final Optional<Repository> repository = getRepository(request.getPathInfo());
+   boolean isSystemAdmin = this.userCheckService.isSystemAdmin(user.getUserKey());
+   String projectKey = null;
+   String repositorySlug = null;
+   if (repository.isPresent()) {
+    projectKey = repository.get().getProject().getKey();
+    repositorySlug = repository.get().getSlug();
+   }
+   boolean isAdmin = this.userCheckService.isAdmin(user.getUserKey(), projectKey, repositorySlug);
+
    Map<String, Object> context = newHashMap();
    if (repository.isPresent()) {
     context = of( //
-      "repository", repository.orNull() //
-    );
+      "repository", repository.orNull(), //
+      "isAdmin", isAdmin, //
+      "isSystemAdmin", isSystemAdmin);
    }
 
    response.setContentType("text/html;charset=UTF-8");

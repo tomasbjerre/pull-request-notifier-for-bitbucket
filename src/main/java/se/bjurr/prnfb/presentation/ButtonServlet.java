@@ -9,6 +9,7 @@ import static se.bjurr.prnfb.transformer.ButtonTransformer.toButtonDto;
 import static se.bjurr.prnfb.transformer.ButtonTransformer.toButtonDtoList;
 import static se.bjurr.prnfb.transformer.ButtonTransformer.toPrnfbButton;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,8 +47,11 @@ public class ButtonServlet {
  @Consumes(APPLICATION_JSON)
  @Produces(APPLICATION_JSON)
  public Response create(ButtonDTO buttonDto) {
-  if (!this.userCheckService.isAdminAllowed()) {
-   return status(UNAUTHORIZED).build();
+  if (!this.userCheckService.isAdminAllowed(//
+    buttonDto.getProjectKey().orNull()//
+    , buttonDto.getRepositorySlug().orNull())) {
+   return status(UNAUTHORIZED)//
+     .build();
   }
   PrnfbButton prnfbButton = toPrnfbButton(buttonDto);
   PrnfbButton created = this.settingsService.addOrUpdateButton(prnfbButton);
@@ -62,11 +66,15 @@ public class ButtonServlet {
  @Path("{uuid}")
  @XsrfProtectionExcluded
  @Produces(APPLICATION_JSON)
- public Response delete(@PathParam("uuid") UUID prnfbButton) {
-  if (!this.userCheckService.isAdminAllowed()) {
-   return status(UNAUTHORIZED).build();
+ public Response delete(@PathParam("uuid") UUID prnfbButtonUuid) {
+  PrnfbButton prnfbButton = this.settingsService.getButton(prnfbButtonUuid);
+  if (!this.userCheckService.isAdminAllowed(//
+    prnfbButton.getProjectKey().orNull()//
+    , prnfbButton.getRepositorySlug().orNull())) {
+   return status(UNAUTHORIZED)//
+     .build();
   }
-  this.settingsService.deleteButton(prnfbButton);
+  this.settingsService.deleteButton(prnfbButtonUuid);
   return status(OK).build();
  }
 
@@ -89,6 +97,7 @@ public class ButtonServlet {
   List<PrnfbButton> buttons = this.buttonsService.getButtons(repositoryId, pullRequestId);
   Iterable<PrnfbButton> allowedButtons = this.userCheckService.filterAllowed(buttons);
   List<ButtonDTO> dtos = toButtonDtoList(allowedButtons);
+  Collections.sort(dtos);
   return ok(dtos, APPLICATION_JSON).build();
  }
 
@@ -113,6 +122,7 @@ public class ButtonServlet {
   }
   List<PrnfbButton> buttons = this.settingsService.getButtons(projectKey, repositorySlug);
   List<ButtonDTO> dtos = toButtonDtoList(buttons);
+  Collections.sort(dtos);
   return ok(dtos, APPLICATION_JSON).build();
  }
 

@@ -3,6 +3,7 @@ package se.bjurr.prnfb.presentation;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -45,7 +46,7 @@ public class ButtonServletTest {
   initMocks(this);
   when(this.userCheckService.isViewAllowed())//
     .thenReturn(true);
-  when(this.userCheckService.isAdminAllowed())//
+  when(this.userCheckService.isAdminAllowed(anyString(), anyString()))//
     .thenReturn(true);
   this.sut = new ButtonServlet(this.buttonsService, this.settingsService, this.userCheckService);
 
@@ -70,12 +71,13 @@ public class ButtonServletTest {
 
  @Test
  public void testThatButtonCanBeDeleted() throws Exception {
-  ButtonDTO button = createButton();
+  when(this.settingsService.getButton(this.button1.getUuid()))//
+    .thenReturn(this.button1);
 
-  this.sut.delete(button.getUUID());
+  this.sut.delete(this.button1.getUuid());
 
   verify(this.settingsService)//
-    .deleteButton(button.getUUID());
+    .deleteButton(this.button1.getUuid());
  }
 
  @Test
@@ -88,7 +90,7 @@ public class ButtonServletTest {
   @SuppressWarnings("unchecked")
   Iterable<ButtonDTO> actualList = (Iterable<ButtonDTO>) actual.getEntity();
   assertThat(actualList)//
-    .containsExactly(this.buttonDto1, this.buttonDto2);
+    .containsOnly(this.buttonDto1, this.buttonDto2);
  }
 
  @Test
@@ -104,15 +106,15 @@ public class ButtonServletTest {
   @SuppressWarnings("unchecked")
   Iterable<ButtonDTO> actualList = (Iterable<ButtonDTO>) actual.getEntity();
   assertThat(actualList)//
-    .containsExactly(this.buttonDto1, this.buttonDto2);
+    .containsOnly(this.buttonDto1, this.buttonDto2);
  }
 
  @Test
  public void testThatButtonCanBeListedPerProject() throws Exception {
-  when(this.settingsService.getButtons(this.buttonDto1.getProjectKey()))//
+  when(this.settingsService.getButtons(this.buttonDto1.getProjectKey().orNull()))//
     .thenReturn(newArrayList(this.button1));
 
-  Response actual = this.sut.get(this.buttonDto1.getProjectKey());
+  Response actual = this.sut.get(this.buttonDto1.getProjectKey().orNull());
   @SuppressWarnings("unchecked")
   Iterable<ButtonDTO> actualList = (Iterable<ButtonDTO>) actual.getEntity();
 
@@ -122,10 +124,13 @@ public class ButtonServletTest {
 
  @Test
  public void testThatButtonCanBeListedPerProjectAndRepo() throws Exception {
-  when(this.settingsService.getButtons(this.buttonDto1.getProjectKey(), this.buttonDto1.getRepositorySlug()))//
+  when(
+    this.settingsService.getButtons(this.buttonDto1.getProjectKey().orNull(), this.buttonDto1.getRepositorySlug()
+      .orNull()))//
     .thenReturn(newArrayList(this.button1));
 
-  Response actual = this.sut.get(this.buttonDto1.getProjectKey(), this.buttonDto1.getRepositorySlug());
+  Response actual = this.sut
+    .get(this.buttonDto1.getProjectKey().orNull(), this.buttonDto1.getRepositorySlug().orNull());
   @SuppressWarnings("unchecked")
   Iterable<ButtonDTO> actualList = (Iterable<ButtonDTO>) actual.getEntity();
 

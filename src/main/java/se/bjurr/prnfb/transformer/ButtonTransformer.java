@@ -32,8 +32,8 @@ public class ButtonTransformer {
     buttonDto.getUUID(), //
     buttonDto.getName(), //
     buttonDto.getUserLevel(),//
-    buttonDto.getProjectKey(),//
-    buttonDto.getRepositorySlug());//
+    buttonDto.getProjectKey().orNull(),//
+    buttonDto.getRepositorySlug().orNull());//
  }
 
 }

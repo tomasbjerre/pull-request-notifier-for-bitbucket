@@ -9,6 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import se.bjurr.prnfb.service.UserCheckService;
+
 import com.atlassian.bitbucket.repository.Repository;
 import com.atlassian.bitbucket.repository.RepositoryService;
 import com.atlassian.sal.api.auth.LoginUriProvider;
@@ -25,12 +27,15 @@ public class GlobalAdminServletTest {
  private RepositoryService repositoryService;
  private GlobalAdminServlet sut;
  @Mock
+ private UserCheckService userCheckService;
+ @Mock
  private UserManager userManager;
 
  @Before
  public void before() {
   initMocks(this);
-  this.sut = new GlobalAdminServlet(this.userManager, this.loginUriProvider, this.renderer, this.repositoryService);
+  this.sut = new GlobalAdminServlet(this.userManager, this.loginUriProvider, this.renderer, this.repositoryService,
+    this.userCheckService);
  }
 
  @Test
