@@ -66,6 +66,10 @@ public class GlobalAdminServlet extends HttpServlet {
       "repository", repository.orNull(), //
       "isAdmin", isAdmin, //
       "isSystemAdmin", isSystemAdmin);
+   } else {
+    context = of( //
+      "isAdmin", isAdmin, //
+      "isSystemAdmin", isSystemAdmin);
    }
 
    response.setContentType("text/html;charset=UTF-8");

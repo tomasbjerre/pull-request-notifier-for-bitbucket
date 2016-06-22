@@ -3,9 +3,22 @@ define('plugin/prnfb/admin', [
  'aui',
  'plugin/prnfb/utils'
 ], function($, AJS, utils) {
- var settingsAdminUrl = AJS.contextPath() + "/rest/prnfb-admin/1.0/settings"; 
- var notificationsAdminUrl = AJS.contextPath() + "/rest/prnfb-admin/1.0/settings/notifications"; 
- var buttonsAdminUrl = AJS.contextPath() + "/rest/prnfb-admin/1.0/settings/buttons"; 
+ var settingsAdminUrlPostUrl = AJS.contextPath() + "/rest/prnfb-admin/1.0/settings"; 
+ var settingsAdminUrl = settingsAdminUrlPostUrl;
+
+ var notificationsAdminUrlPostUrl = AJS.contextPath() + "/rest/prnfb-admin/1.0/settings/notifications"; 
+ var notificationsAdminUrl = notificationsAdminUrlPostUrl;
+
+ var buttonsAdminUrlPostUrl = AJS.contextPath() + "/rest/prnfb-admin/1.0/settings/buttons"; 
+ var buttonsAdminUrl = buttonsAdminUrlPostUrl;
+
+ if ($('#prnfbRepositorySlug').length != 0) {
+  var projectKey = $('#prnfbProjectKey').val();
+  var repositorySlug = $('#prnfbRepositorySlug').val();
+
+  notificationsAdminUrl = notificationsAdminUrlPostUrl + '/projectKey/'+projectKey+'/repositorySlug/'+repositorySlug;
+  buttonsAdminUrl = buttonsAdminUrlPostUrl + '/projectKey/'+projectKey+'/repositorySlug/'+repositorySlug;
+ }
 
 
  $(document)
@@ -17,9 +30,9 @@ define('plugin/prnfb/admin', [
   });
 
  $(document).ready(function() {
-  utils.setupForm('#prnfbsettingsadmin', settingsAdminUrl);
-  utils.setupForms('#prnfbbuttonadmin', buttonsAdminUrl);
-  utils.setupForms('#prnfbnotificationadmin', notificationsAdminUrl);
+  utils.setupForm('#prnfbsettingsadmin', settingsAdminUrl, settingsAdminUrlPostUrl);
+  utils.setupForms('#prnfbbuttonadmin', buttonsAdminUrl ,buttonsAdminUrlPostUrl);
+  utils.setupForms('#prnfbnotificationadmin', notificationsAdminUrl, notificationsAdminUrlPostUrl);
  });
 });
 

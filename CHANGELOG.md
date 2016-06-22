@@ -2,7 +2,7 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
-## Unreleased
+## 2.24
 ### GitHub [#123](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/123) Question on the configuration permissions.
   Checking for admin permission on the repo/project 
 
@@ -10,7 +10,7 @@ Changelog of Pull Request Notifier for Bitbucket.
  * Hiding admin restriction levels, in buttons config, that the user does not have access to. So that the user cannot create buttons that the user cannot see.
  * Sorting notifications and buttons by name in REST API.
   
-  [8eb180033a79346](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/8eb180033a79346) Tomas Bjerre *2016-06-20 17:32:05*
+  [15d2bd2ed9f8d6b](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/15d2bd2ed9f8d6b) Tomas Bjerre *2016-06-20 17:37:21*
 
 ## 2.23
 ### GitHub [#122](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/122) Preserving configs when upgrading from stash 3.x to bitbucket 4.x

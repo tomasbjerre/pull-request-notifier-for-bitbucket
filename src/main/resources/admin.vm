@@ -24,6 +24,15 @@
 
 <body>
 
+ <!-- //-->
+ #if($repository)
+ <!-- //-->
+   <input type="hidden" id="prnfbProjectKey" name="projectKey" value="$repository.project.key" />
+   <input type="hidden" id="prnfbRepositorySlug" name="repositorySlug" value="$repository.slug" />
+   <!-- //-->
+#end
+   <!-- //-->
+
  <div class="statusresponse"></div>
 
 
@@ -84,7 +93,9 @@
    <li><b>${PULL_REQUEST_TO_REPO_SLUG}</b> Example: rep_1</li>
   </ul>
  </div>
- <a id="replace-text-trigger" data-replace-text="Read less" class="aui-expander-trigger" aria-controls="prnfb-expander-variables">Read more</a> #if(!$repository)
+ <a id="replace-text-trigger" data-replace-text="Read less" class="aui-expander-trigger" aria-controls="prnfb-expander-variables">Read more</a>
+ <!-- //-->
+ #if(!$repository)
  <!-- //-->
  <h3>Global settings</h3>
  <p>
@@ -147,7 +158,6 @@
  <!-- //-->
  #end
 
-
  <!-- //-->
  <h3>Buttons</h3>
  <p>
@@ -188,6 +198,7 @@
 
    <!-- //-->
    #end
+
 
    <fieldset class="group">
     <legend>

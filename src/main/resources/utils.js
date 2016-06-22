@@ -172,10 +172,10 @@ define('plugin/prnfb/utils', [
   $(formSelector).find('input[type=radio]').prop('checked', false);
  }
 
- function setupForm(formSelector, url) {
+ function setupForm(formSelector, url, postUrl) {
   $(formSelector).submit(function(e) {
    e.preventDefault();
-   postForm(url, formSelector, function() {});
+   postForm(postUrl, formSelector, function() {});
   });
 
   doSetupForm(formSelector, url);
@@ -188,7 +188,7 @@ define('plugin/prnfb/utils', [
   });
  }
 
- function setupForms(formSelector, restResource) {
+ function setupForms(formSelector, restResource, postUrl) {
 
   setupProjectAndRepoSettingsInForm($(formSelector));
 
@@ -214,7 +214,7 @@ define('plugin/prnfb/utils', [
   $(formSelector + ' [name=uuid]').change(function() {
    var changedTo = $(this).val();
    if (changedTo) {
-    doSetupForm(formSelector, restResource + '/' + changedTo);
+    doSetupForm(formSelector, postUrl + '/' + changedTo);
    } else {
     populateSelect();
    }
@@ -224,7 +224,7 @@ define('plugin/prnfb/utils', [
 
   $(formSelector).submit(function(e) {
    e.preventDefault();
-   postForm(restResource, formSelector, populateSelect);
+   postForm(postUrl, formSelector, populateSelect);
   });
 
   $(formSelector + ' button[name=delete]').click(function(e) {
