@@ -2,6 +2,14 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## 2.25
+### GitHub [#123](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/123) Question on the configuration permissions.
+  Only showing repo settings on repo admin page 
+
+ * Was also showing global settings, with "any" repo/project. Changing it to make implementation simpler.
+  
+  [2d290b7b9599ee1](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/2d290b7b9599ee1) Tomas Bjerre *2016-06-22 19:07:27*
+
 ## 2.24
 ### GitHub [#123](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/123) Question on the configuration permissions.
   Checking for admin permission on the repo/project 
