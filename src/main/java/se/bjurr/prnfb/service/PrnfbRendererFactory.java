@@ -9,6 +9,7 @@ import com.atlassian.bitbucket.auth.AuthenticationContext;
 import com.atlassian.bitbucket.pull.PullRequest;
 import com.atlassian.bitbucket.repository.RepositoryService;
 import com.atlassian.bitbucket.server.ApplicationPropertiesService;
+import com.atlassian.bitbucket.user.ApplicationUser;
 import com.atlassian.bitbucket.user.SecurityService;
 import com.google.common.base.Supplier;
 
@@ -29,7 +30,13 @@ public class PrnfbRendererFactory {
 
  public PrnfbRenderer create(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction,
    PrnfbNotification prnfbNotification, Map<PrnfbVariable, Supplier<String>> variables) {
-  return new PrnfbRenderer(pullRequest, pullRequestAction, this.authenticationContext.getCurrentUser(),
-    this.repositoryService, this.propertiesService, prnfbNotification, variables, this.securityService);
+  return create(pullRequest, pullRequestAction, prnfbNotification, variables,
+    this.authenticationContext.getCurrentUser());
+ }
+
+ public PrnfbRenderer create(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction,
+   PrnfbNotification prnfbNotification, Map<PrnfbVariable, Supplier<String>> variables, ApplicationUser currentUser) {
+  return new PrnfbRenderer(pullRequest, pullRequestAction, currentUser, this.repositoryService, this.propertiesService,
+    prnfbNotification, variables, this.securityService);
  }
 }

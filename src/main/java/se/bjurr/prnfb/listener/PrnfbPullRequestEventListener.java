@@ -235,7 +235,7 @@ public class PrnfbPullRequestEventListener {
    PrnfbPullRequestAction action = fromPullRequestEvent(pullRequestEvent, notification);
    Map<PrnfbVariable, Supplier<String>> variables = populateVariables(pullRequestEvent);
    PrnfbRenderer renderer = this.prnfbRendererFactory.create(pullRequestEvent.getPullRequest(), action, notification,
-     variables);
+     variables, pullRequestEvent.getUser());
    notify(notification, action, pullRequestEvent.getPullRequest(), renderer, clientKeyStore,
      settings.isShouldAcceptAnyCertificate());
   }

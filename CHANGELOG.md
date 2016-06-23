@@ -2,6 +2,19 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## Unreleased
+### GitHub [#124](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/124) PR Updated not triggering a Job
+  Using ApplicationUser from PR event 
+
+ * Was taking it from AuthenticationContext when a RESCOPED event occured. At that time the getCurrentUser() returns null.
+  
+  [b70b9d0e3b4091f](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/b70b9d0e3b4091f) Tomas Bjerre *2016-06-23 14:44:29*
+
+### No issue
+  Building with BBS 4.7.1
+  
+  [3e9d67a80f506cc](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/3e9d67a80f506cc) Tomas Bjerre *2016-06-22 19:29:28*
+
 ## 2.25
 ### GitHub [#123](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/123) Question on the configuration permissions.
   Only showing repo settings on repo admin page 

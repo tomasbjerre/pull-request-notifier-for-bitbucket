@@ -130,7 +130,7 @@ public class PrnfbPullRequestEventListenerTest {
   when(this.settingsService.getNotifications())//
     .thenReturn(notifications);
 
-  when(this.prnfbRendererFactory.create(any(), any(), any(), any()))//
+  when(this.prnfbRendererFactory.create(any(), any(), any(), any(), any()))//
     .thenReturn(this.renderer);
   when(this.renderer.render(any(), any(), any(), any()))//
     .thenAnswer(new Answer<String>() {
