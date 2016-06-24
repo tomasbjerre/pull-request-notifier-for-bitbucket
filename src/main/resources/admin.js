@@ -12,12 +12,12 @@ define('plugin/prnfb/admin', [
  var buttonsAdminUrlPostUrl = AJS.contextPath() + "/rest/prnfb-admin/1.0/settings/buttons"; 
  var buttonsAdminUrl = buttonsAdminUrlPostUrl;
 
- if ($('#prnfbRepositorySlug').length != 0) {
+ if ($('#prnfbRepositorySlug').length !== 0) {
   var projectKey = $('#prnfbProjectKey').val();
   var repositorySlug = $('#prnfbRepositorySlug').val();
 
-  notificationsAdminUrl = notificationsAdminUrlPostUrl + '/projectKey/'+projectKey+'/repositorySlug/'+repositorySlug;
-  buttonsAdminUrl = buttonsAdminUrlPostUrl + '/projectKey/'+projectKey+'/repositorySlug/'+repositorySlug;
+  notificationsAdminUrl = notificationsAdminUrlPostUrl + '/projectKey/' + projectKey + '/repositorySlug/' + repositorySlug;
+  buttonsAdminUrl = buttonsAdminUrlPostUrl + '/projectKey/' + projectKey + '/repositorySlug/' + repositorySlug;
  }
 
 
@@ -31,7 +31,7 @@ define('plugin/prnfb/admin', [
 
  $(document).ready(function() {
   utils.setupForm('#prnfbsettingsadmin', settingsAdminUrl, settingsAdminUrlPostUrl);
-  utils.setupForms('#prnfbbuttonadmin', buttonsAdminUrl ,buttonsAdminUrlPostUrl);
+  utils.setupForms('#prnfbbuttonadmin', buttonsAdminUrl, buttonsAdminUrlPostUrl);
   utils.setupForms('#prnfbnotificationadmin', notificationsAdminUrl, notificationsAdminUrlPostUrl);
  });
 });

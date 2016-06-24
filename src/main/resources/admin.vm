@@ -27,11 +27,11 @@
  <!-- //-->
  #if($repository)
  <!-- //-->
-   <input type="hidden" id="prnfbProjectKey" name="projectKey" value="$repository.project.key" />
-   <input type="hidden" id="prnfbRepositorySlug" name="repositorySlug" value="$repository.slug" />
-   <!-- //-->
-#end
-   <!-- //-->
+ <input type="hidden" id="prnfbProjectKey" name="projectKey" value="$repository.project.key" />
+ <input type="hidden" id="prnfbRepositorySlug" name="repositorySlug" value="$repository.slug" />
+ <!-- //-->
+ #end
+ <!-- //-->
 
  <div class="statusresponse"></div>
 
