@@ -8,32 +8,17 @@ define('plugin/prnfb/pr-triggerbutton', [
 
  var waiting = '<span class="aui-icon aui-icon-wait aui-icon-small">Wait</span>';
 
- var $buttonArea = $(".triggerManualNotification").parent();
- var $buttonTemplate = $(".triggerManualNotification");
- $buttonTemplate.empty().remove();
-
- $buttonDropdownArea = $('<div id="triggerManualNotification-actions" class="aui-style-default aui-dropdown2"><ul class="aui-list-truncate"></ul></div>');
- $buttonDropdownItems = $buttonDropdownArea.find("ul");
-
- var $buttonDropdownParent = $buttonTemplate.clone();
- $buttonDropdownParent.html("Actions");
- $buttonDropdownParent.attr("aria-owns", "triggerManualNotification-actions");
- $buttonDropdownParent.attr("aria-haspopup", "true");
- $buttonDropdownParent.addClass("aui-style-default aui-dropdown2-trigger");
- $buttonArea.append($buttonDropdownParent);
- $buttonDropdownParent.hide();
-
- $("body").append($buttonDropdownArea);
+ var $buttonArea = $(".triggerManualNotification").closest('ul');
+ $(".triggerManualNotification").remove();
 
  function loadSettingsAndShowButtons() {
   var hasButtons = false;
-  $buttonDropdownItems.empty();
   $.get(buttonsAdminUrl + '/repository/' + pageState.getRepository().id + '/pullrequest/' + pageState.getPullRequest().id, function(settings) {
    settings.forEach(function(item) {
     hasButtons = true;
 
-    var $buttonDropdownItem = $('<li><a class="aui-icon-container" href="#">' + item.name + '</a></li>');
-    $buttonDropdownItem.find("a").click(function() {
+    var $buttonDropdownItem = $('<li><button class="aui-button aui-button-link" role="menuitem">' + item.name + '</button></li>');
+    $buttonDropdownItem.find("button").click(function() {
      var $this = $(this);
      $this.attr("disabled", "disabled");
      $this.attr("aria-disabled", "true");
@@ -48,7 +33,7 @@ define('plugin/prnfb/pr-triggerbutton', [
      });
     });
 
-    $buttonDropdownItems.append($buttonDropdownItem);
+    $buttonArea.append($buttonDropdownItem);
    });
 
    if (hasButtons) {

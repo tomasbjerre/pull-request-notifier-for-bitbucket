@@ -6,7 +6,7 @@ Changelog of Pull Request Notifier for Bitbucket.
 ### No issue
   Latest changelog plugin
   
-  [a2ae249fec5b6f1](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/a2ae249fec5b6f1) Tomas Bjerre *2016-06-24 09:38:01*
+  [daf75d6290a7d25](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/daf75d6290a7d25) Tomas Bjerre *2016-06-24 21:25:53*
 
 ## 2.26
 ### GitHub [#124](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/124) PR Updated not triggering a Job
