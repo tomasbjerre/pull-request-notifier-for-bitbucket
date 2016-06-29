@@ -2,7 +2,12 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
-## Unreleased
+## 2.27
+### GitHub [#128](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/128) Trigger button not showing up.
+  Making buttons compatible with 4.7.1
+  
+  [f88dcfea158ea3f](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/f88dcfea158ea3f) Tomas Bjerre *2016-06-29 18:26:13*
+
 ### No issue
   Latest changelog plugin
   

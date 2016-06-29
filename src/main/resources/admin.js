@@ -11,7 +11,7 @@ define('plugin/prnfb/admin', [
 
  var buttonsAdminUrlPostUrl = AJS.contextPath() + "/rest/prnfb-admin/1.0/settings/buttons"; 
  var buttonsAdminUrl = buttonsAdminUrlPostUrl;
-console.log("asd");
+
  if ($('#prnfbRepositorySlug').length !== 0) {
   var projectKey = $('#prnfbProjectKey').val();
   var repositorySlug = $('#prnfbRepositorySlug').val();
