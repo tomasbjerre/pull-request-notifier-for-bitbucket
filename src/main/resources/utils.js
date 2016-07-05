@@ -52,7 +52,7 @@ define('plugin/prnfb/utils', [
  }
 
  function getProjects(whenDone) {
-  var projectsUrl = AJS.contextPath() + "/rest/api/1.0/projects?limit=999999"; 
+  var projectsUrl = AJS.contextPath() + "/rest/api/1.0/projects?limit=999999";
   $.getJSON(projectsUrl, function(data) {
    whenDone(data);
   });
@@ -83,7 +83,7 @@ define('plugin/prnfb/utils', [
    whenDone();
    return;
   }
-  var reposUrl = AJS.contextPath() + "/rest/api/1.0/projects/" + projectKey + "/repos?limit=999999"; 
+  var reposUrl = AJS.contextPath() + "/rest/api/1.0/projects/" + projectKey + "/repos?limit=999999";
   $.getJSON(reposUrl, function(data) {
    whenDone(data);
   });

@@ -2,6 +2,20 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## Unreleased
+### GitHub [#129](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/129) Unable to use wildcard for &#39;Repository&#39;
+  Avoiding crash when administring global admin page as admin 
+
+ * Did not correctly check for repo level admin privilegies.
+  
+  [7404bb4bb5016c7](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/7404bb4bb5016c7) Tomas Bjerre *2016-07-05 20:31:25*
+
+## 2.28
+### No issue
+  Doc
+  
+  [620ae59a58aaa9d](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/620ae59a58aaa9d) Tomas Bjerre *2016-06-29 18:47:19*
+
 ## 2.27
 ### GitHub [#128](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/128) Trigger button not showing up.
   Making buttons compatible with 4.7.1
@@ -247,12 +261,12 @@ and a lot easier to add multiple actions.
 ### GitHub [#93](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/93) Get reviewers of pr
   update: update changelog.md and readme.md.
   
-  [60732c85dbda9a8](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/60732c85dbda9a8) 张盟 *2016-01-25 14:24:07*
+  [60732c85dbda9a8](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/60732c85dbda9a8) ?? *2016-01-25 14:24:07*
 
 ### No issue
   update: support reviewers list
   
-  [fcd612e0d9512a2](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/fcd612e0d9512a2) 张盟 *2016-01-25 09:15:49*
+  [fcd612e0d9512a2](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/fcd612e0d9512a2) ?? *2016-01-25 09:15:49*
 
   Correcting link to blog post in README.md
 
@@ -751,6 +765,8 @@ java.util.Base64 is available since 1.8 and javax.xml.bind.DatatypeConverter sin
   
   [36f99c11d31c763](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/36f99c11d31c763) Raimana *2015-04-01 09:24:20*
 
+## 1.1
+### No issue
   Adding support for PULL_REQUEST_FROM/TO_HASH, filters and fixing authentication bug
 * Making it compatible with Stash 2.12.0
 * Some more documentation

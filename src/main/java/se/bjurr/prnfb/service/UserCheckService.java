@@ -2,6 +2,7 @@ package se.bjurr.prnfb.service;
 
 import static com.atlassian.bitbucket.permission.Permission.PROJECT_ADMIN;
 import static com.atlassian.bitbucket.permission.Permission.REPO_ADMIN;
+import static com.google.common.base.Strings.emptyToNull;
 import static com.google.common.collect.Iterables.filter;
 import static se.bjurr.prnfb.settings.USER_LEVEL.ADMIN;
 import static se.bjurr.prnfb.settings.USER_LEVEL.EVERYONE;
@@ -54,6 +55,10 @@ public class UserCheckService {
   if (isAdmin) {
    return isAdmin;
   }
+
+  projectKey = emptyToNull(projectKey);
+  repositorySlug = emptyToNull(repositorySlug);
+
   if (projectKey != null && repositorySlug == null) {
    Project project = this.projectService.getByKey(projectKey);
    return this.permissionService.hasProjectPermission(project, PROJECT_ADMIN);

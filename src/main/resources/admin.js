@@ -3,13 +3,13 @@ define('plugin/prnfb/admin', [
  'aui',
  'plugin/prnfb/utils'
 ], function($, AJS, utils) {
- var settingsAdminUrlPostUrl = AJS.contextPath() + "/rest/prnfb-admin/1.0/settings"; 
+ var settingsAdminUrlPostUrl = AJS.contextPath() + "/rest/prnfb-admin/1.0/settings";
  var settingsAdminUrl = settingsAdminUrlPostUrl;
 
- var notificationsAdminUrlPostUrl = AJS.contextPath() + "/rest/prnfb-admin/1.0/settings/notifications"; 
+ var notificationsAdminUrlPostUrl = AJS.contextPath() + "/rest/prnfb-admin/1.0/settings/notifications";
  var notificationsAdminUrl = notificationsAdminUrlPostUrl;
 
- var buttonsAdminUrlPostUrl = AJS.contextPath() + "/rest/prnfb-admin/1.0/settings/buttons"; 
+ var buttonsAdminUrlPostUrl = AJS.contextPath() + "/rest/prnfb-admin/1.0/settings/buttons";
  var buttonsAdminUrl = buttonsAdminUrlPostUrl;
 
  if ($('#prnfbRepositorySlug').length !== 0) {
