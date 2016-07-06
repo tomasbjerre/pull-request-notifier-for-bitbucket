@@ -8,7 +8,12 @@ Changelog of Pull Request Notifier for Bitbucket.
 
  * Did not correctly check for repo level admin privilegies.
   
-  [7404bb4bb5016c7](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/7404bb4bb5016c7) Tomas Bjerre *2016-07-05 20:31:25*
+  [067014dcc6988f2](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/067014dcc6988f2) Tomas Bjerre *2016-07-05 20:33:49*
+
+### GitHub [#130](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/130) Cannot delete Buttons or Notifications
+  Correcting deletion of buttons on repo level
+  
+  [3ae702f86765ec4](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/3ae702f86765ec4) Tomas Bjerre *2016-07-06 04:44:14*
 
 ## 2.28
 ### No issue

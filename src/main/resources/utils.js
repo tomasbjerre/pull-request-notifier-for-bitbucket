@@ -232,7 +232,7 @@ define('plugin/prnfb/utils', [
    var uuid = $(formSelector).find('[name=uuid]').val();
    if (uuid) {
     $.ajax({
-     url: restResource + '/' + uuid,
+     url: postUrl + '/' + uuid,
      type: 'DELETE',
      success: function(result) {
       populateSelect();

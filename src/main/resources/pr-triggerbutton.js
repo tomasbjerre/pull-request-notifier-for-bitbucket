@@ -4,7 +4,7 @@ define('plugin/prnfb/pr-triggerbutton', [
  'bitbucket/util/state'
 ], function($, AJS, pageState) {
 
- var buttonsAdminUrl = AJS.contextPath() + "/rest/prnfb-admin/1.0/settings/buttons"; 
+ var buttonsAdminUrl = AJS.contextPath() + "/rest/prnfb-admin/1.0/settings/buttons";
 
  var waiting = '<span class="aui-icon aui-icon-wait aui-icon-small">Wait</span>';
 
