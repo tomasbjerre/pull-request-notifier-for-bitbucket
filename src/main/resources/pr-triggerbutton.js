@@ -12,11 +12,8 @@ define('plugin/prnfb/pr-triggerbutton', [
  $(".triggerManualNotification").remove();
 
  function loadSettingsAndShowButtons() {
-  var hasButtons = false;
   $.get(buttonsAdminUrl + '/repository/' + pageState.getRepository().id + '/pullrequest/' + pageState.getPullRequest().id, function(settings) {
    settings.forEach(function(item) {
-    hasButtons = true;
-
     var $buttonDropdownItem = $('<li><button class="aui-button aui-button-link" role="menuitem">' + item.name + '</button></li>');
     $buttonDropdownItem.find("button").click(function() {
      var $this = $(this);
@@ -36,9 +33,6 @@ define('plugin/prnfb/pr-triggerbutton', [
     $buttonArea.append($buttonDropdownItem);
    });
 
-   if (hasButtons) {
-    $buttonDropdownParent.show();
-   }
   });
  }
 
@@ -47,7 +41,6 @@ define('plugin/prnfb/pr-triggerbutton', [
  //If a reviewer approves the PR, then a button may become visible
  $('.aui-button.approve').click(function() {
   setTimeout(function() {
-   $buttonDropdownParent.hide();
    loadSettingsAndShowButtons();
   }, 1000);
  });

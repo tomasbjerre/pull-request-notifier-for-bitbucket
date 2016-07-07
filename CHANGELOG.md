@@ -2,7 +2,7 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
-## Unreleased
+## 2.29
 ### GitHub [#129](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/129) Unable to use wildcard for &#39;Repository&#39;
   Avoiding crash when administring global admin page as admin 
 
@@ -13,7 +13,7 @@ Changelog of Pull Request Notifier for Bitbucket.
 ### GitHub [#130](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/130) Cannot delete Buttons or Notifications
   Correcting deletion of buttons on repo level
   
-  [3ae702f86765ec4](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/3ae702f86765ec4) Tomas Bjerre *2016-07-06 04:44:14*
+  [60c84463ee5d38a](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/60c84463ee5d38a) Tomas Bjerre *2016-07-06 19:59:41*
 
 ## 2.28
 ### No issue
