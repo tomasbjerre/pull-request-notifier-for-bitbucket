@@ -2,6 +2,27 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## Unreleased
+### GitHub [#131](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/131) Buttons do not appear [4.3.1]
+  Making buttons compatible with 4.0.0 to 4.3.x 
+
+ * The HTML structure of how buttons are presented in Bitbucket Server was changed in 4.4.0.
+  
+  [b792c431985d106](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/b792c431985d106) Tomas Bjerre *2016-07-09 06:48:42*
+
+### No issue
+  Adding script that exports resources and starts server
+
+ * So that web resources, like javascript, can be edited while server is running.
+  
+  [d6a4dfbc24e8967](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/d6a4dfbc24e8967) Tomas Bjerre *2016-07-09 06:08:13*
+
+## 2.30
+### GitHub [#128](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/128) Trigger button not showing up.
+  Removing falty code left from
+  
+  [10becd4a18bd77b](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/10becd4a18bd77b) Tomas Bjerre *2016-07-07 15:36:26*
+
 ## 2.29
 ### GitHub [#129](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/129) Unable to use wildcard for &#39;Repository&#39;
   Avoiding crash when administring global admin page as admin 

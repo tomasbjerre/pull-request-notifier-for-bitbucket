@@ -9,13 +9,24 @@ define('plugin/prnfb/pr-triggerbutton', [
  var waiting = '<span class="aui-icon aui-icon-wait aui-icon-small">Wait</span>';
 
  var $buttonArea = $(".triggerManualNotification").closest('ul');
+ var buttonTemplate = function(name) {
+  return $('<li><button class="aui-button aui-button-link" role="menuitem">' + name + '</button></li>'); 
+ }
+ if ($buttonArea.length === 0) {
+  //Before 4.4.0
+  $buttonArea = $(".triggerManualNotification").parent();
+  buttonTemplate = function(name) {
+   return $('<button class="aui-button">' + name + '</button>'); 
+  }
+ }
+
  $(".triggerManualNotification").remove();
 
  function loadSettingsAndShowButtons() {
   $.get(buttonsAdminUrl + '/repository/' + pageState.getRepository().id + '/pullrequest/' + pageState.getPullRequest().id, function(settings) {
    settings.forEach(function(item) {
-    var $buttonDropdownItem = $('<li><button class="aui-button aui-button-link" role="menuitem">' + item.name + '</button></li>');
-    $buttonDropdownItem.find("button").click(function() {
+    var $buttonDropdownItem = buttonTemplate(item.name);
+    $buttonDropdownItem.click(function() {
      var $this = $(this);
      $this.attr("disabled", "disabled");
      $this.attr("aria-disabled", "true");
