@@ -2,13 +2,13 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
-## Unreleased
+## 2.31
 ### GitHub [#131](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/131) Buttons do not appear [4.3.1]
   Making buttons compatible with 4.0.0 to 4.3.x 
 
  * The HTML structure of how buttons are presented in Bitbucket Server was changed in 4.4.0.
   
-  [b792c431985d106](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/b792c431985d106) Tomas Bjerre *2016-07-09 06:48:42*
+  [c30cdfb4431bf16](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/c30cdfb4431bf16) Tomas Bjerre *2016-07-09 06:59:15*
 
 ### No issue
   Adding script that exports resources and starts server
@@ -287,12 +287,12 @@ and a lot easier to add multiple actions.
 ### GitHub [#93](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/93) Get reviewers of pr
   update: update changelog.md and readme.md.
   
-  [60732c85dbda9a8](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/60732c85dbda9a8) ?? *2016-01-25 14:24:07*
+  [60732c85dbda9a8](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/60732c85dbda9a8) 张盟 *2016-01-25 14:24:07*
 
 ### No issue
   update: support reviewers list
   
-  [fcd612e0d9512a2](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/fcd612e0d9512a2) ?? *2016-01-25 09:15:49*
+  [fcd612e0d9512a2](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/fcd612e0d9512a2) 张盟 *2016-01-25 09:15:49*
 
   Correcting link to blog post in README.md
 
@@ -791,8 +791,6 @@ java.util.Base64 is available since 1.8 and javax.xml.bind.DatatypeConverter sin
   
   [36f99c11d31c763](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/36f99c11d31c763) Raimana *2015-04-01 09:24:20*
 
-## 1.1
-### No issue
   Adding support for PULL_REQUEST_FROM/TO_HASH, filters and fixing authentication bug
 * Making it compatible with Stash 2.12.0
 * Some more documentation

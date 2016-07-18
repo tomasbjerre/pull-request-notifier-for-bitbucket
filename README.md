@@ -96,7 +96,7 @@ The ${PULL_REQUEST_USER...} contains information about the user who issued the e
 
 You may want to use [Violation Comments to Stash plugin](https://wiki.jenkins-ci.org/display/JENKINS/Violation+Comments+to+Stash+Plugin) and/or [StashNotifier plugin](https://wiki.jenkins-ci.org/display/JENKINS/StashNotifier+Plugin) to report results back to Bitbucket.
 
-### Rest
+### REST
 Some rest resources are available. You can figure out the JSON structure by looking at the [DTO:s](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/tree/master/src/main/java/se/bjurr/prnfb/presentation/dto).
 
 * `/bitbucket/rest/prnfb-admin/1.0/settings`
@@ -152,6 +152,22 @@ http://server/job/theJob/buildWithParameters?token=TOKEN&PARAMETER=Value
 If you are using a CSRF protection in Jenkins, you can use the **Injection URL** feature.
 * Set **Injection URL** field to `http://JENKINS/crumbIssuer/api/xml?xpath=//crumb/text()`. You may get an error like *primitive XPath result sets forbidden; implement jenkins.security.SecureRequester*. If so, you can set Injection URL to `http://JENKINS/crumbIssuer/api/xml?xpath=//crumb` in combination with regular expression `<crumb>([^<]*)</crumb>`. Or a third option is to checkout [this](https://wiki.jenkins-ci.org/display/JENKINS/Secure+Requester+Whitelist+Plugin) Jenkins plugin.
 * In the headers section, set header **.crumb** with value **${INJECTION_URL_VALUE}**.
+
+## Issues
+If things don't work as you expect, perhaps you should file an issue. But first, try troubleshooting it and provide as much info as possible. Here are some things that may help if added to an issue.
+
+ * Stack traces in Bitbucket Server log file.
+ * Any browser console log messages, you can find it in Developer Tools in Chome by pressing F12.
+ * Screenshot of plugin configuration in your issue.
+ * Your configuration.
+   You can get it with something like this:
+   
+   `curl -u admin:admin 'http://localhost:7990/bitbucket/rest/prnfb-admin/1.0/settings' -H 'Accept: application/json, text/javascript, */*; q=0.01'`
+   
+   `curl -u admin:admin 'http://localhost:7990/bitbucket/rest/prnfb-admin/1.0/settings/notifications' -H 'Accept: application/json, text/javascript, */*; q=0.01'`.
+   
+   `curl -u admin:admin 'http://localhost:7990/bitbucket/rest/prnfb-admin/1.0/settings/buttons' -H 'Accept: application/json, text/javascript, */*; q=0.01'`.
+ * If the system you are trying to notify does not seem to get notified you may check that the triggered URL looks as expected. You can do that by setting up a webserver, let the plugin invoke that with same parameters and then look at its log files to se the requested URL. Or notify *http://cogi.bjurr.se/?${...}* and I can check my logs and tell you what the URL looks like.
 
 ## Developer instructions
 There are some scripts to help working with the plugin.
