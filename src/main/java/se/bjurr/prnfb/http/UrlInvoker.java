@@ -87,7 +87,7 @@ public class UrlInvoker {
  private Optional<String> proxyPassword = absent();
  private Optional<Integer> proxyPort = absent();
  private Optional<String> proxyUser = absent();
- private String responseString;
+ private HttpResponse response;
 
  private boolean shouldAcceptAnyCertificate;
 
@@ -137,19 +137,19 @@ public class UrlInvoker {
   return this.proxyUser;
  }
 
- public String getResponseString() {
-  return this.responseString;
+ public HttpResponse getResponse() {
+  return this.response;
  }
 
  public InputStream getResponseStringStream() {
-  return new ByteArrayInputStream(getResponseString().getBytes(UTF_8));
+  return new ByteArrayInputStream(getResponse().getContent().getBytes(UTF_8));
  }
 
  public String getUrlParam() {
   return this.urlParam;
  }
 
- public void invoke() {
+ public HttpResponse invoke() {
   LOG.info("Url: \"" + this.urlParam + "\"");
 
   HttpRequestBase httpRequestBase = newHttpRequestBase();
@@ -160,12 +160,14 @@ public class UrlInvoker {
   configureSsl(builder);
   configureProxy(builder);
 
-  this.responseString = doInvoke(httpRequestBase, builder);
-  LOG.debug(this.responseString);
+  this.response = doInvoke(httpRequestBase, builder);
+  LOG.debug(this.response.getContent());
+  
+  return this.response;
  }
 
- public void setResponseString(String responseString) {
-  this.responseString = responseString;
+ public void setResponse(HttpResponse response) {
+  this.response = response;
  }
 
  @VisibleForTesting
@@ -330,7 +332,7 @@ public class UrlInvoker {
  }
 
  @VisibleForTesting
- String doInvoke(HttpRequestBase httpRequestBase, HttpClientBuilder builder) {
+ HttpResponse doInvoke(HttpRequestBase httpRequestBase, HttpClientBuilder builder) {
   CloseableHttpResponse httpResponse = null;
   try {
    httpResponse = builder//
@@ -338,7 +340,9 @@ public class UrlInvoker {
      .execute(httpRequestBase);
 
    HttpEntity entity = httpResponse.getEntity();
-   return EntityUtils.toString(entity, UTF_8);
+   return new HttpResponse(
+		httpResponse.getStatusLine().getStatusCode(), 
+		EntityUtils.toString(entity, UTF_8));
   } catch (final Exception e) {
    LOG.error("", e);
   } finally {

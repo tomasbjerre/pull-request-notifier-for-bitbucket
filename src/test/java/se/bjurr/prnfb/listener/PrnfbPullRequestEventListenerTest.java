@@ -31,6 +31,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import se.bjurr.prnfb.http.ClientKeyStore;
+import se.bjurr.prnfb.http.HttpResponse;
 import se.bjurr.prnfb.http.Invoker;
 import se.bjurr.prnfb.http.UrlInvoker;
 import se.bjurr.prnfb.service.PrnfbRenderer;
@@ -88,8 +89,11 @@ public class PrnfbPullRequestEventListenerTest {
     this.executorService, this.settingsService);
   setInvoker(new Invoker() {
    @Override
-   public void invoke(UrlInvoker urlInvoker) {
+   public HttpResponse invoke(UrlInvoker urlInvoker) {
+    HttpResponse response = new HttpResponse(200, "");
+    urlInvoker.setResponse(response);
     PrnfbPullRequestEventListenerTest.this.invokedUrls.add(urlInvoker);
+    return response;
    }
   });
 

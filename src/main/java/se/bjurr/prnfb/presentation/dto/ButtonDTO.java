@@ -18,6 +18,7 @@ public class ButtonDTO implements Comparable<ButtonDTO> {
  private String name;
  private String projectKey;
  private String repositorySlug;
+ private String confirmation;
  private USER_LEVEL userLevel;
  private UUID uuid;
 
@@ -62,6 +63,13 @@ public class ButtonDTO implements Comparable<ButtonDTO> {
   if (this.userLevel != other.userLevel) {
    return false;
   }
+  if (this.confirmation == null) {
+   if (other.confirmation != null) {
+    return false;
+   }
+  } else if (!this.confirmation.equals(other.confirmation)) {
+   return false;
+  }
   if (this.uuid == null) {
    if (other.uuid != null) {
     return false;
@@ -88,6 +96,10 @@ public class ButtonDTO implements Comparable<ButtonDTO> {
   return this.userLevel;
  }
 
+ public String getConfirmation() {
+  return this.confirmation;
+ }
+
  public UUID getUuid() {
   return this.uuid;
  }
@@ -105,6 +117,7 @@ public class ButtonDTO implements Comparable<ButtonDTO> {
   result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
   result = prime * result + ((this.userLevel == null) ? 0 : this.userLevel.hashCode());
   result = prime * result + ((this.uuid == null) ? 0 : this.uuid.hashCode());
+  result = prime * result + ((this.confirmation == null) ? 0 : this.confirmation.hashCode());
   return result;
  }
 
@@ -128,10 +141,22 @@ public class ButtonDTO implements Comparable<ButtonDTO> {
   this.uuid = uuid;
  }
 
+ public void setConfirmation(String confirmation) {
+  if (confirmation == null) {
+    this.confirmation = "off";
+  }
+  else if (confirmation.equalsIgnoreCase("on")) {
+    this.confirmation = "on";
+  }
+  else {
+    this.confirmation = "off";
+  }
+ }
+
  @Override
  public String toString() {
   return "ButtonDTO [name=" + this.name + ", userLevel=" + this.userLevel + ", uuid=" + this.uuid + ", repositorySlug="
-    + this.repositorySlug + ", projectKey=" + this.projectKey + "]";
+    + this.repositorySlug + ", projectKey=" + this.projectKey + ", confirmation=" + this.confirmation + "]";
  }
 
 }

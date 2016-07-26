@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 
 import se.bjurr.prnfb.http.ClientKeyStore;
+import se.bjurr.prnfb.http.HttpResponse;
 import se.bjurr.prnfb.http.Invoker;
 import se.bjurr.prnfb.http.UrlInvoker;
 import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
@@ -73,8 +74,10 @@ public class PrnfbRendererTest {
 
   PrnfbVariable.setInvoker(new Invoker() {
    @Override
-   public void invoke(UrlInvoker toInvoke) {
-    toInvoke.setResponseString("theResponse");
+   public HttpResponse invoke(UrlInvoker toInvoke) {
+	HttpResponse response = new HttpResponse(200, "theResponse");
+    toInvoke.setResponse(response);
+    return response;
    }
   });
  }

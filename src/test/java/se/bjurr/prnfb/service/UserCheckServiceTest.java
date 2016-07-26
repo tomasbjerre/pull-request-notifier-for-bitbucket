@@ -63,9 +63,9 @@ public class UserCheckServiceTest {
   when(this.userManager.isAdmin(this.userKey))//
     .thenReturn(false);
 
-  PrnfbButton button1 = new PrnfbButton(null, "title1", ADMIN, "p1", "r1");
-  PrnfbButton button2 = new PrnfbButton(null, "title2", EVERYONE, "p1", "r1");
-  PrnfbButton button3 = new PrnfbButton(null, "title3", SYSTEM_ADMIN, "p1", "r1");
+  PrnfbButton button1 = new PrnfbButton(null, "title1", ADMIN, "off", "p1", "r1");
+  PrnfbButton button2 = new PrnfbButton(null, "title2", EVERYONE, "off", "p1", "r1");
+  PrnfbButton button3 = new PrnfbButton(null, "title3", SYSTEM_ADMIN, "off", "p1", "r1");
   List<PrnfbButton> buttons = newArrayList(button1, button2, button3);
 
   Iterable<PrnfbButton> onlyAllowed = this.sut.filterAllowed(buttons);
@@ -82,7 +82,7 @@ public class UserCheckServiceTest {
     .thenReturn(this.userKey);
   when(this.userManager.isSystemAdmin(this.userKey))//
     .thenReturn(true);
-  PrnfbButton candidate = new PrnfbButton(null, "title", ADMIN, "p1", "r1");
+  PrnfbButton candidate = new PrnfbButton(null, "title", ADMIN, "off", "p1", "r1");
   assertThat(this.sut.isAllowedUseButton(candidate))//
     .isTrue();
 

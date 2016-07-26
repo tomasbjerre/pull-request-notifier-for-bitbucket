@@ -5,12 +5,14 @@ import static javax.ws.rs.core.Response.ok;
 import static javax.ws.rs.core.Response.status;
 import static javax.ws.rs.core.Response.Status.OK;
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
+import static se.bjurr.prnfb.transformer.ButtonTransformer.toTriggerResultDto;
 import static se.bjurr.prnfb.transformer.ButtonTransformer.toButtonDto;
 import static se.bjurr.prnfb.transformer.ButtonTransformer.toButtonDtoList;
 import static se.bjurr.prnfb.transformer.ButtonTransformer.toPrnfbButton;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.ws.rs.Consumes;
@@ -22,7 +24,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+import se.bjurr.prnfb.http.HttpResponse;
 import se.bjurr.prnfb.presentation.dto.ButtonDTO;
+import se.bjurr.prnfb.presentation.dto.TriggerResultDTO;
 import se.bjurr.prnfb.service.ButtonsService;
 import se.bjurr.prnfb.service.SettingsService;
 import se.bjurr.prnfb.service.UserCheckService;
@@ -148,9 +152,10 @@ public class ButtonServlet {
   if (!this.userCheckService.isAllowedUseButton(button)) {
    return status(UNAUTHORIZED).build();
   }
-  this.buttonsService.handlePressed(repositoryId, pullRequestId, buttionUuid);
+  Map<String, HttpResponse> results = this.buttonsService.handlePressed(repositoryId, pullRequestId, buttionUuid);
 
-  return status(OK).build();
+  TriggerResultDTO dto = toTriggerResultDto(button, results);
+  return ok(dto, APPLICATION_JSON).build();
  }
 
 }
