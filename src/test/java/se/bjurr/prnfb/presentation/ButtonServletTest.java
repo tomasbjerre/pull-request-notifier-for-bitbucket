@@ -183,13 +183,14 @@ public class ButtonServletTest {
   button.setName("title");
   button.setUserLevel(EVERYONE);
   button.setUuid(UUID.randomUUID());
+  button.setConfirmation("off");
   button.setProjectKey("p1");
   button.setRepositorySlug("r1");
   return button;
  }
 
  private PrnfbButton createPrnfbButton(ButtonDTO button) {
-  PrnfbButton prnfbButton = new PrnfbButton(button.getUUID(), button.getName(), button.getUserLevel(), "p1", "r1");
+  PrnfbButton prnfbButton = new PrnfbButton(button.getUUID(), button.getName(), button.getUserLevel(), button.getConfirmation(), "p1", "r1");
   return prnfbButton;
  }
 

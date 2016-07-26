@@ -31,9 +31,9 @@ public class UrlInvokerTest {
  public void before() {
   this.urlInvoker = new UrlInvoker() {
    @Override
-   String doInvoke(HttpRequestBase httpRequest, HttpClientBuilder builder) {
+   HttpResponse doInvoke(HttpRequestBase httpRequest, HttpClientBuilder builder) {
     UrlInvokerTest.this.httpRequestBase = httpRequest;
-    return "";
+    return new HttpResponse(200, "");
    }
   }//
   .withUrlParam("http://url.com/");

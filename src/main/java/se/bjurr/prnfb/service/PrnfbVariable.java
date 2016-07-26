@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 
 import se.bjurr.prnfb.http.ClientKeyStore;
+import se.bjurr.prnfb.http.HttpResponse;
 import se.bjurr.prnfb.http.Invoker;
 import se.bjurr.prnfb.http.UrlInvoker;
 import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
@@ -87,7 +88,7 @@ public enum PrnfbVariable {
      .shouldAcceptAnyCertificate(shouldAcceptAnyCertificate);
    createInvoker()//
      .invoke(urlInvoker);
-   String rawResponse = urlInvoker.getResponseString().trim();
+   String rawResponse = urlInvoker.getResponse().getContent().trim();
    if (prnfbNotification.getInjectionUrlRegexp().isPresent()) {
     Matcher m = compile(prnfbNotification.getInjectionUrlRegexp().get()).matcher(rawResponse);
     if (!m.find()) {
@@ -490,8 +491,8 @@ public enum PrnfbVariable {
 
  private static Invoker mockedInvoker = new Invoker() {
   @Override
-  public void invoke(UrlInvoker urlInvoker) {
-   urlInvoker.invoke();
+  public HttpResponse invoke(UrlInvoker urlInvoker) {
+   return urlInvoker.invoke();
   }
  };
 
@@ -531,8 +532,8 @@ public enum PrnfbVariable {
   }
   return new Invoker() {
    @Override
-   public void invoke(UrlInvoker urlInvoker) {
-    urlInvoker.invoke();
+   public HttpResponse invoke(UrlInvoker urlInvoker) {
+    return urlInvoker.invoke();
    }
   };
  }

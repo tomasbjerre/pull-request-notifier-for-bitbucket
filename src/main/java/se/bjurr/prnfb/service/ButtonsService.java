@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import se.bjurr.prnfb.http.ClientKeyStore;
+import se.bjurr.prnfb.http.HttpResponse;
 import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
 import se.bjurr.prnfb.listener.PrnfbPullRequestEventListener;
 import se.bjurr.prnfb.settings.PrnfbButton;
@@ -53,12 +54,12 @@ public class ButtonsService {
   return doGetButtons(notifications, clientKeyStore, pullRequest, shouldAcceptAnyCertificate);
  }
 
- public void handlePressed(Integer repositoryId, Long pullRequestId, UUID buttonUuid) {
+ public Map<String, HttpResponse> handlePressed(Integer repositoryId, Long pullRequestId, UUID buttonUuid) {
   final PrnfbSettingsData prnfbSettingsData = this.settingsService.getPrnfbSettingsData();
   ClientKeyStore clientKeyStore = new ClientKeyStore(prnfbSettingsData);
   boolean shouldAcceptAnyCertificate = prnfbSettingsData.isShouldAcceptAnyCertificate();
   final PullRequest pullRequest = this.pullRequestService.getById(repositoryId, pullRequestId);
-  doHandlePressed(buttonUuid, clientKeyStore, shouldAcceptAnyCertificate, pullRequest);
+  return doHandlePressed(buttonUuid, clientKeyStore, shouldAcceptAnyCertificate, pullRequest);
  }
 
  private boolean isTriggeredByAction(ClientKeyStore clientKeyStore, List<PrnfbNotification> notifications,
@@ -126,19 +127,25 @@ public class ButtonsService {
  }
 
  @VisibleForTesting
- void doHandlePressed(UUID buttonUuid, ClientKeyStore clientKeyStore, boolean shouldAcceptAnyCertificate,
+ Map<String, HttpResponse> doHandlePressed(UUID buttonUuid, ClientKeyStore clientKeyStore, boolean shouldAcceptAnyCertificate,
    final PullRequest pullRequest) {
   Map<PrnfbVariable, Supplier<String>> variables = getVariables(buttonUuid);
+  Map<String, HttpResponse> successes = new HashMap<String, HttpResponse>();
   for (PrnfbNotification prnfbNotification : this.settingsService.getNotifications()) {
    PrnfbPullRequestAction pullRequestAction = BUTTON_TRIGGER;
    PrnfbRenderer renderer = this.prnfbRendererFactory.create(pullRequest, pullRequestAction, prnfbNotification,
      variables);
    if (this.prnfbPullRequestEventListener.isNotificationTriggeredByAction(prnfbNotification, pullRequestAction,
      renderer, pullRequest, clientKeyStore, shouldAcceptAnyCertificate)) {
-    this.prnfbPullRequestEventListener.notify(prnfbNotification, pullRequestAction, pullRequest, renderer,
+    HttpResponse response = this.prnfbPullRequestEventListener.notify(prnfbNotification, pullRequestAction, pullRequest, renderer,
       clientKeyStore, shouldAcceptAnyCertificate);
+    if (response != null) {
+    	successes.put(prnfbNotification.getName(), response);
+    }
    }
   }
+  
+  return successes;
  }
 
  @VisibleForTesting

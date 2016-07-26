@@ -14,13 +14,15 @@ public class PrnfbButton implements HasUuid {
  private final String name;
  private final String projectKey;
  private final String repositorySlug;
+ private final String confirmation;
  private final USER_LEVEL userLevel;
  private final UUID uuid;
 
- public PrnfbButton(UUID uuid, String name, USER_LEVEL userLevel, String projectKey, String repositorySlug) {
+ public PrnfbButton(UUID uuid, String name, USER_LEVEL userLevel, String confirmation, String projectKey, String repositorySlug) {
   this.uuid = firstNonNull(uuid, randomUUID());
   this.name = name;
   this.userLevel = userLevel;
+  this.confirmation = confirmation;
   this.repositorySlug = emptyToNull(repositorySlug);
   this.projectKey = emptyToNull(projectKey);
  }
@@ -68,6 +70,13 @@ public class PrnfbButton implements HasUuid {
   } else if (!this.uuid.equals(other.uuid)) {
    return false;
   }
+  if (this.confirmation == null) {
+	   if (other.confirmation != null) {
+	    return false;
+	   }
+	  } else if (!this.confirmation.equals(other.confirmation)) {
+	   return false;
+	   }
   return true;
  }
 
@@ -87,6 +96,10 @@ public class PrnfbButton implements HasUuid {
   return this.userLevel;
  }
 
+ public String getConfirmation() {
+  return this.confirmation;
+ }
+
  @Override
  public UUID getUuid() {
   return this.uuid;
@@ -101,13 +114,14 @@ public class PrnfbButton implements HasUuid {
   result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
   result = prime * result + ((this.userLevel == null) ? 0 : this.userLevel.hashCode());
   result = prime * result + ((this.uuid == null) ? 0 : this.uuid.hashCode());
+  result = prime * result + ((this.confirmation == null) ? 0 : this.confirmation.hashCode());
   return result;
  }
 
  @Override
  public String toString() {
   return "PrnfbButton [projectKey=" + this.projectKey + ", repositorySlug=" + this.repositorySlug + ", name="
-    + this.name + ", userLevel=" + this.userLevel + ", uuid=" + this.uuid + "]";
+    + this.name + ", userLevel=" + this.userLevel + ", uuid=" + this.uuid + ", confirmation=" + this.confirmation + "]";
  }
 
 }

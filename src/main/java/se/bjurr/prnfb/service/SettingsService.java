@@ -315,7 +315,7 @@ public class SettingsService {
    if (oldButton.getVisibility() == BUTTON_VISIBILITY.EVERYONE) {
     userLevel = USER_LEVEL.EVERYONE;
    }
-   newButtons.add(new PrnfbButton(UUID.randomUUID(), oldButton.getTitle(), userLevel, null, null));
+   newButtons.add(new PrnfbButton(UUID.randomUUID(), oldButton.getTitle(), userLevel, "off", null, null));
   }
 
   List<PrnfbNotification> newNotifications = newArrayList();

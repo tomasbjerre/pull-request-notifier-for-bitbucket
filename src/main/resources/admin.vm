@@ -19,6 +19,8 @@
  <!-- //-->
  $webResourceManager.requireResource("com.atlassian.auiplugin:aui-select")
  <!-- //-->
+ $webResourceManager.requireResource("com.atlassian.auiplugin:aui-toggle")
+ <!-- //-->
  $webResourceManager.requireResource("com.atlassian.auiplugin:aui-experimental-expander")
 </head>
 
@@ -229,6 +231,12 @@
      <label>Title </label>
      <input class="text long-field" type="text" name="name">
      <div class="description">The title of the button.</div>
+    </div>
+    
+    <div class="field-group">
+     <aui-toggle id="confirmation" label="Confirmation Dialog" name="confirmation"></aui-toggle>
+     <label>Confirmation </label>
+     <div class="description">Whether to show a confirmation dialog.</div>
     </div>
 
     <div class="aui-buttons">

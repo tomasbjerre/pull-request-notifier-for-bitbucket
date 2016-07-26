@@ -21,6 +21,7 @@ import java.util.concurrent.ExecutorService;
 import org.slf4j.Logger;
 
 import se.bjurr.prnfb.http.ClientKeyStore;
+import se.bjurr.prnfb.http.HttpResponse;
 import se.bjurr.prnfb.http.Invoker;
 import se.bjurr.prnfb.http.UrlInvoker;
 import se.bjurr.prnfb.service.PrnfbRenderer;
@@ -127,11 +128,11 @@ public class PrnfbPullRequestEventListener {
   return TRUE;
  }
 
- public void notify(final PrnfbNotification notification, PrnfbPullRequestAction pullRequestAction,
+ public HttpResponse notify(final PrnfbNotification notification, PrnfbPullRequestAction pullRequestAction,
    PullRequest pullRequest, PrnfbRenderer renderer, ClientKeyStore clientKeyStore, Boolean shouldAcceptAnyCertificate) {
   if (!isNotificationTriggeredByAction(notification, pullRequestAction, renderer, pullRequest, clientKeyStore,
     shouldAcceptAnyCertificate)) {
-   return;
+   return null;
   }
 
   Optional<String> postContent = absent();
@@ -155,7 +156,7 @@ public class PrnfbPullRequestEventListener {
      .withHeader(header.getName(),
        renderer.render(header.getValue(), FALSE, clientKeyStore, shouldAcceptAnyCertificate));
   }
-  createInvoker().invoke(urlInvoker//
+  return createInvoker().invoke(urlInvoker//
     .withProxyServer(notification.getProxyServer()) //
     .withProxyPort(notification.getProxyPort())//
     .withProxyUser(notification.getProxyUser())//
@@ -219,8 +220,8 @@ public class PrnfbPullRequestEventListener {
   }
   return new Invoker() {
    @Override
-   public void invoke(UrlInvoker urlInvoker) {
-    urlInvoker.invoke();
+   public HttpResponse invoke(UrlInvoker urlInvoker) {
+    return urlInvoker.invoke();
    }
   };
  }
