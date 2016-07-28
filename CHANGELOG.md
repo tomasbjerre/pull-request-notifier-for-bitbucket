@@ -2,6 +2,12 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## Unreleased
+### No issue
+  doc
+  
+  [fbdec988218c8d9](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/fbdec988218c8d9) Tomas Bjerre *2016-07-18 21:19:06*
+
 ## 2.31
 ### GitHub [#131](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/131) Buttons do not appear [4.3.1]
   Making buttons compatible with 4.0.0 to 4.3.x 

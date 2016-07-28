@@ -153,9 +153,11 @@ If you are using a CSRF protection in Jenkins, you can use the **Injection URL**
 * Set **Injection URL** field to `http://JENKINS/crumbIssuer/api/xml?xpath=//crumb/text()`. You may get an error like *primitive XPath result sets forbidden; implement jenkins.security.SecureRequester*. If so, you can set Injection URL to `http://JENKINS/crumbIssuer/api/xml?xpath=//crumb` in combination with regular expression `<crumb>([^<]*)</crumb>`. Or a third option is to checkout [this](https://wiki.jenkins-ci.org/display/JENKINS/Secure+Requester+Whitelist+Plugin) Jenkins plugin.
 * In the headers section, set header **.crumb** with value **${INJECTION_URL_VALUE}**.
 
-## Issues
+## Reporting issues
 If things don't work as you expect, perhaps you should file an issue. But first, try troubleshooting it and provide as much info as possible. Here are some things that may help if added to an issue.
 
+ * Plugin version used.
+ * Bitbucket Server version used.
  * Stack traces in Bitbucket Server log file.
  * Any browser console log messages, you can find it in Developer Tools in Chome by pressing F12.
  * Screenshot of plugin configuration in your issue.
