@@ -4,7 +4,7 @@
  <modelVersion>4.0.0</modelVersion>
  <groupId>se.bjurr.prnfb</groupId>
  <artifactId>pull-request-notifier-for-bitbucket</artifactId>
- <version>2.32-SNAPSHOT</version>
+ <version>2.32</version>
  <organization>
   <name>Tomas Bjerre</name>
   <url>http://bjurr.se/</url>
@@ -15,7 +15,7 @@
  <scm>
   <developerConnection>scm:git:git@github.com:tomasbjerre/pull-request-notifier-for-bitbucket.git</developerConnection>
   <url>https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket</url>
-  <tag>HEAD</tag>
+  <tag>pull-request-notifier-for-bitbucket-2.32</tag>
  </scm>
  <distributionManagement>
   <repository>
