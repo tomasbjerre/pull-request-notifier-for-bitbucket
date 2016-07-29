@@ -3,10 +3,13 @@ package se.bjurr.prnfb.service;
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Throwables.propagate;
 import static java.net.URLEncoder.encode;
+import static org.slf4j.LoggerFactory.getLogger;
 import static se.bjurr.prnfb.service.PrnfbVariable.EVERYTHING_URL;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
+
+import org.slf4j.Logger;
 
 import se.bjurr.prnfb.http.ClientKeyStore;
 import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
@@ -21,6 +24,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Supplier;
 
 public class PrnfbRenderer {
+ private static final Logger LOG = getLogger(PrnfbRenderer.class);
 
  private final ApplicationUser applicationUser;
  private final PrnfbNotification prnfbNotification;
@@ -53,7 +57,11 @@ public class PrnfbRenderer {
   string = renderVariable(string, false, clientKeyStore, shouldAcceptAnyCertificate, EVERYTHING_URL);
 
   for (final PrnfbVariable variable : PrnfbVariable.values()) {
-   string = renderVariable(string, forUrl, clientKeyStore, shouldAcceptAnyCertificate, variable);
+   try {
+    string = renderVariable(string, forUrl, clientKeyStore, shouldAcceptAnyCertificate, variable);
+   } catch (Exception e) {
+    LOG.error("Error when resolving " + variable, e);
+   }
   }
   return string;
  }

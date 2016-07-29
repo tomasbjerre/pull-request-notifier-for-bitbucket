@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
+import se.bjurr.prnfb.presentation.dto.ON_OR_OFF;
 import se.bjurr.prnfb.settings.HasUuid;
 import se.bjurr.prnfb.settings.PrnfbButton;
 import se.bjurr.prnfb.settings.PrnfbNotification;
@@ -315,7 +316,7 @@ public class SettingsService {
    if (oldButton.getVisibility() == BUTTON_VISIBILITY.EVERYONE) {
     userLevel = USER_LEVEL.EVERYONE;
    }
-   newButtons.add(new PrnfbButton(UUID.randomUUID(), oldButton.getTitle(), userLevel, "off", null, null));
+   newButtons.add(new PrnfbButton(UUID.randomUUID(), oldButton.getTitle(), userLevel, ON_OR_OFF.off, null, null));
   }
 
   List<PrnfbNotification> newNotifications = newArrayList();

@@ -7,18 +7,21 @@ import static java.util.UUID.randomUUID;
 
 import java.util.UUID;
 
+import se.bjurr.prnfb.presentation.dto.ON_OR_OFF;
+
 import com.google.common.base.Optional;
 
 public class PrnfbButton implements HasUuid {
 
+ private final ON_OR_OFF confirmation;
  private final String name;
  private final String projectKey;
  private final String repositorySlug;
- private final String confirmation;
  private final USER_LEVEL userLevel;
  private final UUID uuid;
 
- public PrnfbButton(UUID uuid, String name, USER_LEVEL userLevel, String confirmation, String projectKey, String repositorySlug) {
+ public PrnfbButton(UUID uuid, String name, USER_LEVEL userLevel, ON_OR_OFF confirmation, String projectKey,
+   String repositorySlug) {
   this.uuid = firstNonNull(uuid, randomUUID());
   this.name = name;
   this.userLevel = userLevel;
@@ -71,13 +74,17 @@ public class PrnfbButton implements HasUuid {
    return false;
   }
   if (this.confirmation == null) {
-	   if (other.confirmation != null) {
-	    return false;
-	   }
-	  } else if (!this.confirmation.equals(other.confirmation)) {
-	   return false;
-	   }
+   if (other.confirmation != null) {
+    return false;
+   }
+  } else if (!this.confirmation.equals(other.confirmation)) {
+   return false;
+  }
   return true;
+ }
+
+ public ON_OR_OFF getConfirmation() {
+  return this.confirmation;
  }
 
  public String getName() {
@@ -94,10 +101,6 @@ public class PrnfbButton implements HasUuid {
 
  public USER_LEVEL getUserLevel() {
   return this.userLevel;
- }
-
- public String getConfirmation() {
-  return this.confirmation;
  }
 
  @Override

@@ -23,6 +23,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import se.bjurr.prnfb.presentation.dto.ButtonDTO;
+import se.bjurr.prnfb.presentation.dto.ON_OR_OFF;
 import se.bjurr.prnfb.service.ButtonsService;
 import se.bjurr.prnfb.service.SettingsService;
 import se.bjurr.prnfb.service.UserCheckService;
@@ -183,14 +184,15 @@ public class ButtonServletTest {
   button.setName("title");
   button.setUserLevel(EVERYONE);
   button.setUuid(UUID.randomUUID());
-  button.setConfirmation("off");
+  button.setConfirmation(ON_OR_OFF.off);
   button.setProjectKey("p1");
   button.setRepositorySlug("r1");
   return button;
  }
 
  private PrnfbButton createPrnfbButton(ButtonDTO button) {
-  PrnfbButton prnfbButton = new PrnfbButton(button.getUUID(), button.getName(), button.getUserLevel(), button.getConfirmation(), "p1", "r1");
+  PrnfbButton prnfbButton = new PrnfbButton(button.getUUID(), button.getName(), button.getUserLevel(),
+    button.getConfirmation(), "p1", "r1");
   return prnfbButton;
  }
 

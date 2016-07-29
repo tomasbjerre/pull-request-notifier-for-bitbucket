@@ -258,7 +258,7 @@ Changelog of Pull Request Notifier for Bitbucket.
  </profiles>
 
  <properties>
-  <bitbucket.version>4.7.1</bitbucket.version>
+  <bitbucket.version>4.8.1</bitbucket.version>
   <bitbucket.data.version>${bitbucket.version}</bitbucket.data.version>
   <amps.version>6.1.0</amps.version>
  </properties>

@@ -15,10 +15,10 @@ import com.google.common.base.Optional;
 @XmlAccessorType(FIELD)
 public class ButtonDTO implements Comparable<ButtonDTO> {
 
+ private ON_OR_OFF confirmation;
  private String name;
  private String projectKey;
  private String repositorySlug;
- private String confirmation;
  private USER_LEVEL userLevel;
  private UUID uuid;
 
@@ -80,6 +80,10 @@ public class ButtonDTO implements Comparable<ButtonDTO> {
   return true;
  }
 
+ public ON_OR_OFF getConfirmation() {
+  return this.confirmation;
+ }
+
  public String getName() {
   return this.name;
  }
@@ -94,10 +98,6 @@ public class ButtonDTO implements Comparable<ButtonDTO> {
 
  public USER_LEVEL getUserLevel() {
   return this.userLevel;
- }
-
- public String getConfirmation() {
-  return this.confirmation;
  }
 
  public UUID getUuid() {
@@ -121,6 +121,10 @@ public class ButtonDTO implements Comparable<ButtonDTO> {
   return result;
  }
 
+ public void setConfirmation(ON_OR_OFF confirmation) {
+  this.confirmation = confirmation;
+ }
+
  public void setName(String name) {
   this.name = name;
  }
@@ -139,18 +143,6 @@ public class ButtonDTO implements Comparable<ButtonDTO> {
 
  public void setUuid(UUID uuid) {
   this.uuid = uuid;
- }
-
- public void setConfirmation(String confirmation) {
-  if (confirmation == null) {
-    this.confirmation = "off";
-  }
-  else if (confirmation.equalsIgnoreCase("on")) {
-    this.confirmation = "on";
-  }
-  else {
-    this.confirmation = "off";
-  }
  }
 
  @Override

@@ -10,6 +10,8 @@ import static se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD.PUT;
 import static se.bjurr.prnfb.listener.PrnfbPullRequestAction.APPROVED;
 import static se.bjurr.prnfb.settings.PrnfbNotificationBuilder.prnfbNotificationBuilder;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
@@ -33,7 +35,12 @@ public class UrlInvokerTest {
    @Override
    HttpResponse doInvoke(HttpRequestBase httpRequest, HttpClientBuilder builder) {
     UrlInvokerTest.this.httpRequestBase = httpRequest;
-    return new HttpResponse(200, "");
+    try {
+     return new HttpResponse(new URI("http://fake.com"), 200, "");
+    } catch (URISyntaxException e) {
+     e.printStackTrace();
+     return null;
+    }
    }
   }//
   .withUrlParam("http://url.com/");

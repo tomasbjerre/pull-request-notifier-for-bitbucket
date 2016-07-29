@@ -162,7 +162,7 @@ public class UrlInvoker {
 
   this.response = doInvoke(httpRequestBase, builder);
   LOG.debug(this.response.getContent());
-  
+
   return this.response;
  }
 
@@ -340,9 +340,8 @@ public class UrlInvoker {
      .execute(httpRequestBase);
 
    HttpEntity entity = httpResponse.getEntity();
-   return new HttpResponse(
-		httpResponse.getStatusLine().getStatusCode(), 
-		EntityUtils.toString(entity, UTF_8));
+   return new HttpResponse(httpRequestBase.getURI(), httpResponse.getStatusLine().getStatusCode(),
+     EntityUtils.toString(entity, UTF_8));
   } catch (final Exception e) {
    LOG.error("", e);
   } finally {

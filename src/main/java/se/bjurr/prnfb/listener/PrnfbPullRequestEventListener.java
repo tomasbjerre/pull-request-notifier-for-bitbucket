@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import se.bjurr.prnfb.http.ClientKeyStore;
 import se.bjurr.prnfb.http.HttpResponse;
 import se.bjurr.prnfb.http.Invoker;
+import se.bjurr.prnfb.http.NotificationResponse;
 import se.bjurr.prnfb.http.UrlInvoker;
 import se.bjurr.prnfb.service.PrnfbRenderer;
 import se.bjurr.prnfb.service.PrnfbRendererFactory;
@@ -128,7 +129,7 @@ public class PrnfbPullRequestEventListener {
   return TRUE;
  }
 
- public HttpResponse notify(final PrnfbNotification notification, PrnfbPullRequestAction pullRequestAction,
+ public NotificationResponse notify(final PrnfbNotification notification, PrnfbPullRequestAction pullRequestAction,
    PullRequest pullRequest, PrnfbRenderer renderer, ClientKeyStore clientKeyStore, Boolean shouldAcceptAnyCertificate) {
   if (!isNotificationTriggeredByAction(notification, pullRequestAction, renderer, pullRequest, clientKeyStore,
     shouldAcceptAnyCertificate)) {
@@ -156,12 +157,14 @@ public class PrnfbPullRequestEventListener {
      .withHeader(header.getName(),
        renderer.render(header.getValue(), FALSE, clientKeyStore, shouldAcceptAnyCertificate));
   }
-  return createInvoker().invoke(urlInvoker//
+  HttpResponse httpResponse = createInvoker().invoke(urlInvoker//
     .withProxyServer(notification.getProxyServer()) //
     .withProxyPort(notification.getProxyPort())//
     .withProxyUser(notification.getProxyUser())//
     .withProxyPassword(notification.getProxyPassword())//
     .shouldAcceptAnyCertificate(shouldAcceptAnyCertificate));
+
+  return new NotificationResponse(notification.getUuid(), notification.getName(), httpResponse);
  }
 
  @EventListener

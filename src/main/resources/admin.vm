@@ -232,7 +232,7 @@
      <input class="text long-field" type="text" name="name">
      <div class="description">The title of the button.</div>
     </div>
-    
+
     <div class="field-group">
      <aui-toggle id="confirmation" label="Confirmation Dialog" name="confirmation"></aui-toggle>
      <label>Confirmation </label>

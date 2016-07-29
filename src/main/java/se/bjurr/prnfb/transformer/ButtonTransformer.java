@@ -2,24 +2,17 @@ package se.bjurr.prnfb.transformer;
 
 import static com.google.common.collect.Lists.newArrayList;
 
+import java.net.URI;
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 
-import se.bjurr.prnfb.http.HttpResponse;
+import se.bjurr.prnfb.http.NotificationResponse;
 import se.bjurr.prnfb.presentation.dto.ButtonDTO;
-import se.bjurr.prnfb.presentation.dto.TriggerResultDTO;
+import se.bjurr.prnfb.presentation.dto.NotificationResponseDTO;
 import se.bjurr.prnfb.settings.PrnfbButton;
 
 public class ButtonTransformer {
 
-	
- public static TriggerResultDTO toTriggerResultDto(PrnfbButton from, Map<String, HttpResponse> results) {
-  TriggerResultDTO to = new TriggerResultDTO();
-  to.setName(from.getName());
-  to.setResults(results);
-  return to;
-}
-	
  public static ButtonDTO toButtonDto(PrnfbButton from) {
   ButtonDTO to = new ButtonDTO();
   to.setName(from.getName());
@@ -49,4 +42,16 @@ public class ButtonTransformer {
     buttonDto.getRepositorySlug().orNull());//
  }
 
+ public static List<NotificationResponseDTO> toTriggerResultDto(List<NotificationResponse> results) {
+  List<NotificationResponseDTO> to = newArrayList();
+  for (NotificationResponse from : results) {
+   String content = from.getHttpResponse().getContent();
+   int status = from.getHttpResponse().getStatus();
+   UUID notification = from.getNotification();
+   String notificationName = from.getNotificationName();
+   URI uri = from.getHttpResponse().getUri();
+   to.add(new NotificationResponseDTO(uri, content, status, notification, notificationName));
+  }
+  return to;
+ }
 }

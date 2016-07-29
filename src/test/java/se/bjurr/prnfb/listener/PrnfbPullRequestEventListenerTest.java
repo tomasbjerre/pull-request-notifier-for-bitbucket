@@ -20,6 +20,8 @@ import static se.bjurr.prnfb.settings.TRIGGER_IF_MERGE.ALWAYS;
 import static se.bjurr.prnfb.settings.TRIGGER_IF_MERGE.CONFLICTING;
 import static se.bjurr.prnfb.settings.TRIGGER_IF_MERGE.NOT_CONFLICTING;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -90,7 +92,12 @@ public class PrnfbPullRequestEventListenerTest {
   setInvoker(new Invoker() {
    @Override
    public HttpResponse invoke(UrlInvoker urlInvoker) {
-    HttpResponse response = new HttpResponse(200, "");
+    HttpResponse response = null;
+    try {
+     response = new HttpResponse(new URI("http://fake.com/"), 200, "");
+    } catch (URISyntaxException e) {
+     e.printStackTrace();
+    }
     urlInvoker.setResponse(response);
     PrnfbPullRequestEventListenerTest.this.invokedUrls.add(urlInvoker);
     return response;

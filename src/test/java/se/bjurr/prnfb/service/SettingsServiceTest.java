@@ -19,6 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import se.bjurr.prnfb.presentation.dto.ON_OR_OFF;
 import se.bjurr.prnfb.settings.PrnfbButton;
 import se.bjurr.prnfb.settings.PrnfbNotification;
 import se.bjurr.prnfb.settings.PrnfbSettings;
@@ -94,7 +95,7 @@ public class SettingsServiceTest {
 
  @Test
  public void testThatButtonCanBeAddedUpdatedAndDeleted() {
-  PrnfbButton button1 = new PrnfbButton(null, "title", EVERYONE, "off", "p1", "r1");
+  PrnfbButton button1 = new PrnfbButton(null, "title", EVERYONE, ON_OR_OFF.off, "p1", "r1");
   assertThat(this.sut.getButtons())//
     .isEmpty();
 
@@ -102,12 +103,12 @@ public class SettingsServiceTest {
   assertThat(this.sut.getButtons())//
     .containsExactly(button1);
 
-  PrnfbButton button2 = new PrnfbButton(null, "title", EVERYONE, "off", "p1", "r1");
+  PrnfbButton button2 = new PrnfbButton(null, "title", EVERYONE, ON_OR_OFF.off, "p1", "r1");
   this.sut.addOrUpdateButton(button2);
   assertThat(this.sut.getButtons())//
     .containsExactly(button1, button2);
 
-  PrnfbButton updated = new PrnfbButton(button1.getUuid(), "title2", ADMIN, "off", "p1", "r1");
+  PrnfbButton updated = new PrnfbButton(button1.getUuid(), "title2", ADMIN, ON_OR_OFF.off, "p1", "r1");
   this.sut.addOrUpdateButton(updated);
   assertThat(this.sut.getButtons())//
     .containsExactly(button2, updated);

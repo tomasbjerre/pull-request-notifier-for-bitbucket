@@ -13,6 +13,8 @@ import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_MERGE_COMMIT;
 import static se.bjurr.prnfb.settings.PrnfbNotificationBuilder.prnfbNotificationBuilder;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 import org.junit.Before;
@@ -75,7 +77,12 @@ public class PrnfbRendererTest {
   PrnfbVariable.setInvoker(new Invoker() {
    @Override
    public HttpResponse invoke(UrlInvoker toInvoke) {
-	HttpResponse response = new HttpResponse(200, "theResponse");
+    HttpResponse response = null;
+    try {
+     response = new HttpResponse(new URI("http://fake.om/"), 200, "theResponse");
+    } catch (URISyntaxException e) {
+     e.printStackTrace();
+    }
     toInvoke.setResponse(response);
     return response;
    }

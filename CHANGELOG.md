@@ -4,6 +4,32 @@ Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
 ### No issue
+  Fine tuning notification confirmation feature
+ * Using AUI flag.
+ * Showing invoked URL and response content.
+ * Also logging error when variable cant be resolved. Was giving up entirely. Will now log and continue trying to resolve other variables.
+  
+  [cd772334597de1f](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/cd772334597de1f) Tomas Bjerre *2016-07-29 22:25:58*
+
+  Add Button Trigger Confirmation Dialog
+
+When clicking the various trigger buttons, there is no feedback to the
+user that the button was clicked. Even worse, the button may have been
+clicked but there was an error doing the trigger itself (either in
+the PRNFB code itself or when it actually does the final HTTP call
+to the backing service).
+
+This change adds an optional confirmation dialog (with a default of it
+being disabled) that will report, after the button press is complete
+and we have a response from the server, whether each trigger was
+successful (or if no triggers were hit).
+  
+  [445b66bd464144b](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/445b66bd464144b) Itay Neeman *2016-07-29 20:39:28*
+
+  doc
+  
+  [da839907caf3a40](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/da839907caf3a40) Tomas Bjerre *2016-07-28 21:01:31*
+
   doc
   
   [fbdec988218c8d9](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/fbdec988218c8d9) Tomas Bjerre *2016-07-18 21:19:06*
