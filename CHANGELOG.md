@@ -3,13 +3,19 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
+### GitHub [#135](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/135) Not permitted to access buttons settings as project/repo admin
+  Getting project and repo with sys admin permissions
+  
+  [4af3fd9f87fa409](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/4af3fd9f87fa409) Tomas Bjerre *2016-07-30 06:42:38*
+
+## 2.32
 ### No issue
   Fine tuning notification confirmation feature
  * Using AUI flag.
  * Showing invoked URL and response content.
  * Also logging error when variable cant be resolved. Was giving up entirely. Will now log and continue trying to resolve other variables.
   
-  [cd772334597de1f](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/cd772334597de1f) Tomas Bjerre *2016-07-29 22:25:58*
+  [aee524c305eb666](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/aee524c305eb666) Tomas Bjerre *2016-07-29 22:47:15*
 
   Add Button Trigger Confirmation Dialog
 

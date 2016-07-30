@@ -12,7 +12,10 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import se.bjurr.prnfb.presentation.dto.ON_OR_OFF;
 import se.bjurr.prnfb.settings.PrnfbButton;
@@ -20,6 +23,9 @@ import se.bjurr.prnfb.settings.PrnfbButton;
 import com.atlassian.bitbucket.permission.PermissionService;
 import com.atlassian.bitbucket.project.ProjectService;
 import com.atlassian.bitbucket.repository.RepositoryService;
+import com.atlassian.bitbucket.user.EscalatedSecurityContext;
+import com.atlassian.bitbucket.user.SecurityService;
+import com.atlassian.bitbucket.util.Operation;
 import com.atlassian.sal.api.user.UserKey;
 import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.sal.api.user.UserProfile;
@@ -27,11 +33,18 @@ import com.atlassian.sal.api.user.UserProfile;
 public class UserCheckServiceTest {
 
  @Mock
+ private EscalatedSecurityContext escalatedSecurityContext;
+
+ @Mock
  private PermissionService permissionService;
+ private String projectKey;
  @Mock
  private ProjectService projectService;
  @Mock
  private RepositoryService repositoryService;
+ private String repositorySlug;
+ @Mock
+ private SecurityService securityService;
  @Mock
  private SettingsService settingsService;
  private UserCheckService sut;
@@ -42,19 +55,35 @@ public class UserCheckServiceTest {
  private UserManager userManager;
 
  @Before
- public void before() {
+ public void before() throws Exception {
   initMocks(this);
   this.sut = new UserCheckService(this.permissionService, this.userManager, this.settingsService,
-    this.repositoryService, this.projectService);
+    this.repositoryService, this.projectService, this.securityService);
+
+  when(this.securityService.withPermission(Matchers.any(), Matchers.any()))//
+    .thenReturn(this.escalatedSecurityContext);
+  when(this.escalatedSecurityContext.call(Matchers.any()))//
+    .thenAnswer(new Answer<Boolean>() {
+     @Override
+     public Boolean answer(InvocationOnMock invocation) throws Throwable {
+      Operation<?, ?> op = (Operation<?, ?>) invocation.getArguments()[0];
+      return (Boolean) op.perform();
+     }
+    });
  }
 
  @Test
  public void testThatAdminAllowedCanBeChecked() {
-  this.sut.isAdminAllowed(null, null);
+  this.projectKey = null;
+  this.repositorySlug = null;
+  this.sut.isAdminAllowed(this.projectKey, this.repositorySlug);
  }
 
  @Test
  public void testThatAllowedButtonsCanBeFiltered() {
+  this.projectKey = "p1";
+  this.repositorySlug = "r1";
+
   when(this.userManager.getRemoteUser())//
     .thenReturn(this.user);
   when(this.userManager.getRemoteUser().getUserKey())//
@@ -77,12 +106,16 @@ public class UserCheckServiceTest {
 
  @Test
  public void testThatAllowedCanBeChecked() {
+  this.projectKey = "p1";
+  this.repositorySlug = "r1";
+
   when(this.userManager.getRemoteUser())//
     .thenReturn(this.user);
   when(this.userManager.getRemoteUser().getUserKey())//
     .thenReturn(this.userKey);
   when(this.userManager.isSystemAdmin(this.userKey))//
     .thenReturn(true);
+
   PrnfbButton candidate = new PrnfbButton(null, "title", ADMIN, ON_OR_OFF.off, "p1", "r1");
   assertThat(this.sut.isAllowedUseButton(candidate))//
     .isTrue();
