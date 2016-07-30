@@ -55,7 +55,7 @@ public class UserCheckService {
    }
   });
   return allowedButtons;
- }
+ } 
 
  public boolean isAdmin(UserKey userKey, String projectKey, String repositorySlug) {
   boolean isAdmin = this.userManager.isAdmin(userKey);
@@ -68,12 +68,17 @@ public class UserCheckService {
 
   if (projectKey != null && repositorySlug == null) {
    Project project = getProject(projectKey);
-   return this.permissionService.hasProjectPermission(project, PROJECT_ADMIN);
-  } else if (repositorySlug != null) {
+   boolean isAllowed = this.permissionService.hasProjectPermission(project, PROJECT_ADMIN);
+   if (isAllowed) {
+    return true;
+   }
+  }
+
+  if (projectKey != null && repositorySlug != null) {
    Repository repository = getRepo(projectKey, repositorySlug);
    return this.permissionService.hasRepositoryPermission(repository, REPO_ADMIN);
   }
-  return isAdmin;
+  return false;
  }
 
  /**

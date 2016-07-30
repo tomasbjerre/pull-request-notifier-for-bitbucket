@@ -3,10 +3,17 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
+### GitHub [#134](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/134) Not able to see PR buttons
+  Checking privilegies for both project and repo 
+
+ * So that the user may be admin in the repo, but not in the project.
+  
+  [0e8243eb4d445dd](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/0e8243eb4d445dd) Tomas Bjerre *2016-07-30 06:58:02*
+
 ### GitHub [#135](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/135) Not permitted to access buttons settings as project/repo admin
   Getting project and repo with sys admin permissions
   
-  [4af3fd9f87fa409](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/4af3fd9f87fa409) Tomas Bjerre *2016-07-30 06:42:38*
+  [474e1fd252eebf4](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/474e1fd252eebf4) Tomas Bjerre *2016-07-30 06:56:50*
 
 ## 2.32
 ### No issue

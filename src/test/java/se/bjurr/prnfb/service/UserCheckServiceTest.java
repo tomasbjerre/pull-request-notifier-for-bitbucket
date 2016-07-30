@@ -9,17 +9,17 @@ import static se.bjurr.prnfb.settings.USER_LEVEL.EVERYONE;
 import static se.bjurr.prnfb.settings.USER_LEVEL.SYSTEM_ADMIN;
 
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import se.bjurr.prnfb.presentation.dto.ON_OR_OFF;
 import se.bjurr.prnfb.settings.PrnfbButton;
 
+import com.atlassian.bitbucket.permission.Permission;
 import com.atlassian.bitbucket.permission.PermissionService;
 import com.atlassian.bitbucket.project.ProjectService;
 import com.atlassian.bitbucket.repository.RepositoryService;
@@ -31,9 +31,33 @@ import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.sal.api.user.UserProfile;
 
 public class UserCheckServiceTest {
+ private final EscalatedSecurityContext escalatedSecurityContext = new EscalatedSecurityContext() {
 
- @Mock
- private EscalatedSecurityContext escalatedSecurityContext;
+  @Override
+  public void applyToRequest() {
+
+  }
+
+  @Override
+  public <T, E extends Throwable> T call(Operation<T, E> arg0) throws E {
+   return arg0.perform();
+  }
+
+  @Override
+  public EscalatedSecurityContext withPermission(Object arg0, Permission arg1) {
+   return this;
+  }
+
+  @Override
+  public EscalatedSecurityContext withPermission(Permission arg0) {
+   return this;
+  }
+
+  @Override
+  public EscalatedSecurityContext withPermissions(Set<Permission> arg0) {
+   return this;
+  }
+ };
 
  @Mock
  private PermissionService permissionService;
@@ -62,14 +86,6 @@ public class UserCheckServiceTest {
 
   when(this.securityService.withPermission(Matchers.any(), Matchers.any()))//
     .thenReturn(this.escalatedSecurityContext);
-  when(this.escalatedSecurityContext.call(Matchers.any()))//
-    .thenAnswer(new Answer<Boolean>() {
-     @Override
-     public Boolean answer(InvocationOnMock invocation) throws Throwable {
-      Operation<?, ?> op = (Operation<?, ?>) invocation.getArguments()[0];
-      return (Boolean) op.perform();
-     }
-    });
  }
 
  @Test
