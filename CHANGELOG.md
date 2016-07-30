@@ -8,7 +8,7 @@ Changelog of Pull Request Notifier for Bitbucket.
 
  * So that the user may be admin in the repo, but not in the project.
   
-  [0e8243eb4d445dd](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/0e8243eb4d445dd) Tomas Bjerre *2016-07-30 06:58:02*
+  [4ee1f0d0a754a04](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/4ee1f0d0a754a04) Tomas Bjerre *2016-07-30 07:15:22*
 
 ### GitHub [#135](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/135) Not permitted to access buttons settings as project/repo admin
   Getting project and repo with sys admin permissions

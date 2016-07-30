@@ -87,6 +87,7 @@ public class ButtonServlet {
   List<PrnfbButton> buttons = this.settingsService.getButtons();
   Iterable<PrnfbButton> allowedButtons = this.userCheckService.filterAllowed(buttons);
   List<ButtonDTO> dtos = toButtonDtoList(allowedButtons);
+  Collections.sort(dtos);
   return ok(dtos, APPLICATION_JSON).build();
  }
 
@@ -112,7 +113,9 @@ public class ButtonServlet {
    return status(UNAUTHORIZED).build();
   }
   List<PrnfbButton> buttons = this.settingsService.getButtons(projectKey);
-  List<ButtonDTO> dtos = toButtonDtoList(buttons);
+  Iterable<PrnfbButton> allowedButtons = this.userCheckService.filterAllowed(buttons);
+  List<ButtonDTO> dtos = toButtonDtoList(allowedButtons);
+  Collections.sort(dtos);
   return ok(dtos, APPLICATION_JSON).build();
  }
 
@@ -124,7 +127,8 @@ public class ButtonServlet {
    return status(UNAUTHORIZED).build();
   }
   List<PrnfbButton> buttons = this.settingsService.getButtons(projectKey, repositorySlug);
-  List<ButtonDTO> dtos = toButtonDtoList(buttons);
+  Iterable<PrnfbButton> allowedButtons = this.userCheckService.filterAllowed(buttons);
+  List<ButtonDTO> dtos = toButtonDtoList(allowedButtons);
   Collections.sort(dtos);
   return ok(dtos, APPLICATION_JSON).build();
  }

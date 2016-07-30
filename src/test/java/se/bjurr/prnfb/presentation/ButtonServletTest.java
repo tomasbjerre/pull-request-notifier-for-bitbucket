@@ -114,6 +114,7 @@ public class ButtonServletTest {
  public void testThatButtonCanBeListedPerProject() throws Exception {
   when(this.settingsService.getButtons(this.buttonDto1.getProjectKey().orNull()))//
     .thenReturn(newArrayList(this.button1));
+  allowAll();
 
   Response actual = this.sut.get(this.buttonDto1.getProjectKey().orNull());
   @SuppressWarnings("unchecked")
@@ -129,6 +130,7 @@ public class ButtonServletTest {
     this.settingsService.getButtons(this.buttonDto1.getProjectKey().orNull(), this.buttonDto1.getRepositorySlug()
       .orNull()))//
     .thenReturn(newArrayList(this.button1));
+  allowAll();
 
   Response actual = this.sut
     .get(this.buttonDto1.getProjectKey().orNull(), this.buttonDto1.getRepositorySlug().orNull());
