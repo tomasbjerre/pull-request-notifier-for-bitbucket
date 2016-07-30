@@ -15,6 +15,15 @@ Changelog of Pull Request Notifier for Bitbucket.
   
   [474e1fd252eebf4](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/474e1fd252eebf4) Tomas Bjerre *2016-07-30 06:56:50*
 
+### No issue
+  Correcting conformation value when buttons pressed
+  
+  [bab535e5bc6e3d6](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/bab535e5bc6e3d6) Tomas Bjerre *2016-07-30 08:19:22*
+
+  Filtering buttons in buttons resource, and filtering out allowed buttons
+  
+  [252fc9355a0fd19](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/252fc9355a0fd19) Tomas Bjerre *2016-07-30 08:03:47*
+
 ## 2.32
 ### No issue
   Fine tuning notification confirmation feature

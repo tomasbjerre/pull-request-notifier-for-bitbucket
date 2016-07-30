@@ -25,7 +25,7 @@ import javax.ws.rs.core.Response;
 
 import se.bjurr.prnfb.http.NotificationResponse;
 import se.bjurr.prnfb.presentation.dto.ButtonDTO;
-import se.bjurr.prnfb.presentation.dto.NotificationResponseDTO;
+import se.bjurr.prnfb.presentation.dto.ButtonPressDTO;
 import se.bjurr.prnfb.service.ButtonsService;
 import se.bjurr.prnfb.service.SettingsService;
 import se.bjurr.prnfb.service.UserCheckService;
@@ -157,7 +157,7 @@ public class ButtonServlet {
   }
   List<NotificationResponse> results = this.buttonsService.handlePressed(repositoryId, pullRequestId, buttionUuid);
 
-  List<NotificationResponseDTO> dto = toTriggerResultDto(results);
+  ButtonPressDTO dto = toTriggerResultDto(button, results);
   return ok(dto, APPLICATION_JSON).build();
  }
 

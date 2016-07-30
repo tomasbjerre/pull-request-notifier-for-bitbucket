@@ -77,15 +77,18 @@ define('plugin/prnfb/pr-triggerbutton', [
         $this.removeAttr("aria-disabled");
         $this.find("span").remove();
 
-        if (item.confirmation == "on") {
-         presentResult(content);
+        if (content.confirmation == "on") {
+         presentResult(content.notificationResponses);
         }
        }, 500);
       },
       "error": function(content) {
-       if (item.confirmation == "on") {
-        presentResult(content);
-       }
+       AJS.flag({
+        close: 'auto',
+        type: 'error',
+        title: "Unknown error",
+        body: '<p>' + content.status + ' ' + content.statusText + '</p>' + '<p>Check the Bitbucket Server log for more details.</p>'
+       });
       }
      });
 

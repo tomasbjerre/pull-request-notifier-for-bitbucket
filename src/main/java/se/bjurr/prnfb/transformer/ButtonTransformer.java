@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import se.bjurr.prnfb.http.NotificationResponse;
 import se.bjurr.prnfb.presentation.dto.ButtonDTO;
+import se.bjurr.prnfb.presentation.dto.ButtonPressDTO;
 import se.bjurr.prnfb.presentation.dto.NotificationResponseDTO;
 import se.bjurr.prnfb.settings.PrnfbButton;
 
@@ -42,16 +43,16 @@ public class ButtonTransformer {
     buttonDto.getRepositorySlug().orNull());//
  }
 
- public static List<NotificationResponseDTO> toTriggerResultDto(List<NotificationResponse> results) {
-  List<NotificationResponseDTO> to = newArrayList();
+ public static ButtonPressDTO toTriggerResultDto(PrnfbButton button, List<NotificationResponse> results) {
+  List<NotificationResponseDTO> notificationResponses = newArrayList();
   for (NotificationResponse from : results) {
    String content = from.getHttpResponse().getContent();
    int status = from.getHttpResponse().getStatus();
    UUID notification = from.getNotification();
    String notificationName = from.getNotificationName();
    URI uri = from.getHttpResponse().getUri();
-   to.add(new NotificationResponseDTO(uri, content, status, notification, notificationName));
+   notificationResponses.add(new NotificationResponseDTO(uri, content, status, notification, notificationName));
   }
-  return to;
+  return new ButtonPressDTO(button.getConfirmation(), notificationResponses);
  }
 }
