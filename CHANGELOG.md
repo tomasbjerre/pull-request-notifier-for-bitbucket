@@ -3,6 +3,12 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
+### GitHub [#137](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/137) Triigger build button appears in the merged PR view too.
+  Adding PULL_REQUEST_STATE variable
+  
+  [064030fe3420fe0](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/064030fe3420fe0) Tomas Bjerre *2016-07-30 08:48:07*
+
+## 2.33
 ### GitHub [#134](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/134) Not able to see PR buttons
   Checking privilegies for both project and repo 
 
@@ -18,7 +24,7 @@ Changelog of Pull Request Notifier for Bitbucket.
 ### No issue
   Correcting conformation value when buttons pressed
   
-  [bab535e5bc6e3d6](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/bab535e5bc6e3d6) Tomas Bjerre *2016-07-30 08:19:22*
+  [5b60ace015f6128](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/5b60ace015f6128) Tomas Bjerre *2016-07-30 08:34:08*
 
   Filtering buttons in buttons resource, and filtering out allowed buttons
   

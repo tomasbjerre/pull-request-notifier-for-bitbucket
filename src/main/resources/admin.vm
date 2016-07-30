@@ -52,6 +52,7 @@
    <li><b>${PULL_REQUEST_ID}</b> Example: 1</li>
    <li><b>${PULL_REQUEST_TITLE}</b> Example: Anything</li>
    <li><b>${PULL_REQUEST_ACTION}</b> Example: OPENED</li>
+   <li><b>${PULL_REQUEST_STATE}</b> Example: DECLINED, MERGED, OPEN</li>
    <li><b>${PULL_REQUEST_URL}</b> Example: http://localhost:7990/projects/PROJECT_1/repos/rep_1/pull-requests/1</li>
    <li><b>${PULL_REQUEST_VERSION}</b> Example: 1</li>
    <li><b>${PULL_REQUEST_COMMENT_TEXT}</b> Example: A comment</li>

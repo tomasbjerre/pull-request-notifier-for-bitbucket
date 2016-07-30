@@ -318,6 +318,15 @@ public enum PrnfbVariable {
    return iterableToString(transform(pullRequest.getReviewers(), (p) -> p.getUser().getSlug()));
   }
 
+ }), PULL_REQUEST_STATE(new PrnfbVariableResolver() {
+  @Override
+  public String resolve(PullRequest pullRequest, PrnfbPullRequestAction prnfbPullRequestAction,
+    ApplicationUser applicationUser, RepositoryService repositoryService,
+    ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
+    Map<PrnfbVariable, Supplier<String>> variables, ClientKeyStore clientKeyStore, boolean shouldAcceptAnyCertificate,
+    SecurityService securityService) {
+   return pullRequest.getState().name();
+  }
  }), PULL_REQUEST_TITLE(new PrnfbVariableResolver() {
   @Override
   public String resolve(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction,
