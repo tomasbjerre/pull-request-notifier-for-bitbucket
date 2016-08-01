@@ -110,6 +110,7 @@
 <li>${PULL_REQUEST_VERSION} Example: 1</li>
 <li>${PULL_REQUEST_COMMENT_TEXT} Example: A comment</li>
 <li>${PULL_REQUEST_ACTION} Example: OPENED</li>
+<li>${PULL_REQUEST_STATE} Example: DECLINED, MERGED, OPEN</li>
 <li>${BUTTON_TRIGGER_TITLE} Example: Trigger Notification</li>
 <li>${INJECTION_URL_VALUE} Value retrieved from any URL</li>
 <li>${PULL_REQUEST_URL} Example: http://localhost:7990/projects/PROJECT_1/repos/rep_1/pull-requests/1</li>
@@ -158,7 +159,7 @@
 <p>You may want to use <a href="https://wiki.jenkins-ci.org/display/JENKINS/Violation+Comments+to+Stash+Plugin">Violation Comments to Stash plugin</a> and/or <a href="https://wiki.jenkins-ci.org/display/JENKINS/StashNotifier+Plugin">StashNotifier plugin</a> to report results back to Bitbucket.</p>
 
 <h3>
-<a id="rest" class="anchor" href="#rest" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Rest</h3>
+<a id="rest" class="anchor" href="#rest" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>REST</h3>
 
 <p>Some rest resources are available. You can figure out the JSON structure by looking at the <a href="https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/tree/master/src/main/java/se/bjurr/prnfb/presentation/dto">DTO:s</a>.</p>
 
@@ -240,16 +241,90 @@
 <h3>
 <a id="jenkins" class="anchor" href="#jenkins" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Jenkins</h3>
 
-<p>Parameterized Jenkins jobs can be triggered remotely via:</p>
+<p>Parameterized Jenkins jobs can be triggered remotely by invoking a URL. How you trigger your Jennkins installation may vary depending on how it is configured. Here is, probably, the most complicated scenario where there is CSRF protection and authentication requirements.</p>
 
-<pre><code>http://server/job/theJob/buildWithParameters?token=TOKEN&amp;PARAMETER=Value
-</code></pre>
-
-<p>If you are using a CSRF protection in Jenkins, you can use the <strong>Injection URL</strong> feature.</p>
+<p>The job that you want to trigger must have:</p>
 
 <ul>
-<li>Set <strong>Injection URL</strong> field to <code>http://JENKINS/crumbIssuer/api/xml?xpath=//crumb/text()</code>. You may get an error like <em>primitive XPath result sets forbidden; implement jenkins.security.SecureRequester</em>. If so, you can set Injection URL to <code>http://JENKINS/crumbIssuer/api/xml?xpath=//crumb</code> in combination with regular expression <code>&lt;crumb&gt;([^&lt;]*)&lt;/crumb&gt;</code>. Or a third option is to checkout <a href="https://wiki.jenkins-ci.org/display/JENKINS/Secure+Requester+Whitelist+Plugin">this</a> Jenkins plugin.</li>
-<li>In the headers section, set header <strong>.crumb</strong> with value <strong>${INJECTION_URL_VALUE}</strong>.</li>
+<li>
+<em>This build is parameterized</em> checkbox checked.</li>
+<li>
+<em>Trigger builds remotely</em> checkbox checked.
+
+<ul>
+<li>You may, or may not, use a token here.</li>
+</ul>
+</li>
+</ul>
+
+<p>I like to add an <em>Execute shell</em> build step and then just do <code>echo param: $paramName</code> to test that my parameter shows up in the build job log.</p>
+
+<p>First, you may try to trigger Jenkins with <a href="https://github.com/curl/curl">Curl</a> from command line and then, when you know how it should be done, configure the plugin.</p>
+
+<p>If your Jenkins is CSRF protected, you need to get a crumb. It can be done like this.</p>
+
+<pre><code>curl -s 'http://JENKINS_HOSTNAME/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//crumb)'
+</code></pre>
+
+<p>The response should be something like <code>Jenkins-Crumb:f122c77298b349b0116140265418ec7f</code>.</p>
+
+<p>Now you can trigger a build like this (just remove <code>?token=YOUR_TOKEN</code> if you are not using a token).</p>
+
+<pre><code>curl -u USERNAME:PASSWORD -X POST --data "paramName=paramValue" -H "Jenkins-Crumb:f122c77298b349b0116140265418ec7f" http://JENKINS_HOSTNAME/job/JENKINS_JOB/buildWithParameters?token=YOUR_TOKEN
+</code></pre>
+
+<p>Now that job should have been triggered and you should be able to verify that Jenkins is setup correclty. You may want to SSH to the Bitbucket Server machine and do this, to also verify that firewalls are open.</p>
+
+<p>Now to configure the plugin!</p>
+
+<p>If you need <strong><em>authentication</em></strong>, add your username and password in <em>Basic authentication</em>.</p>
+
+<p>If you are using a <strong><em>CSRF</em></strong> protection in Jenkins, you can use the <strong>Injection URL</strong> feature.</p>
+
+<ul>
+<li>Set <strong>Injection URL</strong> field to <code>http://JENKINS_HOSTNAME/crumbIssuer/api/xml?xpath=//crumb/text()</code>.
+
+<ul>
+<li>You may get an error like <em>primitive XPath result sets forbidden; implement jenkins.security.SecureRequester</em>. If so, you can set Injection URL to <code>http://JENKINS/crumbIssuer/api/xml?xpath=//crumb</code> in combination with regular expression <code>&lt;crumb&gt;([^&lt;]*)&lt;/crumb&gt;</code>.</li>
+<li>A third option is to checkout <a href="https://wiki.jenkins-ci.org/display/JENKINS/Secure+Requester+Whitelist+Plugin">this</a> Jenkins plugin.</li>
+</ul>
+</li>
+<li>In the headers section, set header <strong>Jenkins-Crumb</strong> with value <strong>${INJECTION_URL_VALUE}</strong>. The <code>Jenkins-Crumb</code> header name was previously just <code>.crumb</code>, use whatever the <code>curl</code> command responded with above.</li>
+</ul>
+
+<p>You may trigger the build with <code>GET</code> or <code>POST</code>.</p>
+
+<p>In <strong><em>URL</em></strong> add <code>http://JENKINS_HOSTNAME/job/JENKINS_JOB/buildWithParameters?token=YOUR_TOKEN&amp;paramName=paramValue</code>.</p>
+
+<p>Thats it! There are some common mistakes.</p>
+
+<ul>
+<li>If using ${EVERYTHING_URL}, like <code>...?token=token&amp;${EVERYTHING_URL}</code> then in your jenkins job you have to have parameters for each parameter, like <code>PULL_REQUEST_URL</code>.</li>
+<li>Even when using <code>POST</code>, you should add the parameters to the <code>URL</code>.</li>
+</ul>
+
+<h2>
+<a id="reporting-issues" class="anchor" href="#reporting-issues" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Reporting issues</h2>
+
+<p>If things don't work as you expect, perhaps you should file an issue. But first, try troubleshooting it and provide as much info as possible. Here are some things that may help if added to an issue.</p>
+
+<ul>
+<li>Plugin version used.</li>
+<li>Bitbucket Server version used.</li>
+<li>Stack traces in Bitbucket Server log file.</li>
+<li>Any browser console log messages, you can find it in Developer Tools in Chome by pressing F12.</li>
+<li>Screenshot of plugin configuration in your issue.</li>
+<li>
+<p>Your configuration.
+You can get it with something like this:</p>
+
+<p><code>curl -u admin:admin 'http://localhost:7990/bitbucket/rest/prnfb-admin/1.0/settings' -H 'Accept: application/json, text/javascript, */*; q=0.01'</code></p>
+
+<p><code>curl -u admin:admin 'http://localhost:7990/bitbucket/rest/prnfb-admin/1.0/settings/notifications' -H 'Accept: application/json, text/javascript, */*; q=0.01'</code>.</p>
+
+<p><code>curl -u admin:admin 'http://localhost:7990/bitbucket/rest/prnfb-admin/1.0/settings/buttons' -H 'Accept: application/json, text/javascript, */*; q=0.01'</code>.</p>
+</li>
+<li>If the system you are trying to notify does not seem to get notified you may check that the triggered URL looks as expected. You can do that by setting up a webserver, let the plugin invoke that with same parameters and then look at its log files to se the requested URL. Or notify <em><a href="http://cogi.bjurr.se/?%24%7B...%7D">http://cogi.bjurr.se/?${...}</a></em> and I can check my logs and tell you what the URL looks like.</li>
 </ul>
 
 <h2>
