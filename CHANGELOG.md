@@ -3,6 +3,12 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
+### No issue
+  doc
+  
+  [8a3438c4f5d045e](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/8a3438c4f5d045e) Tomas Bjerre *2016-08-11 18:07:30*
+
+## 2.35
 ### GitHub [#132](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/132) How to trigger Jenkins 2.1 with parameters
   Better documenting how to trigger Jenkins
   
@@ -12,8 +18,9 @@ Changelog of Pull Request Notifier for Bitbucket.
   Preventing Javascript
 
  * Preventing Javascript from being executed when added to fields in admin view.
+ * Also found that if several notifications were triggered by a button only first would trigger if it failed without response. Also logging were broken in this case.
   
-  [1bf663392161c2d](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/1bf663392161c2d) Tomas Bjerre *2016-08-11 17:38:18*
+  [484f0837e8cf5f4](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/484f0837e8cf5f4) Tomas Bjerre *2016-08-11 18:03:43*
 
 ## 2.34
 ### GitHub [#137](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/137) Triigger build button appears in the merged PR view too.
