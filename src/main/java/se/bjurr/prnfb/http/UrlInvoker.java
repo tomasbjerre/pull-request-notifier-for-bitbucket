@@ -161,7 +161,11 @@ public class UrlInvoker {
   configureProxy(builder);
 
   this.response = doInvoke(httpRequestBase, builder);
-  LOG.debug(this.response.getContent());
+  if (LOG.isDebugEnabled()) {
+   if (this.response != null) {
+    LOG.debug(this.response.getContent());
+   }
+  }
 
   return this.response;
  }
@@ -346,7 +350,9 @@ public class UrlInvoker {
    LOG.error("", e);
   } finally {
    try {
-    httpResponse.close();
+    if (httpResponse != null) {
+     httpResponse.close();
+    }
    } catch (IOException e) {
     propagate(e);
    }

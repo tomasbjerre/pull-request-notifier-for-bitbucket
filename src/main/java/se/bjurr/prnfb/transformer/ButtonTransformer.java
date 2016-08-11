@@ -46,11 +46,16 @@ public class ButtonTransformer {
  public static ButtonPressDTO toTriggerResultDto(PrnfbButton button, List<NotificationResponse> results) {
   List<NotificationResponseDTO> notificationResponses = newArrayList();
   for (NotificationResponse from : results) {
-   String content = from.getHttpResponse().getContent();
-   int status = from.getHttpResponse().getStatus();
+   String content = null;
+   int status = 0;
+   URI uri = null;
+   if (from.getHttpResponse() != null) {
+    content = from.getHttpResponse().getContent();
+    status = from.getHttpResponse().getStatus();
+    uri = from.getHttpResponse().getUri();
+   }
    UUID notification = from.getNotification();
    String notificationName = from.getNotificationName();
-   URI uri = from.getHttpResponse().getUri();
    notificationResponses.add(new NotificationResponseDTO(uri, content, status, notification, notificationName));
   }
   return new ButtonPressDTO(button.getConfirmation(), notificationResponses);

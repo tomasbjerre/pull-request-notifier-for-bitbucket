@@ -23,16 +23,16 @@ define('plugin/prnfb/pr-triggerbutton', [
      AJS.flag({
       close: 'auto',
       type: 'success',
-      title: notificationResponse.notificationName,
+      title: notificationResponse.notificationName.replace(/<script>/g,'script'),
       body: '<p>You may check network tab in web browser for exact URL and response.</p>'
      });
     } else {
      AJS.flag({
       close: 'auto',
       type: 'error',
-      title: notificationResponse.notificationName,
+      title: notificationResponse.notificationName.replace(/<script>/g,'script'),
       body: '<p>' + notificationResponse.status + ' ' + notificationResponse.uri + '</p>' +
-       '<p>' + notificationResponse.content + '</p>'
+       '<p>You may check network tab in web browser for exact URL and response.</p>'
      });
     }
    }
@@ -61,7 +61,7 @@ define('plugin/prnfb/pr-triggerbutton', [
  function loadSettingsAndShowButtons() {
   $.get(buttonsAdminUrl + '/repository/' + pageState.getRepository().id + '/pullrequest/' + pageState.getPullRequest().id, function(settings) {
    settings.forEach(function(item) {
-    var $buttonDropdownItem = buttonTemplate(item.name);
+    var $buttonDropdownItem = buttonTemplate(item.name.replace(/<script>/g,'script'));
     $buttonDropdownItem.click(function() {
      var $this = $(this);
      $this.attr("disabled", "disabled");
@@ -87,7 +87,7 @@ define('plugin/prnfb/pr-triggerbutton', [
         close: 'auto',
         type: 'error',
         title: "Unknown error",
-        body: '<p>' + content.status + ' ' + content.statusText + '</p>' + '<p>Check the Bitbucket Server log for more details.</p>'
+        body: '<p>' + content.status + '</p>' + '<p>Check the Bitbucket Server log for more details.</p>'
        });
       }
      });

@@ -22,8 +22,8 @@ define('plugin/prnfb/utils', [
     AJS.messages.error(".statusresponse", {
      title: 'Error',
      body: '<p>' +
-      'Sent POST ' + url + ':<br/><code>' + jsonString + '</code><br/><br/>' +
-      'Got:<br/><code>' + xhr.responseText + '</code><br/><br/>' +
+      'Sent POST ' + url + ':<br/><code>' + jsonString.replace(/<script>/g,'script') + '</code><br/><br/>' +
+      'Got:<br/><code>' + xhr.responseText.replace(/<script>/g,'script') + '</code><br/><br/>' +
       '</p>'
     });
     $("html, body").animate({
@@ -204,7 +204,9 @@ define('plugin/prnfb/utils', [
     $(formSelector + ' [name=uuid]').empty();
     $(formSelector + ' [name=uuid]').append('<option value="">New</option>');
     for (var i = 0; i < data.length; i++) {
-     $(formSelector + ' [name=uuid]').append('<option value="' + data[i].uuid + '">' + (data[i].projectKey || '') + ' ' + (data[i].repositorySlug || '') + ' ' + data[i].name + '</option>');
+     var name = data[i].name;
+     name = name.replace(/<script>/g,'script')
+     $(formSelector + ' [name=uuid]').append('<option value="' + data[i].uuid + '">' + (data[i].projectKey || '') + ' ' + (data[i].repositorySlug || '') + ' ' + name + '</option>');
     }
    });
    clearForm(formSelector);

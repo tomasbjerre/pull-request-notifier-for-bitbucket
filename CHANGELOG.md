@@ -3,10 +3,23 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
+### GitHub [#132](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/132) How to trigger Jenkins 2.1 with parameters
+  Better documenting how to trigger Jenkins
+  
+  [fe0d68fed224d5e](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/fe0d68fed224d5e) Tomas Bjerre *2016-07-31 19:37:11*
+
+### No issue
+  Preventing Javascript
+
+ * Preventing Javascript from being executed when added to fields in admin view.
+  
+  [1bf663392161c2d](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/1bf663392161c2d) Tomas Bjerre *2016-08-11 17:38:18*
+
+## 2.34
 ### GitHub [#137](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/137) Triigger build button appears in the merged PR view too.
   Adding PULL_REQUEST_STATE variable
   
-  [064030fe3420fe0](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/064030fe3420fe0) Tomas Bjerre *2016-07-30 08:48:07*
+  [2455b339fceebf4](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/2455b339fceebf4) Tomas Bjerre *2016-07-30 08:49:20*
 
 ## 2.33
 ### GitHub [#134](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/134) Not able to see PR buttons
