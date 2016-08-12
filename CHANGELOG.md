@@ -3,10 +3,15 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
+### GitHub [#139](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/139) Bitbucket - PR Button created at project level shows up for other projects in the same host
+  Hiding project-level buttons from other projects
+  
+  [47b1aaea2806d9d](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/47b1aaea2806d9d) Tomas Bjerre *2016-08-12 15:32:23*
+
 ### No issue
   doc
   
-  [8a3438c4f5d045e](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/8a3438c4f5d045e) Tomas Bjerre *2016-08-11 18:07:30*
+  [0230d6dd0ea44f2](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/0230d6dd0ea44f2) Tomas Bjerre *2016-08-11 18:07:42*
 
 ## 2.35
 ### GitHub [#132](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/132) How to trigger Jenkins 2.1 with parameters

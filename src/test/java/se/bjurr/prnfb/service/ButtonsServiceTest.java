@@ -27,8 +27,10 @@ import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
 import se.bjurr.prnfb.listener.PrnfbPullRequestEventListener;
 import se.bjurr.prnfb.presentation.dto.ButtonDTO;
 import se.bjurr.prnfb.presentation.dto.NotificationDTO;
+import se.bjurr.prnfb.presentation.dto.ON_OR_OFF;
 import se.bjurr.prnfb.settings.PrnfbButton;
 import se.bjurr.prnfb.settings.PrnfbNotification;
+import se.bjurr.prnfb.settings.USER_LEVEL;
 import se.bjurr.prnfb.settings.ValidationException;
 
 import com.atlassian.bitbucket.auth.AuthenticationContext;
@@ -39,7 +41,6 @@ import com.atlassian.bitbucket.pull.PullRequestService;
 import com.atlassian.bitbucket.repository.Repository;
 import com.atlassian.bitbucket.repository.RepositoryService;
 import com.atlassian.bitbucket.server.ApplicationPropertiesService;
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
 public class ButtonsServiceTest {
@@ -54,17 +55,25 @@ public class ButtonsServiceTest {
  private ButtonDTO buttonDto3;
  @Mock
  private ClientKeyStore clientKeyStore;
+ private final ON_OR_OFF confirmation = ON_OR_OFF.on;
+ private final String name = "name";
  private PrnfbNotification notification1;
  private PrnfbNotification notification2;
  private NotificationDTO notificationDto1;
  private NotificationDTO notificationDto2;
  private List<PrnfbNotification> notifications;
  @Mock
+ private Repository originRepo;
+ @Mock
  private PrnfbPullRequestEventListener prnfbPullRequestEventListener;
  @Mock
  private PrnfbRendererFactory prnfbRendererFactory;
  @Mock
+ private Project project;
+ @Mock
  private ApplicationPropertiesService propertiesService;
+ @Mock
+ private PullRequestRef prRef;
  @Mock
  private PullRequest pullRequest;
  private final PrnfbPullRequestAction pullRequestAction = BUTTON_TRIGGER;
@@ -73,6 +82,8 @@ public class ButtonsServiceTest {
  @Mock
  private PrnfbRenderer renderer;
  @Mock
+ private Repository repository;
+ @Mock
  private RepositoryService repositoryService;
  @Mock
  private SettingsService settingsService;
@@ -80,14 +91,8 @@ public class ButtonsServiceTest {
  private ButtonsService sut;
  @Mock
  private UserCheckService userCheckService;
- @Mock
- private PullRequestRef prRef;
- @Mock
- private Repository repository;
- @Mock
- private Repository originRepo;
- @Mock
- private Project project;
+ private final USER_LEVEL userLevel = USER_LEVEL.ADMIN;
+ private final UUID uuid = UUID.randomUUID();
 
  @SuppressWarnings("unchecked")
  @Before
@@ -114,9 +119,9 @@ public class ButtonsServiceTest {
   when(this.settingsService.getButton(this.button1.getUuid()))//
     .thenReturn(this.button1);
   when(this.settingsService.getButton(this.button2.getUuid()))//
-  .thenReturn(this.button2);
+    .thenReturn(this.button2);
   when(this.settingsService.getButton(this.button3.getUuid()))//
-  .thenReturn(this.button3);
+    .thenReturn(this.button3);
 
   this.notificationDto1 = populatedInstanceOf(NotificationDTO.class);
   this.notificationDto1.setUrl("http://hej.com");
@@ -143,9 +148,9 @@ public class ButtonsServiceTest {
   when(this.userCheckService.isAllowedUseButton(this.button1))//
     .thenReturn(true);
   when(this.userCheckService.isAllowedUseButton(this.button2))//
-  .thenReturn(true);
+    .thenReturn(true);
   when(this.userCheckService.isAllowedUseButton(this.button3))//
-  .thenReturn(true);
+    .thenReturn(true);
   when(
     this.prnfbPullRequestEventListener.isNotificationTriggeredByAction(this.notification1, this.pullRequestAction,
       this.renderer, this.pullRequest, this.clientKeyStore, this.shouldAcceptAnyCertificate))//
@@ -154,11 +159,11 @@ public class ButtonsServiceTest {
     this.prnfbPullRequestEventListener.isNotificationTriggeredByAction(this.notification2, this.pullRequestAction,
       this.renderer, this.pullRequest, this.clientKeyStore, this.shouldAcceptAnyCertificate))//
     .thenReturn(true);
-  when(this.pullRequest.getToRef()).thenReturn(prRef);
-  when(this.prRef.getRepository()).thenReturn(repository);
-  when(this.repository.getSlug()).thenReturn(button3.getRepositorySlug().get());
-  when(this.repository.getProject()).thenReturn(project);
-  when(this.project.getKey()).thenReturn(button3.getProjectKey().get());
+  when(this.pullRequest.getToRef()).thenReturn(this.prRef);
+  when(this.prRef.getRepository()).thenReturn(this.repository);
+  when(this.repository.getSlug()).thenReturn(this.button3.getRepositorySlug().get());
+  when(this.repository.getProject()).thenReturn(this.project);
+  when(this.project.getKey()).thenReturn(this.button3.getProjectKey().get());
 
   List<PrnfbButton> actual = this.sut.doGetButtons(this.notifications, this.clientKeyStore, this.pullRequest,
     this.shouldAcceptAnyCertificate);
@@ -173,9 +178,9 @@ public class ButtonsServiceTest {
     .containsOnly(this.button1, this.button2);
 
   // Now check if the button is inherited from the origin repo
-  when(this.repository.getOrigin()).thenReturn(originRepo);
-  when(this.originRepo.getSlug()).thenReturn(button3.getRepositorySlug().get());
-  when(this.originRepo.getProject()).thenReturn(project);
+  when(this.repository.getOrigin()).thenReturn(this.originRepo);
+  when(this.originRepo.getSlug()).thenReturn(this.button3.getRepositorySlug().get());
+  when(this.originRepo.getProject()).thenReturn(this.project);
   actual = this.sut.doGetButtons(this.notifications, this.clientKeyStore, this.pullRequest,
     this.shouldAcceptAnyCertificate);
   assertThat(actual)//
@@ -220,5 +225,57 @@ public class ButtonsServiceTest {
 
   verify(this.prnfbPullRequestEventListener, times(2))//
     .notify(any(), any(), any(), any(), any(), any());
+ }
+
+ @Test
+ public void testVisibilityOnPullRequest() {
+  String buttonProjectKey = "proj";
+  String buttonRepositorySlug = "repo";
+  String repoProjectKey = "proj";
+  String repoRepositorySlug = "repo";
+  testVisibilityOnRepository(buttonProjectKey, buttonRepositorySlug, repoProjectKey, repoRepositorySlug, true);
+
+  buttonProjectKey = "proj";
+  buttonRepositorySlug = "repo";
+  repoProjectKey = "proj2";
+  repoRepositorySlug = "repo";
+  testVisibilityOnRepository(buttonProjectKey, buttonRepositorySlug, repoProjectKey, repoRepositorySlug, false);
+
+  buttonProjectKey = "proj";
+  buttonRepositorySlug = null;
+  repoProjectKey = "proj";
+  repoRepositorySlug = "repo";
+  testVisibilityOnRepository(buttonProjectKey, buttonRepositorySlug, repoProjectKey, repoRepositorySlug, true);
+
+  buttonProjectKey = "proj";
+  buttonRepositorySlug = null;
+  repoProjectKey = "proj2";
+  repoRepositorySlug = "repo";
+  testVisibilityOnRepository(buttonProjectKey, buttonRepositorySlug, repoProjectKey, repoRepositorySlug, false);
+
+  buttonProjectKey = "proj";
+  buttonRepositorySlug = "repo";
+  repoProjectKey = "proj";
+  repoRepositorySlug = "repo2";
+  testVisibilityOnRepository(buttonProjectKey, buttonRepositorySlug, repoProjectKey, repoRepositorySlug, false);
+
+  buttonProjectKey = "proj";
+  buttonRepositorySlug = "repo";
+  repoProjectKey = "proj2";
+  repoRepositorySlug = "repo2";
+  testVisibilityOnRepository(buttonProjectKey, buttonRepositorySlug, repoProjectKey, repoRepositorySlug, false);
+ }
+
+ private void testVisibilityOnRepository(String buttonProjectKey, String buttonRepositorySlug, String repoProjectKey,
+   String repoRepoSlug, boolean expected) {
+  PrnfbButton button = new PrnfbButton(this.uuid, this.name, this.userLevel, this.confirmation, buttonProjectKey,
+    buttonRepositorySlug);
+  when(this.repository.getProject()).thenReturn(this.project);
+  when(this.repository.getProject().getKey())//
+    .thenReturn(repoProjectKey);
+  when(this.repository.getSlug())//
+    .thenReturn(repoRepoSlug);
+  assertThat(this.sut.isVisibleOnRepository(button, this.repository))//
+    .isEqualTo(expected);
  }
 }

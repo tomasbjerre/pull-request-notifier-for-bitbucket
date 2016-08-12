@@ -85,29 +85,6 @@ public class ButtonsService {
     || (pullRequest.getToRef() != null && isVisibleOnRepository(button, pullRequest.getToRef().getRepository()));
  }
 
- /**
-  * Checks if the given button is visible in the given repository.
-  *
-  * @param button
-  *         Button under test
-  * @param repository
-  *         Repository to check for
-  * @return True if the button is either globally visible or matches with the
-  *         given repository
-  */
- private boolean isVisibleOnRepository(PrnfbButton button, Repository repository) {
-  if (button.getRepositorySlug().isPresent()) {
-   boolean visible = false;
-   do {
-    visible |= button.getProjectKey().get().equals(repository.getProject().getKey())
-      && button.getRepositorySlug().get().equals(repository.getSlug());
-   } while (!visible && (repository = repository.getOrigin()) != null);
-   return visible;
-  } else {
-   return TRUE;
-  }
- }
-
  @VisibleForTesting
  List<PrnfbButton> doGetButtons(List<PrnfbNotification> notifications, ClientKeyStore clientKeyStore,
    final PullRequest pullRequest, boolean shouldAcceptAnyCertificate) {
@@ -154,6 +131,37 @@ public class ButtonsService {
   PrnfbButton button = this.settingsService.getButton(uuid);
   variables.put(BUTTON_TRIGGER_TITLE, Suppliers.ofInstance(button.getName()));
   return variables;
+ }
+
+ /**
+  * Checks if the given button is visible in the given repository.
+  *
+  * @param button
+  *         Button under test
+  * @param repository
+  *         Repository to check for
+  * @return True if the button is either globally visible or matches with the
+  *         given repository
+  */
+ @VisibleForTesting
+ boolean isVisibleOnRepository(PrnfbButton button, Repository repository) {
+  boolean projectOk = false;
+  boolean repoOk = false;
+
+  do {
+   if (button.getProjectKey().isPresent()) {
+    projectOk |= button.getProjectKey().get().equals(repository.getProject().getKey());
+   } else {
+    projectOk = true;
+   }
+   if (button.getRepositorySlug().isPresent()) {
+    repoOk |= button.getRepositorySlug().get().equals(repository.getSlug());
+   } else {
+    repoOk = true;
+   }
+  } while (!(projectOk && repoOk) && (repository = repository.getOrigin()) != null);
+
+  return projectOk && repoOk;
  }
 
 }
