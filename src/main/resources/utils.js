@@ -17,13 +17,19 @@ define('plugin/prnfb/utils', [
     if (data && data.uuid) {
      doSetupForm(formSelector, url + '/' + data.uuid);
     }
+    AJS.flag({
+     close: 'auto',
+     type: 'success',
+     title: 'Saved',
+     body: '<p>=)</p>'
+    });
    },
    error: function(xhr, status, error) {
     AJS.messages.error(".statusresponse", {
      title: 'Error',
      body: '<p>' +
-      'Sent POST ' + url + ':<br/><code>' + jsonString.replace(/<script>/g,'script') + '</code><br/><br/>' +
-      'Got:<br/><code>' + xhr.responseText.replace(/<script>/g,'script') + '</code><br/><br/>' +
+      'Sent POST ' + url + ':<br/><code>' + jsonString.replace(/<script>/g, 'script') + '</code><br/><br/>' +
+      'Got:<br/><code>' + xhr.responseText.replace(/<script>/g, 'script') + '</code><br/><br/>' +
       '</p>'
     });
     $("html, body").animate({
@@ -205,7 +211,7 @@ define('plugin/prnfb/utils', [
     $(formSelector + ' [name=uuid]').append('<option value="">New</option>');
     for (var i = 0; i < data.length; i++) {
      var name = data[i].name;
-     name = name.replace(/<script>/g,'script')
+     name = name.replace(/<script>/g, 'script')
      $(formSelector + ' [name=uuid]').append('<option value="' + data[i].uuid + '">' + (data[i].projectKey || '') + ' ' + (data[i].repositorySlug || '') + ' ' + name + '</option>');
     }
    });

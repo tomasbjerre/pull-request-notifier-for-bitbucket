@@ -23,14 +23,14 @@ define('plugin/prnfb/pr-triggerbutton', [
      AJS.flag({
       close: 'auto',
       type: 'success',
-      title: notificationResponse.notificationName.replace(/<script>/g,'script'),
+      title: notificationResponse.notificationName.replace(/<script>/g, 'script'),
       body: '<p>You may check network tab in web browser for exact URL and response.</p>'
      });
     } else {
      AJS.flag({
       close: 'auto',
       type: 'error',
-      title: notificationResponse.notificationName.replace(/<script>/g,'script'),
+      title: notificationResponse.notificationName.replace(/<script>/g, 'script'),
       body: '<p>' + notificationResponse.status + ' ' + notificationResponse.uri + '</p>' +
        '<p>You may check network tab in web browser for exact URL and response.</p>'
      });
@@ -61,7 +61,7 @@ define('plugin/prnfb/pr-triggerbutton', [
  function loadSettingsAndShowButtons() {
   $.get(buttonsAdminUrl + '/repository/' + pageState.getRepository().id + '/pullrequest/' + pageState.getPullRequest().id, function(settings) {
    settings.forEach(function(item) {
-    var $buttonDropdownItem = buttonTemplate(item.name.replace(/<script>/g,'script'));
+    var $buttonDropdownItem = buttonTemplate(item.name.replace(/<script>/g, 'script'));
     $buttonDropdownItem.click(function() {
      var $this = $(this);
      $this.attr("disabled", "disabled");
