@@ -188,7 +188,23 @@ In ***URL*** add `http://JENKINS_HOSTNAME/job/JENKINS_JOB/buildWithParameters?to
 Thats it! There are some common mistakes.
  * If using ${EVERYTHING_URL}, like `...?token=token&${EVERYTHING_URL}` then in your jenkins job you have to have parameters for each parameter, like `PULL_REQUEST_URL`.
  * Even when using `POST`, you should add the parameters to the `URL`.
- 
+
+#### Jenkins build step
+To perform the merge and verify that the pull request builds in its target branch, I do something like this.
+
+```
+git clone $TO_REPO  
+cd *  
+git reset --hard $TO_HASH  
+git status  
+git remote add from $FROM_REPO  
+git fetch from  
+git merge $FROM_HASH  
+git --no-pager log --max-count=10 --graph --abbrev-commit
+
+#compile command here ...
+```
+
 ## Reporting issues
 If things don't work as you expect, perhaps you should file an issue. But first, try troubleshooting it and provide as much info as possible. Here are some things that may help if added to an issue.
 

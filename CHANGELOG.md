@@ -2,11 +2,11 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
-## Unreleased
+## 2.37
 ### GitHub [#140](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/140) Show notification when settings are saved
   Showing message on successful save
   
-  [7f30b9cf2b6cbee](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/7f30b9cf2b6cbee) Tomas Bjerre *2016-08-17 17:46:52*
+  [3a94670ff85a25c](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/3a94670ff85a25c) Tomas Bjerre *2016-08-17 17:53:21*
 
 ## 2.36
 ### GitHub [#139](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/139) Bitbucket - PR Button created at project level shows up for other projects in the same host
