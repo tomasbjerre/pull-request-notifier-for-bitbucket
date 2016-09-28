@@ -2,6 +2,12 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## Unreleased
+### No issue
+  doc
+  
+  [2fb2ce7d37c417c](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/2fb2ce7d37c417c) Tomas Bjerre *2016-09-10 07:42:58*
+
 ## 2.37
 ### GitHub [#140](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/140) Show notification when settings are saved
   Showing message on successful save

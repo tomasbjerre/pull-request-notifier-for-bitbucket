@@ -211,7 +211,7 @@ define('plugin/prnfb/utils', [
     $(formSelector + ' [name=uuid]').append('<option value="">New</option>');
     for (var i = 0; i < data.length; i++) {
      var name = data[i].name;
-     name = name.replace(/<script>/g, 'script')
+     name = name.replace(/<script>/g, 'script');
      $(formSelector + ' [name=uuid]').append('<option value="' + data[i].uuid + '">' + (data[i].projectKey || '') + ' ' + (data[i].repositorySlug || '') + ' ' + name + '</option>');
     }
    });
