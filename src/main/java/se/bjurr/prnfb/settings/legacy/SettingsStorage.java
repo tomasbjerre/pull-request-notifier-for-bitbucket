@@ -187,12 +187,12 @@ public class SettingsStorage {
    prnfbNotificationBuilder.withInjectionUrl(find(adminFormValues, predicate(injection_url.name())).get(VALUE));
   }
   if (tryFind(adminFormValues, predicate(injection_url_regexp.name())).isPresent()) {
-   prnfbNotificationBuilder.withInjectionUrlRegexp(find(adminFormValues, predicate(injection_url_regexp.name())).get(
-     VALUE));
+   prnfbNotificationBuilder
+     .withInjectionUrlRegexp(find(adminFormValues, predicate(injection_url_regexp.name())).get(VALUE));
   }
   if (tryFind(adminFormValues, predicate(trigger_if_isconflicting.name())).isPresent()) {
-   prnfbNotificationBuilder.withTriggerIfCanMerge(find(adminFormValues, predicate(trigger_if_isconflicting.name()))
-     .get(VALUE));
+   prnfbNotificationBuilder
+     .withTriggerIfCanMerge(find(adminFormValues, predicate(trigger_if_isconflicting.name())).get(VALUE));
   }
   for (final Map<String, String> event : filter(adminFormValues, predicate(trigger_ignore_state.name()))) {
    prnfbNotificationBuilder.withTriggerIgnoreState(PullRequestState.valueOf(event.get(VALUE)));
@@ -221,8 +221,8 @@ public class SettingsStorage {
     prnfbSettingsBuilder.setKeyStoreType(tryFind(adminFormValues, predicate(key_store_type.name())).get().get(VALUE));
    }
    if (tryFind(adminFormValues, predicate(key_store_password.name())).isPresent()) {
-    prnfbSettingsBuilder.setKeyStorePassword(tryFind(adminFormValues, predicate(key_store_password.name())).get().get(
-      VALUE));
+    prnfbSettingsBuilder
+      .setKeyStorePassword(tryFind(adminFormValues, predicate(key_store_password.name())).get().get(VALUE));
    }
   }
   return prnfbSettingsBuilder.build();
@@ -295,7 +295,7 @@ public class SettingsStorage {
   if (nameMapOpt.isPresent()) {
    return adminFormValues;
   }
-  adminFormValues.add(ImmutableMap.<String, String> builder()//
+  adminFormValues.add(ImmutableMap.<String, String>builder()//
     .put(NAME, name.name())//
     .put(VALUE, DEFAULT_NAME)//
     .build());

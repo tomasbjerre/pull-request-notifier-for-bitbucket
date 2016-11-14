@@ -55,7 +55,7 @@ public class UserCheckService {
    }
   });
   return allowedButtons;
- } 
+ }
 
  public boolean isAdmin(UserKey userKey, String projectKey, String repositorySlug) {
   boolean isAdmin = this.userManager.isAdmin(userKey);

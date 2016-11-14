@@ -65,8 +65,8 @@ public class PrnfbNotification {
   this.headers = checkNotNull(builder.getHeaders());
   this.postContent = emptyToNull(nullToEmpty(builder.getPostContent()).trim());
   this.method = HTTP_METHOD.valueOf(firstNonNull(emptyToNull(nullToEmpty(builder.getMethod()).trim()), GET.name()));
-  this.triggerIfCanMerge = TRIGGER_IF_MERGE.valueOf(firstNonNull(
-    emptyToNull(nullToEmpty(builder.getTriggerIfCanMerge()).trim()), ALWAYS.name()));
+  this.triggerIfCanMerge = TRIGGER_IF_MERGE
+    .valueOf(firstNonNull(emptyToNull(nullToEmpty(builder.getTriggerIfCanMerge()).trim()), ALWAYS.name()));
   if (nullToEmpty(builder.getUrl()).trim().isEmpty()) {
    throw new ValidationException(FIELDS.url.name(), "URL not set!");
   }
@@ -79,8 +79,8 @@ public class PrnfbNotification {
    try {
     compile(builder.getFilterRegexp());
    } catch (final Exception e) {
-    throw new ValidationException(filter_regexp.name(), "Filter regexp not valid! "
-      + e.getMessage().replaceAll("\n", " "));
+    throw new ValidationException(filter_regexp.name(),
+      "Filter regexp not valid! " + e.getMessage().replaceAll("\n", " "));
    }
    if (nullToEmpty(builder.getFilterString()).trim().isEmpty()) {
     throw new ValidationException(filter_string.name(), "Filter string not set, nothing to match regexp against!");

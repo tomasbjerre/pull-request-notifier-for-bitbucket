@@ -43,7 +43,7 @@ public class UrlInvokerTest {
     }
    }
   }//
-  .withUrlParam("http://url.com/");
+    .withUrlParam("http://url.com/");
  }
 
  @Test

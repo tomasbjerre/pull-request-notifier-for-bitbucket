@@ -113,10 +113,9 @@ public class NotificationServletTest {
 
  @Test
  public void testThatNotificationCanBeListedPerProjectAndRepo() throws Exception {
-  when(
-    this.settingsService.getNotifications(this.notificationDto1.getProjectKey(),
-      this.notificationDto1.getRepositorySlug()))//
-    .thenReturn(newArrayList(this.notification1));
+  when(this.settingsService.getNotifications(this.notificationDto1.getProjectKey(),
+    this.notificationDto1.getRepositorySlug()))//
+      .thenReturn(newArrayList(this.notification1));
 
   Response actual = this.sut.get(this.notificationDto1.getProjectKey(), this.notificationDto1.getRepositorySlug());
   @SuppressWarnings("unchecked")

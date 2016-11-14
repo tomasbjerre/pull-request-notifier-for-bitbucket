@@ -87,8 +87,8 @@ public class PrnfbPullRequestEventListenerTest {
  @Before
  public void before() throws ValidationException {
   initMocks(this);
-  this.sut = new PrnfbPullRequestEventListener(this.prnfbRendererFactory, this.pullRequestService,
-    this.executorService, this.settingsService);
+  this.sut = new PrnfbPullRequestEventListener(this.prnfbRendererFactory, this.pullRequestService, this.executorService,
+    this.settingsService);
   setInvoker(new Invoker() {
    @Override
    public HttpResponse invoke(UrlInvoker urlInvoker) {

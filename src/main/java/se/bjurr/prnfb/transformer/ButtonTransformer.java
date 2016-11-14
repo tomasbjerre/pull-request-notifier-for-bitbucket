@@ -37,9 +37,9 @@ public class ButtonTransformer {
   return new PrnfbButton(//
     buttonDto.getUUID(), //
     buttonDto.getName(), //
-    buttonDto.getUserLevel(),//
-    buttonDto.getConfirmation(),//
-    buttonDto.getProjectKey().orNull(),//
+    buttonDto.getUserLevel(), //
+    buttonDto.getConfirmation(), //
+    buttonDto.getProjectKey().orNull(), //
     buttonDto.getRepositorySlug().orNull());//
  }
 

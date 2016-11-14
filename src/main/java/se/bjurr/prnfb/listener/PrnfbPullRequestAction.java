@@ -23,10 +23,10 @@ public enum PrnfbPullRequestAction {
  public static PrnfbPullRequestAction fromPullRequestEvent(PullRequestEvent event, PrnfbNotification notification) {
   if (event instanceof PullRequestRescopedEvent) {
    PullRequestRescopedEvent rescopedEvent = (PullRequestRescopedEvent) event;
-   boolean toChanged = !rescopedEvent.getPreviousToHash().equals(
-     rescopedEvent.getPullRequest().getToRef().getLatestCommit());
-   boolean fromChanged = !rescopedEvent.getPreviousFromHash().equals(
-     rescopedEvent.getPullRequest().getFromRef().getLatestCommit());
+   boolean toChanged = !rescopedEvent.getPreviousToHash()
+     .equals(rescopedEvent.getPullRequest().getToRef().getLatestCommit());
+   boolean fromChanged = !rescopedEvent.getPreviousFromHash()
+     .equals(rescopedEvent.getPullRequest().getFromRef().getLatestCommit());
    if (fromChanged && !toChanged) {
     return RESCOPED_FROM;
    } else if (toChanged && !fromChanged) {

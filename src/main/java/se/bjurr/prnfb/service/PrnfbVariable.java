@@ -18,13 +18,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 
-import se.bjurr.prnfb.http.ClientKeyStore;
-import se.bjurr.prnfb.http.HttpResponse;
-import se.bjurr.prnfb.http.Invoker;
-import se.bjurr.prnfb.http.UrlInvoker;
-import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
-import se.bjurr.prnfb.settings.PrnfbNotification;
-
 import com.atlassian.bitbucket.permission.Permission;
 import com.atlassian.bitbucket.pull.PullRequest;
 import com.atlassian.bitbucket.pull.PullRequestParticipant;
@@ -39,6 +32,13 @@ import com.atlassian.bitbucket.util.Operation;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
+
+import se.bjurr.prnfb.http.ClientKeyStore;
+import se.bjurr.prnfb.http.HttpResponse;
+import se.bjurr.prnfb.http.Invoker;
+import se.bjurr.prnfb.http.UrlInvoker;
+import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
+import se.bjurr.prnfb.settings.PrnfbNotification;
 
 public enum PrnfbVariable {
 
@@ -505,11 +505,6 @@ public enum PrnfbVariable {
   }
  };
 
- @VisibleForTesting
- public static void setInvoker(Invoker invoker) {
-  PrnfbVariable.mockedInvoker = invoker;
- }
-
  private static String cloneUrlFromRepository(RepoProtocol protocol, Repository repository,
    RepositoryService repositoryService, SecurityService securityService) {
   return securityService//
@@ -564,6 +559,11 @@ public enum PrnfbVariable {
   return on(',').join(sorted);
  }
 
+ @VisibleForTesting
+ public static void setInvoker(Invoker invoker) {
+  PrnfbVariable.mockedInvoker = invoker;
+ }
+
  private PrnfbVariableResolver resolver;
 
  PrnfbVariable(PrnfbVariableResolver resolver) {
@@ -571,11 +571,10 @@ public enum PrnfbVariable {
  }
 
  public String resolve(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction,
-   ApplicationUser applicationUser, RepositoryService repositoryService,
-   ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
-   Map<PrnfbVariable, Supplier<String>> variables, ClientKeyStore clientKeyStore, boolean shouldAcceptAnyCertificate,
-   SecurityService securityService) {
-  return this.resolver.resolve(pullRequest, pullRequestAction, applicationUser, repositoryService, propertiesService,
+   ApplicationUser applicationUser, RepositoryService repositoryService, ApplicationPropertiesService propertiesService,
+   PrnfbNotification prnfbNotification, Map<PrnfbVariable, Supplier<String>> variables, ClientKeyStore clientKeyStore,
+   boolean shouldAcceptAnyCertificate, SecurityService securityService) {
+  return resolver.resolve(pullRequest, pullRequestAction, applicationUser, repositoryService, propertiesService,
     prnfbNotification, variables, clientKeyStore, shouldAcceptAnyCertificate, securityService);
  }
 }

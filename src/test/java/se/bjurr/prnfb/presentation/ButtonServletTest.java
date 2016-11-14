@@ -126,14 +126,13 @@ public class ButtonServletTest {
 
  @Test
  public void testThatButtonCanBeListedPerProjectAndRepo() throws Exception {
-  when(
-    this.settingsService.getButtons(this.buttonDto1.getProjectKey().orNull(), this.buttonDto1.getRepositorySlug()
-      .orNull()))//
-    .thenReturn(newArrayList(this.button1));
+  when(this.settingsService.getButtons(this.buttonDto1.getProjectKey().orNull(),
+    this.buttonDto1.getRepositorySlug().orNull()))//
+      .thenReturn(newArrayList(this.button1));
   allowAll();
 
-  Response actual = this.sut
-    .get(this.buttonDto1.getProjectKey().orNull(), this.buttonDto1.getRepositorySlug().orNull());
+  Response actual = this.sut.get(this.buttonDto1.getProjectKey().orNull(),
+    this.buttonDto1.getRepositorySlug().orNull());
   @SuppressWarnings("unchecked")
   Iterable<ButtonDTO> actualList = (Iterable<ButtonDTO>) actual.getEntity();
 

@@ -106,10 +106,10 @@ public class PrnfbPullRequestEventListener {
    }
   }
 
-  if (notification.getFilterRegexp().isPresent()
-    && notification.getFilterString().isPresent()
-    && !compile(notification.getFilterRegexp().get()).matcher(
-      renderer.render(notification.getFilterString().get(), FALSE, clientKeyStore, shouldAcceptAnyCertificate)).find()) {
+  if (notification.getFilterRegexp().isPresent() && notification.getFilterString().isPresent()
+    && !compile(notification.getFilterRegexp().get())
+      .matcher(renderer.render(notification.getFilterString().get(), FALSE, clientKeyStore, shouldAcceptAnyCertificate))
+      .find()) {
    return FALSE;
   }
 
@@ -119,8 +119,8 @@ public class PrnfbPullRequestEventListener {
 
   if (notification.getTriggerIfCanMerge() != ALWAYS && pullRequest.isOpen()) {
    // Cannot perform canMerge unless PR is open
-   boolean isConflicted = this.pullRequestService.canMerge(pullRequest.getToRef().getRepository().getId(),
-     pullRequest.getId()).isConflicted();
+   boolean isConflicted = this.pullRequestService
+     .canMerge(pullRequest.getToRef().getRepository().getId(), pullRequest.getId()).isConflicted();
    if (ignoreBecauseOfConflicting(notification.getTriggerIfCanMerge(), isConflicted)) {
     return FALSE;
    }
@@ -138,8 +138,8 @@ public class PrnfbPullRequestEventListener {
 
   Optional<String> postContent = absent();
   if (notification.getPostContent().isPresent()) {
-   postContent = of(renderer.render(notification.getPostContent().get(), FALSE, clientKeyStore,
-     shouldAcceptAnyCertificate));
+   postContent = of(
+     renderer.render(notification.getPostContent().get(), FALSE, clientKeyStore, shouldAcceptAnyCertificate));
   }
   String renderedUrl = renderer.render(notification.getUrl(), TRUE, clientKeyStore, shouldAcceptAnyCertificate);
   LOG.info(notification.getName() + " > " //
@@ -255,8 +255,7 @@ public class PrnfbPullRequestEventListener {
  Map<PrnfbVariable, Supplier<String>> populateVariables(final PullRequestEvent pullRequestEvent) {
   Map<PrnfbVariable, Supplier<String>> variables = newHashMap();
   if (pullRequestEvent instanceof PullRequestCommentEvent) {
-   variables.put(PULL_REQUEST_COMMENT_TEXT, () -> ((PullRequestCommentEvent) pullRequestEvent).getComment()
-     .getText());
+   variables.put(PULL_REQUEST_COMMENT_TEXT, () -> ((PullRequestCommentEvent) pullRequestEvent).getComment().getText());
   } else if (pullRequestEvent instanceof PullRequestMergedEvent) {
    variables.put(PULL_REQUEST_MERGE_COMMIT, new Supplier<String>() {
     @Override

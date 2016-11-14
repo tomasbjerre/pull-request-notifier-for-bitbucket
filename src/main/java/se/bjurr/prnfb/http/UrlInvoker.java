@@ -322,7 +322,7 @@ public class UrlInvoker {
     SSLConnectionSocketFactory sslConnSocketFactory = new SSLConnectionSocketFactory(s);
     builder.setSSLSocketFactory(sslConnSocketFactory);
 
-    Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory> create()
+    Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
       .register("https", sslConnSocketFactory).build();
 
     HttpClientConnectionManager ccm = new BasicHttpClientConnectionManager(registry);

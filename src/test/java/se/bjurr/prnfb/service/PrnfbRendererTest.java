@@ -91,10 +91,11 @@ public class PrnfbRendererTest {
 
  @Test
  public void testThatEverythingCanBeRendered() throws UnsupportedEncodingException {
-  String actual = this.sut.getRenderedStringResolved("asd ${" + EVERYTHING_URL.name() + "} asd", this.forUrl, this.sut
-    .regexp(EVERYTHING_URL), EVERYTHING_URL.resolve(this.pullRequest, this.pullRequestAction, this.applicationUser,
-    this.repositoryService, this.propertiesService, this.prnfbNotification, this.variables, this.clientKeyStore,
-    this.shouldAcceptAnyCertificate, this.securityService));
+  String actual = this.sut.getRenderedStringResolved("asd ${" + EVERYTHING_URL.name() + "} asd", this.forUrl,
+    this.sut.regexp(EVERYTHING_URL),
+    EVERYTHING_URL.resolve(this.pullRequest, this.pullRequestAction, this.applicationUser, this.repositoryService,
+      this.propertiesService, this.prnfbNotification, this.variables, this.clientKeyStore,
+      this.shouldAcceptAnyCertificate, this.securityService));
 
   assertThat(actual)//
     .isEqualTo(

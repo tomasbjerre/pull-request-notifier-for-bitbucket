@@ -39,7 +39,8 @@ public class ButtonServlet {
  private final SettingsService settingsService;
  private final UserCheckService userCheckService;
 
- public ButtonServlet(ButtonsService buttonsService, SettingsService settingsService, UserCheckService userCheckService) {
+ public ButtonServlet(ButtonsService buttonsService, SettingsService settingsService,
+   UserCheckService userCheckService) {
   this.buttonsService = buttonsService;
   this.settingsService = settingsService;
   this.userCheckService = userCheckService;

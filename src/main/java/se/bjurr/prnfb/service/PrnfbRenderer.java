@@ -42,7 +42,8 @@ public class PrnfbRenderer {
 
  PrnfbRenderer(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction, ApplicationUser applicationUser,
    RepositoryService repositoryService, ApplicationPropertiesService propertiesService,
-   PrnfbNotification prnfbNotification, Map<PrnfbVariable, Supplier<String>> variables, SecurityService securityService) {
+   PrnfbNotification prnfbNotification, Map<PrnfbVariable, Supplier<String>> variables,
+   SecurityService securityService) {
   this.pullRequest = pullRequest;
   this.pullRequestAction = pullRequestAction;
   this.applicationUser = applicationUser;
@@ -53,7 +54,8 @@ public class PrnfbRenderer {
   this.securityService = securityService;
  }
 
- public String render(String string, Boolean forUrl, ClientKeyStore clientKeyStore, Boolean shouldAcceptAnyCertificate) {
+ public String render(String string, Boolean forUrl, ClientKeyStore clientKeyStore,
+   Boolean shouldAcceptAnyCertificate) {
   string = renderVariable(string, false, clientKeyStore, shouldAcceptAnyCertificate, EVERYTHING_URL);
 
   for (final PrnfbVariable variable : PrnfbVariable.values()) {

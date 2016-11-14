@@ -4,6 +4,17 @@ Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
 ### No issue
+  Add comment text for replies
+  
+  [8b13f16f92c8bbd](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/8b13f16f92c8bbd) Garret Ruh *2016-11-14 15:48:27*
+
+## refs/tags/help
+### GitHub [#148](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/148) Grunt identifies a missing semicolon in src/main/resources/utils.js
+  Adding semicolon at end of statement
+  
+  [250ec4d56be6f3a](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/250ec4d56be6f3a) Tomas Bjerre *2016-09-28 05:38:11*
+
+### No issue
   doc
   
   [2fb2ce7d37c417c](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/2fb2ce7d37c417c) Tomas Bjerre *2016-09-10 07:42:58*

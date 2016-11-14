@@ -100,10 +100,9 @@ public class ButtonsServiceTest {
   initMocks(this);
   this.sut = new ButtonsService(this.pullRequestService, this.prnfbPullRequestEventListener, this.prnfbRendererFactory,
     this.settingsService, this.userCheckService);
-  when(
-    this.prnfbRendererFactory.create(any(PullRequest.class), any(PrnfbPullRequestAction.class),
-      any(PrnfbNotification.class), anyMap()))//
-    .thenReturn(this.renderer);
+  when(this.prnfbRendererFactory.create(any(PullRequest.class), any(PrnfbPullRequestAction.class),
+    any(PrnfbNotification.class), anyMap()))//
+      .thenReturn(this.renderer);
 
   this.buttonDto1 = populatedInstanceOf(ButtonDTO.class);
   this.buttonDto1.setProjectKey(null);
@@ -151,14 +150,12 @@ public class ButtonsServiceTest {
     .thenReturn(true);
   when(this.userCheckService.isAllowedUseButton(this.button3))//
     .thenReturn(true);
-  when(
-    this.prnfbPullRequestEventListener.isNotificationTriggeredByAction(this.notification1, this.pullRequestAction,
-      this.renderer, this.pullRequest, this.clientKeyStore, this.shouldAcceptAnyCertificate))//
-    .thenReturn(true);
-  when(
-    this.prnfbPullRequestEventListener.isNotificationTriggeredByAction(this.notification2, this.pullRequestAction,
-      this.renderer, this.pullRequest, this.clientKeyStore, this.shouldAcceptAnyCertificate))//
-    .thenReturn(true);
+  when(this.prnfbPullRequestEventListener.isNotificationTriggeredByAction(this.notification1, this.pullRequestAction,
+    this.renderer, this.pullRequest, this.clientKeyStore, this.shouldAcceptAnyCertificate))//
+      .thenReturn(true);
+  when(this.prnfbPullRequestEventListener.isNotificationTriggeredByAction(this.notification2, this.pullRequestAction,
+    this.renderer, this.pullRequest, this.clientKeyStore, this.shouldAcceptAnyCertificate))//
+      .thenReturn(true);
   when(this.pullRequest.getToRef()).thenReturn(this.prRef);
   when(this.prRef.getRepository()).thenReturn(this.repository);
   when(this.repository.getSlug()).thenReturn(this.button3.getRepositorySlug().get());

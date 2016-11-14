@@ -35,8 +35,8 @@ public class PrnfbTestIntegration {
     .auth().preemptive().basic("admin", "admin")//
     .accept(JSON)//
     .contentType(JSON);
-  RestAssured.config().logConfig(
-    logConfig().enableLoggingOfRequestAndResponseIfValidationFails().enablePrettyPrinting(true));
+  RestAssured.config()
+    .logConfig(logConfig().enableLoggingOfRequestAndResponseIfValidationFails().enablePrettyPrinting(true));
   RestAssured.responseSpecification = new ResponseSpecBuilder()//
     .build();
 
