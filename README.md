@@ -51,6 +51,7 @@ The filter text as well as the URL support variables. These are:
 * ${PULL_REQUEST_TITLE} Example: Anything
 * ${PULL_REQUEST_VERSION} Example: 1
 * ${PULL_REQUEST_COMMENT_TEXT} Example: A comment
+* ${PULL_REQUEST_COMMENT_ACTION} Example: ADDED, DELETED, EDITED, REPLIED
 * ${PULL_REQUEST_ACTION} Example: OPENED
 * ${PULL_REQUEST_STATE} Example: DECLINED, MERGED, OPEN
 * ${BUTTON_TRIGGER_TITLE} Example: Trigger Notification

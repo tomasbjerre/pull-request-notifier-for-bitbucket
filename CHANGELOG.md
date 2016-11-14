@@ -4,6 +4,14 @@ Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
 ### No issue
+  Adding ${PULL_REQUEST_COMMENT_ACTION} variable
+  
+  [ade89b294fd56f8](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/ade89b294fd56f8) Tomas Bjerre *2016-11-14 19:38:16*
+
+  Format code
+  
+  [b9a273d95239927](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/b9a273d95239927) Tomas Bjerre *2016-11-14 19:24:03*
+
   Add comment text for replies
   
   [8b13f16f92c8bbd](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/8b13f16f92c8bbd) Garret Ruh *2016-11-14 15:48:27*

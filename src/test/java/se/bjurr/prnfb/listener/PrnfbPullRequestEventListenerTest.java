@@ -1,5 +1,6 @@
 package se.bjurr.prnfb.listener;
 
+import static com.atlassian.bitbucket.comment.CommentAction.ADDED;
 import static com.atlassian.bitbucket.pull.PullRequestAction.OPENED;
 import static com.atlassian.bitbucket.pull.PullRequestState.DECLINED;
 import static com.google.common.collect.Iterables.transform;
@@ -12,6 +13,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static se.bjurr.prnfb.listener.PrnfbPullRequestAction.APPROVED;
 import static se.bjurr.prnfb.listener.PrnfbPullRequestAction.RESCOPED_FROM;
 import static se.bjurr.prnfb.listener.PrnfbPullRequestEventListener.setInvoker;
+import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_COMMENT_ACTION;
 import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_COMMENT_TEXT;
 import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_MERGE_COMMIT;
 import static se.bjurr.prnfb.settings.PrnfbNotificationBuilder.prnfbNotificationBuilder;
@@ -32,18 +34,6 @@ import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import se.bjurr.prnfb.http.ClientKeyStore;
-import se.bjurr.prnfb.http.HttpResponse;
-import se.bjurr.prnfb.http.Invoker;
-import se.bjurr.prnfb.http.UrlInvoker;
-import se.bjurr.prnfb.service.PrnfbRenderer;
-import se.bjurr.prnfb.service.PrnfbRendererFactory;
-import se.bjurr.prnfb.service.PrnfbVariable;
-import se.bjurr.prnfb.service.SettingsService;
-import se.bjurr.prnfb.settings.PrnfbNotification;
-import se.bjurr.prnfb.settings.PrnfbSettingsData;
-import se.bjurr.prnfb.settings.ValidationException;
-
 import com.atlassian.bitbucket.comment.Comment;
 import com.atlassian.bitbucket.commit.MinimalCommit;
 import com.atlassian.bitbucket.event.pull.PullRequestCommentAddedEvent;
@@ -56,6 +46,18 @@ import com.atlassian.bitbucket.pull.PullRequestService;
 import com.atlassian.bitbucket.repository.Repository;
 import com.google.common.base.Function;
 import com.google.common.base.Supplier;
+
+import se.bjurr.prnfb.http.ClientKeyStore;
+import se.bjurr.prnfb.http.HttpResponse;
+import se.bjurr.prnfb.http.Invoker;
+import se.bjurr.prnfb.http.UrlInvoker;
+import se.bjurr.prnfb.service.PrnfbRenderer;
+import se.bjurr.prnfb.service.PrnfbRendererFactory;
+import se.bjurr.prnfb.service.PrnfbVariable;
+import se.bjurr.prnfb.service.SettingsService;
+import se.bjurr.prnfb.settings.PrnfbNotification;
+import se.bjurr.prnfb.settings.PrnfbSettingsData;
+import se.bjurr.prnfb.settings.ValidationException;
 
 public class PrnfbPullRequestEventListenerTest {
 
@@ -84,11 +86,21 @@ public class PrnfbPullRequestEventListenerTest {
  @Mock
  private PullRequestRef toRef;
 
+ private void assertInvokedUrls(String... expectedUrls) {
+  Iterable<String> urls = transform(invokedUrls, new Function<UrlInvoker, String>() {
+   @Override
+   public String apply(UrlInvoker input) {
+    return input.getUrlParam();
+   }
+  });
+  assertThat(urls)//
+    .containsOnly(expectedUrls);
+ }
+
  @Before
  public void before() throws ValidationException {
   initMocks(this);
-  this.sut = new PrnfbPullRequestEventListener(this.prnfbRendererFactory, this.pullRequestService, this.executorService,
-    this.settingsService);
+  sut = new PrnfbPullRequestEventListener(prnfbRendererFactory, pullRequestService, executorService, settingsService);
   setInvoker(new Invoker() {
    @Override
    public HttpResponse invoke(UrlInvoker urlInvoker) {
@@ -99,51 +111,51 @@ public class PrnfbPullRequestEventListenerTest {
      e.printStackTrace();
     }
     urlInvoker.setResponse(response);
-    PrnfbPullRequestEventListenerTest.this.invokedUrls.add(urlInvoker);
+    invokedUrls.add(urlInvoker);
     return response;
    }
   });
 
-  when(this.pullRequest.getFromRef())//
-    .thenReturn(this.fromRef);
-  when(this.pullRequest.getFromRef().getLatestCommit())//
+  when(pullRequest.getFromRef())//
+    .thenReturn(fromRef);
+  when(pullRequest.getFromRef().getLatestCommit())//
     .thenReturn("latestCFrom");
-  when(this.pullRequest.getFromRef().getId())//
+  when(pullRequest.getFromRef().getId())//
     .thenReturn("IFrom");
 
-  when(this.pullRequest.getToRef())//
-    .thenReturn(this.toRef);
-  when(this.pullRequest.getToRef().getLatestCommit())//
+  when(pullRequest.getToRef())//
+    .thenReturn(toRef);
+  when(pullRequest.getToRef().getLatestCommit())//
     .thenReturn("latestCTo");
-  when(this.pullRequest.getToRef().getId())//
+  when(pullRequest.getToRef().getId())//
     .thenReturn("ITo");
 
-  when(this.pullRequestOpenedEvent.getPullRequest())//
-    .thenReturn(this.pullRequest);
-  when(this.pullRequestOpenedEvent.getPullRequest().isClosed())//
+  when(pullRequestOpenedEvent.getPullRequest())//
+    .thenReturn(pullRequest);
+  when(pullRequestOpenedEvent.getPullRequest().isClosed())//
     .thenReturn(false);
-  when(this.pullRequestOpenedEvent.getAction())//
+  when(pullRequestOpenedEvent.getAction())//
     .thenReturn(OPENED);
 
-  this.pluginSettingsData = prnfbSettingsDataBuilder()//
+  pluginSettingsData = prnfbSettingsDataBuilder()//
     .build();
-  when(this.settingsService.getPrnfbSettingsData())//
-    .thenReturn(this.pluginSettingsData);
+  when(settingsService.getPrnfbSettingsData())//
+    .thenReturn(pluginSettingsData);
 
-  this.notification1 = prnfbNotificationBuilder()//
+  notification1 = prnfbNotificationBuilder()//
     .withUrl("http://not1.com/")//
     .withTrigger(PrnfbPullRequestAction.OPENED)//
     .build();
-  this.notification2 = prnfbNotificationBuilder(this.notification1)//
+  notification2 = prnfbNotificationBuilder(notification1)//
     .withUrl("http://not2.com/")//
     .build();
-  List<PrnfbNotification> notifications = newArrayList(this.notification1, this.notification2);
-  when(this.settingsService.getNotifications())//
+  List<PrnfbNotification> notifications = newArrayList(notification1, notification2);
+  when(settingsService.getNotifications())//
     .thenReturn(notifications);
 
-  when(this.prnfbRendererFactory.create(any(), any(), any(), any(), any()))//
-    .thenReturn(this.renderer);
-  when(this.renderer.render(any(), any(), any(), any()))//
+  when(prnfbRendererFactory.create(any(), any(), any(), any(), any()))//
+    .thenReturn(renderer);
+  when(renderer.render(any(), any(), any(), any()))//
     .thenAnswer(new Answer<String>() {
      @Override
      public String answer(InvocationOnMock invocation) throws Throwable {
@@ -154,15 +166,15 @@ public class PrnfbPullRequestEventListenerTest {
 
  @Test
  public void testThatCommentOnClosedPRIsIgnored() {
-  when(this.pullRequest.isClosed())//
+  when(pullRequest.isClosed())//
     .thenReturn(true);
   PullRequestCommentAddedEvent pullRequestEvent = mock(PullRequestCommentAddedEvent.class);
   when(pullRequestEvent.getPullRequest())//
-    .thenReturn(this.pullRequest);
+    .thenReturn(pullRequest);
 
-  this.sut.handleEventAsync(pullRequestEvent);
+  sut.handleEventAsync(pullRequestEvent);
 
-  assertThat(this.invokedUrls)//
+  assertThat(invokedUrls)//
     .isEmpty();
  }
 
@@ -180,8 +192,8 @@ public class PrnfbPullRequestEventListenerTest {
     .build();
   PrnfbPullRequestAction pullRequestAction = RESCOPED_FROM;
 
-  boolean actual = this.sut.isNotificationTriggeredByAction(notification, pullRequestAction, this.renderer,
-    this.pullRequest, this.clientKeyStore, this.shouldAcceptAnyCertificate);
+  boolean actual = sut.isNotificationTriggeredByAction(notification, pullRequestAction, renderer, pullRequest,
+    clientKeyStore, shouldAcceptAnyCertificate);
 
   assertThat(actual)//
     .isFalse();
@@ -189,18 +201,18 @@ public class PrnfbPullRequestEventListenerTest {
 
  @Test
  public void testThatNotifiationIsNotTriggeredByActionIfOnlyBuildingMergingAndItIsConflicting() {
-  assertThat(this.sut.ignoreBecauseOfConflicting(ALWAYS, false))//
+  assertThat(sut.ignoreBecauseOfConflicting(ALWAYS, false))//
     .isFalse();
-  assertThat(this.sut.ignoreBecauseOfConflicting(CONFLICTING, false))//
+  assertThat(sut.ignoreBecauseOfConflicting(CONFLICTING, false))//
     .isTrue();
-  assertThat(this.sut.ignoreBecauseOfConflicting(NOT_CONFLICTING, false))//
+  assertThat(sut.ignoreBecauseOfConflicting(NOT_CONFLICTING, false))//
     .isFalse();
 
-  assertThat(this.sut.ignoreBecauseOfConflicting(ALWAYS, true))//
+  assertThat(sut.ignoreBecauseOfConflicting(ALWAYS, true))//
     .isFalse();
-  assertThat(this.sut.ignoreBecauseOfConflicting(CONFLICTING, true))//
+  assertThat(sut.ignoreBecauseOfConflicting(CONFLICTING, true))//
     .isFalse();
-  assertThat(this.sut.ignoreBecauseOfConflicting(NOT_CONFLICTING, true))//
+  assertThat(sut.ignoreBecauseOfConflicting(NOT_CONFLICTING, true))//
     .isTrue();
  }
 
@@ -213,7 +225,7 @@ public class PrnfbPullRequestEventListenerTest {
     .build();
   PrnfbPullRequestAction pullRequestAction = RESCOPED_FROM;
   Repository repository = mock(Repository.class);
-  when(this.toRef.getRepository())//
+  when(toRef.getRepository())//
     .thenReturn(repository);
   Project project = mock(Project.class);
   when(repository.getProject())//
@@ -221,8 +233,8 @@ public class PrnfbPullRequestEventListenerTest {
   when(project.getKey())//
     .thenReturn("pk2");
 
-  boolean actual = this.sut.isNotificationTriggeredByAction(notification, pullRequestAction, this.renderer,
-    this.pullRequest, this.clientKeyStore, this.shouldAcceptAnyCertificate);
+  boolean actual = sut.isNotificationTriggeredByAction(notification, pullRequestAction, renderer, pullRequest,
+    clientKeyStore, shouldAcceptAnyCertificate);
 
   assertThat(actual)//
     .isFalse();
@@ -237,13 +249,13 @@ public class PrnfbPullRequestEventListenerTest {
     .build();
   PrnfbPullRequestAction pullRequestAction = RESCOPED_FROM;
   Repository repository = mock(Repository.class);
-  when(this.toRef.getRepository())//
+  when(toRef.getRepository())//
     .thenReturn(repository);
   when(repository.getSlug())//
     .thenReturn("asdasd");
 
-  boolean actual = this.sut.isNotificationTriggeredByAction(notification, pullRequestAction, this.renderer,
-    this.pullRequest, this.clientKeyStore, this.shouldAcceptAnyCertificate);
+  boolean actual = sut.isNotificationTriggeredByAction(notification, pullRequestAction, renderer, pullRequest,
+    clientKeyStore, shouldAcceptAnyCertificate);
 
   assertThat(actual)//
     .isFalse();
@@ -258,11 +270,11 @@ public class PrnfbPullRequestEventListenerTest {
     .setTriggerIgnoreState(newArrayList(DECLINED))//
     .build();
   PrnfbPullRequestAction pullRequestAction = RESCOPED_FROM;
-  when(this.pullRequest.getState())//
+  when(pullRequest.getState())//
     .thenReturn(DECLINED);
 
-  boolean actual = this.sut.isNotificationTriggeredByAction(notification, pullRequestAction, this.renderer,
-    this.pullRequest, this.clientKeyStore, this.shouldAcceptAnyCertificate);
+  boolean actual = sut.isNotificationTriggeredByAction(notification, pullRequestAction, renderer, pullRequest,
+    clientKeyStore, shouldAcceptAnyCertificate);
 
   assertThat(actual)//
     .isFalse();
@@ -276,8 +288,8 @@ public class PrnfbPullRequestEventListenerTest {
     .build();
   PrnfbPullRequestAction pullRequestAction = APPROVED;
 
-  boolean actual = this.sut.isNotificationTriggeredByAction(notification, pullRequestAction, this.renderer,
-    this.pullRequest, this.clientKeyStore, this.shouldAcceptAnyCertificate);
+  boolean actual = sut.isNotificationTriggeredByAction(notification, pullRequestAction, renderer, pullRequest,
+    clientKeyStore, shouldAcceptAnyCertificate);
 
   assertThat(actual)//
     .isFalse();
@@ -293,8 +305,8 @@ public class PrnfbPullRequestEventListenerTest {
     .build();
   PrnfbPullRequestAction pullRequestAction = RESCOPED_FROM;
 
-  boolean actual = this.sut.isNotificationTriggeredByAction(notification, pullRequestAction, this.renderer,
-    this.pullRequest, this.clientKeyStore, this.shouldAcceptAnyCertificate);
+  boolean actual = sut.isNotificationTriggeredByAction(notification, pullRequestAction, renderer, pullRequest,
+    clientKeyStore, shouldAcceptAnyCertificate);
 
   assertThat(actual)//
     .isTrue();
@@ -309,7 +321,7 @@ public class PrnfbPullRequestEventListenerTest {
     .build();
   PrnfbPullRequestAction pullRequestAction = RESCOPED_FROM;
   Repository repository = mock(Repository.class);
-  when(this.toRef.getRepository())//
+  when(toRef.getRepository())//
     .thenReturn(repository);
   Project project = mock(Project.class);
   when(repository.getProject())//
@@ -317,8 +329,8 @@ public class PrnfbPullRequestEventListenerTest {
   when(project.getKey())//
     .thenReturn("pk2");
 
-  boolean actual = this.sut.isNotificationTriggeredByAction(notification, pullRequestAction, this.renderer,
-    this.pullRequest, this.clientKeyStore, this.shouldAcceptAnyCertificate);
+  boolean actual = sut.isNotificationTriggeredByAction(notification, pullRequestAction, renderer, pullRequest,
+    clientKeyStore, shouldAcceptAnyCertificate);
 
   assertThat(actual)//
     .isTrue();
@@ -333,13 +345,13 @@ public class PrnfbPullRequestEventListenerTest {
     .build();
   PrnfbPullRequestAction pullRequestAction = RESCOPED_FROM;
   Repository repository = mock(Repository.class);
-  when(this.toRef.getRepository())//
+  when(toRef.getRepository())//
     .thenReturn(repository);
   when(repository.getSlug())//
     .thenReturn("repositorySlug123");
 
-  boolean actual = this.sut.isNotificationTriggeredByAction(notification, pullRequestAction, this.renderer,
-    this.pullRequest, this.clientKeyStore, this.shouldAcceptAnyCertificate);
+  boolean actual = sut.isNotificationTriggeredByAction(notification, pullRequestAction, renderer, pullRequest,
+    clientKeyStore, shouldAcceptAnyCertificate);
 
   assertThat(actual)//
     .isTrue();
@@ -353,8 +365,8 @@ public class PrnfbPullRequestEventListenerTest {
     .build();
   PrnfbPullRequestAction pullRequestAction = RESCOPED_FROM;
 
-  boolean actual = this.sut.isNotificationTriggeredByAction(notification, pullRequestAction, this.renderer,
-    this.pullRequest, this.clientKeyStore, this.shouldAcceptAnyCertificate);
+  boolean actual = sut.isNotificationTriggeredByAction(notification, pullRequestAction, renderer, pullRequest,
+    clientKeyStore, shouldAcceptAnyCertificate);
 
   assertThat(actual)//
     .isTrue();
@@ -368,13 +380,17 @@ public class PrnfbPullRequestEventListenerTest {
     .thenReturn(comment);
   when(pullRequestEvent.getComment().getText())//
     .thenReturn("The comment");
+  when(pullRequestEvent.getCommentAction())//
+    .thenReturn(ADDED);
 
-  Map<PrnfbVariable, Supplier<String>> actual = this.sut.populateVariables(pullRequestEvent);
+  Map<PrnfbVariable, Supplier<String>> actual = sut.populateVariables(pullRequestEvent);
 
   assertThat(actual)//
-    .hasSize(1);
+    .hasSize(2);
   assertThat(actual.get(PULL_REQUEST_COMMENT_TEXT).get())//
     .isEqualTo("The comment");
+  assertThat(actual.get(PULL_REQUEST_COMMENT_ACTION).get())//
+    .isEqualTo("ADDED");
  }
 
  @Test
@@ -386,7 +402,7 @@ public class PrnfbPullRequestEventListenerTest {
   when(pullRequestEvent.getCommit().getId())//
     .thenReturn("hash");
 
-  Map<PrnfbVariable, Supplier<String>> actual = this.sut.populateVariables(pullRequestEvent);
+  Map<PrnfbVariable, Supplier<String>> actual = sut.populateVariables(pullRequestEvent);
 
   assertThat(actual)//
     .hasSize(1);
@@ -397,20 +413,9 @@ public class PrnfbPullRequestEventListenerTest {
  @Test
  public void testThatPullRequestOpenedCanTriggerNotification() {
 
-  this.sut.handleEventAsync(this.pullRequestOpenedEvent);
+  sut.handleEventAsync(pullRequestOpenedEvent);
 
   assertInvokedUrls("http://not1.com/", "http://not2.com/");
- }
-
- private void assertInvokedUrls(String... expectedUrls) {
-  Iterable<String> urls = transform(this.invokedUrls, new Function<UrlInvoker, String>() {
-   @Override
-   public String apply(UrlInvoker input) {
-    return input.getUrlParam();
-   }
-  });
-  assertThat(urls)//
-    .containsOnly(expectedUrls);
  }
 
 }

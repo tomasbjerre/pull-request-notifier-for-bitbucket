@@ -9,6 +9,7 @@ import static java.util.regex.Pattern.compile;
 import static org.slf4j.LoggerFactory.getLogger;
 import static se.bjurr.prnfb.http.UrlInvoker.urlInvoker;
 import static se.bjurr.prnfb.listener.PrnfbPullRequestAction.fromPullRequestEvent;
+import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_COMMENT_ACTION;
 import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_COMMENT_TEXT;
 import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_MERGE_COMMIT;
 import static se.bjurr.prnfb.settings.TRIGGER_IF_MERGE.ALWAYS;
@@ -20,22 +21,10 @@ import java.util.concurrent.ExecutorService;
 
 import org.slf4j.Logger;
 
-import se.bjurr.prnfb.http.ClientKeyStore;
-import se.bjurr.prnfb.http.HttpResponse;
-import se.bjurr.prnfb.http.Invoker;
-import se.bjurr.prnfb.http.NotificationResponse;
-import se.bjurr.prnfb.http.UrlInvoker;
-import se.bjurr.prnfb.service.PrnfbRenderer;
-import se.bjurr.prnfb.service.PrnfbRendererFactory;
-import se.bjurr.prnfb.service.PrnfbVariable;
-import se.bjurr.prnfb.service.SettingsService;
-import se.bjurr.prnfb.settings.PrnfbHeader;
-import se.bjurr.prnfb.settings.PrnfbNotification;
-import se.bjurr.prnfb.settings.PrnfbSettingsData;
-import se.bjurr.prnfb.settings.TRIGGER_IF_MERGE;
-
 import com.atlassian.bitbucket.event.pull.PullRequestApprovedEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestCommentAddedEvent;
+import com.atlassian.bitbucket.event.pull.PullRequestCommentDeletedEvent;
+import com.atlassian.bitbucket.event.pull.PullRequestCommentEditedEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestCommentEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestCommentRepliedEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestDeclinedEvent;
@@ -52,6 +41,20 @@ import com.atlassian.event.api.EventListener;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
+
+import se.bjurr.prnfb.http.ClientKeyStore;
+import se.bjurr.prnfb.http.HttpResponse;
+import se.bjurr.prnfb.http.Invoker;
+import se.bjurr.prnfb.http.NotificationResponse;
+import se.bjurr.prnfb.http.UrlInvoker;
+import se.bjurr.prnfb.service.PrnfbRenderer;
+import se.bjurr.prnfb.service.PrnfbRendererFactory;
+import se.bjurr.prnfb.service.PrnfbVariable;
+import se.bjurr.prnfb.service.SettingsService;
+import se.bjurr.prnfb.settings.PrnfbHeader;
+import se.bjurr.prnfb.settings.PrnfbNotification;
+import se.bjurr.prnfb.settings.PrnfbSettingsData;
+import se.bjurr.prnfb.settings.TRIGGER_IF_MERGE;
 
 public class PrnfbPullRequestEventListener {
 
@@ -77,14 +80,48 @@ public class PrnfbPullRequestEventListener {
   this.settingsService = settingsService;
  }
 
+ private Invoker createInvoker() {
+  if (mockedInvoker != null) {
+   return mockedInvoker;
+  }
+  return new Invoker() {
+   @Override
+   public HttpResponse invoke(UrlInvoker urlInvoker) {
+    return urlInvoker.invoke();
+   }
+  };
+ }
+
+ private void handleEvent(final PullRequestEvent pullRequestEvent) {
+  if (pullRequestEvent.getPullRequest().isClosed() && pullRequestEvent instanceof PullRequestCommentEvent) {
+   return;
+  }
+  final PrnfbSettingsData settings = settingsService.getPrnfbSettingsData();
+  ClientKeyStore clientKeyStore = new ClientKeyStore(settings);
+  for (final PrnfbNotification notification : settingsService.getNotifications()) {
+   PrnfbPullRequestAction action = fromPullRequestEvent(pullRequestEvent, notification);
+   Map<PrnfbVariable, Supplier<String>> variables = populateVariables(pullRequestEvent);
+   PrnfbRenderer renderer = prnfbRendererFactory.create(pullRequestEvent.getPullRequest(), action, notification,
+     variables, pullRequestEvent.getUser());
+   notify(notification, action, pullRequestEvent.getPullRequest(), renderer, clientKeyStore,
+     settings.isShouldAcceptAnyCertificate());
+  }
+ }
+
  @VisibleForTesting
  public void handleEventAsync(final PullRequestEvent pullRequestEvent) {
-  this.executorService.execute(new Runnable() {
+  executorService.execute(new Runnable() {
    @Override
    public void run() {
     handleEvent(pullRequestEvent);
    }
   });
+ }
+
+ @VisibleForTesting
+ boolean ignoreBecauseOfConflicting(TRIGGER_IF_MERGE triggerIfCanMerge, boolean isConflicted) {
+  return triggerIfCanMerge == NOT_CONFLICTING && isConflicted || //
+    triggerIfCanMerge == CONFLICTING && !isConflicted;
  }
 
  public boolean isNotificationTriggeredByAction(PrnfbNotification notification,
@@ -119,7 +156,7 @@ public class PrnfbPullRequestEventListener {
 
   if (notification.getTriggerIfCanMerge() != ALWAYS && pullRequest.isOpen()) {
    // Cannot perform canMerge unless PR is open
-   boolean isConflicted = this.pullRequestService
+   boolean isConflicted = pullRequestService
      .canMerge(pullRequest.getToRef().getRepository().getId(), pullRequest.getId()).isConflicted();
    if (ignoreBecauseOfConflicting(notification.getTriggerIfCanMerge(), isConflicted)) {
     return FALSE;
@@ -178,6 +215,16 @@ public class PrnfbPullRequestEventListener {
  }
 
  @EventListener
+ public void onEvent(PullRequestCommentDeletedEvent e) {
+  handleEventAsync(e);
+ }
+
+ @EventListener
+ public void onEvent(PullRequestCommentEditedEvent e) {
+  handleEventAsync(e);
+ }
+
+ @EventListener
  public void onEvent(PullRequestCommentRepliedEvent e) {
   handleEventAsync(e);
  }
@@ -217,45 +264,17 @@ public class PrnfbPullRequestEventListener {
   handleEventAsync(e);
  }
 
- private Invoker createInvoker() {
-  if (mockedInvoker != null) {
-   return mockedInvoker;
-  }
-  return new Invoker() {
-   @Override
-   public HttpResponse invoke(UrlInvoker urlInvoker) {
-    return urlInvoker.invoke();
-   }
-  };
- }
-
- private void handleEvent(final PullRequestEvent pullRequestEvent) {
-  if (pullRequestEvent.getPullRequest().isClosed() && pullRequestEvent instanceof PullRequestCommentEvent) {
-   return;
-  }
-  final PrnfbSettingsData settings = this.settingsService.getPrnfbSettingsData();
-  ClientKeyStore clientKeyStore = new ClientKeyStore(settings);
-  for (final PrnfbNotification notification : this.settingsService.getNotifications()) {
-   PrnfbPullRequestAction action = fromPullRequestEvent(pullRequestEvent, notification);
-   Map<PrnfbVariable, Supplier<String>> variables = populateVariables(pullRequestEvent);
-   PrnfbRenderer renderer = this.prnfbRendererFactory.create(pullRequestEvent.getPullRequest(), action, notification,
-     variables, pullRequestEvent.getUser());
-   notify(notification, action, pullRequestEvent.getPullRequest(), renderer, clientKeyStore,
-     settings.isShouldAcceptAnyCertificate());
-  }
- }
-
- @VisibleForTesting
- boolean ignoreBecauseOfConflicting(TRIGGER_IF_MERGE triggerIfCanMerge, boolean isConflicted) {
-  return triggerIfCanMerge == NOT_CONFLICTING && isConflicted || //
-    triggerIfCanMerge == CONFLICTING && !isConflicted;
- }
-
  @VisibleForTesting
  Map<PrnfbVariable, Supplier<String>> populateVariables(final PullRequestEvent pullRequestEvent) {
   Map<PrnfbVariable, Supplier<String>> variables = newHashMap();
   if (pullRequestEvent instanceof PullRequestCommentEvent) {
-   variables.put(PULL_REQUEST_COMMENT_TEXT, () -> ((PullRequestCommentEvent) pullRequestEvent).getComment().getText());
+   PullRequestCommentEvent pullRequestCommentEvent = (PullRequestCommentEvent) pullRequestEvent;
+   variables.put(PULL_REQUEST_COMMENT_TEXT, () -> {
+    return pullRequestCommentEvent.getComment().getText();
+   });
+   variables.put(PULL_REQUEST_COMMENT_ACTION, () -> {
+    return pullRequestCommentEvent.getCommentAction().name();
+   });
   } else if (pullRequestEvent instanceof PullRequestMergedEvent) {
    variables.put(PULL_REQUEST_MERGE_COMMIT, new Supplier<String>() {
     @Override
