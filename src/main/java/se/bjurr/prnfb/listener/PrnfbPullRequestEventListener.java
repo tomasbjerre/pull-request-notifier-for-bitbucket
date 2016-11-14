@@ -254,8 +254,8 @@ public class PrnfbPullRequestEventListener {
  @VisibleForTesting
  Map<PrnfbVariable, Supplier<String>> populateVariables(final PullRequestEvent pullRequestEvent) {
   Map<PrnfbVariable, Supplier<String>> variables = newHashMap();
-  if (pullRequestEvent instanceof PullRequestCommentAddedEvent) {
-   variables.put(PULL_REQUEST_COMMENT_TEXT, () -> ((PullRequestCommentAddedEvent) pullRequestEvent).getComment()
+  if (pullRequestEvent instanceof PullRequestCommentEvent) {
+   variables.put(PULL_REQUEST_COMMENT_TEXT, () -> ((PullRequestCommentEvent) pullRequestEvent).getComment()
      .getText());
   } else if (pullRequestEvent instanceof PullRequestMergedEvent) {
    variables.put(PULL_REQUEST_MERGE_COMMIT, new Supplier<String>() {
