@@ -3,12 +3,12 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
-### No issue
-  Replacing unresolved variables with nothing
+### GitHub [#159](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/159) Replacement failure can result in bad URLs
+  Replacing unresolved variables with nothing 
 
  * If a crash happens, like NPE, when a variable was resolved. Then that variable would be kept unchanged. Resulting in illegal chars in URL.
   
-  [f279f19796c0fed](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/f279f19796c0fed) Tomas Bjerre *2016-11-16 20:23:33*
+  [316cb796c3eedcf](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/316cb796c3eedcf) Tomas Bjerre *2016-11-16 20:39:20*
 
 ## 2.38
 ### No issue
