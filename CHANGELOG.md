@@ -4,9 +4,17 @@ Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
 ### No issue
+  Replacing unresolved variables with nothing
+
+ * If a crash happens, like NPE, when a variable was resolved. Then that variable would be kept unchanged. Resulting in illegal chars in URL.
+  
+  [f279f19796c0fed](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/f279f19796c0fed) Tomas Bjerre *2016-11-16 20:23:33*
+
+## 2.38
+### No issue
   Adding ${PULL_REQUEST_COMMENT_ACTION} variable
   
-  [ade89b294fd56f8](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/ade89b294fd56f8) Tomas Bjerre *2016-11-14 19:38:16*
+  [85ae09637882b5c](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/85ae09637882b5c) Tomas Bjerre *2016-11-14 20:41:33*
 
   Format code
   

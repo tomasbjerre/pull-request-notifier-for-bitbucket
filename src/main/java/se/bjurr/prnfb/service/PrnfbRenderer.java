@@ -11,10 +11,6 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 
-import se.bjurr.prnfb.http.ClientKeyStore;
-import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
-import se.bjurr.prnfb.settings.PrnfbNotification;
-
 import com.atlassian.bitbucket.pull.PullRequest;
 import com.atlassian.bitbucket.repository.RepositoryService;
 import com.atlassian.bitbucket.server.ApplicationPropertiesService;
@@ -22,6 +18,10 @@ import com.atlassian.bitbucket.user.ApplicationUser;
 import com.atlassian.bitbucket.user.SecurityService;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Supplier;
+
+import se.bjurr.prnfb.http.ClientKeyStore;
+import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
+import se.bjurr.prnfb.settings.PrnfbNotification;
 
 public class PrnfbRenderer {
  private static final Logger LOG = getLogger(PrnfbRenderer.class);
@@ -54,50 +54,18 @@ public class PrnfbRenderer {
   this.securityService = securityService;
  }
 
- public String render(String string, Boolean forUrl, ClientKeyStore clientKeyStore,
-   Boolean shouldAcceptAnyCertificate) {
-  string = renderVariable(string, false, clientKeyStore, shouldAcceptAnyCertificate, EVERYTHING_URL);
-
-  for (final PrnfbVariable variable : PrnfbVariable.values()) {
-   try {
-    string = renderVariable(string, forUrl, clientKeyStore, shouldAcceptAnyCertificate, variable);
-   } catch (Exception e) {
-    LOG.error("Error when resolving " + variable, e);
-   }
-  }
-  return string;
- }
-
  private boolean containsVariable(String string, final String regExpStr) {
   return string.contains(regExpStr.replaceAll("\\\\", ""));
  }
 
- private String getRenderedString(String string, Boolean forUrl, ClientKeyStore clientKeyStore,
-   Boolean shouldAcceptAnyCertificate, final PrnfbVariable variable, final String regExpStr)
-   throws UnsupportedEncodingException {
-  String resolved = variable.resolve(this.pullRequest, this.pullRequestAction, this.applicationUser,
-    this.repositoryService, this.propertiesService, this.prnfbNotification, this.variables, clientKeyStore,
-    shouldAcceptAnyCertificate, this.securityService);
-  return getRenderedStringResolved(string, forUrl, regExpStr, resolved);
- }
-
- private String renderVariable(String string, Boolean forUrl, ClientKeyStore clientKeyStore,
-   Boolean shouldAcceptAnyCertificate, final PrnfbVariable variable) {
-  final String regExpStr = regexp(variable);
-  if (containsVariable(string, regExpStr)) {
-   try {
-    string = getRenderedString(string, forUrl, clientKeyStore, shouldAcceptAnyCertificate, variable, regExpStr);
-   } catch (UnsupportedEncodingException e) {
-    propagate(e);
-   }
-  }
-  return string;
- }
-
  @VisibleForTesting
- String getRenderedStringResolved(String string, Boolean forUrl, final String regExpStr, String resolved)
-   throws UnsupportedEncodingException {
-  String replaceWith = forUrl ? encode(resolved, UTF_8.name()) : resolved;
+ String getRenderedStringResolved(String string, Boolean forUrl, final String regExpStr, String resolved) {
+  String replaceWith = null;
+  try {
+   replaceWith = forUrl ? encode(resolved, UTF_8.name()) : resolved;
+  } catch (UnsupportedEncodingException e) {
+   propagate(e);
+  }
   try {
    string = string.replaceAll(regExpStr, replaceWith);
   } catch (IllegalArgumentException e) {
@@ -109,5 +77,34 @@ public class PrnfbRenderer {
  @VisibleForTesting
  String regexp(PrnfbVariable variable) {
   return "\\$\\{" + variable.name() + "\\}";
+ }
+
+ public String render(String string, Boolean forUrl, ClientKeyStore clientKeyStore,
+   Boolean shouldAcceptAnyCertificate) {
+  string = renderVariable(string, false, clientKeyStore, shouldAcceptAnyCertificate, EVERYTHING_URL);
+
+  for (final PrnfbVariable variable : PrnfbVariable.values()) {
+   string = renderVariable(string, forUrl, clientKeyStore, shouldAcceptAnyCertificate, variable);
+  }
+  return string;
+ }
+
+ private String renderVariable(String string, Boolean forUrl, ClientKeyStore clientKeyStore,
+   Boolean shouldAcceptAnyCertificate, final PrnfbVariable variable) {
+  final String regExpStr = regexp(variable);
+  if (containsVariable(string, regExpStr)) {
+   String resolved = "";
+   try {
+    resolved = variable.resolve(pullRequest, pullRequestAction, applicationUser, repositoryService, propertiesService,
+      prnfbNotification, variables, clientKeyStore, shouldAcceptAnyCertificate, securityService);
+    if (resolved == null) {
+     resolved = "";
+    }
+   } catch (Exception e) {
+    LOG.error("Error when resolving " + variable, e);
+   }
+   return getRenderedStringResolved(string, forUrl, regExpStr, resolved);
+  }
+  return string;
  }
 }
