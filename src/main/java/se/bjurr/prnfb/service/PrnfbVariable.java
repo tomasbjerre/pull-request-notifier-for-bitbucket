@@ -290,6 +290,15 @@ public enum PrnfbVariable {
     SecurityService securityService) {
    return Integer.toString(newArrayList(filter(pullRequest.getParticipants(), isApproved)).size());
   }
+ }), PULL_REQUEST_PARTICIPANTS_EMAIL(new PrnfbVariableResolver() {
+  @Override
+  public String resolve(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction,
+                        ApplicationUser applicationUser, RepositoryService repositoryService,
+                        ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
+                        Map<PrnfbVariable, Supplier<String>> variables, ClientKeyStore clientKeyStore, boolean shouldAcceptAnyCertificate,
+                        SecurityService securityService) {
+   return iterableToString(transform(pullRequest.getParticipants(), (p) -> p.getUser().getEmailAddress()));
+  }
  }), PULL_REQUEST_REVIEWERS(new PrnfbVariableResolver() {
   @Override
   public String resolve(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction,
@@ -298,6 +307,15 @@ public enum PrnfbVariable {
     Map<PrnfbVariable, Supplier<String>> variables, ClientKeyStore clientKeyStore, boolean shouldAcceptAnyCertificate,
     SecurityService securityService) {
    return iterableToString(transform(pullRequest.getReviewers(), (p) -> p.getUser().getDisplayName()));
+  }
+ }), PULL_REQUEST_REVIEWERS_EMAIL(new PrnfbVariableResolver() {
+  @Override
+  public String resolve(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction,
+                        ApplicationUser applicationUser, RepositoryService repositoryService,
+                        ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
+                        Map<PrnfbVariable, Supplier<String>> variables, ClientKeyStore clientKeyStore, boolean shouldAcceptAnyCertificate,
+                        SecurityService securityService) {
+   return iterableToString(transform(pullRequest.getReviewers(), (p) -> p.getUser().getEmailAddress()));
   }
  }), PULL_REQUEST_REVIEWERS_APPROVED_COUNT(new PrnfbVariableResolver() {
   @Override
