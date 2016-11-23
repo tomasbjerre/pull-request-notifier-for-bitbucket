@@ -12,6 +12,7 @@ import static se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD.GET;
 import static se.bjurr.prnfb.service.RepoProtocol.http;
 import static se.bjurr.prnfb.service.RepoProtocol.ssh;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -64,6 +65,7 @@ public enum PrnfbVariable {
      parts.add(v.name() + "=\\${" + v.name() + "}");
     }
    }
+   Collections.sort(parts);
    return on('&').join(parts);
   }
  }), INJECTION_URL_VALUE(new PrnfbVariableResolver() {
@@ -293,10 +295,10 @@ public enum PrnfbVariable {
  }), PULL_REQUEST_PARTICIPANTS_EMAIL(new PrnfbVariableResolver() {
   @Override
   public String resolve(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction,
-                        ApplicationUser applicationUser, RepositoryService repositoryService,
-                        ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
-                        Map<PrnfbVariable, Supplier<String>> variables, ClientKeyStore clientKeyStore, boolean shouldAcceptAnyCertificate,
-                        SecurityService securityService) {
+    ApplicationUser applicationUser, RepositoryService repositoryService,
+    ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
+    Map<PrnfbVariable, Supplier<String>> variables, ClientKeyStore clientKeyStore, boolean shouldAcceptAnyCertificate,
+    SecurityService securityService) {
    return iterableToString(transform(pullRequest.getParticipants(), (p) -> p.getUser().getEmailAddress()));
   }
  }), PULL_REQUEST_REVIEWERS(new PrnfbVariableResolver() {
@@ -308,15 +310,6 @@ public enum PrnfbVariable {
     SecurityService securityService) {
    return iterableToString(transform(pullRequest.getReviewers(), (p) -> p.getUser().getDisplayName()));
   }
- }), PULL_REQUEST_REVIEWERS_EMAIL(new PrnfbVariableResolver() {
-  @Override
-  public String resolve(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction,
-                        ApplicationUser applicationUser, RepositoryService repositoryService,
-                        ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
-                        Map<PrnfbVariable, Supplier<String>> variables, ClientKeyStore clientKeyStore, boolean shouldAcceptAnyCertificate,
-                        SecurityService securityService) {
-   return iterableToString(transform(pullRequest.getReviewers(), (p) -> p.getUser().getEmailAddress()));
-  }
  }), PULL_REQUEST_REVIEWERS_APPROVED_COUNT(new PrnfbVariableResolver() {
   @Override
   public String resolve(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction,
@@ -325,6 +318,15 @@ public enum PrnfbVariable {
     Map<PrnfbVariable, Supplier<String>> variables, ClientKeyStore clientKeyStore, boolean shouldAcceptAnyCertificate,
     SecurityService securityService) {
    return Integer.toString(newArrayList(filter(pullRequest.getReviewers(), isApproved)).size());
+  }
+ }), PULL_REQUEST_REVIEWERS_EMAIL(new PrnfbVariableResolver() {
+  @Override
+  public String resolve(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction,
+    ApplicationUser applicationUser, RepositoryService repositoryService,
+    ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
+    Map<PrnfbVariable, Supplier<String>> variables, ClientKeyStore clientKeyStore, boolean shouldAcceptAnyCertificate,
+    SecurityService securityService) {
+   return iterableToString(transform(pullRequest.getReviewers(), (p) -> p.getUser().getEmailAddress()));
   }
  }), PULL_REQUEST_REVIEWERS_ID(new PrnfbVariableResolver() {
   @Override
