@@ -2,7 +2,16 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
-## Unreleased
+## 2.41
+### GitHub [#162](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/162) Provide list of email addressed for PR reviewers and participants as URL support variables 
+  Adjustments after merging PR 
+
+ * Formatting code
+ * Regenerating changelog
+ * Sorting variables instead of relying on their order in the Enum.values(), to make tests stable.
+  
+  [ef8d4960b03467b](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/ef8d4960b03467b) Tomas Bjerre *2016-11-23 18:07:18*
+
 ### Jira
   [] Provide list of PR reviewers and participants as URL support variables
   
