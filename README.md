@@ -49,6 +49,7 @@ The filter text as well as the URL support variables. These are:
 * ${EVERYTHING_URL} This variable is resolved to all available variables. The name of each parameter is the name of that variable. Example: PULL_REQUEST_ID=1&PULL_REQUEST_TITLE=some%20thing...
 * ${PULL_REQUEST_ID} Example: 1
 * ${PULL_REQUEST_TITLE} Example: Anything
+* ${PULL_REQUEST_DESCRIPTION} Example: Anything
 * ${PULL_REQUEST_VERSION} Example: 1
 * ${PULL_REQUEST_COMMENT_TEXT} Example: A comment
 * ${PULL_REQUEST_COMMENT_ACTION} Example: ADDED, DELETED, EDITED, REPLIED

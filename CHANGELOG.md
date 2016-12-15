@@ -2,6 +2,17 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## Unreleased
+### GitHub [#169](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/169) What about pull request description ?
+  Adding PULL_REQUEST_DESCRIPTION
+  
+  [a10bf3516c54697](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/a10bf3516c54697) Tomas Bjerre *2016-12-15 17:50:33*
+
+### No issue
+  doc
+  
+  [025f6fe9c62c65d](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/025f6fe9c62c65d) Tomas Bjerre *2016-11-30 19:35:52*
+
 ## 2.41
 ### GitHub [#162](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/162) Provide list of email addressed for PR reviewers and participants as URL support variables 
   Adjustments after merging PR 
