@@ -51,7 +51,7 @@
    <li><b>${EVERYTHING_URL}</b> Example: PULL_REQUEST_ID=1&PULL_REQUEST_TITLE=some%20thing...</li>
    <li><b>${PULL_REQUEST_ID}</b> Example: 1</li>
    <li><b>${PULL_REQUEST_TITLE}</b> Example: Anything</li>
-   <li><b>${PULL_REQUEST_DESCRIPTION}</b> Example: Anything</li>
+   <li><b>${PULL_REQUEST_DESCRIPTION}</b> The <b>${EVERYTHING_URL}</b> does not include this because it makes the URL very big. Example: Anything</li>
    <li><b>${PULL_REQUEST_ACTION}</b> Example: OPENED</li>
    <li><b>${PULL_REQUEST_STATE}</b> Example: DECLINED, MERGED, OPEN</li>
    <li><b>${PULL_REQUEST_URL}</b> Example: http://localhost:7990/projects/PROJECT_1/repos/rep_1/pull-requests/1</li>

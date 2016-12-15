@@ -61,7 +61,8 @@ public enum PrnfbVariable {
     SecurityService securityService) {
    List<String> parts = newArrayList();
    for (PrnfbVariable v : PrnfbVariable.values()) {
-    if (v != EVERYTHING_URL) {
+    if (v != EVERYTHING_URL //
+      && v != PULL_REQUEST_DESCRIPTION) {
      parts.add(v.name() + "=\\${" + v.name() + "}");
     }
    }

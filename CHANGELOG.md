@@ -4,9 +4,15 @@ Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
 ### GitHub [#169](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/169) What about pull request description ?
+  Removing PULL_REQUEST_DESCRIPTION from EVERYTHING_URL
+  
+  [c616c4c575be53a](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/c616c4c575be53a) Tomas Bjerre *2016-12-15 21:18:37*
+
+## 2.42
+### GitHub [#169](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/169) What about pull request description ?
   Adding PULL_REQUEST_DESCRIPTION
   
-  [a10bf3516c54697](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/a10bf3516c54697) Tomas Bjerre *2016-12-15 17:50:33*
+  [986b61f32e72b44](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/986b61f32e72b44) Tomas Bjerre *2016-12-15 17:51:11*
 
 ### No issue
   doc
