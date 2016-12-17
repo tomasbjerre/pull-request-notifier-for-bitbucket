@@ -2,6 +2,7 @@ sudo: false
 language: java
 jdk:
   - oraclejdk8
+
 before_install:
   - ./setup-atlassian-sdk.sh
   - export PATH=opt/atlassian-plugin-sdk/bin:opt/atlassian-plugin-sdk/apache-maven-*/bin:$PATH
