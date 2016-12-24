@@ -17,17 +17,19 @@ public class PrnfbButton implements HasUuid {
  private final String name;
  private final String projectKey;
  private final String repositorySlug;
+ private final String buttonForm;
  private final USER_LEVEL userLevel;
  private final UUID uuid;
 
  public PrnfbButton(UUID uuid, String name, USER_LEVEL userLevel, ON_OR_OFF confirmation, String projectKey,
-   String repositorySlug) {
+   String repositorySlug, String buttonForm) {
   this.uuid = firstNonNull(uuid, randomUUID());
   this.name = name;
   this.userLevel = userLevel;
   this.confirmation = confirmation;
   this.repositorySlug = emptyToNull(repositorySlug);
   this.projectKey = emptyToNull(projectKey);
+  this.buttonForm = emptyToNull(buttonForm);
  }
 
  @Override
@@ -63,6 +65,13 @@ public class PrnfbButton implements HasUuid {
   } else if (!this.name.equals(other.name)) {
    return false;
   }
+  if (this.buttonForm == null) {
+   if (other.buttonForm != null) {
+    return false;
+   }
+  } else if (!this.buttonForm.equals(other.buttonForm)) {
+   return false;
+  }
   if (this.userLevel != other.userLevel) {
    return false;
   }
@@ -89,6 +98,10 @@ public class PrnfbButton implements HasUuid {
 
  public String getName() {
   return this.name;
+ }
+
+ public String getButtonForm() {
+  return this.buttonForm;
  }
 
  public Optional<String> getProjectKey() {
@@ -118,13 +131,14 @@ public class PrnfbButton implements HasUuid {
   result = prime * result + ((this.userLevel == null) ? 0 : this.userLevel.hashCode());
   result = prime * result + ((this.uuid == null) ? 0 : this.uuid.hashCode());
   result = prime * result + ((this.confirmation == null) ? 0 : this.confirmation.hashCode());
+  result = prime * result + ((this.buttonForm == null) ? 0 : this.buttonForm.hashCode());
   return result;
  }
 
  @Override
  public String toString() {
   return "PrnfbButton [projectKey=" + this.projectKey + ", repositorySlug=" + this.repositorySlug + ", name="
-    + this.name + ", userLevel=" + this.userLevel + ", uuid=" + this.uuid + ", confirmation=" + this.confirmation + "]";
+    + this.name + ", userLevel=" + this.userLevel + ", uuid=" + this.uuid + ", buttonForm=" + this.buttonForm + ", confirmation=" + this.confirmation + "]";
  }
 
 }

@@ -25,7 +25,7 @@ import se.bjurr.prnfb.settings.PrnfbNotification;
 
 public class PrnfbRenderer {
  private static final Logger LOG = getLogger(PrnfbRenderer.class);
-
+ 
  private final ApplicationUser applicationUser;
  private final PrnfbNotification prnfbNotification;
  private final ApplicationPropertiesService propertiesService;
@@ -59,10 +59,19 @@ public class PrnfbRenderer {
  }
 
  @VisibleForTesting
- String getRenderedStringResolved(String string, Boolean forUrl, final String regExpStr, String resolved) {
+ String getRenderedStringResolved(String string, Boolean forUrl, Boolean forJson, final String regExpStr, String resolved) {
   String replaceWith = null;
   try {
-   replaceWith = forUrl ? encode(resolved, UTF_8.name()) : resolved;
+    if (forUrl) {
+      replaceWith = forUrl ? encode(resolved, UTF_8.name()) : resolved;
+    } else if (forJson) {
+      // The string we're replacing as JSON is already within a string-encoded JSON blob, so we
+      // just need to replace any quotes with \\", which will have the behavior we want.
+      replaceWith = resolved.replace("\"", "\\\\\""); 
+    }
+    else {
+      replaceWith = resolved;
+    }
   } catch (UnsupportedEncodingException e) {
    propagate(e);
   }
@@ -79,17 +88,17 @@ public class PrnfbRenderer {
   return "\\$\\{" + variable.name() + "\\}";
  }
 
- public String render(String string, Boolean forUrl, ClientKeyStore clientKeyStore,
+ public String render(String string, Boolean forUrl, Boolean forJson, ClientKeyStore clientKeyStore,
    Boolean shouldAcceptAnyCertificate) {
-  string = renderVariable(string, false, clientKeyStore, shouldAcceptAnyCertificate, EVERYTHING_URL);
+  string = renderVariable(string, false, forJson, clientKeyStore, shouldAcceptAnyCertificate, EVERYTHING_URL);
 
   for (final PrnfbVariable variable : PrnfbVariable.values()) {
-   string = renderVariable(string, forUrl, clientKeyStore, shouldAcceptAnyCertificate, variable);
+   string = renderVariable(string, forUrl, forJson, clientKeyStore, shouldAcceptAnyCertificate, variable);
   }
   return string;
  }
 
- private String renderVariable(String string, Boolean forUrl, ClientKeyStore clientKeyStore,
+ private String renderVariable(String string, Boolean forUrl, Boolean forJson, ClientKeyStore clientKeyStore,
    Boolean shouldAcceptAnyCertificate, final PrnfbVariable variable) {
   final String regExpStr = regexp(variable);
   if (containsVariable(string, regExpStr)) {
@@ -103,7 +112,7 @@ public class PrnfbRenderer {
    } catch (Exception e) {
     LOG.error("Error when resolving " + variable, e);
    }
-   return getRenderedStringResolved(string, forUrl, regExpStr, resolved);
+   return getRenderedStringResolved(string, forUrl, forJson, regExpStr, resolved);
   }
   return string;
  }

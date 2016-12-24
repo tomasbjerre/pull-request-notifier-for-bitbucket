@@ -206,7 +206,7 @@ public class ButtonsServiceTest {
  public void testThatPressedButtonDoesNotDoAnythingIfNoMatchingNotification() {
   UUID buttonUuid = this.button1.getUuid();
 
-  this.sut.doHandlePressed(buttonUuid, this.clientKeyStore, this.shouldAcceptAnyCertificate, this.pullRequest);
+  this.sut.doHandlePressed(buttonUuid, this.clientKeyStore, this.shouldAcceptAnyCertificate, this.pullRequest, "");
 
   verify(this.prnfbPullRequestEventListener, times(0))//
     .notify(any(), any(), any(), any(), any(), any());
@@ -218,7 +218,7 @@ public class ButtonsServiceTest {
   when(this.prnfbPullRequestEventListener.isNotificationTriggeredByAction(any(), any(), any(), any(), any(), any()))//
     .thenReturn(true);
 
-  this.sut.doHandlePressed(buttonUuid, this.clientKeyStore, this.shouldAcceptAnyCertificate, this.pullRequest);
+  this.sut.doHandlePressed(buttonUuid, this.clientKeyStore, this.shouldAcceptAnyCertificate, this.pullRequest, "");
 
   verify(this.prnfbPullRequestEventListener, times(2))//
     .notify(any(), any(), any(), any(), any(), any());
@@ -266,7 +266,7 @@ public class ButtonsServiceTest {
  private void testVisibilityOnRepository(String buttonProjectKey, String buttonRepositorySlug, String repoProjectKey,
    String repoRepoSlug, boolean expected) {
   PrnfbButton button = new PrnfbButton(this.uuid, this.name, this.userLevel, this.confirmation, buttonProjectKey,
-    buttonRepositorySlug);
+    buttonRepositorySlug, null);
   when(this.repository.getProject()).thenReturn(this.project);
   when(this.repository.getProject().getKey())//
     .thenReturn(repoProjectKey);

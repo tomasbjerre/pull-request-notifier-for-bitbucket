@@ -145,7 +145,7 @@ public class PrnfbPullRequestEventListener {
 
   if (notification.getFilterRegexp().isPresent() && notification.getFilterString().isPresent()
     && !compile(notification.getFilterRegexp().get())
-      .matcher(renderer.render(notification.getFilterString().get(), FALSE, clientKeyStore, shouldAcceptAnyCertificate))
+      .matcher(renderer.render(notification.getFilterString().get(), FALSE, FALSE, clientKeyStore, shouldAcceptAnyCertificate))
       .find()) {
    return FALSE;
   }
@@ -176,9 +176,9 @@ public class PrnfbPullRequestEventListener {
   Optional<String> postContent = absent();
   if (notification.getPostContent().isPresent()) {
    postContent = of(
-     renderer.render(notification.getPostContent().get(), FALSE, clientKeyStore, shouldAcceptAnyCertificate));
+     renderer.render(notification.getPostContent().get(), FALSE, FALSE, clientKeyStore, shouldAcceptAnyCertificate));
   }
-  String renderedUrl = renderer.render(notification.getUrl(), TRUE, clientKeyStore, shouldAcceptAnyCertificate);
+  String renderedUrl = renderer.render(notification.getUrl(), TRUE, FALSE, clientKeyStore, shouldAcceptAnyCertificate);
   LOG.info(notification.getName() + " > " //
     + pullRequest.getFromRef().getId() + "(" + pullRequest.getFromRef().getLatestCommit() + ") -> " //
     + pullRequest.getToRef().getId() + "(" + pullRequest.getToRef().getLatestCommit() + ")" + " " //
@@ -192,7 +192,7 @@ public class PrnfbPullRequestEventListener {
   for (PrnfbHeader header : notification.getHeaders()) {
    urlInvoker//
      .withHeader(header.getName(),
-       renderer.render(header.getValue(), FALSE, clientKeyStore, shouldAcceptAnyCertificate));
+       renderer.render(header.getValue(), FALSE, FALSE, clientKeyStore, shouldAcceptAnyCertificate));
   }
   HttpResponse httpResponse = createInvoker().invoke(urlInvoker//
     .withProxyServer(notification.getProxyServer()) //
