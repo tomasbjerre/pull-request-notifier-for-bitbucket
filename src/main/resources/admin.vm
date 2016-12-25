@@ -43,7 +43,7 @@
   The documentation is available on <a href="https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket">GitHub</a>.
  </p>
  <p>
-  You can use variables when invoking the URL, when forming the filter string, custom header values or in POST content.
+  You can use variables when invoking the URL, when forming the filter string, custom header values, button form or in POST content.
  </p>
  <div id="prnfb-expander-variables" class="aui-expander-content">
   <ul>
@@ -59,6 +59,7 @@
    <li><b>${PULL_REQUEST_COMMENT_TEXT}</b> Example: A comment</li>
    <li><b>${PULL_REQUEST_COMMENT_ACTION}</b> Example: ADDED, DELETED, EDITED, REPLIED</li>
    <li><b>${BUTTON_TRIGGER_TITLE}</b> Example: Trigger Notification</li>
+   <li><b>${BUTTON_FORM_DATA}</b> The form data that was submitted</li>
    <li><b>${INJECTION_URL_VALUE}</b> If injection URL configured</li>
    <li><b>${PULL_REQUEST_USER_DISPLAY_NAME}</b> Example: Some User</li>
    <li><b>${PULL_REQUEST_USER_EMAIL_ADDRESS}</b> Example: some.user@bitbucket.domain</li>
@@ -242,6 +243,12 @@
      <aui-toggle id="confirmation" label="Confirmation Dialog" name="confirmation"></aui-toggle>
      <label>Confirmation </label>
      <div class="description">Whether to show a confirmation dialog.</div>
+    </div>
+    
+    <div class="field-group">
+     <label>Button Form</label>
+     <textarea class="textarea" rows="6" cols="10" name="buttonForm"></textarea>
+     <div class="description">Put a JSON representation of your desired form here.</div>
     </div>
 
     <div class="aui-buttons">

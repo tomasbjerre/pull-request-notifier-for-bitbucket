@@ -55,6 +55,7 @@
  </web-item>
 
  <web-resource key="pr-triggerbutton">
+  <resource type="download" name="3rdparty.js" location="3rdparty.js" />
   <resource type="download" name="utils.js" location="utils.js" />
   <resource type="download" name="pr-triggerbutton.js" location="/pr-triggerbutton.js" />
   <dependency>com.atlassian.bitbucket.bitbucket-web-plugin:global</dependency>

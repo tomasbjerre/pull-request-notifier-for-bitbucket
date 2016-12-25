@@ -21,6 +21,7 @@ public class ButtonDTO implements Comparable<ButtonDTO> {
  private String repositorySlug;
  private USER_LEVEL userLevel;
  private UUID uuid;
+ private String buttonForm;
 
  @Override
  public int compareTo(ButtonDTO o) {
@@ -70,6 +71,13 @@ public class ButtonDTO implements Comparable<ButtonDTO> {
   } else if (!this.confirmation.equals(other.confirmation)) {
    return false;
   }
+  if (this.buttonForm == null) {
+   if (other.buttonForm != null) {
+    return false;
+   }
+  } else if (!this.buttonForm.equals(other.buttonForm)) {
+   return false;
+  }
   if (this.uuid == null) {
    if (other.uuid != null) {
     return false;
@@ -86,6 +94,10 @@ public class ButtonDTO implements Comparable<ButtonDTO> {
 
  public String getName() {
   return this.name;
+ }
+
+ public String getButtonForm() {
+  return this.buttonForm;
  }
 
  public Optional<String> getProjectKey() {
@@ -118,6 +130,7 @@ public class ButtonDTO implements Comparable<ButtonDTO> {
   result = prime * result + ((this.userLevel == null) ? 0 : this.userLevel.hashCode());
   result = prime * result + ((this.uuid == null) ? 0 : this.uuid.hashCode());
   result = prime * result + ((this.confirmation == null) ? 0 : this.confirmation.hashCode());
+  result = prime * result + ((this.buttonForm == null) ? 0 : this.buttonForm.hashCode());
   return result;
  }
 
@@ -127,6 +140,10 @@ public class ButtonDTO implements Comparable<ButtonDTO> {
 
  public void setName(String name) {
   this.name = name;
+ }
+
+ public void setButtonForm(String buttonForm) {  
+   this.buttonForm = buttonForm;
  }
 
  public void setProjectKey(String projectKey) {
@@ -148,7 +165,7 @@ public class ButtonDTO implements Comparable<ButtonDTO> {
  @Override
  public String toString() {
   return "ButtonDTO [name=" + this.name + ", userLevel=" + this.userLevel + ", uuid=" + this.uuid + ", repositorySlug="
-    + this.repositorySlug + ", projectKey=" + this.projectKey + ", confirmation=" + this.confirmation + "]";
+    + this.repositorySlug + ", projectKey=" + this.projectKey + ", buttonForm=" + this.buttonForm + ", confirmation=" + this.confirmation + "]";
  }
 
 }

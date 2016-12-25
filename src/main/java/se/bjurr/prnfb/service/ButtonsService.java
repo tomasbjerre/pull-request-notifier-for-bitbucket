@@ -6,6 +6,7 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static se.bjurr.prnfb.listener.PrnfbPullRequestAction.BUTTON_TRIGGER;
 import static se.bjurr.prnfb.service.PrnfbVariable.BUTTON_TRIGGER_TITLE;
+import static se.bjurr.prnfb.service.PrnfbVariable.BUTTON_FORM_DATA;
 
 import java.util.HashMap;
 import java.util.List;
@@ -54,12 +55,25 @@ public class ButtonsService {
   return doGetButtons(notifications, clientKeyStore, pullRequest, shouldAcceptAnyCertificate);
  }
 
- public List<NotificationResponse> handlePressed(Integer repositoryId, Long pullRequestId, UUID buttonUuid) {
+ public String getRenderedButtonFormData(Integer repositoryId, Long pullRequestId, UUID buttonUuid, String formData) {
+  final PrnfbSettingsData settings = this.settingsService.getPrnfbSettingsData();
+  ClientKeyStore clientKeyStore = new ClientKeyStore(settings);
+  final PullRequest pullRequest = this.pullRequestService.getById(repositoryId, pullRequestId);
+  boolean shouldAcceptAnyCertificate = settings.isShouldAcceptAnyCertificate();
+  
+  Map<PrnfbVariable, Supplier<String>> variables = getVariables(buttonUuid, formData);
+  PrnfbPullRequestAction pullRequestAction = BUTTON_TRIGGER;
+  
+  PrnfbRenderer renderer = this.prnfbRendererFactory.create(pullRequest, pullRequestAction, null, variables);
+  return renderer.render(formData, false, true, clientKeyStore, shouldAcceptAnyCertificate);
+}
+ 
+ public List<NotificationResponse> handlePressed(Integer repositoryId, Long pullRequestId, UUID buttonUuid, String formData) {
   final PrnfbSettingsData prnfbSettingsData = this.settingsService.getPrnfbSettingsData();
   ClientKeyStore clientKeyStore = new ClientKeyStore(prnfbSettingsData);
   boolean shouldAcceptAnyCertificate = prnfbSettingsData.isShouldAcceptAnyCertificate();
   final PullRequest pullRequest = this.pullRequestService.getById(repositoryId, pullRequestId);
-  return doHandlePressed(buttonUuid, clientKeyStore, shouldAcceptAnyCertificate, pullRequest);
+  return doHandlePressed(buttonUuid, clientKeyStore, shouldAcceptAnyCertificate, pullRequest, formData);
  }
 
  private boolean isTriggeredByAction(ClientKeyStore clientKeyStore, List<PrnfbNotification> notifications,
@@ -90,7 +104,7 @@ public class ButtonsService {
    final PullRequest pullRequest, boolean shouldAcceptAnyCertificate) {
   List<PrnfbButton> allFoundButtons = newArrayList();
   for (PrnfbButton candidate : this.settingsService.getButtons()) {
-   Map<PrnfbVariable, Supplier<String>> variables = getVariables(candidate.getUuid());
+   Map<PrnfbVariable, Supplier<String>> variables = getVariables(candidate.getUuid(), null);
    PrnfbPullRequestAction pullRequestAction = BUTTON_TRIGGER;
    if (this.userCheckService.isAllowedUseButton(candidate)//
      && isTriggeredByAction(clientKeyStore, notifications, shouldAcceptAnyCertificate, pullRequestAction, pullRequest,
@@ -102,11 +116,11 @@ public class ButtonsService {
   allFoundButtons = usingToString().sortedCopy(allFoundButtons);
   return allFoundButtons;
  }
-
+ 
  @VisibleForTesting
  List<NotificationResponse> doHandlePressed(UUID buttonUuid, ClientKeyStore clientKeyStore,
-   boolean shouldAcceptAnyCertificate, final PullRequest pullRequest) {
-  Map<PrnfbVariable, Supplier<String>> variables = getVariables(buttonUuid);
+   boolean shouldAcceptAnyCertificate, final PullRequest pullRequest, final String formData) {
+  Map<PrnfbVariable, Supplier<String>> variables = getVariables(buttonUuid, formData);
   List<NotificationResponse> successes = newArrayList();
   for (PrnfbNotification prnfbNotification : this.settingsService.getNotifications()) {
    PrnfbPullRequestAction pullRequestAction = BUTTON_TRIGGER;
@@ -126,10 +140,11 @@ public class ButtonsService {
  }
 
  @VisibleForTesting
- Map<PrnfbVariable, Supplier<String>> getVariables(final UUID uuid) {
+ Map<PrnfbVariable, Supplier<String>> getVariables(final UUID uuid, final String formData) {
   Map<PrnfbVariable, Supplier<String>> variables = new HashMap<PrnfbVariable, Supplier<String>>();
   PrnfbButton button = this.settingsService.getButton(uuid);
   variables.put(BUTTON_TRIGGER_TITLE, Suppliers.ofInstance(button.getName()));
+  variables.put(BUTTON_FORM_DATA, Suppliers.ofInstance(formData));
   return variables;
  }
 

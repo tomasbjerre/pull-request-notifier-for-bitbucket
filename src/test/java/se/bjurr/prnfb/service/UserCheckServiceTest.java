@@ -109,9 +109,9 @@ public class UserCheckServiceTest {
   when(this.userManager.isAdmin(this.userKey))//
     .thenReturn(false);
 
-  PrnfbButton button1 = new PrnfbButton(null, "title1", ADMIN, ON_OR_OFF.off, "p1", "r1");
-  PrnfbButton button2 = new PrnfbButton(null, "title2", EVERYONE, ON_OR_OFF.off, "p1", "r1");
-  PrnfbButton button3 = new PrnfbButton(null, "title3", SYSTEM_ADMIN, ON_OR_OFF.off, "p1", "r1");
+  PrnfbButton button1 = new PrnfbButton(null, "title1", ADMIN, ON_OR_OFF.off, "p1", "r1", null);
+  PrnfbButton button2 = new PrnfbButton(null, "title2", EVERYONE, ON_OR_OFF.off, "p1", "r1", null);
+  PrnfbButton button3 = new PrnfbButton(null, "title3", SYSTEM_ADMIN, ON_OR_OFF.off, "p1", "r1", null);
   List<PrnfbButton> buttons = newArrayList(button1, button2, button3);
 
   Iterable<PrnfbButton> onlyAllowed = this.sut.filterAllowed(buttons);
@@ -132,7 +132,7 @@ public class UserCheckServiceTest {
   when(this.userManager.isSystemAdmin(this.userKey))//
     .thenReturn(true);
 
-  PrnfbButton candidate = new PrnfbButton(null, "title", ADMIN, ON_OR_OFF.off, "p1", "r1");
+  PrnfbButton candidate = new PrnfbButton(null, "title", ADMIN, ON_OR_OFF.off, "p1", "r1", null);
   assertThat(this.sut.isAllowedUseButton(candidate))//
     .isTrue();
 

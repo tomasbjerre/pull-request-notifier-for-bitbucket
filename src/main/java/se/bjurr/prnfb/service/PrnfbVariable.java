@@ -76,7 +76,7 @@ public enum PrnfbVariable {
     ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
     Map<PrnfbVariable, Supplier<String>> variables, ClientKeyStore clientKeyStore, boolean shouldAcceptAnyCertificate,
     SecurityService securityService) {
-   if (!prnfbNotification.getInjectionUrl().isPresent()) {
+   if (prnfbNotification == null || !prnfbNotification.getInjectionUrl().isPresent()) {
     return "";
    }
    UrlInvoker urlInvoker = urlInvoker() //
@@ -527,6 +527,15 @@ public enum PrnfbVariable {
     Map<PrnfbVariable, Supplier<String>> variables, ClientKeyStore clientKeyStore, boolean shouldAcceptAnyCertificate,
     SecurityService securityService) {
    return pullRequest.getVersion() + "";
+  }
+ }), BUTTON_FORM_DATA(new PrnfbVariableResolver() {
+  @Override
+  public String resolve(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction,
+    ApplicationUser applicationUser, RepositoryService repositoryService,
+    ApplicationPropertiesService propertiesService, PrnfbNotification prnfbNotification,
+    Map<PrnfbVariable, Supplier<String>> variables, ClientKeyStore clientKeyStore, boolean shouldAcceptAnyCertificate,
+    SecurityService securityService) {
+   return getOrEmpty(variables, BUTTON_FORM_DATA);
   }
  });
 

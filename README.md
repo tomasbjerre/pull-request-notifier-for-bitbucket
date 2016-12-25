@@ -28,6 +28,7 @@ The Pull Request Notifier for Bitbucket can:
 * Can invoke CSRF protected systems, using the ${INJECTION_URL_VALUE} variable. How to to that with Jenkins is described below.
 * Be configured to only trigger if the pull request mathches a filter. A filter text is constructed with any combination of the variables and then a regexp is constructed to match that text.
 * Add buttons to pull request view in Bitbucket. And map those buttons to URL invocations. This can be done by setting the filter string to ${BUTTON_TRIGGER_TITLE} and the filter regexp to title of button.
+ * Buttons can have forms associated with them, and then submit the form data using the ${BUTTON_FORM_DATA} variable.
 * Authenticate with HTTP basic authentication.
 * Optionally allow any SSL certificate.
 * Use custom SSL key store, type and password.
@@ -56,6 +57,7 @@ The filter text as well as the URL support variables. These are:
 * ${PULL_REQUEST_ACTION} Example: OPENED
 * ${PULL_REQUEST_STATE} Example: DECLINED, MERGED, OPEN
 * ${BUTTON_TRIGGER_TITLE} Example: Trigger Notification
+* ${BUTTON_FORM_DATA} The form data that was submitted
 * ${INJECTION_URL_VALUE} Value retrieved from any URL
 * ${PULL_REQUEST_URL} Example: http://localhost:7990/projects/PROJECT_1/repos/rep_1/pull-requests/1
 * ${PULL_REQUEST_USER_DISPLAY_NAME} Example: Some User
@@ -100,6 +102,69 @@ The filter text as well as the URL support variables. These are:
 The ${PULL_REQUEST_USER...} contains information about the user who issued the event. Who commented it, who rejected it, who approved it...
 
 You may want to use [Violation Comments to Stash plugin](https://wiki.jenkins-ci.org/display/JENKINS/Violation+Comments+to+Stash+Plugin) and/or [StashNotifier plugin](https://wiki.jenkins-ci.org/display/JENKINS/StashNotifier+Plugin) to report results back to Bitbucket.
+
+#### Button Forms
+
+For each button you can specify a form that will show up when the button is pressed. That form data will then be submitted and will be available in the ${BUTTON_FORM_DATA} variable. Additionally, the form itself can reference other variables (with the exception of the ${BUTTON_...} ones) and will have those resolved prior to rendering.
+
+A form is defined as a JSON array. Here is an example that shows all possibilities:
+
+```
+[
+        {   "name": "var1",
+            "label": "var1 label",
+            "defaultValue": "you can put a variable like this: ${PULL_REQUEST_AUTHOR_NAME}",
+            "type": "input", 
+            "required": false,
+            "description": "var1 description"
+        },
+        {   "name": "var2",
+            "label": "var2 label",
+            "defaultValue": "any string can go here",
+            "type": "textarea", 
+            "required": false,
+            "description": "var2 description"
+        },
+        {   "name": "var3",
+            "label": "var3 label",
+            "defaultValue": "option2_name",
+            "options": [
+                {"label": "option1 label", "name": "option1_name"},
+                {"label": "option2 label", "name": "option2_name"},
+                {"label": "option3 label", "name": "option3_name"}
+            ],
+            "type": "radio", 
+            "required": true,
+            "description": "var3 description"
+        },
+        {   "name": "var4",
+            "label": "var4 label",
+            "type": "checkbox", 
+            "required": true,
+            "options": [
+                {"label": "option1 label", "name": "option1_name", "defaultValue": true}, 
+                {"label": "option2 label", "name": "option2_name", "defaultValue": true}
+            ],
+            "description": "var4 description"
+        }
+]
+```
+
+You can see a screenshot [here](https://raw.githubusercontent.com/tomasbjerre/pull-request-notifier-for-bitbucket/master/sandbox/rendered_form.png) when rendered.
+
+When submitted with the default values, it will look like this:
+
+```
+{
+   "var1":"you can put a variable like this: admin",
+   "var2":"any string can go here",
+   "var3":"option2_name",
+   "var4":[
+      "option1_name",
+      "option2_name"
+   ]
+}
+```
 
 ### REST
 Some rest resources are available. You can figure out the JSON structure by looking at the [DTO:s](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/tree/master/src/main/java/se/bjurr/prnfb/presentation/dto).

@@ -22,6 +22,7 @@ public class ButtonTransformer {
   to.setProjectKey(from.getProjectKey().orNull());
   to.setRepositorySlug(from.getRepositorySlug().orNull());
   to.setConfirmation(from.getConfirmation());
+  to.setButtonForm(from.getButtonForm());
   return to;
  }
 
@@ -40,7 +41,8 @@ public class ButtonTransformer {
     buttonDto.getUserLevel(), //
     buttonDto.getConfirmation(), //
     buttonDto.getProjectKey().orNull(), //
-    buttonDto.getRepositorySlug().orNull());//
+    buttonDto.getRepositorySlug().orNull(),
+    buttonDto.getButtonForm());//
  }
 
  public static ButtonPressDTO toTriggerResultDto(PrnfbButton button, List<NotificationResponse> results) {

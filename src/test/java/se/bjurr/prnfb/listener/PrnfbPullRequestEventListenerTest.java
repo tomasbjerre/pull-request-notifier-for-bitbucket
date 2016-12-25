@@ -155,7 +155,7 @@ public class PrnfbPullRequestEventListenerTest {
 
   when(prnfbRendererFactory.create(any(), any(), any(), any(), any()))//
     .thenReturn(renderer);
-  when(renderer.render(any(), any(), any(), any()))//
+  when(renderer.render(any(), any(), any(), any(), any()))//
     .thenAnswer(new Answer<String>() {
      @Override
      public String answer(InvocationOnMock invocation) throws Throwable {

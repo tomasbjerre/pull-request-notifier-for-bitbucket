@@ -14,11 +14,13 @@ import static se.bjurr.prnfb.transformer.ButtonTransformer.toPrnfbButton;
 import java.util.List;
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import static org.mockito.Mockito.mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -100,6 +102,10 @@ public class ButtonServletTest {
   Long pullRequestId = 3L;
   when(this.buttonsService.getButtons(repositoryId, pullRequestId))//
     .thenReturn(newArrayList(this.button1, this.button2));
+  when(this.buttonsService.getRenderedButtonFormData(repositoryId, pullRequestId, this.button1.getUuid(), this.button1.getButtonForm()))//
+    .thenReturn(this.button1.getButtonForm());
+  when(this.buttonsService.getRenderedButtonFormData(repositoryId, pullRequestId, this.button2.getUuid(), this.button2.getButtonForm()))//
+    .thenReturn(this.button2.getButtonForm());
   allowAll();
 
   Response actual = this.sut.get(repositoryId, pullRequestId);
@@ -150,10 +156,15 @@ public class ButtonServletTest {
     .thenReturn(button);
   when(this.userCheckService.isAllowedUseButton(button))//
     .thenReturn(true);
-  this.sut.press(repositoryId, pullRequestId, buttonUuid);
+
+  HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+  //setup the behaviour here (or do it in setup method or something)
+  when(mockRequest.getParameter("form")).thenReturn("{}");
+  
+  this.sut.press(mockRequest, repositoryId, pullRequestId, buttonUuid);
 
   verify(this.buttonsService)//
-    .handlePressed(repositoryId, pullRequestId, buttonUuid);
+    .handlePressed(repositoryId, pullRequestId, buttonUuid, "{}");
  }
 
  @Test
@@ -193,7 +204,7 @@ public class ButtonServletTest {
 
  private PrnfbButton createPrnfbButton(ButtonDTO button) {
   PrnfbButton prnfbButton = new PrnfbButton(button.getUUID(), button.getName(), button.getUserLevel(),
-    button.getConfirmation(), "p1", "r1");
+    button.getConfirmation(), "p1", "r1", null);
   return prnfbButton;
  }
 
