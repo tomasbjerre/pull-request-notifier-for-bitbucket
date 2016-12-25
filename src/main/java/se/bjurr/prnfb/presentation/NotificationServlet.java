@@ -32,97 +32,100 @@ import com.atlassian.annotations.security.XsrfProtectionExcluded;
 
 @Path("/settings/notifications")
 public class NotificationServlet {
- private final SettingsService settingsService;
- private final UserCheckService userCheckService;
+  private final SettingsService settingsService;
+  private final UserCheckService userCheckService;
 
- public NotificationServlet(SettingsService settingsService, UserCheckService userCheckService) {
-  this.settingsService = settingsService;
-  this.userCheckService = userCheckService;
- }
-
- @POST
- @XsrfProtectionExcluded
- @Consumes(APPLICATION_JSON)
- @Produces(APPLICATION_JSON)
- public Response create(NotificationDTO notificationDto) {
-  if (!this.userCheckService.isAdminAllowed(notificationDto.getProjectKey(), notificationDto.getRepositorySlug())) {
-   return status(UNAUTHORIZED).build();
+  public NotificationServlet(SettingsService settingsService, UserCheckService userCheckService) {
+    this.settingsService = settingsService;
+    this.userCheckService = userCheckService;
   }
-  try {
-   PrnfbNotification prnfbNotification = toPrnfbNotification(notificationDto);
-   PrnfbNotification created = this.settingsService.addOrUpdateNotification(prnfbNotification);
-   NotificationDTO createdDto = toNotificationDto(created);
-   return status(OK)//
-     .entity(createdDto)//
-     .build();
-  } catch (Exception e) {
-   throw propagate(e);
-  }
- }
 
- @DELETE
- @Path("{uuid}")
- @XsrfProtectionExcluded
- @Produces(APPLICATION_JSON)
- public Response delete(@PathParam("uuid") UUID notification) {
-  PrnfbNotification notificationDto = this.settingsService.getNotification(notification);
-  if (!this.userCheckService.isAdminAllowed(//
-    notificationDto.getProjectKey().orNull(), //
-    notificationDto.getRepositorySlug().orNull())) {
-   return status(UNAUTHORIZED).build();
+  @POST
+  @XsrfProtectionExcluded
+  @Consumes(APPLICATION_JSON)
+  @Produces(APPLICATION_JSON)
+  public Response create(NotificationDTO notificationDto) {
+    if (!this.userCheckService.isAdminAllowed(
+        notificationDto.getProjectKey(), notificationDto.getRepositorySlug())) {
+      return status(UNAUTHORIZED).build();
+    }
+    try {
+      PrnfbNotification prnfbNotification = toPrnfbNotification(notificationDto);
+      PrnfbNotification created = this.settingsService.addOrUpdateNotification(prnfbNotification);
+      NotificationDTO createdDto = toNotificationDto(created);
+      return status(OK) //
+          .entity(createdDto) //
+          .build();
+    } catch (Exception e) {
+      throw propagate(e);
+    }
   }
-  this.settingsService.deleteNotification(notification);
-  return status(OK).build();
- }
 
- @GET
- @Produces(APPLICATION_JSON)
- public Response get() {
-  if (!this.userCheckService.isViewAllowed()) {
-   return status(UNAUTHORIZED).build();
+  @DELETE
+  @Path("{uuid}")
+  @XsrfProtectionExcluded
+  @Produces(APPLICATION_JSON)
+  public Response delete(@PathParam("uuid") UUID notification) {
+    PrnfbNotification notificationDto = this.settingsService.getNotification(notification);
+    if (!this.userCheckService.isAdminAllowed( //
+        notificationDto.getProjectKey().orNull(), //
+        notificationDto.getRepositorySlug().orNull())) {
+      return status(UNAUTHORIZED).build();
+    }
+    this.settingsService.deleteNotification(notification);
+    return status(OK).build();
   }
-  List<PrnfbNotification> notifications = this.settingsService.getNotifications();
-  List<NotificationDTO> dtos = toNotificationDtoList(notifications);
-  Collections.sort(dtos);
-  return ok(dtos).build();
- }
 
- @GET
- @Path("/projectKey/{projectKey}")
- @Produces(APPLICATION_JSON)
- public Response get(@PathParam("projectKey") String projectKey) {
-  if (!this.userCheckService.isViewAllowed()) {
-   return status(UNAUTHORIZED).build();
+  @GET
+  @Produces(APPLICATION_JSON)
+  public Response get() {
+    if (!this.userCheckService.isViewAllowed()) {
+      return status(UNAUTHORIZED).build();
+    }
+    List<PrnfbNotification> notifications = this.settingsService.getNotifications();
+    List<NotificationDTO> dtos = toNotificationDtoList(notifications);
+    Collections.sort(dtos);
+    return ok(dtos).build();
   }
-  List<PrnfbNotification> notifications = this.settingsService.getNotifications(projectKey);
-  List<NotificationDTO> dtos = toNotificationDtoList(notifications);
-  Collections.sort(dtos);
-  return ok(dtos).build();
- }
 
- @GET
- @Path("/projectKey/{projectKey}/repositorySlug/{repositorySlug}")
- @Produces(APPLICATION_JSON)
- public Response get(@PathParam("projectKey") String projectKey, @PathParam("repositorySlug") String repositorySlug) {
-  if (!this.userCheckService.isViewAllowed()) {
-   return status(UNAUTHORIZED).build();
+  @GET
+  @Path("/projectKey/{projectKey}")
+  @Produces(APPLICATION_JSON)
+  public Response get(@PathParam("projectKey") String projectKey) {
+    if (!this.userCheckService.isViewAllowed()) {
+      return status(UNAUTHORIZED).build();
+    }
+    List<PrnfbNotification> notifications = this.settingsService.getNotifications(projectKey);
+    List<NotificationDTO> dtos = toNotificationDtoList(notifications);
+    Collections.sort(dtos);
+    return ok(dtos).build();
   }
-  List<PrnfbNotification> notifications = this.settingsService.getNotifications(projectKey, repositorySlug);
-  List<NotificationDTO> dtos = toNotificationDtoList(notifications);
-  Collections.sort(dtos);
-  return ok(dtos).build();
- }
 
- @GET
- @Path("{uuid}")
- @Produces(APPLICATION_JSON)
- public Response get(@PathParam("uuid") UUID notificationUuid) {
-  if (!this.userCheckService.isViewAllowed()) {
-   return status(UNAUTHORIZED).build();
+  @GET
+  @Path("/projectKey/{projectKey}/repositorySlug/{repositorySlug}")
+  @Produces(APPLICATION_JSON)
+  public Response get(
+      @PathParam("projectKey") String projectKey,
+      @PathParam("repositorySlug") String repositorySlug) {
+    if (!this.userCheckService.isViewAllowed()) {
+      return status(UNAUTHORIZED).build();
+    }
+    List<PrnfbNotification> notifications =
+        this.settingsService.getNotifications(projectKey, repositorySlug);
+    List<NotificationDTO> dtos = toNotificationDtoList(notifications);
+    Collections.sort(dtos);
+    return ok(dtos).build();
   }
-  PrnfbNotification notification = this.settingsService.getNotification(notificationUuid);
-  NotificationDTO dto = toNotificationDto(notification);
-  return ok(dto).build();
- }
 
+  @GET
+  @Path("{uuid}")
+  @Produces(APPLICATION_JSON)
+  public Response get(@PathParam("uuid") UUID notificationUuid) {
+    if (!this.userCheckService.isViewAllowed()) {
+      return status(UNAUTHORIZED).build();
+    }
+    PrnfbNotification notification = this.settingsService.getNotification(notificationUuid);
+    NotificationDTO dto = toNotificationDto(notification);
+    return ok(dto).build();
+  }
 }

@@ -6,23 +6,23 @@ import se.bjurr.prnfb.settings.PrnfbSettingsData;
 
 public class SettingsTransformer {
 
- public static SettingsDataDTO toDto(PrnfbSettingsData settingsData) {
-  SettingsDataDTO dto = new SettingsDataDTO();
-  dto.setAdminRestriction(settingsData.getAdminRestriction());
-  dto.setKeyStore(settingsData.getKeyStore().orNull());
-  dto.setKeyStorePassword(settingsData.getKeyStorePassword().orNull());
-  dto.setKeyStoreType(settingsData.getKeyStoreType());
-  dto.setShouldAcceptAnyCertificate(settingsData.isShouldAcceptAnyCertificate());
-  return dto;
- }
+  public static SettingsDataDTO toDto(PrnfbSettingsData settingsData) {
+    SettingsDataDTO dto = new SettingsDataDTO();
+    dto.setAdminRestriction(settingsData.getAdminRestriction());
+    dto.setKeyStore(settingsData.getKeyStore().orNull());
+    dto.setKeyStorePassword(settingsData.getKeyStorePassword().orNull());
+    dto.setKeyStoreType(settingsData.getKeyStoreType());
+    dto.setShouldAcceptAnyCertificate(settingsData.isShouldAcceptAnyCertificate());
+    return dto;
+  }
 
- public static PrnfbSettingsData toPrnfbSettingsData(SettingsDataDTO settingsDataDto) {
-  return prnfbSettingsDataBuilder()//
-    .setAdminRestriction(settingsDataDto.getAdminRestriction())//
-    .setKeyStore(settingsDataDto.getKeyStore())//
-    .setKeyStorePassword(settingsDataDto.getKeyStorePassword())//
-    .setKeyStoreType(settingsDataDto.getKeyStoreType())//
-    .setShouldAcceptAnyCertificate(settingsDataDto.isShouldAcceptAnyCertificate())//
-    .build();
- }
+  public static PrnfbSettingsData toPrnfbSettingsData(SettingsDataDTO settingsDataDto) {
+    return prnfbSettingsDataBuilder() //
+        .setAdminRestriction(settingsDataDto.getAdminRestriction()) //
+        .setKeyStore(settingsDataDto.getKeyStore()) //
+        .setKeyStorePassword(settingsDataDto.getKeyStorePassword()) //
+        .setKeyStoreType(settingsDataDto.getKeyStoreType()) //
+        .setShouldAcceptAnyCertificate(settingsDataDto.isShouldAcceptAnyCertificate()) //
+        .build();
+  }
 }

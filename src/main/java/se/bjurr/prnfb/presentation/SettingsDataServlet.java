@@ -24,39 +24,39 @@ import com.atlassian.annotations.security.XsrfProtectionExcluded;
 
 @Path("/settings")
 public class SettingsDataServlet {
- private final SettingsService settingsService;
- private final UserCheckService userCheckService;
+  private final SettingsService settingsService;
+  private final UserCheckService userCheckService;
 
- public SettingsDataServlet(UserCheckService userCheckService, SettingsService settingsService) {
-  this.userCheckService = userCheckService;
-  this.settingsService = settingsService;
- }
-
- @GET
- @Produces(APPLICATION_JSON)
- public Response get() {
-  if (!this.userCheckService.isViewAllowed()) {
-   return status(UNAUTHORIZED).build();
+  public SettingsDataServlet(UserCheckService userCheckService, SettingsService settingsService) {
+    this.userCheckService = userCheckService;
+    this.settingsService = settingsService;
   }
 
-  PrnfbSettingsData settingsData = this.settingsService.getPrnfbSettingsData();
-  SettingsDataDTO settingsDataDto = toDto(settingsData);
+  @GET
+  @Produces(APPLICATION_JSON)
+  public Response get() {
+    if (!this.userCheckService.isViewAllowed()) {
+      return status(UNAUTHORIZED).build();
+    }
 
-  return ok(settingsDataDto).build();
- }
+    PrnfbSettingsData settingsData = this.settingsService.getPrnfbSettingsData();
+    SettingsDataDTO settingsDataDto = toDto(settingsData);
 
- @POST
- @XsrfProtectionExcluded
- @Consumes(APPLICATION_JSON)
- @Produces(APPLICATION_JSON)
- public Response post(SettingsDataDTO settingsDataDto) {
-  if (!this.userCheckService.isAdminAllowed(null, null)) {
-   return status(UNAUTHORIZED).build();
+    return ok(settingsDataDto).build();
   }
 
-  PrnfbSettingsData prnfbSettingsData = toPrnfbSettingsData(settingsDataDto);
-  this.settingsService.setPrnfbSettingsData(prnfbSettingsData);
+  @POST
+  @XsrfProtectionExcluded
+  @Consumes(APPLICATION_JSON)
+  @Produces(APPLICATION_JSON)
+  public Response post(SettingsDataDTO settingsDataDto) {
+    if (!this.userCheckService.isAdminAllowed(null, null)) {
+      return status(UNAUTHORIZED).build();
+    }
 
-  return noContent().build();
- }
+    PrnfbSettingsData prnfbSettingsData = toPrnfbSettingsData(settingsDataDto);
+    this.settingsService.setPrnfbSettingsData(prnfbSettingsData);
+
+    return noContent().build();
+  }
 }

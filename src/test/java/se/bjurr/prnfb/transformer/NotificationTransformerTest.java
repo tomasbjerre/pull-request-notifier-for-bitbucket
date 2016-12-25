@@ -16,20 +16,19 @@ import se.bjurr.prnfb.settings.ValidationException;
 import com.google.common.collect.Lists;
 
 public class NotificationTransformerTest {
- @Test
- public void testTransformation() throws ValidationException {
-  NotificationDTO originalDto = populatedInstanceOf(NotificationDTO.class);
-  originalDto.setUrl("http://hej.com/");
-  originalDto.setTriggerIgnoreStateList(Lists.newArrayList(DECLINED.name()));
-  originalDto.setTriggers(newArrayList(MERGED.name()));
-  NotificationDTO retransformedDto = toNotificationDto(toPrnfbNotification(originalDto));
+  @Test
+  public void testTransformation() throws ValidationException {
+    NotificationDTO originalDto = populatedInstanceOf(NotificationDTO.class);
+    originalDto.setUrl("http://hej.com/");
+    originalDto.setTriggerIgnoreStateList(Lists.newArrayList(DECLINED.name()));
+    originalDto.setTriggers(newArrayList(MERGED.name()));
+    NotificationDTO retransformedDto = toNotificationDto(toPrnfbNotification(originalDto));
 
-  assertThat(retransformedDto)//
-    .isEqualTo(originalDto);
-  assertThat(retransformedDto.toString())//
-    .isEqualTo(originalDto.toString());
-  assertThat(retransformedDto.hashCode())//
-    .isEqualTo(originalDto.hashCode());
- }
-
+    assertThat(retransformedDto) //
+        .isEqualTo(originalDto);
+    assertThat(retransformedDto.toString()) //
+        .isEqualTo(originalDto.toString());
+    assertThat(retransformedDto.hashCode()) //
+        .isEqualTo(originalDto.hashCode());
+  }
 }

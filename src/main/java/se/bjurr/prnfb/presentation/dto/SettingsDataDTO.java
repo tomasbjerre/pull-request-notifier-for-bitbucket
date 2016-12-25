@@ -11,111 +11,120 @@ import se.bjurr.prnfb.settings.USER_LEVEL;
 @XmlAccessorType(FIELD)
 public class SettingsDataDTO {
 
- private USER_LEVEL adminRestriction;
- private String keyStore;
- private String keyStorePassword;
- private String keyStoreType;
- private boolean shouldAcceptAnyCertificate;
+  private USER_LEVEL adminRestriction;
+  private String keyStore;
+  private String keyStorePassword;
+  private String keyStoreType;
+  private boolean shouldAcceptAnyCertificate;
 
- @Override
- public boolean equals(Object obj) {
-  if (this == obj) {
-   return true;
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    SettingsDataDTO other = (SettingsDataDTO) obj;
+    if (this.adminRestriction != other.adminRestriction) {
+      return false;
+    }
+    if (this.keyStore == null) {
+      if (other.keyStore != null) {
+        return false;
+      }
+    } else if (!this.keyStore.equals(other.keyStore)) {
+      return false;
+    }
+    if (this.keyStorePassword == null) {
+      if (other.keyStorePassword != null) {
+        return false;
+      }
+    } else if (!this.keyStorePassword.equals(other.keyStorePassword)) {
+      return false;
+    }
+    if (this.keyStoreType == null) {
+      if (other.keyStoreType != null) {
+        return false;
+      }
+    } else if (!this.keyStoreType.equals(other.keyStoreType)) {
+      return false;
+    }
+    if (this.shouldAcceptAnyCertificate != other.shouldAcceptAnyCertificate) {
+      return false;
+    }
+    return true;
   }
-  if (obj == null) {
-   return false;
+
+  public USER_LEVEL getAdminRestriction() {
+    return this.adminRestriction;
   }
-  if (getClass() != obj.getClass()) {
-   return false;
+
+  public String getKeyStore() {
+    return this.keyStore;
   }
-  SettingsDataDTO other = (SettingsDataDTO) obj;
-  if (this.adminRestriction != other.adminRestriction) {
-   return false;
+
+  public String getKeyStorePassword() {
+    return this.keyStorePassword;
   }
-  if (this.keyStore == null) {
-   if (other.keyStore != null) {
-    return false;
-   }
-  } else if (!this.keyStore.equals(other.keyStore)) {
-   return false;
+
+  public String getKeyStoreType() {
+    return this.keyStoreType;
   }
-  if (this.keyStorePassword == null) {
-   if (other.keyStorePassword != null) {
-    return false;
-   }
-  } else if (!this.keyStorePassword.equals(other.keyStorePassword)) {
-   return false;
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result =
+        prime * result + ((this.adminRestriction == null) ? 0 : this.adminRestriction.hashCode());
+    result = prime * result + ((this.keyStore == null) ? 0 : this.keyStore.hashCode());
+    result =
+        prime * result + ((this.keyStorePassword == null) ? 0 : this.keyStorePassword.hashCode());
+    result = prime * result + ((this.keyStoreType == null) ? 0 : this.keyStoreType.hashCode());
+    result = prime * result + (this.shouldAcceptAnyCertificate ? 1231 : 1237);
+    return result;
   }
-  if (this.keyStoreType == null) {
-   if (other.keyStoreType != null) {
-    return false;
-   }
-  } else if (!this.keyStoreType.equals(other.keyStoreType)) {
-   return false;
+
+  public boolean isShouldAcceptAnyCertificate() {
+    return this.shouldAcceptAnyCertificate;
   }
-  if (this.shouldAcceptAnyCertificate != other.shouldAcceptAnyCertificate) {
-   return false;
+
+  public void setAdminRestriction(USER_LEVEL adminRestriction) {
+    this.adminRestriction = adminRestriction;
   }
-  return true;
- }
 
- public USER_LEVEL getAdminRestriction() {
-  return this.adminRestriction;
- }
+  public void setKeyStore(String keyStore) {
+    this.keyStore = keyStore;
+  }
 
- public String getKeyStore() {
-  return this.keyStore;
- }
+  public void setKeyStorePassword(String keyStorePassword) {
+    this.keyStorePassword = keyStorePassword;
+  }
 
- public String getKeyStorePassword() {
-  return this.keyStorePassword;
- }
+  public void setKeyStoreType(String keyStoreType) {
+    this.keyStoreType = keyStoreType;
+  }
 
- public String getKeyStoreType() {
-  return this.keyStoreType;
- }
+  public void setShouldAcceptAnyCertificate(boolean shouldAcceptAnyCertificate) {
+    this.shouldAcceptAnyCertificate = shouldAcceptAnyCertificate;
+  }
 
- @Override
- public int hashCode() {
-  final int prime = 31;
-  int result = 1;
-  result = prime * result + ((this.adminRestriction == null) ? 0 : this.adminRestriction.hashCode());
-  result = prime * result + ((this.keyStore == null) ? 0 : this.keyStore.hashCode());
-  result = prime * result + ((this.keyStorePassword == null) ? 0 : this.keyStorePassword.hashCode());
-  result = prime * result + ((this.keyStoreType == null) ? 0 : this.keyStoreType.hashCode());
-  result = prime * result + (this.shouldAcceptAnyCertificate ? 1231 : 1237);
-  return result;
- }
-
- public boolean isShouldAcceptAnyCertificate() {
-  return this.shouldAcceptAnyCertificate;
- }
-
- public void setAdminRestriction(USER_LEVEL adminRestriction) {
-  this.adminRestriction = adminRestriction;
- }
-
- public void setKeyStore(String keyStore) {
-  this.keyStore = keyStore;
- }
-
- public void setKeyStorePassword(String keyStorePassword) {
-  this.keyStorePassword = keyStorePassword;
- }
-
- public void setKeyStoreType(String keyStoreType) {
-  this.keyStoreType = keyStoreType;
- }
-
- public void setShouldAcceptAnyCertificate(boolean shouldAcceptAnyCertificate) {
-  this.shouldAcceptAnyCertificate = shouldAcceptAnyCertificate;
- }
-
- @Override
- public String toString() {
-  return "SettingsDataDTO [adminRestriction=" + this.adminRestriction + ", keyStore=" + this.keyStore
-    + ", keyStorePassword=" + this.keyStorePassword + ", keyStoreType=" + this.keyStoreType
-    + ", shouldAcceptAnyCertificate=" + this.shouldAcceptAnyCertificate + "]";
- }
-
+  @Override
+  public String toString() {
+    return "SettingsDataDTO [adminRestriction="
+        + this.adminRestriction
+        + ", keyStore="
+        + this.keyStore
+        + ", keyStorePassword="
+        + this.keyStorePassword
+        + ", keyStoreType="
+        + this.keyStoreType
+        + ", shouldAcceptAnyCertificate="
+        + this.shouldAcceptAnyCertificate
+        + "]";
+  }
 }

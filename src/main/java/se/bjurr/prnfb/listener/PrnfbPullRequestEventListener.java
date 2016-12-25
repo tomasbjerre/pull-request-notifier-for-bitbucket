@@ -48,6 +48,7 @@ import se.bjurr.prnfb.http.Invoker;
 import se.bjurr.prnfb.http.NotificationResponse;
 import se.bjurr.prnfb.http.UrlInvoker;
 import se.bjurr.prnfb.service.PrnfbRenderer;
+import se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR;
 import se.bjurr.prnfb.service.PrnfbRendererFactory;
 import se.bjurr.prnfb.service.PrnfbVariable;
 import se.bjurr.prnfb.service.SettingsService;
@@ -58,232 +59,303 @@ import se.bjurr.prnfb.settings.TRIGGER_IF_MERGE;
 
 public class PrnfbPullRequestEventListener {
 
- private static final Logger LOG = getLogger(PrnfbPullRequestEventListener.class);
- private static Invoker mockedInvoker = null;
+  private static final Logger LOG = getLogger(PrnfbPullRequestEventListener.class);
+  private static Invoker mockedInvoker = null;
 
- @VisibleForTesting
- public static void setInvoker(Invoker invoker) {
-  PrnfbPullRequestEventListener.mockedInvoker = invoker;
- }
-
- private final ExecutorService executorService;
- private final PrnfbRendererFactory prnfbRendererFactory;
- private final PullRequestService pullRequestService;
-
- private final SettingsService settingsService;
-
- public PrnfbPullRequestEventListener(PrnfbRendererFactory prnfbRendererFactory, PullRequestService pullRequestService,
-   ExecutorService executorService, SettingsService settingsService) {
-  this.prnfbRendererFactory = prnfbRendererFactory;
-  this.pullRequestService = pullRequestService;
-  this.executorService = executorService;
-  this.settingsService = settingsService;
- }
-
- private Invoker createInvoker() {
-  if (mockedInvoker != null) {
-   return mockedInvoker;
-  }
-  return new Invoker() {
-   @Override
-   public HttpResponse invoke(UrlInvoker urlInvoker) {
-    return urlInvoker.invoke();
-   }
-  };
- }
-
- private void handleEvent(final PullRequestEvent pullRequestEvent) {
-  if (pullRequestEvent.getPullRequest().isClosed() && pullRequestEvent instanceof PullRequestCommentEvent) {
-   return;
-  }
-  final PrnfbSettingsData settings = settingsService.getPrnfbSettingsData();
-  ClientKeyStore clientKeyStore = new ClientKeyStore(settings);
-  for (final PrnfbNotification notification : settingsService.getNotifications()) {
-   PrnfbPullRequestAction action = fromPullRequestEvent(pullRequestEvent, notification);
-   Map<PrnfbVariable, Supplier<String>> variables = populateVariables(pullRequestEvent);
-   PrnfbRenderer renderer = prnfbRendererFactory.create(pullRequestEvent.getPullRequest(), action, notification,
-     variables, pullRequestEvent.getUser());
-   notify(notification, action, pullRequestEvent.getPullRequest(), renderer, clientKeyStore,
-     settings.isShouldAcceptAnyCertificate());
-  }
- }
-
- @VisibleForTesting
- public void handleEventAsync(final PullRequestEvent pullRequestEvent) {
-  executorService.execute(new Runnable() {
-   @Override
-   public void run() {
-    handleEvent(pullRequestEvent);
-   }
-  });
- }
-
- @VisibleForTesting
- boolean ignoreBecauseOfConflicting(TRIGGER_IF_MERGE triggerIfCanMerge, boolean isConflicted) {
-  return triggerIfCanMerge == NOT_CONFLICTING && isConflicted || //
-    triggerIfCanMerge == CONFLICTING && !isConflicted;
- }
-
- public boolean isNotificationTriggeredByAction(PrnfbNotification notification,
-   PrnfbPullRequestAction pullRequestAction, PrnfbRenderer renderer, PullRequest pullRequest,
-   ClientKeyStore clientKeyStore, Boolean shouldAcceptAnyCertificate) {
-  if (!notification.getTriggers().contains(pullRequestAction)) {
-   return FALSE;
+  @VisibleForTesting
+  public static void setInvoker(Invoker invoker) {
+    PrnfbPullRequestEventListener.mockedInvoker = invoker;
   }
 
-  if (notification.getProjectKey().isPresent()) {
-   if (!notification.getProjectKey().get().equals(pullRequest.getToRef().getRepository().getProject().getKey())) {
-    return FALSE;
-   }
+  private final ExecutorService executorService;
+  private final PrnfbRendererFactory prnfbRendererFactory;
+  private final PullRequestService pullRequestService;
+
+  private final SettingsService settingsService;
+
+  public PrnfbPullRequestEventListener(
+      PrnfbRendererFactory prnfbRendererFactory,
+      PullRequestService pullRequestService,
+      ExecutorService executorService,
+      SettingsService settingsService) {
+    this.prnfbRendererFactory = prnfbRendererFactory;
+    this.pullRequestService = pullRequestService;
+    this.executorService = executorService;
+    this.settingsService = settingsService;
   }
 
-  if (notification.getRepositorySlug().isPresent()) {
-   if (!notification.getRepositorySlug().get().equals(pullRequest.getToRef().getRepository().getSlug())) {
-    return FALSE;
-   }
-  }
-
-  if (notification.getFilterRegexp().isPresent() && notification.getFilterString().isPresent()
-    && !compile(notification.getFilterRegexp().get())
-      .matcher(renderer.render(notification.getFilterString().get(), FALSE, FALSE, clientKeyStore, shouldAcceptAnyCertificate))
-      .find()) {
-   return FALSE;
-  }
-
-  if (notification.getTriggerIgnoreStateList().contains(pullRequest.getState())) {
-   return FALSE;
-  }
-
-  if (notification.getTriggerIfCanMerge() != ALWAYS && pullRequest.isOpen()) {
-   // Cannot perform canMerge unless PR is open
-   boolean isConflicted = pullRequestService
-     .canMerge(pullRequest.getToRef().getRepository().getId(), pullRequest.getId()).isConflicted();
-   if (ignoreBecauseOfConflicting(notification.getTriggerIfCanMerge(), isConflicted)) {
-    return FALSE;
-   }
-  }
-
-  return TRUE;
- }
-
- public NotificationResponse notify(final PrnfbNotification notification, PrnfbPullRequestAction pullRequestAction,
-   PullRequest pullRequest, PrnfbRenderer renderer, ClientKeyStore clientKeyStore, Boolean shouldAcceptAnyCertificate) {
-  if (!isNotificationTriggeredByAction(notification, pullRequestAction, renderer, pullRequest, clientKeyStore,
-    shouldAcceptAnyCertificate)) {
-   return null;
-  }
-
-  Optional<String> postContent = absent();
-  if (notification.getPostContent().isPresent()) {
-   postContent = of(
-     renderer.render(notification.getPostContent().get(), FALSE, FALSE, clientKeyStore, shouldAcceptAnyCertificate));
-  }
-  String renderedUrl = renderer.render(notification.getUrl(), TRUE, FALSE, clientKeyStore, shouldAcceptAnyCertificate);
-  LOG.info(notification.getName() + " > " //
-    + pullRequest.getFromRef().getId() + "(" + pullRequest.getFromRef().getLatestCommit() + ") -> " //
-    + pullRequest.getToRef().getId() + "(" + pullRequest.getToRef().getLatestCommit() + ")" + " " //
-    + renderedUrl);
-  UrlInvoker urlInvoker = urlInvoker()//
-    .withClientKeyStore(clientKeyStore)//
-    .withUrlParam(renderedUrl)//
-    .withMethod(notification.getMethod())//
-    .withPostContent(postContent)//
-    .appendBasicAuth(notification);
-  for (PrnfbHeader header : notification.getHeaders()) {
-   urlInvoker//
-     .withHeader(header.getName(),
-       renderer.render(header.getValue(), FALSE, FALSE, clientKeyStore, shouldAcceptAnyCertificate));
-  }
-  HttpResponse httpResponse = createInvoker().invoke(urlInvoker//
-    .withProxyServer(notification.getProxyServer()) //
-    .withProxyPort(notification.getProxyPort())//
-    .withProxyUser(notification.getProxyUser())//
-    .withProxyPassword(notification.getProxyPassword())//
-    .shouldAcceptAnyCertificate(shouldAcceptAnyCertificate));
-
-  return new NotificationResponse(notification.getUuid(), notification.getName(), httpResponse);
- }
-
- @EventListener
- public void onEvent(@SuppressWarnings("deprecation") PullRequestApprovedEvent e) {
-  handleEventAsync(e);
- }
-
- @EventListener
- public void onEvent(PullRequestCommentAddedEvent e) {
-  handleEventAsync(e);
- }
-
- @EventListener
- public void onEvent(PullRequestCommentDeletedEvent e) {
-  handleEventAsync(e);
- }
-
- @EventListener
- public void onEvent(PullRequestCommentEditedEvent e) {
-  handleEventAsync(e);
- }
-
- @EventListener
- public void onEvent(PullRequestCommentRepliedEvent e) {
-  handleEventAsync(e);
- }
-
- @EventListener
- public void onEvent(PullRequestDeclinedEvent e) {
-  handleEventAsync(e);
- }
-
- @EventListener
- public void onEvent(PullRequestMergedEvent e) {
-  handleEventAsync(e);
- }
-
- @EventListener
- public void onEvent(PullRequestOpenedEvent e) {
-  handleEventAsync(e);
- }
-
- @EventListener
- public void onEvent(PullRequestReopenedEvent e) {
-  handleEventAsync(e);
- }
-
- @EventListener
- public void onEvent(final PullRequestRescopedEvent e) {
-  handleEventAsync(e);
- }
-
- @EventListener
- public void onEvent(@SuppressWarnings("deprecation") PullRequestUnapprovedEvent e) {
-  handleEventAsync(e);
- }
-
- @EventListener
- public void onEvent(PullRequestUpdatedEvent e) {
-  handleEventAsync(e);
- }
-
- @VisibleForTesting
- Map<PrnfbVariable, Supplier<String>> populateVariables(final PullRequestEvent pullRequestEvent) {
-  Map<PrnfbVariable, Supplier<String>> variables = newHashMap();
-  if (pullRequestEvent instanceof PullRequestCommentEvent) {
-   PullRequestCommentEvent pullRequestCommentEvent = (PullRequestCommentEvent) pullRequestEvent;
-   variables.put(PULL_REQUEST_COMMENT_TEXT, () -> {
-    return pullRequestCommentEvent.getComment().getText();
-   });
-   variables.put(PULL_REQUEST_COMMENT_ACTION, () -> {
-    return pullRequestCommentEvent.getCommentAction().name();
-   });
-  } else if (pullRequestEvent instanceof PullRequestMergedEvent) {
-   variables.put(PULL_REQUEST_MERGE_COMMIT, new Supplier<String>() {
-    @Override
-    public String get() {
-     return ((PullRequestMergedEvent) pullRequestEvent).getCommit().getId();
+  private Invoker createInvoker() {
+    if (mockedInvoker != null) {
+      return mockedInvoker;
     }
-   });
+    return new Invoker() {
+      @Override
+      public HttpResponse invoke(UrlInvoker urlInvoker) {
+        return urlInvoker.invoke();
+      }
+    };
   }
-  return variables;
- }
 
+  private void handleEvent(final PullRequestEvent pullRequestEvent) {
+    if (pullRequestEvent.getPullRequest().isClosed()
+        && pullRequestEvent instanceof PullRequestCommentEvent) {
+      return;
+    }
+    final PrnfbSettingsData settings = settingsService.getPrnfbSettingsData();
+    ClientKeyStore clientKeyStore = new ClientKeyStore(settings);
+    for (final PrnfbNotification notification : settingsService.getNotifications()) {
+      PrnfbPullRequestAction action = fromPullRequestEvent(pullRequestEvent, notification);
+      Map<PrnfbVariable, Supplier<String>> variables = populateVariables(pullRequestEvent);
+      PrnfbRenderer renderer =
+          prnfbRendererFactory.create(
+              pullRequestEvent.getPullRequest(),
+              action,
+              notification,
+              variables,
+              pullRequestEvent.getUser());
+      notify(
+          notification,
+          action,
+          pullRequestEvent.getPullRequest(),
+          renderer,
+          clientKeyStore,
+          settings.isShouldAcceptAnyCertificate());
+    }
+  }
+
+  @VisibleForTesting
+  public void handleEventAsync(final PullRequestEvent pullRequestEvent) {
+    executorService.execute(
+        new Runnable() {
+          @Override
+          public void run() {
+            handleEvent(pullRequestEvent);
+          }
+        });
+  }
+
+  @VisibleForTesting
+  boolean ignoreBecauseOfConflicting(TRIGGER_IF_MERGE triggerIfCanMerge, boolean isConflicted) {
+    return triggerIfCanMerge == NOT_CONFLICTING && isConflicted
+        || //
+        triggerIfCanMerge == CONFLICTING && !isConflicted;
+  }
+
+  public boolean isNotificationTriggeredByAction(
+      PrnfbNotification notification,
+      PrnfbPullRequestAction pullRequestAction,
+      PrnfbRenderer renderer,
+      PullRequest pullRequest,
+      ClientKeyStore clientKeyStore,
+      Boolean shouldAcceptAnyCertificate) {
+    if (!notification.getTriggers().contains(pullRequestAction)) {
+      return FALSE;
+    }
+
+    if (notification.getProjectKey().isPresent()) {
+      if (!notification
+          .getProjectKey()
+          .get()
+          .equals(pullRequest.getToRef().getRepository().getProject().getKey())) {
+        return FALSE;
+      }
+    }
+
+    if (notification.getRepositorySlug().isPresent()) {
+      if (!notification
+          .getRepositorySlug()
+          .get()
+          .equals(pullRequest.getToRef().getRepository().getSlug())) {
+        return FALSE;
+      }
+    }
+
+    if (notification.getFilterRegexp().isPresent()
+        && notification.getFilterString().isPresent()
+        && !compile(notification.getFilterRegexp().get())
+            .matcher(
+                renderer.render(
+                    notification.getFilterString().get(),
+                    ENCODE_FOR.NONE,
+                    clientKeyStore,
+                    shouldAcceptAnyCertificate))
+            .find()) {
+      return FALSE;
+    }
+
+    if (notification.getTriggerIgnoreStateList().contains(pullRequest.getState())) {
+      return FALSE;
+    }
+
+    if (notification.getTriggerIfCanMerge() != ALWAYS && pullRequest.isOpen()) {
+      // Cannot perform canMerge unless PR is open
+      boolean isConflicted =
+          pullRequestService
+              .canMerge(pullRequest.getToRef().getRepository().getId(), pullRequest.getId())
+              .isConflicted();
+      if (ignoreBecauseOfConflicting(notification.getTriggerIfCanMerge(), isConflicted)) {
+        return FALSE;
+      }
+    }
+
+    return TRUE;
+  }
+
+  public NotificationResponse notify(
+      final PrnfbNotification notification,
+      PrnfbPullRequestAction pullRequestAction,
+      PullRequest pullRequest,
+      PrnfbRenderer renderer,
+      ClientKeyStore clientKeyStore,
+      Boolean shouldAcceptAnyCertificate) {
+    if (!isNotificationTriggeredByAction(
+        notification,
+        pullRequestAction,
+        renderer,
+        pullRequest,
+        clientKeyStore,
+        shouldAcceptAnyCertificate)) {
+      return null;
+    }
+
+    Optional<String> postContent = absent();
+    if (notification.getPostContent().isPresent()) {
+      postContent =
+          of(
+              renderer.render(
+                  notification.getPostContent().get(),
+                  ENCODE_FOR.NONE,
+                  clientKeyStore,
+                  shouldAcceptAnyCertificate));
+    }
+    String renderedUrl =
+        renderer.render(
+            notification.getUrl(), ENCODE_FOR.URL, clientKeyStore, shouldAcceptAnyCertificate);
+    LOG.info(
+        notification.getName()
+            + " > " //
+            + pullRequest.getFromRef().getId()
+            + "("
+            + pullRequest.getFromRef().getLatestCommit()
+            + ") -> " //
+            + pullRequest.getToRef().getId()
+            + "("
+            + pullRequest.getToRef().getLatestCommit()
+            + ")"
+            + " " //
+            + renderedUrl);
+    UrlInvoker urlInvoker =
+        urlInvoker() //
+            .withClientKeyStore(clientKeyStore) //
+            .withUrlParam(renderedUrl) //
+            .withMethod(notification.getMethod()) //
+            .withPostContent(postContent) //
+            .appendBasicAuth(notification);
+    for (PrnfbHeader header : notification.getHeaders()) {
+      urlInvoker //
+          .withHeader(
+          header.getName(),
+          renderer.render(
+              header.getValue(), ENCODE_FOR.NONE, clientKeyStore, shouldAcceptAnyCertificate));
+    }
+    HttpResponse httpResponse =
+        createInvoker()
+            .invoke(
+                urlInvoker //
+                    .withProxyServer(notification.getProxyServer()) //
+                    .withProxyPort(notification.getProxyPort()) //
+                    .withProxyUser(notification.getProxyUser()) //
+                    .withProxyPassword(notification.getProxyPassword()) //
+                    .shouldAcceptAnyCertificate(shouldAcceptAnyCertificate));
+
+    return new NotificationResponse(notification.getUuid(), notification.getName(), httpResponse);
+  }
+
+  @EventListener
+  public void onEvent(@SuppressWarnings("deprecation") PullRequestApprovedEvent e) {
+    handleEventAsync(e);
+  }
+
+  @EventListener
+  public void onEvent(PullRequestCommentAddedEvent e) {
+    handleEventAsync(e);
+  }
+
+  @EventListener
+  public void onEvent(PullRequestCommentDeletedEvent e) {
+    handleEventAsync(e);
+  }
+
+  @EventListener
+  public void onEvent(PullRequestCommentEditedEvent e) {
+    handleEventAsync(e);
+  }
+
+  @EventListener
+  public void onEvent(PullRequestCommentRepliedEvent e) {
+    handleEventAsync(e);
+  }
+
+  @EventListener
+  public void onEvent(PullRequestDeclinedEvent e) {
+    handleEventAsync(e);
+  }
+
+  @EventListener
+  public void onEvent(PullRequestMergedEvent e) {
+    handleEventAsync(e);
+  }
+
+  @EventListener
+  public void onEvent(PullRequestOpenedEvent e) {
+    handleEventAsync(e);
+  }
+
+  @EventListener
+  public void onEvent(PullRequestReopenedEvent e) {
+    handleEventAsync(e);
+  }
+
+  @EventListener
+  public void onEvent(final PullRequestRescopedEvent e) {
+    handleEventAsync(e);
+  }
+
+  @EventListener
+  public void onEvent(@SuppressWarnings("deprecation") PullRequestUnapprovedEvent e) {
+    handleEventAsync(e);
+  }
+
+  @EventListener
+  public void onEvent(PullRequestUpdatedEvent e) {
+    handleEventAsync(e);
+  }
+
+  @VisibleForTesting
+  Map<PrnfbVariable, Supplier<String>> populateVariables(final PullRequestEvent pullRequestEvent) {
+    Map<PrnfbVariable, Supplier<String>> variables = newHashMap();
+    if (pullRequestEvent instanceof PullRequestCommentEvent) {
+      PullRequestCommentEvent pullRequestCommentEvent = (PullRequestCommentEvent) pullRequestEvent;
+      variables.put(
+          PULL_REQUEST_COMMENT_TEXT,
+          () -> {
+            return pullRequestCommentEvent.getComment().getText();
+          });
+      variables.put(
+          PULL_REQUEST_COMMENT_ACTION,
+          () -> {
+            return pullRequestCommentEvent.getCommentAction().name();
+          });
+    } else if (pullRequestEvent instanceof PullRequestMergedEvent) {
+      variables.put(
+          PULL_REQUEST_MERGE_COMMIT,
+          new Supplier<String>() {
+            @Override
+            public String get() {
+              return ((PullRequestMergedEvent) pullRequestEvent).getCommit().getId();
+            }
+          });
+    }
+    return variables;
+  }
 }

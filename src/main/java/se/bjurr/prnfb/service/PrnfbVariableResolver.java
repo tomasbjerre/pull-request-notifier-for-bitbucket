@@ -15,8 +15,15 @@ import com.google.common.base.Supplier;
 
 public interface PrnfbVariableResolver {
 
- String resolve(PullRequest pullRequest, PrnfbPullRequestAction pullRequestAction, ApplicationUser applicationUser,
-   RepositoryService repositoryService, ApplicationPropertiesService propertiesService,
-   PrnfbNotification prnfbNotification, Map<PrnfbVariable, Supplier<String>> variables, ClientKeyStore clientKeyStore,
-   boolean shouldAcceptAnyCertificate, SecurityService securityService);
+  String resolve(
+      PullRequest pullRequest,
+      PrnfbPullRequestAction pullRequestAction,
+      ApplicationUser applicationUser,
+      RepositoryService repositoryService,
+      ApplicationPropertiesService propertiesService,
+      PrnfbNotification prnfbNotification,
+      Map<PrnfbVariable, Supplier<String>> variables,
+      ClientKeyStore clientKeyStore,
+      boolean shouldAcceptAnyCertificate,
+      SecurityService securityService);
 }

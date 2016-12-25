@@ -11,17 +11,16 @@ import se.bjurr.prnfb.presentation.dto.ButtonDTO;
 import se.bjurr.prnfb.settings.ValidationException;
 
 public class SettingsDataTransformerTest {
- @Test
- public void testTransformation() throws ValidationException {
-  ButtonDTO originalDto = populatedInstanceOf(ButtonDTO.class);
-  ButtonDTO retransformedDto = toButtonDto(toPrnfbButton(originalDto));
+  @Test
+  public void testTransformation() throws ValidationException {
+    ButtonDTO originalDto = populatedInstanceOf(ButtonDTO.class);
+    ButtonDTO retransformedDto = toButtonDto(toPrnfbButton(originalDto));
 
-  assertThat(retransformedDto)//
-    .isEqualTo(originalDto);
-  assertThat(retransformedDto.toString())//
-    .isEqualTo(originalDto.toString());
-  assertThat(retransformedDto.hashCode())//
-    .isEqualTo(originalDto.hashCode());
- }
-
+    assertThat(retransformedDto) //
+        .isEqualTo(originalDto);
+    assertThat(retransformedDto.toString()) //
+        .isEqualTo(originalDto.toString());
+    assertThat(retransformedDto.hashCode()) //
+        .isEqualTo(originalDto.hashCode());
+  }
 }

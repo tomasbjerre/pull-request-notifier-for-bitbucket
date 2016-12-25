@@ -61,361 +61,430 @@ import se.bjurr.prnfb.settings.ValidationException;
 
 public class PrnfbPullRequestEventListenerTest {
 
- private final ClientKeyStore clientKeyStore = null;
- private final ExecutorService executorService = new FakeExecutorService();
- @Mock
- private PullRequestRef fromRef;
- private final List<UrlInvoker> invokedUrls = newArrayList();
- private PrnfbNotification notification1;
- private PrnfbNotification notification2;
- private PrnfbSettingsData pluginSettingsData;
- @Mock
- private PrnfbRendererFactory prnfbRendererFactory;
- @Mock
- private PullRequest pullRequest;
- @Mock
- private PullRequestEvent pullRequestOpenedEvent;
- @Mock
- private PullRequestService pullRequestService;
- @Mock
- private PrnfbRenderer renderer;
- @Mock
- private SettingsService settingsService;
- private Boolean shouldAcceptAnyCertificate;
- private PrnfbPullRequestEventListener sut;
- @Mock
- private PullRequestRef toRef;
+  private final ClientKeyStore clientKeyStore = null;
+  private final ExecutorService executorService = new FakeExecutorService();
+  @Mock private PullRequestRef fromRef;
+  private final List<UrlInvoker> invokedUrls = newArrayList();
+  private PrnfbNotification notification1;
+  private PrnfbNotification notification2;
+  private PrnfbSettingsData pluginSettingsData;
+  @Mock private PrnfbRendererFactory prnfbRendererFactory;
+  @Mock private PullRequest pullRequest;
+  @Mock private PullRequestEvent pullRequestOpenedEvent;
+  @Mock private PullRequestService pullRequestService;
+  @Mock private PrnfbRenderer renderer;
+  @Mock private SettingsService settingsService;
+  private Boolean shouldAcceptAnyCertificate;
+  private PrnfbPullRequestEventListener sut;
+  @Mock private PullRequestRef toRef;
 
- private void assertInvokedUrls(String... expectedUrls) {
-  Iterable<String> urls = transform(invokedUrls, new Function<UrlInvoker, String>() {
-   @Override
-   public String apply(UrlInvoker input) {
-    return input.getUrlParam();
-   }
-  });
-  assertThat(urls)//
-    .containsOnly(expectedUrls);
- }
+  private void assertInvokedUrls(String... expectedUrls) {
+    Iterable<String> urls =
+        transform(
+            invokedUrls,
+            new Function<UrlInvoker, String>() {
+              @Override
+              public String apply(UrlInvoker input) {
+                return input.getUrlParam();
+              }
+            });
+    assertThat(urls) //
+        .containsOnly(expectedUrls);
+  }
 
- @Before
- public void before() throws ValidationException {
-  initMocks(this);
-  sut = new PrnfbPullRequestEventListener(prnfbRendererFactory, pullRequestService, executorService, settingsService);
-  setInvoker(new Invoker() {
-   @Override
-   public HttpResponse invoke(UrlInvoker urlInvoker) {
-    HttpResponse response = null;
-    try {
-     response = new HttpResponse(new URI("http://fake.com/"), 200, "");
-    } catch (URISyntaxException e) {
-     e.printStackTrace();
-    }
-    urlInvoker.setResponse(response);
-    invokedUrls.add(urlInvoker);
-    return response;
-   }
-  });
+  @Before
+  public void before() throws ValidationException {
+    initMocks(this);
+    sut =
+        new PrnfbPullRequestEventListener(
+            prnfbRendererFactory, pullRequestService, executorService, settingsService);
+    setInvoker(
+        new Invoker() {
+          @Override
+          public HttpResponse invoke(UrlInvoker urlInvoker) {
+            HttpResponse response = null;
+            try {
+              response = new HttpResponse(new URI("http://fake.com/"), 200, "");
+            } catch (URISyntaxException e) {
+              e.printStackTrace();
+            }
+            urlInvoker.setResponse(response);
+            invokedUrls.add(urlInvoker);
+            return response;
+          }
+        });
 
-  when(pullRequest.getFromRef())//
-    .thenReturn(fromRef);
-  when(pullRequest.getFromRef().getLatestCommit())//
-    .thenReturn("latestCFrom");
-  when(pullRequest.getFromRef().getId())//
-    .thenReturn("IFrom");
+    when(pullRequest.getFromRef()) //
+        .thenReturn(fromRef);
+    when(pullRequest.getFromRef().getLatestCommit()) //
+        .thenReturn("latestCFrom");
+    when(pullRequest.getFromRef().getId()) //
+        .thenReturn("IFrom");
 
-  when(pullRequest.getToRef())//
-    .thenReturn(toRef);
-  when(pullRequest.getToRef().getLatestCommit())//
-    .thenReturn("latestCTo");
-  when(pullRequest.getToRef().getId())//
-    .thenReturn("ITo");
+    when(pullRequest.getToRef()) //
+        .thenReturn(toRef);
+    when(pullRequest.getToRef().getLatestCommit()) //
+        .thenReturn("latestCTo");
+    when(pullRequest.getToRef().getId()) //
+        .thenReturn("ITo");
 
-  when(pullRequestOpenedEvent.getPullRequest())//
-    .thenReturn(pullRequest);
-  when(pullRequestOpenedEvent.getPullRequest().isClosed())//
-    .thenReturn(false);
-  when(pullRequestOpenedEvent.getAction())//
-    .thenReturn(OPENED);
+    when(pullRequestOpenedEvent.getPullRequest()) //
+        .thenReturn(pullRequest);
+    when(pullRequestOpenedEvent.getPullRequest().isClosed()) //
+        .thenReturn(false);
+    when(pullRequestOpenedEvent.getAction()) //
+        .thenReturn(OPENED);
 
-  pluginSettingsData = prnfbSettingsDataBuilder()//
-    .build();
-  when(settingsService.getPrnfbSettingsData())//
-    .thenReturn(pluginSettingsData);
+    pluginSettingsData =
+        prnfbSettingsDataBuilder() //
+            .build();
+    when(settingsService.getPrnfbSettingsData()) //
+        .thenReturn(pluginSettingsData);
 
-  notification1 = prnfbNotificationBuilder()//
-    .withUrl("http://not1.com/")//
-    .withTrigger(PrnfbPullRequestAction.OPENED)//
-    .build();
-  notification2 = prnfbNotificationBuilder(notification1)//
-    .withUrl("http://not2.com/")//
-    .build();
-  List<PrnfbNotification> notifications = newArrayList(notification1, notification2);
-  when(settingsService.getNotifications())//
-    .thenReturn(notifications);
+    notification1 =
+        prnfbNotificationBuilder() //
+            .withUrl("http://not1.com/") //
+            .withTrigger(PrnfbPullRequestAction.OPENED) //
+            .build();
+    notification2 =
+        prnfbNotificationBuilder(notification1) //
+            .withUrl("http://not2.com/") //
+            .build();
+    List<PrnfbNotification> notifications = newArrayList(notification1, notification2);
+    when(settingsService.getNotifications()) //
+        .thenReturn(notifications);
 
-  when(prnfbRendererFactory.create(any(), any(), any(), any(), any()))//
-    .thenReturn(renderer);
-  when(renderer.render(any(), any(), any(), any(), any()))//
-    .thenAnswer(new Answer<String>() {
-     @Override
-     public String answer(InvocationOnMock invocation) throws Throwable {
-      return (String) invocation.getArguments()[0];
-     }
-    });
- }
+    when(prnfbRendererFactory.create(any(), any(), any(), any(), any())) //
+        .thenReturn(renderer);
+    when(renderer.render(any(), any(), any(), any())) //
+        .thenAnswer(
+            new Answer<String>() {
+              @Override
+              public String answer(InvocationOnMock invocation) throws Throwable {
+                return (String) invocation.getArguments()[0];
+              }
+            });
+  }
 
- @Test
- public void testThatCommentOnClosedPRIsIgnored() {
-  when(pullRequest.isClosed())//
-    .thenReturn(true);
-  PullRequestCommentAddedEvent pullRequestEvent = mock(PullRequestCommentAddedEvent.class);
-  when(pullRequestEvent.getPullRequest())//
-    .thenReturn(pullRequest);
+  @Test
+  public void testThatCommentOnClosedPRIsIgnored() {
+    when(pullRequest.isClosed()) //
+        .thenReturn(true);
+    PullRequestCommentAddedEvent pullRequestEvent = mock(PullRequestCommentAddedEvent.class);
+    when(pullRequestEvent.getPullRequest()) //
+        .thenReturn(pullRequest);
 
-  sut.handleEventAsync(pullRequestEvent);
+    sut.handleEventAsync(pullRequestEvent);
 
-  assertThat(invokedUrls)//
-    .isEmpty();
- }
+    assertThat(invokedUrls) //
+        .isEmpty();
+  }
 
- @Test
- public void testThatHeaderCanContainVariables() {
- }
+  @Test
+  public void testThatHeaderCanContainVariables() {}
 
- @Test
- public void testThatNotifiationIsNotTriggeredByActionIfAFilterIsNotMatching() throws ValidationException {
-  PrnfbNotification notification = prnfbNotificationBuilder()//
-    .withTrigger(RESCOPED_FROM)//
-    .withUrl("http://hej.com")//
-    .withFilterRegexp("^abc$")//
-    .withFilterString("bc")//
-    .build();
-  PrnfbPullRequestAction pullRequestAction = RESCOPED_FROM;
+  @Test
+  public void testThatNotifiationIsNotTriggeredByActionIfAFilterIsNotMatching()
+      throws ValidationException {
+    PrnfbNotification notification =
+        prnfbNotificationBuilder() //
+            .withTrigger(RESCOPED_FROM) //
+            .withUrl("http://hej.com") //
+            .withFilterRegexp("^abc$") //
+            .withFilterString("bc") //
+            .build();
+    PrnfbPullRequestAction pullRequestAction = RESCOPED_FROM;
 
-  boolean actual = sut.isNotificationTriggeredByAction(notification, pullRequestAction, renderer, pullRequest,
-    clientKeyStore, shouldAcceptAnyCertificate);
+    boolean actual =
+        sut.isNotificationTriggeredByAction(
+            notification,
+            pullRequestAction,
+            renderer,
+            pullRequest,
+            clientKeyStore,
+            shouldAcceptAnyCertificate);
 
-  assertThat(actual)//
-    .isFalse();
- }
+    assertThat(actual) //
+        .isFalse();
+  }
 
- @Test
- public void testThatNotifiationIsNotTriggeredByActionIfOnlyBuildingMergingAndItIsConflicting() {
-  assertThat(sut.ignoreBecauseOfConflicting(ALWAYS, false))//
-    .isFalse();
-  assertThat(sut.ignoreBecauseOfConflicting(CONFLICTING, false))//
-    .isTrue();
-  assertThat(sut.ignoreBecauseOfConflicting(NOT_CONFLICTING, false))//
-    .isFalse();
+  @Test
+  public void testThatNotifiationIsNotTriggeredByActionIfOnlyBuildingMergingAndItIsConflicting() {
+    assertThat(sut.ignoreBecauseOfConflicting(ALWAYS, false)) //
+        .isFalse();
+    assertThat(sut.ignoreBecauseOfConflicting(CONFLICTING, false)) //
+        .isTrue();
+    assertThat(sut.ignoreBecauseOfConflicting(NOT_CONFLICTING, false)) //
+        .isFalse();
 
-  assertThat(sut.ignoreBecauseOfConflicting(ALWAYS, true))//
-    .isFalse();
-  assertThat(sut.ignoreBecauseOfConflicting(CONFLICTING, true))//
-    .isFalse();
-  assertThat(sut.ignoreBecauseOfConflicting(NOT_CONFLICTING, true))//
-    .isTrue();
- }
+    assertThat(sut.ignoreBecauseOfConflicting(ALWAYS, true)) //
+        .isFalse();
+    assertThat(sut.ignoreBecauseOfConflicting(CONFLICTING, true)) //
+        .isFalse();
+    assertThat(sut.ignoreBecauseOfConflicting(NOT_CONFLICTING, true)) //
+        .isTrue();
+  }
 
- @Test
- public void testThatNotifiationIsNotTriggeredByActionIfProjectNotSame() throws ValidationException {
-  PrnfbNotification notification = prnfbNotificationBuilder()//
-    .withTrigger(RESCOPED_FROM)//
-    .withUrl("http://hej.com")//
-    .withProjectKey("pk")//
-    .build();
-  PrnfbPullRequestAction pullRequestAction = RESCOPED_FROM;
-  Repository repository = mock(Repository.class);
-  when(toRef.getRepository())//
-    .thenReturn(repository);
-  Project project = mock(Project.class);
-  when(repository.getProject())//
-    .thenReturn(project);
-  when(project.getKey())//
-    .thenReturn("pk2");
+  @Test
+  public void testThatNotifiationIsNotTriggeredByActionIfProjectNotSame()
+      throws ValidationException {
+    PrnfbNotification notification =
+        prnfbNotificationBuilder() //
+            .withTrigger(RESCOPED_FROM) //
+            .withUrl("http://hej.com") //
+            .withProjectKey("pk") //
+            .build();
+    PrnfbPullRequestAction pullRequestAction = RESCOPED_FROM;
+    Repository repository = mock(Repository.class);
+    when(toRef.getRepository()) //
+        .thenReturn(repository);
+    Project project = mock(Project.class);
+    when(repository.getProject()) //
+        .thenReturn(project);
+    when(project.getKey()) //
+        .thenReturn("pk2");
 
-  boolean actual = sut.isNotificationTriggeredByAction(notification, pullRequestAction, renderer, pullRequest,
-    clientKeyStore, shouldAcceptAnyCertificate);
+    boolean actual =
+        sut.isNotificationTriggeredByAction(
+            notification,
+            pullRequestAction,
+            renderer,
+            pullRequest,
+            clientKeyStore,
+            shouldAcceptAnyCertificate);
 
-  assertThat(actual)//
-    .isFalse();
- }
+    assertThat(actual) //
+        .isFalse();
+  }
 
- @Test
- public void testThatNotifiationIsNotTriggeredByActionIfRepositoryNotSame() throws ValidationException {
-  PrnfbNotification notification = prnfbNotificationBuilder()//
-    .withTrigger(RESCOPED_FROM)//
-    .withUrl("http://hej.com")//
-    .withRepositorySlug("repositorySlug123")//
-    .build();
-  PrnfbPullRequestAction pullRequestAction = RESCOPED_FROM;
-  Repository repository = mock(Repository.class);
-  when(toRef.getRepository())//
-    .thenReturn(repository);
-  when(repository.getSlug())//
-    .thenReturn("asdasd");
+  @Test
+  public void testThatNotifiationIsNotTriggeredByActionIfRepositoryNotSame()
+      throws ValidationException {
+    PrnfbNotification notification =
+        prnfbNotificationBuilder() //
+            .withTrigger(RESCOPED_FROM) //
+            .withUrl("http://hej.com") //
+            .withRepositorySlug("repositorySlug123") //
+            .build();
+    PrnfbPullRequestAction pullRequestAction = RESCOPED_FROM;
+    Repository repository = mock(Repository.class);
+    when(toRef.getRepository()) //
+        .thenReturn(repository);
+    when(repository.getSlug()) //
+        .thenReturn("asdasd");
 
-  boolean actual = sut.isNotificationTriggeredByAction(notification, pullRequestAction, renderer, pullRequest,
-    clientKeyStore, shouldAcceptAnyCertificate);
+    boolean actual =
+        sut.isNotificationTriggeredByAction(
+            notification,
+            pullRequestAction,
+            renderer,
+            pullRequest,
+            clientKeyStore,
+            shouldAcceptAnyCertificate);
 
-  assertThat(actual)//
-    .isFalse();
- }
+    assertThat(actual) //
+        .isFalse();
+  }
 
- @Test
- public void testThatNotifiationIsNotTriggeredByActionIfThatActionIsATriggerButStateIgnored()
-   throws ValidationException {
-  PrnfbNotification notification = prnfbNotificationBuilder()//
-    .withTrigger(RESCOPED_FROM)//
-    .withUrl("http://hej.com")//
-    .setTriggerIgnoreState(newArrayList(DECLINED))//
-    .build();
-  PrnfbPullRequestAction pullRequestAction = RESCOPED_FROM;
-  when(pullRequest.getState())//
-    .thenReturn(DECLINED);
+  @Test
+  public void testThatNotifiationIsNotTriggeredByActionIfThatActionIsATriggerButStateIgnored()
+      throws ValidationException {
+    PrnfbNotification notification =
+        prnfbNotificationBuilder() //
+            .withTrigger(RESCOPED_FROM) //
+            .withUrl("http://hej.com") //
+            .setTriggerIgnoreState(newArrayList(DECLINED)) //
+            .build();
+    PrnfbPullRequestAction pullRequestAction = RESCOPED_FROM;
+    when(pullRequest.getState()) //
+        .thenReturn(DECLINED);
 
-  boolean actual = sut.isNotificationTriggeredByAction(notification, pullRequestAction, renderer, pullRequest,
-    clientKeyStore, shouldAcceptAnyCertificate);
+    boolean actual =
+        sut.isNotificationTriggeredByAction(
+            notification,
+            pullRequestAction,
+            renderer,
+            pullRequest,
+            clientKeyStore,
+            shouldAcceptAnyCertificate);
 
-  assertThat(actual)//
-    .isFalse();
- }
+    assertThat(actual) //
+        .isFalse();
+  }
 
- @Test
- public void testThatNotifiationIsNotTriggeredByActionIfThatActionIsNotATrigger() throws ValidationException {
-  PrnfbNotification notification = prnfbNotificationBuilder()//
-    .withTrigger(RESCOPED_FROM)//
-    .withUrl("http://hej.com")//
-    .build();
-  PrnfbPullRequestAction pullRequestAction = APPROVED;
+  @Test
+  public void testThatNotifiationIsNotTriggeredByActionIfThatActionIsNotATrigger()
+      throws ValidationException {
+    PrnfbNotification notification =
+        prnfbNotificationBuilder() //
+            .withTrigger(RESCOPED_FROM) //
+            .withUrl("http://hej.com") //
+            .build();
+    PrnfbPullRequestAction pullRequestAction = APPROVED;
 
-  boolean actual = sut.isNotificationTriggeredByAction(notification, pullRequestAction, renderer, pullRequest,
-    clientKeyStore, shouldAcceptAnyCertificate);
+    boolean actual =
+        sut.isNotificationTriggeredByAction(
+            notification,
+            pullRequestAction,
+            renderer,
+            pullRequest,
+            clientKeyStore,
+            shouldAcceptAnyCertificate);
 
-  assertThat(actual)//
-    .isFalse();
- }
+    assertThat(actual) //
+        .isFalse();
+  }
 
- @Test
- public void testThatNotifiationIsTriggeredByActionIfAFilterIsMatching() throws ValidationException {
-  PrnfbNotification notification = prnfbNotificationBuilder()//
-    .withTrigger(RESCOPED_FROM)//
-    .withUrl("http://hej.com")//
-    .withFilterRegexp("^abc$")//
-    .withFilterString("abc")//
-    .build();
-  PrnfbPullRequestAction pullRequestAction = RESCOPED_FROM;
+  @Test
+  public void testThatNotifiationIsTriggeredByActionIfAFilterIsMatching()
+      throws ValidationException {
+    PrnfbNotification notification =
+        prnfbNotificationBuilder() //
+            .withTrigger(RESCOPED_FROM) //
+            .withUrl("http://hej.com") //
+            .withFilterRegexp("^abc$") //
+            .withFilterString("abc") //
+            .build();
+    PrnfbPullRequestAction pullRequestAction = RESCOPED_FROM;
 
-  boolean actual = sut.isNotificationTriggeredByAction(notification, pullRequestAction, renderer, pullRequest,
-    clientKeyStore, shouldAcceptAnyCertificate);
+    boolean actual =
+        sut.isNotificationTriggeredByAction(
+            notification,
+            pullRequestAction,
+            renderer,
+            pullRequest,
+            clientKeyStore,
+            shouldAcceptAnyCertificate);
 
-  assertThat(actual)//
-    .isTrue();
- }
+    assertThat(actual) //
+        .isTrue();
+  }
 
- @Test
- public void testThatNotifiationIsTriggeredByActionIfProjectSame() throws ValidationException {
-  PrnfbNotification notification = prnfbNotificationBuilder()//
-    .withTrigger(RESCOPED_FROM)//
-    .withUrl("http://hej.com")//
-    .withProjectKey("pk2")//
-    .build();
-  PrnfbPullRequestAction pullRequestAction = RESCOPED_FROM;
-  Repository repository = mock(Repository.class);
-  when(toRef.getRepository())//
-    .thenReturn(repository);
-  Project project = mock(Project.class);
-  when(repository.getProject())//
-    .thenReturn(project);
-  when(project.getKey())//
-    .thenReturn("pk2");
+  @Test
+  public void testThatNotifiationIsTriggeredByActionIfProjectSame() throws ValidationException {
+    PrnfbNotification notification =
+        prnfbNotificationBuilder() //
+            .withTrigger(RESCOPED_FROM) //
+            .withUrl("http://hej.com") //
+            .withProjectKey("pk2") //
+            .build();
+    PrnfbPullRequestAction pullRequestAction = RESCOPED_FROM;
+    Repository repository = mock(Repository.class);
+    when(toRef.getRepository()) //
+        .thenReturn(repository);
+    Project project = mock(Project.class);
+    when(repository.getProject()) //
+        .thenReturn(project);
+    when(project.getKey()) //
+        .thenReturn("pk2");
 
-  boolean actual = sut.isNotificationTriggeredByAction(notification, pullRequestAction, renderer, pullRequest,
-    clientKeyStore, shouldAcceptAnyCertificate);
+    boolean actual =
+        sut.isNotificationTriggeredByAction(
+            notification,
+            pullRequestAction,
+            renderer,
+            pullRequest,
+            clientKeyStore,
+            shouldAcceptAnyCertificate);
 
-  assertThat(actual)//
-    .isTrue();
- }
+    assertThat(actual) //
+        .isTrue();
+  }
 
- @Test
- public void testThatNotifiationIsTriggeredByActionIfRepositorySame() throws ValidationException {
-  PrnfbNotification notification = prnfbNotificationBuilder()//
-    .withTrigger(RESCOPED_FROM)//
-    .withUrl("http://hej.com")//
-    .withRepositorySlug("repositorySlug123")//
-    .build();
-  PrnfbPullRequestAction pullRequestAction = RESCOPED_FROM;
-  Repository repository = mock(Repository.class);
-  when(toRef.getRepository())//
-    .thenReturn(repository);
-  when(repository.getSlug())//
-    .thenReturn("repositorySlug123");
+  @Test
+  public void testThatNotifiationIsTriggeredByActionIfRepositorySame() throws ValidationException {
+    PrnfbNotification notification =
+        prnfbNotificationBuilder() //
+            .withTrigger(RESCOPED_FROM) //
+            .withUrl("http://hej.com") //
+            .withRepositorySlug("repositorySlug123") //
+            .build();
+    PrnfbPullRequestAction pullRequestAction = RESCOPED_FROM;
+    Repository repository = mock(Repository.class);
+    when(toRef.getRepository()) //
+        .thenReturn(repository);
+    when(repository.getSlug()) //
+        .thenReturn("repositorySlug123");
 
-  boolean actual = sut.isNotificationTriggeredByAction(notification, pullRequestAction, renderer, pullRequest,
-    clientKeyStore, shouldAcceptAnyCertificate);
+    boolean actual =
+        sut.isNotificationTriggeredByAction(
+            notification,
+            pullRequestAction,
+            renderer,
+            pullRequest,
+            clientKeyStore,
+            shouldAcceptAnyCertificate);
 
-  assertThat(actual)//
-    .isTrue();
- }
+    assertThat(actual) //
+        .isTrue();
+  }
 
- @Test
- public void testThatNotifiationIsTriggeredByActionIfThatActionIsATrigger() throws ValidationException {
-  PrnfbNotification notification = prnfbNotificationBuilder()//
-    .withTrigger(RESCOPED_FROM)//
-    .withUrl("http://hej.com")//
-    .build();
-  PrnfbPullRequestAction pullRequestAction = RESCOPED_FROM;
+  @Test
+  public void testThatNotifiationIsTriggeredByActionIfThatActionIsATrigger()
+      throws ValidationException {
+    PrnfbNotification notification =
+        prnfbNotificationBuilder() //
+            .withTrigger(RESCOPED_FROM) //
+            .withUrl("http://hej.com") //
+            .build();
+    PrnfbPullRequestAction pullRequestAction = RESCOPED_FROM;
 
-  boolean actual = sut.isNotificationTriggeredByAction(notification, pullRequestAction, renderer, pullRequest,
-    clientKeyStore, shouldAcceptAnyCertificate);
+    boolean actual =
+        sut.isNotificationTriggeredByAction(
+            notification,
+            pullRequestAction,
+            renderer,
+            pullRequest,
+            clientKeyStore,
+            shouldAcceptAnyCertificate);
 
-  assertThat(actual)//
-    .isTrue();
- }
+    assertThat(actual) //
+        .isTrue();
+  }
 
- @Test
- public void testThatPullRequestCommentIsAddedToVariables() {
-  PullRequestCommentAddedEvent pullRequestEvent = mock(PullRequestCommentAddedEvent.class);
-  Comment comment = mock(Comment.class);
-  when(pullRequestEvent.getComment())//
-    .thenReturn(comment);
-  when(pullRequestEvent.getComment().getText())//
-    .thenReturn("The comment");
-  when(pullRequestEvent.getCommentAction())//
-    .thenReturn(ADDED);
+  @Test
+  public void testThatPullRequestCommentIsAddedToVariables() {
+    PullRequestCommentAddedEvent pullRequestEvent = mock(PullRequestCommentAddedEvent.class);
+    Comment comment = mock(Comment.class);
+    when(pullRequestEvent.getComment()) //
+        .thenReturn(comment);
+    when(pullRequestEvent.getComment().getText()) //
+        .thenReturn("The comment");
+    when(pullRequestEvent.getCommentAction()) //
+        .thenReturn(ADDED);
 
-  Map<PrnfbVariable, Supplier<String>> actual = sut.populateVariables(pullRequestEvent);
+    Map<PrnfbVariable, Supplier<String>> actual = sut.populateVariables(pullRequestEvent);
 
-  assertThat(actual)//
-    .hasSize(2);
-  assertThat(actual.get(PULL_REQUEST_COMMENT_TEXT).get())//
-    .isEqualTo("The comment");
-  assertThat(actual.get(PULL_REQUEST_COMMENT_ACTION).get())//
-    .isEqualTo("ADDED");
- }
+    assertThat(actual) //
+        .hasSize(2);
+    assertThat(actual.get(PULL_REQUEST_COMMENT_TEXT).get()) //
+        .isEqualTo("The comment");
+    assertThat(actual.get(PULL_REQUEST_COMMENT_ACTION).get()) //
+        .isEqualTo("ADDED");
+  }
 
- @Test
- public void testThatPullRequestMergeComitIsAddedToVariables() {
-  PullRequestMergedEvent pullRequestEvent = mock(PullRequestMergedEvent.class);
-  MinimalCommit commit = mock(MinimalCommit.class);
-  when(pullRequestEvent.getCommit())//
-    .thenReturn(commit);
-  when(pullRequestEvent.getCommit().getId())//
-    .thenReturn("hash");
+  @Test
+  public void testThatPullRequestMergeComitIsAddedToVariables() {
+    PullRequestMergedEvent pullRequestEvent = mock(PullRequestMergedEvent.class);
+    MinimalCommit commit = mock(MinimalCommit.class);
+    when(pullRequestEvent.getCommit()) //
+        .thenReturn(commit);
+    when(pullRequestEvent.getCommit().getId()) //
+        .thenReturn("hash");
 
-  Map<PrnfbVariable, Supplier<String>> actual = sut.populateVariables(pullRequestEvent);
+    Map<PrnfbVariable, Supplier<String>> actual = sut.populateVariables(pullRequestEvent);
 
-  assertThat(actual)//
-    .hasSize(1);
-  assertThat(actual.get(PULL_REQUEST_MERGE_COMMIT).get())//
-    .isEqualTo("hash");
- }
+    assertThat(actual) //
+        .hasSize(1);
+    assertThat(actual.get(PULL_REQUEST_MERGE_COMMIT).get()) //
+        .isEqualTo("hash");
+  }
 
- @Test
- public void testThatPullRequestOpenedCanTriggerNotification() {
+  @Test
+  public void testThatPullRequestOpenedCanTriggerNotification() {
 
-  sut.handleEventAsync(pullRequestOpenedEvent);
+    sut.handleEventAsync(pullRequestOpenedEvent);
 
-  assertInvokedUrls("http://not1.com/", "http://not2.com/");
- }
-
+    assertInvokedUrls("http://not1.com/", "http://not2.com/");
+  }
 }

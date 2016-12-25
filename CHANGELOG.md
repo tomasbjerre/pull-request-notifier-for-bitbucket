@@ -3,10 +3,33 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
+### GitHub [#173](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/pull/173) Add the ability to specify forms for buttons
+  Adjustments after merge of 
+
+ * Adding fmt-maven-plugin to format code on Google Java Format.
+ * Correcting warnings from Grunt / JSHint.
+ * Adding, and using, enum, RENDER_FOR, in PrnfbRenderer.
+  
+  [95fcfc4f334fb1e](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/95fcfc4f334fb1e) Tomas Bjerre *2016-12-25 21:29:22*
+
+### No issue
+  Add interactive forms to buttons
+
+This change adds the ability to specify a JSON-based form for a given
+button, which will get automatically rendered when the button is pressed.
+The submitted data is available as serialized JSON in the ${BUTTON_FORM_DATA}
+variable.
+
+For the specification of what a form looks like and it's serialized result,
+look at README.md in the change.
+  
+  [2a5c79347b713c8](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/2a5c79347b713c8) Itay Neeman *2016-12-24 20:55:47*
+
+## 2.43
 ### GitHub [#169](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/169) What about pull request description ?
   Removing PULL_REQUEST_DESCRIPTION from EVERYTHING_URL
   
-  [c616c4c575be53a](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/c616c4c575be53a) Tomas Bjerre *2016-12-15 21:18:37*
+  [5af97f531cae647](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/5af97f531cae647) Tomas Bjerre *2016-12-15 21:19:12*
 
 ## 2.42
 ### GitHub [#169](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/169) What about pull request description ?

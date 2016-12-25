@@ -45,234 +45,273 @@ import com.google.common.collect.Lists;
 
 public class ButtonsServiceTest {
 
- @Mock
- private AuthenticationContext authenticationContext;
- private PrnfbButton button1;
- private PrnfbButton button2;
- private PrnfbButton button3;
- private ButtonDTO buttonDto1;
- private ButtonDTO buttonDto2;
- private ButtonDTO buttonDto3;
- @Mock
- private ClientKeyStore clientKeyStore;
- private final ON_OR_OFF confirmation = ON_OR_OFF.on;
- private final String name = "name";
- private PrnfbNotification notification1;
- private PrnfbNotification notification2;
- private NotificationDTO notificationDto1;
- private NotificationDTO notificationDto2;
- private List<PrnfbNotification> notifications;
- @Mock
- private Repository originRepo;
- @Mock
- private PrnfbPullRequestEventListener prnfbPullRequestEventListener;
- @Mock
- private PrnfbRendererFactory prnfbRendererFactory;
- @Mock
- private Project project;
- @Mock
- private ApplicationPropertiesService propertiesService;
- @Mock
- private PullRequestRef prRef;
- @Mock
- private PullRequest pullRequest;
- private final PrnfbPullRequestAction pullRequestAction = BUTTON_TRIGGER;
- @Mock
- private PullRequestService pullRequestService;
- @Mock
- private PrnfbRenderer renderer;
- @Mock
- private Repository repository;
- @Mock
- private RepositoryService repositoryService;
- @Mock
- private SettingsService settingsService;
- private final Boolean shouldAcceptAnyCertificate = true;
- private ButtonsService sut;
- @Mock
- private UserCheckService userCheckService;
- private final USER_LEVEL userLevel = USER_LEVEL.ADMIN;
- private final UUID uuid = UUID.randomUUID();
+  @Mock private AuthenticationContext authenticationContext;
+  private PrnfbButton button1;
+  private PrnfbButton button2;
+  private PrnfbButton button3;
+  private ButtonDTO buttonDto1;
+  private ButtonDTO buttonDto2;
+  private ButtonDTO buttonDto3;
+  @Mock private ClientKeyStore clientKeyStore;
+  private final ON_OR_OFF confirmation = ON_OR_OFF.on;
+  private final String name = "name";
+  private PrnfbNotification notification1;
+  private PrnfbNotification notification2;
+  private NotificationDTO notificationDto1;
+  private NotificationDTO notificationDto2;
+  private List<PrnfbNotification> notifications;
+  @Mock private Repository originRepo;
+  @Mock private PrnfbPullRequestEventListener prnfbPullRequestEventListener;
+  @Mock private PrnfbRendererFactory prnfbRendererFactory;
+  @Mock private Project project;
+  @Mock private ApplicationPropertiesService propertiesService;
+  @Mock private PullRequestRef prRef;
+  @Mock private PullRequest pullRequest;
+  private final PrnfbPullRequestAction pullRequestAction = BUTTON_TRIGGER;
+  @Mock private PullRequestService pullRequestService;
+  @Mock private PrnfbRenderer renderer;
+  @Mock private Repository repository;
+  @Mock private RepositoryService repositoryService;
+  @Mock private SettingsService settingsService;
+  private final Boolean shouldAcceptAnyCertificate = true;
+  private ButtonsService sut;
+  @Mock private UserCheckService userCheckService;
+  private final USER_LEVEL userLevel = USER_LEVEL.ADMIN;
+  private final UUID uuid = UUID.randomUUID();
 
- @SuppressWarnings("unchecked")
- @Before
- public void before() throws ValidationException {
-  initMocks(this);
-  this.sut = new ButtonsService(this.pullRequestService, this.prnfbPullRequestEventListener, this.prnfbRendererFactory,
-    this.settingsService, this.userCheckService);
-  when(this.prnfbRendererFactory.create(any(PullRequest.class), any(PrnfbPullRequestAction.class),
-    any(PrnfbNotification.class), anyMap()))//
-      .thenReturn(this.renderer);
+  @SuppressWarnings("unchecked")
+  @Before
+  public void before() throws ValidationException {
+    initMocks(this);
+    this.sut =
+        new ButtonsService(
+            this.pullRequestService,
+            this.prnfbPullRequestEventListener,
+            this.prnfbRendererFactory,
+            this.settingsService,
+            this.userCheckService);
+    when(this.prnfbRendererFactory.create(
+            any(PullRequest.class),
+            any(PrnfbPullRequestAction.class),
+            any(PrnfbNotification.class),
+            anyMap())) //
+        .thenReturn(this.renderer);
 
-  this.buttonDto1 = populatedInstanceOf(ButtonDTO.class);
-  this.buttonDto1.setProjectKey(null);
-  this.buttonDto1.setRepositorySlug(null);
-  this.button1 = toPrnfbButton(this.buttonDto1);
-  this.buttonDto2 = populatedInstanceOf(ButtonDTO.class);
-  this.buttonDto2.setProjectKey(null);
-  this.buttonDto2.setRepositorySlug(null);
-  this.button2 = toPrnfbButton(this.buttonDto2);
-  this.buttonDto3 = populatedInstanceOf(ButtonDTO.class);
-  this.button3 = toPrnfbButton(this.buttonDto3);
+    this.buttonDto1 = populatedInstanceOf(ButtonDTO.class);
+    this.buttonDto1.setProjectKey(null);
+    this.buttonDto1.setRepositorySlug(null);
+    this.button1 = toPrnfbButton(this.buttonDto1);
+    this.buttonDto2 = populatedInstanceOf(ButtonDTO.class);
+    this.buttonDto2.setProjectKey(null);
+    this.buttonDto2.setRepositorySlug(null);
+    this.button2 = toPrnfbButton(this.buttonDto2);
+    this.buttonDto3 = populatedInstanceOf(ButtonDTO.class);
+    this.button3 = toPrnfbButton(this.buttonDto3);
 
-  when(this.settingsService.getButton(this.button1.getUuid()))//
-    .thenReturn(this.button1);
-  when(this.settingsService.getButton(this.button2.getUuid()))//
-    .thenReturn(this.button2);
-  when(this.settingsService.getButton(this.button3.getUuid()))//
-    .thenReturn(this.button3);
+    when(this.settingsService.getButton(this.button1.getUuid())) //
+        .thenReturn(this.button1);
+    when(this.settingsService.getButton(this.button2.getUuid())) //
+        .thenReturn(this.button2);
+    when(this.settingsService.getButton(this.button3.getUuid())) //
+        .thenReturn(this.button3);
 
-  this.notificationDto1 = populatedInstanceOf(NotificationDTO.class);
-  this.notificationDto1.setUrl("http://hej.com");
-  this.notificationDto1.setTriggerIgnoreStateList(Lists.newArrayList(DECLINED.name()));
-  this.notificationDto1.setTriggers(newArrayList(MERGED.name()));
-  this.notification1 = toPrnfbNotification(this.notificationDto1);
+    this.notificationDto1 = populatedInstanceOf(NotificationDTO.class);
+    this.notificationDto1.setUrl("http://hej.com");
+    this.notificationDto1.setTriggerIgnoreStateList(Lists.newArrayList(DECLINED.name()));
+    this.notificationDto1.setTriggers(newArrayList(MERGED.name()));
+    this.notification1 = toPrnfbNotification(this.notificationDto1);
 
-  this.notificationDto2 = populatedInstanceOf(NotificationDTO.class);
-  this.notificationDto2.setUrl("http://hej.com");
-  this.notificationDto2.setTriggerIgnoreStateList(Lists.newArrayList(DECLINED.name()));
-  this.notificationDto2.setTriggers(newArrayList(MERGED.name()));
-  this.notification2 = toPrnfbNotification(this.notificationDto2);
+    this.notificationDto2 = populatedInstanceOf(NotificationDTO.class);
+    this.notificationDto2.setUrl("http://hej.com");
+    this.notificationDto2.setTriggerIgnoreStateList(Lists.newArrayList(DECLINED.name()));
+    this.notificationDto2.setTriggers(newArrayList(MERGED.name()));
+    this.notification2 = toPrnfbNotification(this.notificationDto2);
 
-  this.notifications = newArrayList(this.notification1, this.notification2);
-  when(this.settingsService.getNotifications())//
-    .thenReturn(this.notifications);
- }
+    this.notifications = newArrayList(this.notification1, this.notification2);
+    when(this.settingsService.getNotifications()) //
+        .thenReturn(this.notifications);
+  }
 
- @Test
- public void testThatButtonsCanBeRetrievedWhenAllAllowed() {
-  List<PrnfbButton> candidates = newArrayList(this.button1, this.button2, this.button3);
-  when(this.settingsService.getButtons())//
-    .thenReturn(candidates);
-  when(this.userCheckService.isAllowedUseButton(this.button1))//
-    .thenReturn(true);
-  when(this.userCheckService.isAllowedUseButton(this.button2))//
-    .thenReturn(true);
-  when(this.userCheckService.isAllowedUseButton(this.button3))//
-    .thenReturn(true);
-  when(this.prnfbPullRequestEventListener.isNotificationTriggeredByAction(this.notification1, this.pullRequestAction,
-    this.renderer, this.pullRequest, this.clientKeyStore, this.shouldAcceptAnyCertificate))//
-      .thenReturn(true);
-  when(this.prnfbPullRequestEventListener.isNotificationTriggeredByAction(this.notification2, this.pullRequestAction,
-    this.renderer, this.pullRequest, this.clientKeyStore, this.shouldAcceptAnyCertificate))//
-      .thenReturn(true);
-  when(this.pullRequest.getToRef()).thenReturn(this.prRef);
-  when(this.prRef.getRepository()).thenReturn(this.repository);
-  when(this.repository.getSlug()).thenReturn(this.button3.getRepositorySlug().get());
-  when(this.repository.getProject()).thenReturn(this.project);
-  when(this.project.getKey()).thenReturn(this.button3.getProjectKey().get());
+  @Test
+  public void testThatButtonsCanBeRetrievedWhenAllAllowed() {
+    List<PrnfbButton> candidates = newArrayList(this.button1, this.button2, this.button3);
+    when(this.settingsService.getButtons()) //
+        .thenReturn(candidates);
+    when(this.userCheckService.isAllowedUseButton(this.button1)) //
+        .thenReturn(true);
+    when(this.userCheckService.isAllowedUseButton(this.button2)) //
+        .thenReturn(true);
+    when(this.userCheckService.isAllowedUseButton(this.button3)) //
+        .thenReturn(true);
+    when(this.prnfbPullRequestEventListener.isNotificationTriggeredByAction(
+            this.notification1,
+            this.pullRequestAction,
+            this.renderer,
+            this.pullRequest,
+            this.clientKeyStore,
+            this.shouldAcceptAnyCertificate)) //
+        .thenReturn(true);
+    when(this.prnfbPullRequestEventListener.isNotificationTriggeredByAction(
+            this.notification2,
+            this.pullRequestAction,
+            this.renderer,
+            this.pullRequest,
+            this.clientKeyStore,
+            this.shouldAcceptAnyCertificate)) //
+        .thenReturn(true);
+    when(this.pullRequest.getToRef()).thenReturn(this.prRef);
+    when(this.prRef.getRepository()).thenReturn(this.repository);
+    when(this.repository.getSlug()).thenReturn(this.button3.getRepositorySlug().get());
+    when(this.repository.getProject()).thenReturn(this.project);
+    when(this.project.getKey()).thenReturn(this.button3.getProjectKey().get());
 
-  List<PrnfbButton> actual = this.sut.doGetButtons(this.notifications, this.clientKeyStore, this.pullRequest,
-    this.shouldAcceptAnyCertificate);
-  assertThat(actual)//
-    .containsOnly(this.button1, this.button2, this.button3);
+    List<PrnfbButton> actual =
+        this.sut.doGetButtons(
+            this.notifications,
+            this.clientKeyStore,
+            this.pullRequest,
+            this.shouldAcceptAnyCertificate);
+    assertThat(actual) //
+        .containsOnly(this.button1, this.button2, this.button3);
 
-  // Now do the same with another repository - button3 should disappear
-  when(this.repository.getSlug()).thenReturn("otherrepository");
-  actual = this.sut.doGetButtons(this.notifications, this.clientKeyStore, this.pullRequest,
-    this.shouldAcceptAnyCertificate);
-  assertThat(actual)//
-    .containsOnly(this.button1, this.button2);
+    // Now do the same with another repository - button3 should disappear
+    when(this.repository.getSlug()).thenReturn("otherrepository");
+    actual =
+        this.sut.doGetButtons(
+            this.notifications,
+            this.clientKeyStore,
+            this.pullRequest,
+            this.shouldAcceptAnyCertificate);
+    assertThat(actual) //
+        .containsOnly(this.button1, this.button2);
 
-  // Now check if the button is inherited from the origin repo
-  when(this.repository.getOrigin()).thenReturn(this.originRepo);
-  when(this.originRepo.getSlug()).thenReturn(this.button3.getRepositorySlug().get());
-  when(this.originRepo.getProject()).thenReturn(this.project);
-  actual = this.sut.doGetButtons(this.notifications, this.clientKeyStore, this.pullRequest,
-    this.shouldAcceptAnyCertificate);
-  assertThat(actual)//
-    .containsOnly(this.button1, this.button2, this.button3);
- }
+    // Now check if the button is inherited from the origin repo
+    when(this.repository.getOrigin()).thenReturn(this.originRepo);
+    when(this.originRepo.getSlug()).thenReturn(this.button3.getRepositorySlug().get());
+    when(this.originRepo.getProject()).thenReturn(this.project);
+    actual =
+        this.sut.doGetButtons(
+            this.notifications,
+            this.clientKeyStore,
+            this.pullRequest,
+            this.shouldAcceptAnyCertificate);
+    assertThat(actual) //
+        .containsOnly(this.button1, this.button2, this.button3);
+  }
 
- @Test
- public void testThatButtonsCanBeRetrievedWhenNoneAllowed() {
+  @Test
+  public void testThatButtonsCanBeRetrievedWhenNoneAllowed() {
 
-  List<PrnfbButton> candidates = newArrayList(this.button1, this.button2);
-  when(this.settingsService.getButtons())//
-    .thenReturn(candidates);
-  when(this.userCheckService.isAllowedUseButton(this.button1))//
-    .thenReturn(false);
-  when(this.userCheckService.isAllowedUseButton(this.button2))//
-    .thenReturn(false);
+    List<PrnfbButton> candidates = newArrayList(this.button1, this.button2);
+    when(this.settingsService.getButtons()) //
+        .thenReturn(candidates);
+    when(this.userCheckService.isAllowedUseButton(this.button1)) //
+        .thenReturn(false);
+    when(this.userCheckService.isAllowedUseButton(this.button2)) //
+        .thenReturn(false);
 
-  List<PrnfbButton> actual = this.sut.doGetButtons(this.notifications, this.clientKeyStore, this.pullRequest,
-    this.shouldAcceptAnyCertificate);
+    List<PrnfbButton> actual =
+        this.sut.doGetButtons(
+            this.notifications,
+            this.clientKeyStore,
+            this.pullRequest,
+            this.shouldAcceptAnyCertificate);
 
-  assertThat(actual)//
-    .isEmpty();
- }
+    assertThat(actual) //
+        .isEmpty();
+  }
 
- @Test
- public void testThatPressedButtonDoesNotDoAnythingIfNoMatchingNotification() {
-  UUID buttonUuid = this.button1.getUuid();
+  @Test
+  public void testThatPressedButtonDoesNotDoAnythingIfNoMatchingNotification() {
+    UUID buttonUuid = this.button1.getUuid();
 
-  this.sut.doHandlePressed(buttonUuid, this.clientKeyStore, this.shouldAcceptAnyCertificate, this.pullRequest, "");
+    this.sut.doHandlePressed(
+        buttonUuid, this.clientKeyStore, this.shouldAcceptAnyCertificate, this.pullRequest, "");
 
-  verify(this.prnfbPullRequestEventListener, times(0))//
-    .notify(any(), any(), any(), any(), any(), any());
- }
+    verify(this.prnfbPullRequestEventListener, times(0)) //
+        .notify(any(), any(), any(), any(), any(), any());
+  }
 
- @Test
- public void testThatPressedButtonDoesTriggerIfMatchingNotification() {
-  UUID buttonUuid = this.button1.getUuid();
-  when(this.prnfbPullRequestEventListener.isNotificationTriggeredByAction(any(), any(), any(), any(), any(), any()))//
-    .thenReturn(true);
+  @Test
+  public void testThatPressedButtonDoesTriggerIfMatchingNotification() {
+    UUID buttonUuid = this.button1.getUuid();
+    when(this.prnfbPullRequestEventListener.isNotificationTriggeredByAction(
+            any(), any(), any(), any(), any(), any())) //
+        .thenReturn(true);
 
-  this.sut.doHandlePressed(buttonUuid, this.clientKeyStore, this.shouldAcceptAnyCertificate, this.pullRequest, "");
+    this.sut.doHandlePressed(
+        buttonUuid, this.clientKeyStore, this.shouldAcceptAnyCertificate, this.pullRequest, "");
 
-  verify(this.prnfbPullRequestEventListener, times(2))//
-    .notify(any(), any(), any(), any(), any(), any());
- }
+    verify(this.prnfbPullRequestEventListener, times(2)) //
+        .notify(any(), any(), any(), any(), any(), any());
+  }
 
- @Test
- public void testVisibilityOnPullRequest() {
-  String buttonProjectKey = "proj";
-  String buttonRepositorySlug = "repo";
-  String repoProjectKey = "proj";
-  String repoRepositorySlug = "repo";
-  testVisibilityOnRepository(buttonProjectKey, buttonRepositorySlug, repoProjectKey, repoRepositorySlug, true);
+  @Test
+  public void testVisibilityOnPullRequest() {
+    String buttonProjectKey = "proj";
+    String buttonRepositorySlug = "repo";
+    String repoProjectKey = "proj";
+    String repoRepositorySlug = "repo";
+    testVisibilityOnRepository(
+        buttonProjectKey, buttonRepositorySlug, repoProjectKey, repoRepositorySlug, true);
 
-  buttonProjectKey = "proj";
-  buttonRepositorySlug = "repo";
-  repoProjectKey = "proj2";
-  repoRepositorySlug = "repo";
-  testVisibilityOnRepository(buttonProjectKey, buttonRepositorySlug, repoProjectKey, repoRepositorySlug, false);
+    buttonProjectKey = "proj";
+    buttonRepositorySlug = "repo";
+    repoProjectKey = "proj2";
+    repoRepositorySlug = "repo";
+    testVisibilityOnRepository(
+        buttonProjectKey, buttonRepositorySlug, repoProjectKey, repoRepositorySlug, false);
 
-  buttonProjectKey = "proj";
-  buttonRepositorySlug = null;
-  repoProjectKey = "proj";
-  repoRepositorySlug = "repo";
-  testVisibilityOnRepository(buttonProjectKey, buttonRepositorySlug, repoProjectKey, repoRepositorySlug, true);
+    buttonProjectKey = "proj";
+    buttonRepositorySlug = null;
+    repoProjectKey = "proj";
+    repoRepositorySlug = "repo";
+    testVisibilityOnRepository(
+        buttonProjectKey, buttonRepositorySlug, repoProjectKey, repoRepositorySlug, true);
 
-  buttonProjectKey = "proj";
-  buttonRepositorySlug = null;
-  repoProjectKey = "proj2";
-  repoRepositorySlug = "repo";
-  testVisibilityOnRepository(buttonProjectKey, buttonRepositorySlug, repoProjectKey, repoRepositorySlug, false);
+    buttonProjectKey = "proj";
+    buttonRepositorySlug = null;
+    repoProjectKey = "proj2";
+    repoRepositorySlug = "repo";
+    testVisibilityOnRepository(
+        buttonProjectKey, buttonRepositorySlug, repoProjectKey, repoRepositorySlug, false);
 
-  buttonProjectKey = "proj";
-  buttonRepositorySlug = "repo";
-  repoProjectKey = "proj";
-  repoRepositorySlug = "repo2";
-  testVisibilityOnRepository(buttonProjectKey, buttonRepositorySlug, repoProjectKey, repoRepositorySlug, false);
+    buttonProjectKey = "proj";
+    buttonRepositorySlug = "repo";
+    repoProjectKey = "proj";
+    repoRepositorySlug = "repo2";
+    testVisibilityOnRepository(
+        buttonProjectKey, buttonRepositorySlug, repoProjectKey, repoRepositorySlug, false);
 
-  buttonProjectKey = "proj";
-  buttonRepositorySlug = "repo";
-  repoProjectKey = "proj2";
-  repoRepositorySlug = "repo2";
-  testVisibilityOnRepository(buttonProjectKey, buttonRepositorySlug, repoProjectKey, repoRepositorySlug, false);
- }
+    buttonProjectKey = "proj";
+    buttonRepositorySlug = "repo";
+    repoProjectKey = "proj2";
+    repoRepositorySlug = "repo2";
+    testVisibilityOnRepository(
+        buttonProjectKey, buttonRepositorySlug, repoProjectKey, repoRepositorySlug, false);
+  }
 
- private void testVisibilityOnRepository(String buttonProjectKey, String buttonRepositorySlug, String repoProjectKey,
-   String repoRepoSlug, boolean expected) {
-  PrnfbButton button = new PrnfbButton(this.uuid, this.name, this.userLevel, this.confirmation, buttonProjectKey,
-    buttonRepositorySlug, null);
-  when(this.repository.getProject()).thenReturn(this.project);
-  when(this.repository.getProject().getKey())//
-    .thenReturn(repoProjectKey);
-  when(this.repository.getSlug())//
-    .thenReturn(repoRepoSlug);
-  assertThat(this.sut.isVisibleOnRepository(button, this.repository))//
-    .isEqualTo(expected);
- }
+  private void testVisibilityOnRepository(
+      String buttonProjectKey,
+      String buttonRepositorySlug,
+      String repoProjectKey,
+      String repoRepoSlug,
+      boolean expected) {
+    PrnfbButton button =
+        new PrnfbButton(
+            this.uuid,
+            this.name,
+            this.userLevel,
+            this.confirmation,
+            buttonProjectKey,
+            buttonRepositorySlug,
+            null);
+    when(this.repository.getProject()).thenReturn(this.project);
+    when(this.repository.getProject().getKey()) //
+        .thenReturn(repoProjectKey);
+    when(this.repository.getSlug()) //
+        .thenReturn(repoRepoSlug);
+    assertThat(this.sut.isVisibleOnRepository(button, this.repository)) //
+        .isEqualTo(expected);
+  }
 }

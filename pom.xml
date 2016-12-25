@@ -207,9 +207,9 @@ Changelog of Pull Request Notifier for Bitbucket.
      <enableQuickReload>true</enableQuickReload>
      <pluginArtifacts>
       <pluginArtifact>
-        <groupId>com.atlassian.labs.plugins</groupId>
-        <artifactId>quickreload</artifactId>
-        <version>${quick.reload.version}</version>
+       <groupId>com.atlassian.labs.plugins</groupId>
+       <artifactId>quickreload</artifactId>
+       <version>${quick.reload.version}</version>
       </pluginArtifact>
      </pluginArtifacts>
      <products>
@@ -244,6 +244,18 @@ Changelog of Pull Request Notifier for Bitbucket.
      </includes>
     </configuration>
    </plugin>
+   <plugin>
+    <groupId>com.coveo</groupId>
+    <artifactId>fmt-maven-plugin</artifactId>
+    <version>1.3.0</version>
+    <executions>
+     <execution>
+      <goals>
+       <goal>format</goal>
+      </goals>
+     </execution>
+    </executions>
+   </plugin>
   </plugins>
   <resources>
    <resource>
@@ -275,7 +287,7 @@ Changelog of Pull Request Notifier for Bitbucket.
  <properties>
   <bitbucket.version>4.11.1</bitbucket.version>
   <bitbucket.data.version>${bitbucket.version}</bitbucket.data.version>
-   <quick.reload.version>2.0.0</quick.reload.version>
+  <quick.reload.version>2.0.0</quick.reload.version>
   <amps.version>6.1.0</amps.version>
  </properties>
 </project>

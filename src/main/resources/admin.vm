@@ -244,11 +244,11 @@
      <label>Confirmation </label>
      <div class="description">Whether to show a confirmation dialog.</div>
     </div>
-    
+
     <div class="field-group">
      <label>Button Form</label>
      <textarea class="textarea" rows="6" cols="10" name="buttonForm"></textarea>
-     <div class="description">Put a JSON representation of your desired form here.</div>
+     <div class="description">Put a JSON representation of your desired form here. This is documented <a href="https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket" target="_blank">here</a>.</div>
     </div>
 
     <div class="aui-buttons">

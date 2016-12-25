@@ -35,262 +35,272 @@ import com.atlassian.sal.api.transaction.TransactionTemplate;
 import com.google.gson.Gson;
 
 public class SettingsServiceTest {
- private EscalatedSecurityContext escalatedSecurityContext;
- private PrnfbNotification notification1;
- private final PluginSettingsMap pluginSettings = new PluginSettingsMap();
- @Mock
- private PluginSettingsFactory pluginSettingsFactory;
- @Mock
- private SecurityService securityService;
- private SettingsService sut;
- private TransactionTemplate transactionTemplate;
+  private EscalatedSecurityContext escalatedSecurityContext;
+  private PrnfbNotification notification1;
+  private final PluginSettingsMap pluginSettings = new PluginSettingsMap();
+  @Mock private PluginSettingsFactory pluginSettingsFactory;
+  @Mock private SecurityService securityService;
+  private SettingsService sut;
+  private TransactionTemplate transactionTemplate;
 
- @Before
- public void before() throws ValidationException {
-  initMocks(this);
-  when(this.pluginSettingsFactory.createGlobalSettings())//
-    .thenReturn(this.pluginSettings);
-  this.escalatedSecurityContext = new EscalatedSecurityContext() {
-   @Override
-   public void applyToRequest() {
-   }
+  @Before
+  public void before() throws ValidationException {
+    initMocks(this);
+    when(this.pluginSettingsFactory.createGlobalSettings()) //
+        .thenReturn(this.pluginSettings);
+    this.escalatedSecurityContext =
+        new EscalatedSecurityContext() {
+          @Override
+          public void applyToRequest() {}
 
-   @Override
-   public <T, E extends Throwable> T call(Operation<T, E> arg0) throws E {
-    return arg0.perform();
-   }
+          @Override
+          public <T, E extends Throwable> T call(Operation<T, E> arg0) throws E {
+            return arg0.perform();
+          }
 
-   @Override
-   public EscalatedSecurityContext withPermission(Object arg0, Permission arg1) {
-    return null;
-   }
+          @Override
+          public EscalatedSecurityContext withPermission(Object arg0, Permission arg1) {
+            return null;
+          }
 
-   @Override
-   public EscalatedSecurityContext withPermission(Permission arg0) {
-    return null;
-   }
+          @Override
+          public EscalatedSecurityContext withPermission(Permission arg0) {
+            return null;
+          }
 
-   @Override
-   public EscalatedSecurityContext withPermissions(Set<Permission> arg0) {
-    return null;
-   }
-  };
-  when(this.securityService.withPermission(Permission.ADMIN, "Getting config"))//
-    .thenReturn(this.escalatedSecurityContext);
-  this.transactionTemplate = new TransactionTemplate() {
-   @Override
-   public <T> T execute(TransactionCallback<T> action) {
-    return action.doInTransaction();
-   }
-  };
-  this.sut = new SettingsService(this.pluginSettingsFactory, this.transactionTemplate, this.securityService);
+          @Override
+          public EscalatedSecurityContext withPermissions(Set<Permission> arg0) {
+            return null;
+          }
+        };
+    when(this.securityService.withPermission(Permission.ADMIN, "Getting config")) //
+        .thenReturn(this.escalatedSecurityContext);
+    this.transactionTemplate =
+        new TransactionTemplate() {
+          @Override
+          public <T> T execute(TransactionCallback<T> action) {
+            return action.doInTransaction();
+          }
+        };
+    this.sut =
+        new SettingsService(
+            this.pluginSettingsFactory, this.transactionTemplate, this.securityService);
 
-  this.notification1 = prnfbNotificationBuilder()//
-    .withUrl("http://hej.com/")//
-    .withProjectKey("projectKey")//
-    .withRepositorySlug("repositorySlug")//
-    .withTrigger(APPROVED)//
-    .build();
- }
+    this.notification1 =
+        prnfbNotificationBuilder() //
+            .withUrl("http://hej.com/") //
+            .withProjectKey("projectKey") //
+            .withRepositorySlug("repositorySlug") //
+            .withTrigger(APPROVED) //
+            .build();
+  }
 
- @Test
- public void testThatButtonCanBeAddedUpdatedAndDeleted() {
-  PrnfbButton button1 = new PrnfbButton(null, "title", EVERYONE, ON_OR_OFF.off, "p1", "r1", null);
-  assertThat(this.sut.getButtons())//
-    .isEmpty();
+  @Test
+  public void testThatButtonCanBeAddedUpdatedAndDeleted() {
+    PrnfbButton button1 = new PrnfbButton(null, "title", EVERYONE, ON_OR_OFF.off, "p1", "r1", null);
+    assertThat(this.sut.getButtons()) //
+        .isEmpty();
 
-  this.sut.addOrUpdateButton(button1);
-  assertThat(this.sut.getButtons())//
-    .containsExactly(button1);
+    this.sut.addOrUpdateButton(button1);
+    assertThat(this.sut.getButtons()) //
+        .containsExactly(button1);
 
-  PrnfbButton button2 = new PrnfbButton(null, "title", EVERYONE, ON_OR_OFF.off, "p1", "r1", null);
-  this.sut.addOrUpdateButton(button2);
-  assertThat(this.sut.getButtons())//
-    .containsExactly(button1, button2);
+    PrnfbButton button2 = new PrnfbButton(null, "title", EVERYONE, ON_OR_OFF.off, "p1", "r1", null);
+    this.sut.addOrUpdateButton(button2);
+    assertThat(this.sut.getButtons()) //
+        .containsExactly(button1, button2);
 
-  PrnfbButton updated = new PrnfbButton(button1.getUuid(), "title2", ADMIN, ON_OR_OFF.off, "p1", "r1", null);
-  this.sut.addOrUpdateButton(updated);
-  assertThat(this.sut.getButtons())//
-    .containsExactly(button2, updated);
+    PrnfbButton updated =
+        new PrnfbButton(button1.getUuid(), "title2", ADMIN, ON_OR_OFF.off, "p1", "r1", null);
+    this.sut.addOrUpdateButton(updated);
+    assertThat(this.sut.getButtons()) //
+        .containsExactly(button2, updated);
 
-  this.sut.deleteButton(button1.getUuid());
-  assertThat(this.sut.getButtons())//
-    .containsExactly(button2);
+    this.sut.deleteButton(button1.getUuid());
+    assertThat(this.sut.getButtons()) //
+        .containsExactly(button2);
 
-  PrnfbButton b2 = this.sut.getButton(button2.getUuid());
-  assertThat(b2)//
-    .isEqualTo(button2);
-  assertThat(b2.hashCode())//
-    .isEqualTo(button2.hashCode());
-  assertThat(b2.toString())//
-    .isEqualTo(button2.toString());
- }
+    PrnfbButton b2 = this.sut.getButton(button2.getUuid());
+    assertThat(b2) //
+        .isEqualTo(button2);
+    assertThat(b2.hashCode()) //
+        .isEqualTo(button2.hashCode());
+    assertThat(b2.toString()) //
+        .isEqualTo(button2.toString());
+  }
 
- @Test
- public void testThatButtonsCanBeRetrievedByProject() {
-  PrnfbButton button1 = populatedInstanceOf(PrnfbButton.class);
-  this.sut.addOrUpdateButton(button1);
+  @Test
+  public void testThatButtonsCanBeRetrievedByProject() {
+    PrnfbButton button1 = populatedInstanceOf(PrnfbButton.class);
+    this.sut.addOrUpdateButton(button1);
 
-  List<PrnfbButton> actual = this.sut.getButtons(button1.getProjectKey().get());
+    List<PrnfbButton> actual = this.sut.getButtons(button1.getProjectKey().get());
 
-  assertThat(actual)//
-    .containsOnly(button1);
- }
+    assertThat(actual) //
+        .containsOnly(button1);
+  }
 
- @Test
- public void testThatButtonsCanBeRetrievedByProjectAndRepo() {
-  PrnfbButton button1 = populatedInstanceOf(PrnfbButton.class);
-  this.sut.addOrUpdateButton(button1);
+  @Test
+  public void testThatButtonsCanBeRetrievedByProjectAndRepo() {
+    PrnfbButton button1 = populatedInstanceOf(PrnfbButton.class);
+    this.sut.addOrUpdateButton(button1);
 
-  List<PrnfbButton> actual = this.sut.getButtons(button1.getProjectKey().get(), button1.getRepositorySlug().get());
+    List<PrnfbButton> actual =
+        this.sut.getButtons(button1.getProjectKey().get(), button1.getRepositorySlug().get());
 
-  assertThat(actual)//
-    .containsOnly(button1);
- }
+    assertThat(actual) //
+        .containsOnly(button1);
+  }
 
- @Test
- public void testThatNotificationCanBeAddedUpdatedAndDeleted() throws ValidationException {
-  assertThat(this.sut.getButtons())//
-    .isEmpty();
+  @Test
+  public void testThatNotificationCanBeAddedUpdatedAndDeleted() throws ValidationException {
+    assertThat(this.sut.getButtons()) //
+        .isEmpty();
 
-  this.sut.addOrUpdateNotification(this.notification1);
-  assertThat(this.sut.getNotifications())//
-    .containsExactly(this.notification1);
+    this.sut.addOrUpdateNotification(this.notification1);
+    assertThat(this.sut.getNotifications()) //
+        .containsExactly(this.notification1);
 
-  PrnfbNotification notification2 = prnfbNotificationBuilder()//
-    .withUrl("http://hej.com/")//
-    .withTrigger(APPROVED)//
-    .build();
-  this.sut.addOrUpdateNotification(notification2);
-  assertThat(this.sut.getNotifications())//
-    .containsExactly(this.notification1, notification2);
+    PrnfbNotification notification2 =
+        prnfbNotificationBuilder() //
+            .withUrl("http://hej.com/") //
+            .withTrigger(APPROVED) //
+            .build();
+    this.sut.addOrUpdateNotification(notification2);
+    assertThat(this.sut.getNotifications()) //
+        .containsExactly(this.notification1, notification2);
 
-  PrnfbNotification updated = prnfbNotificationBuilder()//
-    .withUuid(this.notification1.getUuid())//
-    .withUrl("http://hej2.com/")//
-    .withTrigger(APPROVED)//
-    .build();
-  this.sut.addOrUpdateNotification(updated);
-  assertThat(this.sut.getNotifications())//
-    .containsExactly(notification2, updated);
+    PrnfbNotification updated =
+        prnfbNotificationBuilder() //
+            .withUuid(this.notification1.getUuid()) //
+            .withUrl("http://hej2.com/") //
+            .withTrigger(APPROVED) //
+            .build();
+    this.sut.addOrUpdateNotification(updated);
+    assertThat(this.sut.getNotifications()) //
+        .containsExactly(notification2, updated);
 
-  this.sut.deleteNotification(this.notification1.getUuid());
-  assertThat(this.sut.getNotifications())//
-    .containsExactly(notification2);
-  assertThat(this.sut.getNotifications().get(0).toString())//
-    .isEqualTo(notification2.toString());
-  assertThat(this.sut.getNotifications().get(0).hashCode())//
-    .isEqualTo(notification2.hashCode());
- }
+    this.sut.deleteNotification(this.notification1.getUuid());
+    assertThat(this.sut.getNotifications()) //
+        .containsExactly(notification2);
+    assertThat(this.sut.getNotifications().get(0).toString()) //
+        .isEqualTo(notification2.toString());
+    assertThat(this.sut.getNotifications().get(0).hashCode()) //
+        .isEqualTo(notification2.hashCode());
+  }
 
- @Test
- public void testThatNotificationsCanBeRetrievedByProject() throws ValidationException {
-  this.sut.addOrUpdateNotification(this.notification1);
+  @Test
+  public void testThatNotificationsCanBeRetrievedByProject() throws ValidationException {
+    this.sut.addOrUpdateNotification(this.notification1);
 
-  List<PrnfbNotification> actual = this.sut.getNotifications(this.notification1.getProjectKey().orNull());
+    List<PrnfbNotification> actual =
+        this.sut.getNotifications(this.notification1.getProjectKey().orNull());
 
-  assertThat(actual)//
-    .containsOnly(this.notification1);
- }
+    assertThat(actual) //
+        .containsOnly(this.notification1);
+  }
 
- @Test
- public void testThatNotificationsCanBeRetrievedByProjectAndRepo() throws ValidationException {
-  this.sut.addOrUpdateNotification(this.notification1);
+  @Test
+  public void testThatNotificationsCanBeRetrievedByProjectAndRepo() throws ValidationException {
+    this.sut.addOrUpdateNotification(this.notification1);
 
-  List<PrnfbNotification> actual = this.sut.getNotifications(this.notification1.getProjectKey().orNull(),
-    this.notification1.getRepositorySlug().orNull());
+    List<PrnfbNotification> actual =
+        this.sut.getNotifications(
+            this.notification1.getProjectKey().orNull(),
+            this.notification1.getRepositorySlug().orNull());
 
-  assertThat(actual)//
-    .containsOnly(this.notification1);
- }
+    assertThat(actual) //
+        .containsOnly(this.notification1);
+  }
 
- @Test
- public void testThatNotificationsCanBeRetrievedByUuid() throws ValidationException {
-  this.sut.addOrUpdateNotification(this.notification1);
+  @Test
+  public void testThatNotificationsCanBeRetrievedByUuid() throws ValidationException {
+    this.sut.addOrUpdateNotification(this.notification1);
 
-  PrnfbNotification actual = this.sut.getNotification(this.notification1.getUuid());
+    PrnfbNotification actual = this.sut.getNotification(this.notification1.getUuid());
 
-  assertThat(actual)//
-    .isEqualTo(this.notification1);
- }
+    assertThat(actual) //
+        .isEqualTo(this.notification1);
+  }
 
- @Test
- public void testThatPluginSettingsDataCanBeStored() {
-  PrnfbSettings oldSettings = prnfbSettingsBuilder()//
-    .setPrnfbSettingsData(//
-      prnfbSettingsDataBuilder()//
-        .setKeyStore("12")//
-        .setKeyStorePassword("22")//
-        .setKeyStoreType("33")//
-        .setAdminRestriction(EVERYONE)//
-        .setShouldAcceptAnyCertificate(false)//
-        .build()//
-    )//
-    .build();
-  String oldSettingsString = new Gson().toJson(oldSettings);
+  @Test
+  public void testThatPluginSettingsDataCanBeStored() {
+    PrnfbSettings oldSettings =
+        prnfbSettingsBuilder() //
+            .setPrnfbSettingsData( //
+                prnfbSettingsDataBuilder() //
+                    .setKeyStore("12") //
+                    .setKeyStorePassword("22") //
+                    .setKeyStoreType("33") //
+                    .setAdminRestriction(EVERYONE) //
+                    .setShouldAcceptAnyCertificate(false) //
+                    .build() //
+                ) //
+            .build();
+    String oldSettingsString = new Gson().toJson(oldSettings);
 
-  this.pluginSettings.getPluginSettingsMap().put(STORAGE_KEY, oldSettingsString);
+    this.pluginSettings.getPluginSettingsMap().put(STORAGE_KEY, oldSettingsString);
 
-  PrnfbSettings newSettings = prnfbSettingsBuilder()//
-    .setPrnfbSettingsData(//
-      prnfbSettingsDataBuilder()//
-        .setKeyStore("keyStore")//
-        .setKeyStorePassword("keyStorePassword")//
-        .setKeyStoreType("keyStoreType")//
-        .setAdminRestriction(EVERYONE)//
-        .setShouldAcceptAnyCertificate(true)//
-        .build()//
-    )//
-    .build();
+    PrnfbSettings newSettings =
+        prnfbSettingsBuilder() //
+            .setPrnfbSettingsData( //
+                prnfbSettingsDataBuilder() //
+                    .setKeyStore("keyStore") //
+                    .setKeyStorePassword("keyStorePassword") //
+                    .setKeyStoreType("keyStoreType") //
+                    .setAdminRestriction(EVERYONE) //
+                    .setShouldAcceptAnyCertificate(true) //
+                    .build() //
+                ) //
+            .build();
 
-  this.sut.setPrnfbSettingsData(newSettings.getPrnfbSettingsData());
+    this.sut.setPrnfbSettingsData(newSettings.getPrnfbSettingsData());
 
-  String expectedSettingsString = new Gson().toJson(newSettings);
-  assertThat(this.pluginSettings.getPluginSettingsMap().get(STORAGE_KEY))//
-    .isEqualTo(expectedSettingsString);
+    String expectedSettingsString = new Gson().toJson(newSettings);
+    assertThat(this.pluginSettings.getPluginSettingsMap().get(STORAGE_KEY)) //
+        .isEqualTo(expectedSettingsString);
+  }
 
- }
+  @Test
+  public void testThatSettingsCanBeRead() {
+    PrnfbSettings oldSettings =
+        prnfbSettingsBuilder() //
+            .setPrnfbSettingsData( //
+                prnfbSettingsDataBuilder() //
+                    .setKeyStore("12") //
+                    .setKeyStorePassword("22") //
+                    .setKeyStoreType("33") //
+                    .setAdminRestriction(EVERYONE) //
+                    .setShouldAcceptAnyCertificate(false) //
+                    .build() //
+                ) //
+            .build();
+    String oldSettingsString = new Gson().toJson(oldSettings);
+    this.pluginSettings.getPluginSettingsMap().put(STORAGE_KEY, oldSettingsString);
 
- @Test
- public void testThatSettingsCanBeRead() {
-  PrnfbSettings oldSettings = prnfbSettingsBuilder()//
-    .setPrnfbSettingsData(//
-      prnfbSettingsDataBuilder()//
-        .setKeyStore("12")//
-        .setKeyStorePassword("22")//
-        .setKeyStoreType("33")//
-        .setAdminRestriction(EVERYONE)//
-        .setShouldAcceptAnyCertificate(false)//
-        .build()//
-    )//
-    .build();
-  String oldSettingsString = new Gson().toJson(oldSettings);
-  this.pluginSettings.getPluginSettingsMap().put(STORAGE_KEY, oldSettingsString);
+    PrnfbSettings actual = this.sut.getPrnfbSettings();
 
-  PrnfbSettings actual = this.sut.getPrnfbSettings();
+    assertThat(actual) //
+        .isEqualTo(oldSettings);
+    assertThat(actual.toString()) //
+        .isEqualTo(oldSettings.toString());
+    assertThat(actual.hashCode()) //
+        .isEqualTo(oldSettings.hashCode());
 
-  assertThat(actual)//
-    .isEqualTo(oldSettings);
-  assertThat(actual.toString())//
-    .isEqualTo(oldSettings.toString());
-  assertThat(actual.hashCode())//
-    .isEqualTo(oldSettings.hashCode());
+    assertThat(this.sut.getPrnfbSettingsData()) //
+        .isEqualTo(oldSettings.getPrnfbSettingsData());
+    assertThat(this.sut.getPrnfbSettingsData().toString()) //
+        .isEqualTo(oldSettings.getPrnfbSettingsData().toString());
+    assertThat(this.sut.getPrnfbSettingsData().hashCode()) //
+        .isEqualTo(oldSettings.getPrnfbSettingsData().hashCode());
+  }
 
-  assertThat(this.sut.getPrnfbSettingsData())//
-    .isEqualTo(oldSettings.getPrnfbSettingsData());
-  assertThat(this.sut.getPrnfbSettingsData().toString())//
-    .isEqualTo(oldSettings.getPrnfbSettingsData().toString());
-  assertThat(this.sut.getPrnfbSettingsData().hashCode())//
-    .isEqualTo(oldSettings.getPrnfbSettingsData().hashCode());
- }
+  @Test
+  public void testThatSettingsCanBeReadWhenNoneAreSaved() {
+    this.pluginSettings.getPluginSettingsMap().put(STORAGE_KEY, null);
 
- @Test
- public void testThatSettingsCanBeReadWhenNoneAreSaved() {
-  this.pluginSettings.getPluginSettingsMap().put(STORAGE_KEY, null);
-
-  PrnfbSettings actual = this.sut.getPrnfbSettings();
-  assertThat(actual)//
-    .isNotNull();
- }
-
+    PrnfbSettings actual = this.sut.getPrnfbSettings();
+    assertThat(actual) //
+        .isNotNull();
+  }
 }

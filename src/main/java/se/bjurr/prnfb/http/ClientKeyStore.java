@@ -19,39 +19,40 @@ import com.google.common.base.Optional;
  */
 public class ClientKeyStore {
 
- private KeyStore keyStore = null;
- private char[] password = null;
+  private KeyStore keyStore = null;
+  private char[] password = null;
 
- public ClientKeyStore(PrnfbSettingsData settings) {
-  if (settings.getKeyStore().isPresent()) {
-   File keyStoreFile = new File(settings.getKeyStore().get());
-   try {
-    this.keyStore = getKeyStore(settings.getKeyStoreType());
+  public ClientKeyStore(PrnfbSettingsData settings) {
+    if (settings.getKeyStore().isPresent()) {
+      File keyStoreFile = new File(settings.getKeyStore().get());
+      try {
+        this.keyStore = getKeyStore(settings.getKeyStoreType());
 
-    if (settings.getKeyStorePassword().isPresent()) {
-     this.password = settings.getKeyStorePassword().get().toCharArray();
+        if (settings.getKeyStorePassword().isPresent()) {
+          this.password = settings.getKeyStorePassword().get().toCharArray();
+        }
+
+        this.keyStore.load(new FileInputStream(keyStoreFile), this.password);
+      } catch (Exception e) {
+        throw new RuntimeException(
+            "Unable to build keystore from " + keyStoreFile.getAbsolutePath(), e);
+      }
     }
-
-    this.keyStore.load(new FileInputStream(keyStoreFile), this.password);
-   } catch (Exception e) {
-    throw new RuntimeException("Unable to build keystore from " + keyStoreFile.getAbsolutePath(), e);
-   }
   }
- }
 
- public Optional<KeyStore> getKeyStore() {
-  return fromNullable(this.keyStore);
- }
-
- public char[] getPassword() {
-  return this.password;
- }
-
- private KeyStore getKeyStore(String keyStoreType) throws KeyStoreException {
-  if (keyStoreType != null) {
-   return KeyStore.getInstance(keyStoreType);
-  } else {
-   return KeyStore.getInstance(KeyStore.getDefaultType());
+  public Optional<KeyStore> getKeyStore() {
+    return fromNullable(this.keyStore);
   }
- }
+
+  public char[] getPassword() {
+    return this.password;
+  }
+
+  private KeyStore getKeyStore(String keyStoreType) throws KeyStoreException {
+    if (keyStoreType != null) {
+      return KeyStore.getInstance(keyStoreType);
+    } else {
+      return KeyStore.getInstance(KeyStore.getDefaultType());
+    }
+  }
 }

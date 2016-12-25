@@ -13,132 +13,150 @@ import com.google.common.base.Optional;
 
 public class PrnfbButton implements HasUuid {
 
- private final ON_OR_OFF confirmation;
- private final String name;
- private final String projectKey;
- private final String repositorySlug;
- private final String buttonForm;
- private final USER_LEVEL userLevel;
- private final UUID uuid;
+  private final ON_OR_OFF confirmation;
+  private final String name;
+  private final String projectKey;
+  private final String repositorySlug;
+  private final String buttonForm;
+  private final USER_LEVEL userLevel;
+  private final UUID uuid;
 
- public PrnfbButton(UUID uuid, String name, USER_LEVEL userLevel, ON_OR_OFF confirmation, String projectKey,
-   String repositorySlug, String buttonForm) {
-  this.uuid = firstNonNull(uuid, randomUUID());
-  this.name = name;
-  this.userLevel = userLevel;
-  this.confirmation = confirmation;
-  this.repositorySlug = emptyToNull(repositorySlug);
-  this.projectKey = emptyToNull(projectKey);
-  this.buttonForm = emptyToNull(buttonForm);
- }
-
- @Override
- public boolean equals(Object obj) {
-  if (this == obj) {
-   return true;
+  public PrnfbButton(
+      UUID uuid,
+      String name,
+      USER_LEVEL userLevel,
+      ON_OR_OFF confirmation,
+      String projectKey,
+      String repositorySlug,
+      String buttonForm) {
+    this.uuid = firstNonNull(uuid, randomUUID());
+    this.name = name;
+    this.userLevel = userLevel;
+    this.confirmation = confirmation;
+    this.repositorySlug = emptyToNull(repositorySlug);
+    this.projectKey = emptyToNull(projectKey);
+    this.buttonForm = emptyToNull(buttonForm);
   }
-  if (obj == null) {
-   return false;
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    PrnfbButton other = (PrnfbButton) obj;
+    if (this.projectKey == null) {
+      if (other.projectKey != null) {
+        return false;
+      }
+    } else if (!this.projectKey.equals(other.projectKey)) {
+      return false;
+    }
+    if (this.repositorySlug == null) {
+      if (other.repositorySlug != null) {
+        return false;
+      }
+    } else if (!this.repositorySlug.equals(other.repositorySlug)) {
+      return false;
+    }
+    if (this.name == null) {
+      if (other.name != null) {
+        return false;
+      }
+    } else if (!this.name.equals(other.name)) {
+      return false;
+    }
+    if (this.buttonForm == null) {
+      if (other.buttonForm != null) {
+        return false;
+      }
+    } else if (!this.buttonForm.equals(other.buttonForm)) {
+      return false;
+    }
+    if (this.userLevel != other.userLevel) {
+      return false;
+    }
+    if (this.uuid == null) {
+      if (other.uuid != null) {
+        return false;
+      }
+    } else if (!this.uuid.equals(other.uuid)) {
+      return false;
+    }
+    if (this.confirmation == null) {
+      if (other.confirmation != null) {
+        return false;
+      }
+    } else if (!this.confirmation.equals(other.confirmation)) {
+      return false;
+    }
+    return true;
   }
-  if (getClass() != obj.getClass()) {
-   return false;
+
+  public ON_OR_OFF getConfirmation() {
+    return this.confirmation;
   }
-  PrnfbButton other = (PrnfbButton) obj;
-  if (this.projectKey == null) {
-   if (other.projectKey != null) {
-    return false;
-   }
-  } else if (!this.projectKey.equals(other.projectKey)) {
-   return false;
+
+  public String getName() {
+    return this.name;
   }
-  if (this.repositorySlug == null) {
-   if (other.repositorySlug != null) {
-    return false;
-   }
-  } else if (!this.repositorySlug.equals(other.repositorySlug)) {
-   return false;
+
+  public String getButtonForm() {
+    return this.buttonForm;
   }
-  if (this.name == null) {
-   if (other.name != null) {
-    return false;
-   }
-  } else if (!this.name.equals(other.name)) {
-   return false;
+
+  public Optional<String> getProjectKey() {
+    return fromNullable(this.projectKey);
   }
-  if (this.buttonForm == null) {
-   if (other.buttonForm != null) {
-    return false;
-   }
-  } else if (!this.buttonForm.equals(other.buttonForm)) {
-   return false;
+
+  public Optional<String> getRepositorySlug() {
+    return fromNullable(this.repositorySlug);
   }
-  if (this.userLevel != other.userLevel) {
-   return false;
+
+  public USER_LEVEL getUserLevel() {
+    return this.userLevel;
   }
-  if (this.uuid == null) {
-   if (other.uuid != null) {
-    return false;
-   }
-  } else if (!this.uuid.equals(other.uuid)) {
-   return false;
+
+  @Override
+  public UUID getUuid() {
+    return this.uuid;
   }
-  if (this.confirmation == null) {
-   if (other.confirmation != null) {
-    return false;
-   }
-  } else if (!this.confirmation.equals(other.confirmation)) {
-   return false;
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((this.projectKey == null) ? 0 : this.projectKey.hashCode());
+    result = prime * result + ((this.repositorySlug == null) ? 0 : this.repositorySlug.hashCode());
+    result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
+    result = prime * result + ((this.userLevel == null) ? 0 : this.userLevel.hashCode());
+    result = prime * result + ((this.uuid == null) ? 0 : this.uuid.hashCode());
+    result = prime * result + ((this.confirmation == null) ? 0 : this.confirmation.hashCode());
+    result = prime * result + ((this.buttonForm == null) ? 0 : this.buttonForm.hashCode());
+    return result;
   }
-  return true;
- }
 
- public ON_OR_OFF getConfirmation() {
-  return this.confirmation;
- }
-
- public String getName() {
-  return this.name;
- }
-
- public String getButtonForm() {
-  return this.buttonForm;
- }
-
- public Optional<String> getProjectKey() {
-  return fromNullable(this.projectKey);
- }
-
- public Optional<String> getRepositorySlug() {
-  return fromNullable(this.repositorySlug);
- }
-
- public USER_LEVEL getUserLevel() {
-  return this.userLevel;
- }
-
- @Override
- public UUID getUuid() {
-  return this.uuid;
- }
-
- @Override
- public int hashCode() {
-  final int prime = 31;
-  int result = 1;
-  result = prime * result + ((this.projectKey == null) ? 0 : this.projectKey.hashCode());
-  result = prime * result + ((this.repositorySlug == null) ? 0 : this.repositorySlug.hashCode());
-  result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
-  result = prime * result + ((this.userLevel == null) ? 0 : this.userLevel.hashCode());
-  result = prime * result + ((this.uuid == null) ? 0 : this.uuid.hashCode());
-  result = prime * result + ((this.confirmation == null) ? 0 : this.confirmation.hashCode());
-  result = prime * result + ((this.buttonForm == null) ? 0 : this.buttonForm.hashCode());
-  return result;
- }
-
- @Override
- public String toString() {
-  return "PrnfbButton [projectKey=" + this.projectKey + ", repositorySlug=" + this.repositorySlug + ", name="
-    + this.name + ", userLevel=" + this.userLevel + ", uuid=" + this.uuid + ", buttonForm=" + this.buttonForm + ", confirmation=" + this.confirmation + "]";
- }
-
+  @Override
+  public String toString() {
+    return "PrnfbButton [projectKey="
+        + this.projectKey
+        + ", repositorySlug="
+        + this.repositorySlug
+        + ", name="
+        + this.name
+        + ", userLevel="
+        + this.userLevel
+        + ", uuid="
+        + this.uuid
+        + ", buttonForm="
+        + this.buttonForm
+        + ", confirmation="
+        + this.confirmation
+        + "]";
+  }
 }

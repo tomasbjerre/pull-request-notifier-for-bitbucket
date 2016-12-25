@@ -15,157 +15,169 @@ import com.google.common.base.Optional;
 @XmlAccessorType(FIELD)
 public class ButtonDTO implements Comparable<ButtonDTO> {
 
- private ON_OR_OFF confirmation;
- private String name;
- private String projectKey;
- private String repositorySlug;
- private USER_LEVEL userLevel;
- private UUID uuid;
- private String buttonForm;
+  private ON_OR_OFF confirmation;
+  private String name;
+  private String projectKey;
+  private String repositorySlug;
+  private USER_LEVEL userLevel;
+  private UUID uuid;
+  private String buttonForm;
 
- @Override
- public int compareTo(ButtonDTO o) {
-  return this.name.compareTo(o.name);
- }
-
- @Override
- public boolean equals(Object obj) {
-  if (this == obj) {
-   return true;
+  @Override
+  public int compareTo(ButtonDTO o) {
+    return this.name.compareTo(o.name);
   }
-  if (obj == null) {
-   return false;
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    ButtonDTO other = (ButtonDTO) obj;
+    if (this.projectKey == null) {
+      if (other.projectKey != null) {
+        return false;
+      }
+    } else if (!this.projectKey.equals(other.projectKey)) {
+      return false;
+    }
+    if (this.repositorySlug == null) {
+      if (other.repositorySlug != null) {
+        return false;
+      }
+    } else if (!this.repositorySlug.equals(other.repositorySlug)) {
+      return false;
+    }
+    if (this.name == null) {
+      if (other.name != null) {
+        return false;
+      }
+    } else if (!this.name.equals(other.name)) {
+      return false;
+    }
+    if (this.userLevel != other.userLevel) {
+      return false;
+    }
+    if (this.confirmation == null) {
+      if (other.confirmation != null) {
+        return false;
+      }
+    } else if (!this.confirmation.equals(other.confirmation)) {
+      return false;
+    }
+    if (this.buttonForm == null) {
+      if (other.buttonForm != null) {
+        return false;
+      }
+    } else if (!this.buttonForm.equals(other.buttonForm)) {
+      return false;
+    }
+    if (this.uuid == null) {
+      if (other.uuid != null) {
+        return false;
+      }
+    } else if (!this.uuid.equals(other.uuid)) {
+      return false;
+    }
+    return true;
   }
-  if (getClass() != obj.getClass()) {
-   return false;
+
+  public ON_OR_OFF getConfirmation() {
+    return this.confirmation;
   }
-  ButtonDTO other = (ButtonDTO) obj;
-  if (this.projectKey == null) {
-   if (other.projectKey != null) {
-    return false;
-   }
-  } else if (!this.projectKey.equals(other.projectKey)) {
-   return false;
+
+  public String getName() {
+    return this.name;
   }
-  if (this.repositorySlug == null) {
-   if (other.repositorySlug != null) {
-    return false;
-   }
-  } else if (!this.repositorySlug.equals(other.repositorySlug)) {
-   return false;
+
+  public String getButtonForm() {
+    return this.buttonForm;
   }
-  if (this.name == null) {
-   if (other.name != null) {
-    return false;
-   }
-  } else if (!this.name.equals(other.name)) {
-   return false;
+
+  public Optional<String> getProjectKey() {
+    return Optional.fromNullable(this.projectKey);
   }
-  if (this.userLevel != other.userLevel) {
-   return false;
+
+  public Optional<String> getRepositorySlug() {
+    return Optional.fromNullable(this.repositorySlug);
   }
-  if (this.confirmation == null) {
-   if (other.confirmation != null) {
-    return false;
-   }
-  } else if (!this.confirmation.equals(other.confirmation)) {
-   return false;
+
+  public USER_LEVEL getUserLevel() {
+    return this.userLevel;
   }
-  if (this.buttonForm == null) {
-   if (other.buttonForm != null) {
-    return false;
-   }
-  } else if (!this.buttonForm.equals(other.buttonForm)) {
-   return false;
+
+  public UUID getUuid() {
+    return this.uuid;
   }
-  if (this.uuid == null) {
-   if (other.uuid != null) {
-    return false;
-   }
-  } else if (!this.uuid.equals(other.uuid)) {
-   return false;
+
+  public UUID getUUID() {
+    return this.uuid;
   }
-  return true;
- }
 
- public ON_OR_OFF getConfirmation() {
-  return this.confirmation;
- }
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((this.projectKey == null) ? 0 : this.projectKey.hashCode());
+    result = prime * result + ((this.repositorySlug == null) ? 0 : this.repositorySlug.hashCode());
+    result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
+    result = prime * result + ((this.userLevel == null) ? 0 : this.userLevel.hashCode());
+    result = prime * result + ((this.uuid == null) ? 0 : this.uuid.hashCode());
+    result = prime * result + ((this.confirmation == null) ? 0 : this.confirmation.hashCode());
+    result = prime * result + ((this.buttonForm == null) ? 0 : this.buttonForm.hashCode());
+    return result;
+  }
 
- public String getName() {
-  return this.name;
- }
+  public void setConfirmation(ON_OR_OFF confirmation) {
+    this.confirmation = confirmation;
+  }
 
- public String getButtonForm() {
-  return this.buttonForm;
- }
+  public void setName(String name) {
+    this.name = name;
+  }
 
- public Optional<String> getProjectKey() {
-  return Optional.fromNullable(this.projectKey);
- }
+  public void setButtonForm(String buttonForm) {
+    this.buttonForm = buttonForm;
+  }
 
- public Optional<String> getRepositorySlug() {
-  return Optional.fromNullable(this.repositorySlug);
- }
+  public void setProjectKey(String projectKey) {
+    this.projectKey = projectKey;
+  }
 
- public USER_LEVEL getUserLevel() {
-  return this.userLevel;
- }
+  public void setRepositorySlug(String repositorySlug) {
+    this.repositorySlug = repositorySlug;
+  }
 
- public UUID getUuid() {
-  return this.uuid;
- }
+  public void setUserLevel(USER_LEVEL userLevel) {
+    this.userLevel = userLevel;
+  }
 
- public UUID getUUID() {
-  return this.uuid;
- }
+  public void setUuid(UUID uuid) {
+    this.uuid = uuid;
+  }
 
- @Override
- public int hashCode() {
-  final int prime = 31;
-  int result = 1;
-  result = prime * result + ((this.projectKey == null) ? 0 : this.projectKey.hashCode());
-  result = prime * result + ((this.repositorySlug == null) ? 0 : this.repositorySlug.hashCode());
-  result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
-  result = prime * result + ((this.userLevel == null) ? 0 : this.userLevel.hashCode());
-  result = prime * result + ((this.uuid == null) ? 0 : this.uuid.hashCode());
-  result = prime * result + ((this.confirmation == null) ? 0 : this.confirmation.hashCode());
-  result = prime * result + ((this.buttonForm == null) ? 0 : this.buttonForm.hashCode());
-  return result;
- }
-
- public void setConfirmation(ON_OR_OFF confirmation) {
-  this.confirmation = confirmation;
- }
-
- public void setName(String name) {
-  this.name = name;
- }
-
- public void setButtonForm(String buttonForm) {  
-   this.buttonForm = buttonForm;
- }
-
- public void setProjectKey(String projectKey) {
-  this.projectKey = projectKey;
- }
-
- public void setRepositorySlug(String repositorySlug) {
-  this.repositorySlug = repositorySlug;
- }
-
- public void setUserLevel(USER_LEVEL userLevel) {
-  this.userLevel = userLevel;
- }
-
- public void setUuid(UUID uuid) {
-  this.uuid = uuid;
- }
-
- @Override
- public String toString() {
-  return "ButtonDTO [name=" + this.name + ", userLevel=" + this.userLevel + ", uuid=" + this.uuid + ", repositorySlug="
-    + this.repositorySlug + ", projectKey=" + this.projectKey + ", buttonForm=" + this.buttonForm + ", confirmation=" + this.confirmation + "]";
- }
-
+  @Override
+  public String toString() {
+    return "ButtonDTO [name="
+        + this.name
+        + ", userLevel="
+        + this.userLevel
+        + ", uuid="
+        + this.uuid
+        + ", repositorySlug="
+        + this.repositorySlug
+        + ", projectKey="
+        + this.projectKey
+        + ", buttonForm="
+        + this.buttonForm
+        + ", confirmation="
+        + this.confirmation
+        + "]";
+  }
 }

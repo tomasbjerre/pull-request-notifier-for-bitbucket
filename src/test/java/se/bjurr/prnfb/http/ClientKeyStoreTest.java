@@ -10,52 +10,54 @@ import se.bjurr.prnfb.settings.PrnfbSettings;
 
 public class ClientKeyStoreTest {
 
- @Test(expected = RuntimeException.class)
- public void testThatExceptionIsThrownIfKeyStoreNotFound() {
-  PrnfbSettings settings = prnfbSettingsBuilder()//
-    .setPrnfbSettingsData(//
-      prnfbSettingsDataBuilder()//
-        .setKeyStore("keyStore")//
-        .build())//
-    .build();
+  @Test(expected = RuntimeException.class)
+  public void testThatExceptionIsThrownIfKeyStoreNotFound() {
+    PrnfbSettings settings =
+        prnfbSettingsBuilder() //
+            .setPrnfbSettingsData( //
+                prnfbSettingsDataBuilder() //
+                    .setKeyStore("keyStore") //
+                    .build()) //
+            .build();
 
-  ClientKeyStore clientKeyStore = new ClientKeyStore(settings.getPrnfbSettingsData());
+    ClientKeyStore clientKeyStore = new ClientKeyStore(settings.getPrnfbSettingsData());
 
-  assertThat(clientKeyStore.getPassword())//
-    .isNull();
-  assertThat(clientKeyStore.getKeyStore().isPresent())//
-    .isTrue();
- }
+    assertThat(clientKeyStore.getPassword()) //
+        .isNull();
+    assertThat(clientKeyStore.getKeyStore().isPresent()) //
+        .isTrue();
+  }
 
- @Test(expected = RuntimeException.class)
- public void testThatExceptionIsThrownIfKeyStoreNotFoundAndPasswordSet() {
-  PrnfbSettings settings = prnfbSettingsBuilder()//
-    .setPrnfbSettingsData(//
-      prnfbSettingsDataBuilder()//
-        .setKeyStore("keyStore")//
-        .setKeyStorePassword("keyStorePassword")//
-        .build())//
-    .build();
+  @Test(expected = RuntimeException.class)
+  public void testThatExceptionIsThrownIfKeyStoreNotFoundAndPasswordSet() {
+    PrnfbSettings settings =
+        prnfbSettingsBuilder() //
+            .setPrnfbSettingsData( //
+                prnfbSettingsDataBuilder() //
+                    .setKeyStore("keyStore") //
+                    .setKeyStorePassword("keyStorePassword") //
+                    .build()) //
+            .build();
 
-  ClientKeyStore clientKeyStore = new ClientKeyStore(settings.getPrnfbSettingsData());
+    ClientKeyStore clientKeyStore = new ClientKeyStore(settings.getPrnfbSettingsData());
 
-  assertThat(clientKeyStore.getPassword())//
-    .isNull();
-  assertThat(clientKeyStore.getKeyStore().isPresent())//
-    .isTrue();
- }
+    assertThat(clientKeyStore.getPassword()) //
+        .isNull();
+    assertThat(clientKeyStore.getKeyStore().isPresent()) //
+        .isTrue();
+  }
 
- @Test
- public void testThatNoKeyStoreIsCreatedIfNoSettings() {
-  PrnfbSettings settings = prnfbSettingsBuilder()//
-    .build();
+  @Test
+  public void testThatNoKeyStoreIsCreatedIfNoSettings() {
+    PrnfbSettings settings =
+        prnfbSettingsBuilder() //
+            .build();
 
-  ClientKeyStore clientKeyStore = new ClientKeyStore(settings.getPrnfbSettingsData());
+    ClientKeyStore clientKeyStore = new ClientKeyStore(settings.getPrnfbSettingsData());
 
-  assertThat(clientKeyStore.getPassword())//
-    .isNull();
-  assertThat(clientKeyStore.getKeyStore().isPresent())//
-    .isFalse();
- }
-
+    assertThat(clientKeyStore.getPassword()) //
+        .isNull();
+    assertThat(clientKeyStore.getKeyStore().isPresent()) //
+        .isFalse();
+  }
 }

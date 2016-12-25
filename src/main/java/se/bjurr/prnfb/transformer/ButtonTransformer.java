@@ -14,52 +14,54 @@ import se.bjurr.prnfb.settings.PrnfbButton;
 
 public class ButtonTransformer {
 
- public static ButtonDTO toButtonDto(PrnfbButton from) {
-  ButtonDTO to = new ButtonDTO();
-  to.setName(from.getName());
-  to.setUserLevel(from.getUserLevel());
-  to.setUuid(from.getUuid());
-  to.setProjectKey(from.getProjectKey().orNull());
-  to.setRepositorySlug(from.getRepositorySlug().orNull());
-  to.setConfirmation(from.getConfirmation());
-  to.setButtonForm(from.getButtonForm());
-  return to;
- }
-
- public static List<ButtonDTO> toButtonDtoList(Iterable<PrnfbButton> allowedButtons) {
-  List<ButtonDTO> to = newArrayList();
-  for (PrnfbButton from : allowedButtons) {
-   to.add(toButtonDto(from));
+  public static ButtonDTO toButtonDto(PrnfbButton from) {
+    ButtonDTO to = new ButtonDTO();
+    to.setName(from.getName());
+    to.setUserLevel(from.getUserLevel());
+    to.setUuid(from.getUuid());
+    to.setProjectKey(from.getProjectKey().orNull());
+    to.setRepositorySlug(from.getRepositorySlug().orNull());
+    to.setConfirmation(from.getConfirmation());
+    to.setButtonForm(from.getButtonForm());
+    return to;
   }
-  return to;
- }
 
- public static PrnfbButton toPrnfbButton(ButtonDTO buttonDto) {
-  return new PrnfbButton(//
-    buttonDto.getUUID(), //
-    buttonDto.getName(), //
-    buttonDto.getUserLevel(), //
-    buttonDto.getConfirmation(), //
-    buttonDto.getProjectKey().orNull(), //
-    buttonDto.getRepositorySlug().orNull(),
-    buttonDto.getButtonForm());//
- }
-
- public static ButtonPressDTO toTriggerResultDto(PrnfbButton button, List<NotificationResponse> results) {
-  List<NotificationResponseDTO> notificationResponses = newArrayList();
-  for (NotificationResponse from : results) {
-   String content = null;
-   int status = 0;
-   URI uri = null;
-   if (from.getHttpResponse() != null) {
-    content = from.getHttpResponse().getContent();
-    status = from.getHttpResponse().getStatus();
-    uri = from.getHttpResponse().getUri();
-   }
-   UUID notification = from.getNotification();
-   String notificationName = from.getNotificationName();
-   notificationResponses.add(new NotificationResponseDTO(uri, content, status, notification, notificationName));
+  public static List<ButtonDTO> toButtonDtoList(Iterable<PrnfbButton> allowedButtons) {
+    List<ButtonDTO> to = newArrayList();
+    for (PrnfbButton from : allowedButtons) {
+      to.add(toButtonDto(from));
+    }
+    return to;
   }
-  return new ButtonPressDTO(button.getConfirmation(), notificationResponses);
- }
+
+  public static PrnfbButton toPrnfbButton(ButtonDTO buttonDto) {
+    return new PrnfbButton( //
+        buttonDto.getUUID(), //
+        buttonDto.getName(), //
+        buttonDto.getUserLevel(), //
+        buttonDto.getConfirmation(), //
+        buttonDto.getProjectKey().orNull(), //
+        buttonDto.getRepositorySlug().orNull(),
+        buttonDto.getButtonForm()); //
+  }
+
+  public static ButtonPressDTO toTriggerResultDto(
+      PrnfbButton button, List<NotificationResponse> results) {
+    List<NotificationResponseDTO> notificationResponses = newArrayList();
+    for (NotificationResponse from : results) {
+      String content = null;
+      int status = 0;
+      URI uri = null;
+      if (from.getHttpResponse() != null) {
+        content = from.getHttpResponse().getContent();
+        status = from.getHttpResponse().getStatus();
+        uri = from.getHttpResponse().getUri();
+      }
+      UUID notification = from.getNotification();
+      String notificationName = from.getNotificationName();
+      notificationResponses.add(
+          new NotificationResponseDTO(uri, content, status, notification, notificationName));
+    }
+    return new ButtonPressDTO(button.getConfirmation(), notificationResponses);
+  }
 }

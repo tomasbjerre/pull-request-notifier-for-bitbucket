@@ -27,49 +27,58 @@ import se.bjurr.prnfb.settings.PrnfbNotification;
 
 public class PrnfbVariableTest {
 
- private ApplicationUser applicationUser;
- private ClientKeyStore clientKeyStore;
- private PrnfbNotification prnfbNotification;
- private ApplicationPropertiesService propertiesService;
- private PullRequest pullRequest;
- private PrnfbPullRequestAction pullRequestAction;
- private RepositoryService repositoryService;
- private SecurityService securityService;
- private boolean shouldAcceptAnyCertificate;
- private Map<PrnfbVariable, Supplier<String>> variables;
+  private ApplicationUser applicationUser;
+  private ClientKeyStore clientKeyStore;
+  private PrnfbNotification prnfbNotification;
+  private ApplicationPropertiesService propertiesService;
+  private PullRequest pullRequest;
+  private PrnfbPullRequestAction pullRequestAction;
+  private RepositoryService repositoryService;
+  private SecurityService securityService;
+  private boolean shouldAcceptAnyCertificate;
+  private Map<PrnfbVariable, Supplier<String>> variables;
 
- private File findReadme(File file) {
-  File candidate = new File(file.getAbsolutePath() + "/README.md");
-  if (candidate.exists()) {
-   return candidate;
+  private File findReadme(File file) {
+    File candidate = new File(file.getAbsolutePath() + "/README.md");
+    if (candidate.exists()) {
+      return candidate;
+    }
+    return findReadme(file.getParentFile());
   }
-  return findReadme(file.getParentFile());
- }
 
- @Test
- public void testThatAdminAndReadmeContainsVariables() throws IOException, URISyntaxException {
-  URL adminResource = Resources.getResource("admin.vm");
-  String adminPageContent = Resources.toString(adminResource, UTF_8);
-  File readme = findReadme(new File(adminResource.toURI()));
-  String readmeContent = Files.toString(readme, UTF_8);
-  for (PrnfbVariable variable : PrnfbVariable.values()) {
-   assertThat(adminPageContent)//
-     .as("admin.vm should include " + variable.name() + "\nWas:" + adminPageContent)//
-     .contains(variable.name());
-   assertThat(readmeContent)//
-     .as("README.md should include " + variable.name() + "\nWas:" + readmeContent)//
-     .contains(variable.name());
+  @Test
+  public void testThatAdminAndReadmeContainsVariables() throws IOException, URISyntaxException {
+    URL adminResource = Resources.getResource("admin.vm");
+    String adminPageContent = Resources.toString(adminResource, UTF_8);
+    File readme = findReadme(new File(adminResource.toURI()));
+    String readmeContent = Files.toString(readme, UTF_8);
+    for (PrnfbVariable variable : PrnfbVariable.values()) {
+      assertThat(adminPageContent) //
+          .as("admin.vm should include " + variable.name() + "\nWas:" + adminPageContent) //
+          .contains(variable.name());
+      assertThat(readmeContent) //
+          .as("README.md should include " + variable.name() + "\nWas:" + readmeContent) //
+          .contains(variable.name());
+    }
   }
- }
 
- @Test
- public void testThatEverythingVariableIsResolvedToEveryOtherVariable() {
-  String actual = EVERYTHING_URL.resolve(pullRequest, pullRequestAction, applicationUser, repositoryService,
-    propertiesService, prnfbNotification, variables, clientKeyStore, shouldAcceptAnyCertificate, securityService);
-  assertThat(actual)//
-    .isEqualTo(
-      "BUTTON_FORM_DATA=\\${BUTTON_FORM_DATA}&BUTTON_TRIGGER_TITLE=\\${BUTTON_TRIGGER_TITLE}&INJECTION_URL_VALUE=\\${INJECTION_URL_VALUE}&PULL_REQUEST_ACTION=\\${PULL_REQUEST_ACTION}&PULL_REQUEST_AUTHOR_DISPLAY_NAME=\\${PULL_REQUEST_AUTHOR_DISPLAY_NAME}&PULL_REQUEST_AUTHOR_EMAIL=\\${PULL_REQUEST_AUTHOR_EMAIL}&PULL_REQUEST_AUTHOR_ID=\\${PULL_REQUEST_AUTHOR_ID}&PULL_REQUEST_AUTHOR_NAME=\\${PULL_REQUEST_AUTHOR_NAME}&PULL_REQUEST_AUTHOR_SLUG=\\${PULL_REQUEST_AUTHOR_SLUG}&PULL_REQUEST_COMMENT_ACTION=\\${PULL_REQUEST_COMMENT_ACTION}&PULL_REQUEST_COMMENT_TEXT=\\${PULL_REQUEST_COMMENT_TEXT}&PULL_REQUEST_FROM_BRANCH=\\${PULL_REQUEST_FROM_BRANCH}&PULL_REQUEST_FROM_HASH=\\${PULL_REQUEST_FROM_HASH}&PULL_REQUEST_FROM_HTTP_CLONE_URL=\\${PULL_REQUEST_FROM_HTTP_CLONE_URL}&PULL_REQUEST_FROM_ID=\\${PULL_REQUEST_FROM_ID}&PULL_REQUEST_FROM_REPO_ID=\\${PULL_REQUEST_FROM_REPO_ID}&PULL_REQUEST_FROM_REPO_NAME=\\${PULL_REQUEST_FROM_REPO_NAME}&PULL_REQUEST_FROM_REPO_PROJECT_ID=\\${PULL_REQUEST_FROM_REPO_PROJECT_ID}&PULL_REQUEST_FROM_REPO_PROJECT_KEY=\\${PULL_REQUEST_FROM_REPO_PROJECT_KEY}&PULL_REQUEST_FROM_REPO_SLUG=\\${PULL_REQUEST_FROM_REPO_SLUG}&PULL_REQUEST_FROM_SSH_CLONE_URL=\\${PULL_REQUEST_FROM_SSH_CLONE_URL}&PULL_REQUEST_ID=\\${PULL_REQUEST_ID}&PULL_REQUEST_MERGE_COMMIT=\\${PULL_REQUEST_MERGE_COMMIT}&PULL_REQUEST_PARTICIPANTS_APPROVED_COUNT=\\${PULL_REQUEST_PARTICIPANTS_APPROVED_COUNT}&PULL_REQUEST_PARTICIPANTS_EMAIL=\\${PULL_REQUEST_PARTICIPANTS_EMAIL}&PULL_REQUEST_REVIEWERS=\\${PULL_REQUEST_REVIEWERS}&PULL_REQUEST_REVIEWERS_APPROVED_COUNT=\\${PULL_REQUEST_REVIEWERS_APPROVED_COUNT}&PULL_REQUEST_REVIEWERS_EMAIL=\\${PULL_REQUEST_REVIEWERS_EMAIL}&PULL_REQUEST_REVIEWERS_ID=\\${PULL_REQUEST_REVIEWERS_ID}&PULL_REQUEST_REVIEWERS_SLUG=\\${PULL_REQUEST_REVIEWERS_SLUG}&PULL_REQUEST_STATE=\\${PULL_REQUEST_STATE}&PULL_REQUEST_TITLE=\\${PULL_REQUEST_TITLE}&PULL_REQUEST_TO_BRANCH=\\${PULL_REQUEST_TO_BRANCH}&PULL_REQUEST_TO_HASH=\\${PULL_REQUEST_TO_HASH}&PULL_REQUEST_TO_HTTP_CLONE_URL=\\${PULL_REQUEST_TO_HTTP_CLONE_URL}&PULL_REQUEST_TO_ID=\\${PULL_REQUEST_TO_ID}&PULL_REQUEST_TO_REPO_ID=\\${PULL_REQUEST_TO_REPO_ID}&PULL_REQUEST_TO_REPO_NAME=\\${PULL_REQUEST_TO_REPO_NAME}&PULL_REQUEST_TO_REPO_PROJECT_ID=\\${PULL_REQUEST_TO_REPO_PROJECT_ID}&PULL_REQUEST_TO_REPO_PROJECT_KEY=\\${PULL_REQUEST_TO_REPO_PROJECT_KEY}&PULL_REQUEST_TO_REPO_SLUG=\\${PULL_REQUEST_TO_REPO_SLUG}&PULL_REQUEST_TO_SSH_CLONE_URL=\\${PULL_REQUEST_TO_SSH_CLONE_URL}&PULL_REQUEST_URL=\\${PULL_REQUEST_URL}&PULL_REQUEST_USER_DISPLAY_NAME=\\${PULL_REQUEST_USER_DISPLAY_NAME}&PULL_REQUEST_USER_EMAIL_ADDRESS=\\${PULL_REQUEST_USER_EMAIL_ADDRESS}&PULL_REQUEST_USER_ID=\\${PULL_REQUEST_USER_ID}&PULL_REQUEST_USER_NAME=\\${PULL_REQUEST_USER_NAME}&PULL_REQUEST_USER_SLUG=\\${PULL_REQUEST_USER_SLUG}&PULL_REQUEST_VERSION=\\${PULL_REQUEST_VERSION}")//
-    .doesNotContain(EVERYTHING_URL.name());
- }
-
+  @Test
+  public void testThatEverythingVariableIsResolvedToEveryOtherVariable() {
+    String actual =
+        EVERYTHING_URL.resolve(
+            pullRequest,
+            pullRequestAction,
+            applicationUser,
+            repositoryService,
+            propertiesService,
+            prnfbNotification,
+            variables,
+            clientKeyStore,
+            shouldAcceptAnyCertificate,
+            securityService);
+    assertThat(actual) //
+        .isEqualTo(
+            "BUTTON_FORM_DATA=\\${BUTTON_FORM_DATA}&BUTTON_TRIGGER_TITLE=\\${BUTTON_TRIGGER_TITLE}&INJECTION_URL_VALUE=\\${INJECTION_URL_VALUE}&PULL_REQUEST_ACTION=\\${PULL_REQUEST_ACTION}&PULL_REQUEST_AUTHOR_DISPLAY_NAME=\\${PULL_REQUEST_AUTHOR_DISPLAY_NAME}&PULL_REQUEST_AUTHOR_EMAIL=\\${PULL_REQUEST_AUTHOR_EMAIL}&PULL_REQUEST_AUTHOR_ID=\\${PULL_REQUEST_AUTHOR_ID}&PULL_REQUEST_AUTHOR_NAME=\\${PULL_REQUEST_AUTHOR_NAME}&PULL_REQUEST_AUTHOR_SLUG=\\${PULL_REQUEST_AUTHOR_SLUG}&PULL_REQUEST_COMMENT_ACTION=\\${PULL_REQUEST_COMMENT_ACTION}&PULL_REQUEST_COMMENT_TEXT=\\${PULL_REQUEST_COMMENT_TEXT}&PULL_REQUEST_FROM_BRANCH=\\${PULL_REQUEST_FROM_BRANCH}&PULL_REQUEST_FROM_HASH=\\${PULL_REQUEST_FROM_HASH}&PULL_REQUEST_FROM_HTTP_CLONE_URL=\\${PULL_REQUEST_FROM_HTTP_CLONE_URL}&PULL_REQUEST_FROM_ID=\\${PULL_REQUEST_FROM_ID}&PULL_REQUEST_FROM_REPO_ID=\\${PULL_REQUEST_FROM_REPO_ID}&PULL_REQUEST_FROM_REPO_NAME=\\${PULL_REQUEST_FROM_REPO_NAME}&PULL_REQUEST_FROM_REPO_PROJECT_ID=\\${PULL_REQUEST_FROM_REPO_PROJECT_ID}&PULL_REQUEST_FROM_REPO_PROJECT_KEY=\\${PULL_REQUEST_FROM_REPO_PROJECT_KEY}&PULL_REQUEST_FROM_REPO_SLUG=\\${PULL_REQUEST_FROM_REPO_SLUG}&PULL_REQUEST_FROM_SSH_CLONE_URL=\\${PULL_REQUEST_FROM_SSH_CLONE_URL}&PULL_REQUEST_ID=\\${PULL_REQUEST_ID}&PULL_REQUEST_MERGE_COMMIT=\\${PULL_REQUEST_MERGE_COMMIT}&PULL_REQUEST_PARTICIPANTS_APPROVED_COUNT=\\${PULL_REQUEST_PARTICIPANTS_APPROVED_COUNT}&PULL_REQUEST_PARTICIPANTS_EMAIL=\\${PULL_REQUEST_PARTICIPANTS_EMAIL}&PULL_REQUEST_REVIEWERS=\\${PULL_REQUEST_REVIEWERS}&PULL_REQUEST_REVIEWERS_APPROVED_COUNT=\\${PULL_REQUEST_REVIEWERS_APPROVED_COUNT}&PULL_REQUEST_REVIEWERS_EMAIL=\\${PULL_REQUEST_REVIEWERS_EMAIL}&PULL_REQUEST_REVIEWERS_ID=\\${PULL_REQUEST_REVIEWERS_ID}&PULL_REQUEST_REVIEWERS_SLUG=\\${PULL_REQUEST_REVIEWERS_SLUG}&PULL_REQUEST_STATE=\\${PULL_REQUEST_STATE}&PULL_REQUEST_TITLE=\\${PULL_REQUEST_TITLE}&PULL_REQUEST_TO_BRANCH=\\${PULL_REQUEST_TO_BRANCH}&PULL_REQUEST_TO_HASH=\\${PULL_REQUEST_TO_HASH}&PULL_REQUEST_TO_HTTP_CLONE_URL=\\${PULL_REQUEST_TO_HTTP_CLONE_URL}&PULL_REQUEST_TO_ID=\\${PULL_REQUEST_TO_ID}&PULL_REQUEST_TO_REPO_ID=\\${PULL_REQUEST_TO_REPO_ID}&PULL_REQUEST_TO_REPO_NAME=\\${PULL_REQUEST_TO_REPO_NAME}&PULL_REQUEST_TO_REPO_PROJECT_ID=\\${PULL_REQUEST_TO_REPO_PROJECT_ID}&PULL_REQUEST_TO_REPO_PROJECT_KEY=\\${PULL_REQUEST_TO_REPO_PROJECT_KEY}&PULL_REQUEST_TO_REPO_SLUG=\\${PULL_REQUEST_TO_REPO_SLUG}&PULL_REQUEST_TO_SSH_CLONE_URL=\\${PULL_REQUEST_TO_SSH_CLONE_URL}&PULL_REQUEST_URL=\\${PULL_REQUEST_URL}&PULL_REQUEST_USER_DISPLAY_NAME=\\${PULL_REQUEST_USER_DISPLAY_NAME}&PULL_REQUEST_USER_EMAIL_ADDRESS=\\${PULL_REQUEST_USER_EMAIL_ADDRESS}&PULL_REQUEST_USER_ID=\\${PULL_REQUEST_USER_ID}&PULL_REQUEST_USER_NAME=\\${PULL_REQUEST_USER_NAME}&PULL_REQUEST_USER_SLUG=\\${PULL_REQUEST_USER_SLUG}&PULL_REQUEST_VERSION=\\${PULL_REQUEST_VERSION}") //
+        .doesNotContain(EVERYTHING_URL.name());
+  }
 }
