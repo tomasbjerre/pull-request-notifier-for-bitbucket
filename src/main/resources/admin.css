@@ -8,3 +8,8 @@
 .statusresponse {
     margin: 10px;
 }
+
+.textarea {
+    width: 400px;
+    max-width: 400px !important;
+}

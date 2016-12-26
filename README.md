@@ -128,7 +128,7 @@ A form is defined as a JSON array. Here is an example that shows all possibiliti
         {   "name": "var3",
             "label": "var3 label",
             "defaultValue": "option2_name",
-            "options": [
+            "buttonFormElementOptionList": [
                 {"label": "option1 label", "name": "option1_name"},
                 {"label": "option2 label", "name": "option2_name"},
                 {"label": "option3 label", "name": "option3_name"}
@@ -141,7 +141,7 @@ A form is defined as a JSON array. Here is an example that shows all possibiliti
             "label": "var4 label",
             "type": "checkbox", 
             "required": true,
-            "options": [
+            "buttonFormElementOptionList": [
                 {"label": "option1 label", "name": "option1_name", "defaultValue": true}, 
                 {"label": "option2 label", "name": "option2_name", "defaultValue": true}
             ],

@@ -2,18 +2,32 @@ package se.bjurr.prnfb.presentation.dto;
 
 import static javax.xml.bind.annotation.XmlAccessType.FIELD;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import se.bjurr.prnfb.settings.USER_LEVEL;
-
 import com.google.common.base.Optional;
+import com.google.gson.reflect.TypeToken;
+
+import se.bjurr.prnfb.settings.USER_LEVEL;
 
 @XmlRootElement
 @XmlAccessorType(FIELD)
 public class ButtonDTO implements Comparable<ButtonDTO> {
+  public static Type BUTTON_FORM_LIST_DTO_TYPE =
+      new TypeToken<ArrayList<ButtonFormElementDTO>>() {}.getType();
+
+  private List<ButtonFormElementDTO> buttonFormList;
+  /**
+   * Makes it easier to implement GUI. JSON String representation of {@link #buttonFormList}. If
+   * {@link #buttonFormList} is not defined and {@link #buttonFormListString} is defined, then that
+   * is parsed to {@link #buttonFormList}.
+   */
+  private String buttonFormListString;
 
   private ON_OR_OFF confirmation;
   private String name;
@@ -21,7 +35,6 @@ public class ButtonDTO implements Comparable<ButtonDTO> {
   private String repositorySlug;
   private USER_LEVEL userLevel;
   private UUID uuid;
-  private String buttonForm;
 
   @Override
   public int compareTo(ButtonDTO o) {
@@ -40,52 +53,52 @@ public class ButtonDTO implements Comparable<ButtonDTO> {
       return false;
     }
     ButtonDTO other = (ButtonDTO) obj;
-    if (this.projectKey == null) {
-      if (other.projectKey != null) {
+    if (buttonFormList == null) {
+      if (other.buttonFormList != null) {
         return false;
       }
-    } else if (!this.projectKey.equals(other.projectKey)) {
+    } else if (!buttonFormList.equals(other.buttonFormList)) {
       return false;
     }
-    if (this.repositorySlug == null) {
-      if (other.repositorySlug != null) {
-        return false;
-      }
-    } else if (!this.repositorySlug.equals(other.repositorySlug)) {
+    if (confirmation != other.confirmation) {
       return false;
     }
-    if (this.name == null) {
+    if (name == null) {
       if (other.name != null) {
         return false;
       }
-    } else if (!this.name.equals(other.name)) {
+    } else if (!name.equals(other.name)) {
       return false;
     }
-    if (this.userLevel != other.userLevel) {
-      return false;
-    }
-    if (this.confirmation == null) {
-      if (other.confirmation != null) {
+    if (projectKey == null) {
+      if (other.projectKey != null) {
         return false;
       }
-    } else if (!this.confirmation.equals(other.confirmation)) {
+    } else if (!projectKey.equals(other.projectKey)) {
       return false;
     }
-    if (this.buttonForm == null) {
-      if (other.buttonForm != null) {
+    if (repositorySlug == null) {
+      if (other.repositorySlug != null) {
         return false;
       }
-    } else if (!this.buttonForm.equals(other.buttonForm)) {
+    } else if (!repositorySlug.equals(other.repositorySlug)) {
       return false;
     }
-    if (this.uuid == null) {
+    if (userLevel != other.userLevel) {
+      return false;
+    }
+    if (uuid == null) {
       if (other.uuid != null) {
         return false;
       }
-    } else if (!this.uuid.equals(other.uuid)) {
+    } else if (!uuid.equals(other.uuid)) {
       return false;
     }
     return true;
+  }
+
+  public List<ButtonFormElementDTO> getButtonFormList() {
+    return buttonFormList;
   }
 
   public ON_OR_OFF getConfirmation() {
@@ -94,10 +107,6 @@ public class ButtonDTO implements Comparable<ButtonDTO> {
 
   public String getName() {
     return this.name;
-  }
-
-  public String getButtonForm() {
-    return this.buttonForm;
   }
 
   public Optional<String> getProjectKey() {
@@ -124,14 +133,26 @@ public class ButtonDTO implements Comparable<ButtonDTO> {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((this.projectKey == null) ? 0 : this.projectKey.hashCode());
-    result = prime * result + ((this.repositorySlug == null) ? 0 : this.repositorySlug.hashCode());
-    result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
-    result = prime * result + ((this.userLevel == null) ? 0 : this.userLevel.hashCode());
-    result = prime * result + ((this.uuid == null) ? 0 : this.uuid.hashCode());
-    result = prime * result + ((this.confirmation == null) ? 0 : this.confirmation.hashCode());
-    result = prime * result + ((this.buttonForm == null) ? 0 : this.buttonForm.hashCode());
+    result = prime * result + (buttonFormList == null ? 0 : buttonFormList.hashCode());
+    result = prime * result + (confirmation == null ? 0 : confirmation.hashCode());
+    result = prime * result + (name == null ? 0 : name.hashCode());
+    result = prime * result + (projectKey == null ? 0 : projectKey.hashCode());
+    result = prime * result + (repositorySlug == null ? 0 : repositorySlug.hashCode());
+    result = prime * result + (userLevel == null ? 0 : userLevel.hashCode());
+    result = prime * result + (uuid == null ? 0 : uuid.hashCode());
     return result;
+  }
+
+  public void setButtonFormListString(String buttonFormDtoListString) {
+    this.buttonFormListString = buttonFormDtoListString;
+  }
+
+  public String getButtonFormListString() {
+    return buttonFormListString;
+  }
+
+  public void setButtonFormList(List<ButtonFormElementDTO> buttonFormList) {
+    this.buttonFormList = buttonFormList;
   }
 
   public void setConfirmation(ON_OR_OFF confirmation) {
@@ -140,10 +161,6 @@ public class ButtonDTO implements Comparable<ButtonDTO> {
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public void setButtonForm(String buttonForm) {
-    this.buttonForm = buttonForm;
   }
 
   public void setProjectKey(String projectKey) {
@@ -164,20 +181,20 @@ public class ButtonDTO implements Comparable<ButtonDTO> {
 
   @Override
   public String toString() {
-    return "ButtonDTO [name="
-        + this.name
-        + ", userLevel="
-        + this.userLevel
-        + ", uuid="
-        + this.uuid
-        + ", repositorySlug="
-        + this.repositorySlug
-        + ", projectKey="
-        + this.projectKey
-        + ", buttonForm="
-        + this.buttonForm
+    return "ButtonDTO [buttonFormDtoList="
+        + buttonFormList
         + ", confirmation="
-        + this.confirmation
+        + confirmation
+        + ", name="
+        + name
+        + ", projectKey="
+        + projectKey
+        + ", repositorySlug="
+        + repositorySlug
+        + ", userLevel="
+        + userLevel
+        + ", uuid="
+        + uuid
         + "]";
   }
 }

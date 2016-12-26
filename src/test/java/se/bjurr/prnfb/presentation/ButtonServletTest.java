@@ -2,15 +2,21 @@ package se.bjurr.prnfb.presentation;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static se.bjurr.prnfb.presentation.dto.ButtonFormType.radio;
+import static se.bjurr.prnfb.presentation.dto.ButtonFormType.textarea;
 import static se.bjurr.prnfb.settings.USER_LEVEL.EVERYONE;
 import static se.bjurr.prnfb.test.Podam.populatedInstanceOf;
 import static se.bjurr.prnfb.transformer.ButtonTransformer.toPrnfbButton;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,13 +26,15 @@ import javax.ws.rs.core.Response;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import static org.mockito.Mockito.mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import se.bjurr.prnfb.presentation.dto.ButtonDTO;
+import se.bjurr.prnfb.presentation.dto.ButtonFormElementDTO;
 import se.bjurr.prnfb.presentation.dto.ON_OR_OFF;
 import se.bjurr.prnfb.service.ButtonsService;
+import se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR;
+import se.bjurr.prnfb.service.PrnfbRendererWrapper;
 import se.bjurr.prnfb.service.SettingsService;
 import se.bjurr.prnfb.service.UserCheckService;
 import se.bjurr.prnfb.settings.PrnfbButton;
@@ -40,6 +48,19 @@ public class ButtonServletTest {
   @Mock private SettingsService settingsService;
   private ButtonServlet sut;
   @Mock private UserCheckService userCheckService;
+  private PrnfbRendererWrapper rendererWrapper;
+
+  private void allowAll() {
+    when(this.userCheckService.filterAllowed(anyListOf(PrnfbButton.class))) //
+        .thenAnswer(
+            new Answer<List<PrnfbButton>>() {
+              @SuppressWarnings("unchecked")
+              @Override
+              public List<PrnfbButton> answer(InvocationOnMock invocation) throws Throwable {
+                return (List<PrnfbButton>) invocation.getArguments()[0];
+              }
+            });
+  }
 
   @Before
   public void before() throws Exception {
@@ -52,8 +73,41 @@ public class ButtonServletTest {
 
     this.buttonDto1 = populatedInstanceOf(ButtonDTO.class);
     this.button1 = toPrnfbButton(this.buttonDto1);
+
     this.buttonDto2 = populatedInstanceOf(ButtonDTO.class);
     this.button2 = toPrnfbButton(this.buttonDto2);
+
+    rendererWrapper =
+        new PrnfbRendererWrapper(null, null, null) {
+          @Override
+          public String render(String inputString, ENCODE_FOR encodeFor) {
+            return inputString;
+          }
+        };
+  }
+
+  private ButtonDTO createButton() {
+    ButtonDTO button = new ButtonDTO();
+    button.setName("title");
+    button.setUserLevel(EVERYONE);
+    button.setUuid(UUID.randomUUID());
+    button.setConfirmation(ON_OR_OFF.off);
+    button.setProjectKey("p1");
+    button.setRepositorySlug("r1");
+    return button;
+  }
+
+  private PrnfbButton createPrnfbButton(ButtonDTO button) {
+    PrnfbButton prnfbButton =
+        new PrnfbButton(
+            button.getUUID(),
+            button.getName(),
+            button.getUserLevel(),
+            button.getConfirmation(),
+            "p1",
+            "r1",
+            new ArrayList<>());
+    return prnfbButton;
   }
 
   @Test
@@ -95,22 +149,55 @@ public class ButtonServletTest {
 
   @Test
   public void testThatButtonCanBeListedForAPr() throws Exception {
+    this.buttonDto1 = populatedInstanceOf(ButtonDTO.class);
+    this.buttonDto1.setButtonFormList(this.buttonDto1.getButtonFormList().subList(0, 1));
+    this.buttonDto1
+        .getButtonFormList()
+        .get(0)
+        .setButtonFormElementOptionList(
+            this.buttonDto1
+                .getButtonFormList()
+                .get(0)
+                .getButtonFormElementOptionList()
+                .subList(0, 1));
+    this.button1 = toPrnfbButton(this.buttonDto1);
+
     Integer repositoryId = 2;
     Long pullRequestId = 3L;
     when(this.buttonsService.getButtons(repositoryId, pullRequestId)) //
-        .thenReturn(newArrayList(this.button1, this.button2));
-    when(this.buttonsService.getRenderedButtonFormData(
-            repositoryId, pullRequestId, this.button1.getUuid(), this.button1.getButtonForm())) //
-        .thenReturn(this.button1.getButtonForm());
-    when(this.buttonsService.getRenderedButtonFormData(
-            repositoryId, pullRequestId, this.button2.getUuid(), this.button2.getButtonForm())) //
-        .thenReturn(this.button2.getButtonForm());
+        .thenReturn(newArrayList(this.button1));
+    when(this.buttonsService.getRenderer(repositoryId, pullRequestId, this.button1.getUuid())) //
+        .thenReturn(rendererWrapper);
     allowAll();
 
     Response actual = this.sut.get(repositoryId, pullRequestId);
 
     @SuppressWarnings("unchecked")
     Iterable<ButtonDTO> actualList = (Iterable<ButtonDTO>) actual.getEntity();
+    Iterator<ButtonDTO> itr = actualList.iterator();
+    ButtonDTO buttonDTO1 = itr.next();
+    assertThat(buttonDTO1) //
+        .isEqualTo(this.buttonDto1);
+  }
+
+  @Test
+  public void testThatButtonsCanBeListedForAPr() throws Exception {
+    Integer repositoryId = 2;
+    Long pullRequestId = 3L;
+    when(this.buttonsService.getButtons(repositoryId, pullRequestId)) //
+        .thenReturn(newArrayList(this.button1, this.button2));
+    when(this.buttonsService.getRenderer(repositoryId, pullRequestId, this.button1.getUuid())) //
+        .thenReturn(rendererWrapper);
+    when(this.buttonsService.getRenderer(repositoryId, pullRequestId, this.button2.getUuid())) //
+        .thenReturn(rendererWrapper);
+    allowAll();
+
+    Response actual = this.sut.get(repositoryId, pullRequestId);
+
+    @SuppressWarnings("unchecked")
+    Iterable<ButtonDTO> actualList = (Iterable<ButtonDTO>) actual.getEntity();
+    assertThat(actualList) //
+        .hasSize(2);
     assertThat(actualList) //
         .containsOnly(this.buttonDto1, this.buttonDto2);
   }
@@ -143,8 +230,12 @@ public class ButtonServletTest {
     @SuppressWarnings("unchecked")
     Iterable<ButtonDTO> actualList = (Iterable<ButtonDTO>) actual.getEntity();
 
+    ButtonDTO firstButtonDto = actualList.iterator().next();
+
     assertThat(actualList) //
-        .containsOnly(this.buttonDto1);
+        .hasSize(1);
+    assertThat(firstButtonDto) //
+        .isEqualTo(this.buttonDto1);
   }
 
   @Test
@@ -159,13 +250,13 @@ public class ButtonServletTest {
         .thenReturn(true);
 
     HttpServletRequest mockRequest = mock(HttpServletRequest.class);
-    // setup the behaviour here (or do it in setup method or something)
-    when(mockRequest.getParameter("form")).thenReturn("{}");
+    String formDataFromUserInPrView = "{}";
+    when(mockRequest.getParameter("form")).thenReturn(formDataFromUserInPrView);
 
     this.sut.press(mockRequest, repositoryId, pullRequestId, buttonUuid);
 
     verify(this.buttonsService) //
-        .handlePressed(repositoryId, pullRequestId, buttonUuid, "{}");
+        .handlePressed(repositoryId, pullRequestId, buttonUuid, formDataFromUserInPrView);
   }
 
   @Test
@@ -181,39 +272,64 @@ public class ButtonServletTest {
         .addOrUpdateButton(prnfbButton);
   }
 
-  private void allowAll() {
-    when(this.userCheckService.filterAllowed(anyListOf(PrnfbButton.class))) //
-        .thenAnswer(
-            new Answer<List<PrnfbButton>>() {
-              @SuppressWarnings("unchecked")
-              @Override
-              public List<PrnfbButton> answer(InvocationOnMock invocation) throws Throwable {
-                return (List<PrnfbButton>) invocation.getArguments()[0];
-              }
-            });
+  @Test
+  public void testThatButtonFormJsonStringCanBeTransormedToDTO() {
+
+    ButtonFormElementDTO button = new ButtonFormElementDTO();
+    button.setDefaultValue("defaultValue");
+    button.setDescription("descr");
+    button.setLabel("label");
+    button.setName("name");
+    button.setRequired(true);
+    button.setType(textarea);
+    List<ButtonFormElementDTO> buttonFormDtoList = new ArrayList<>();
+    buttonFormDtoList.add(button);
+    List<ButtonFormElementDTO> actual = sut.getButtonFormDTOList(buttonFormDtoList);
+
+    assertThat(actual) //
+        .isNotNull() //
+        .hasSize(1);
   }
 
-  private ButtonDTO createButton() {
-    ButtonDTO button = new ButtonDTO();
-    button.setName("title");
-    button.setUserLevel(EVERYONE);
-    button.setUuid(UUID.randomUUID());
-    button.setConfirmation(ON_OR_OFF.off);
-    button.setProjectKey("p1");
-    button.setRepositorySlug("r1");
-    return button;
+  @Test
+  public void testThatButtonFormJsonStringCanFindProblemsInJsonNoName() {
+    ButtonFormElementDTO button = new ButtonFormElementDTO();
+    button.setDefaultValue("defaultValue");
+    button.setDescription("descr");
+    button.setLabel("label");
+    button.setName("");
+    button.setRequired(true);
+    button.setType(textarea);
+    List<ButtonFormElementDTO> buttonFormDtoList = new ArrayList<>();
+    buttonFormDtoList.add(button);
+    try {
+      sut.getButtonFormDTOList(buttonFormDtoList);
+    } catch (Error e) {
+      assertThat(e.getMessage()) //
+          .isEqualTo("The name must be set.");
+      return;
+    }
+    fail("No error from: " + buttonFormDtoList);
   }
 
-  private PrnfbButton createPrnfbButton(ButtonDTO button) {
-    PrnfbButton prnfbButton =
-        new PrnfbButton(
-            button.getUUID(),
-            button.getName(),
-            button.getUserLevel(),
-            button.getConfirmation(),
-            "p1",
-            "r1",
-            null);
-    return prnfbButton;
+  @Test
+  public void testThatButtonFormJsonStringCanFindProblemsInJsonNoRadioNoOptions() {
+    ButtonFormElementDTO button = new ButtonFormElementDTO();
+    button.setDefaultValue("defaultValue");
+    button.setDescription("descr");
+    button.setLabel("label");
+    button.setName("name");
+    button.setRequired(true);
+    button.setType(radio);
+    List<ButtonFormElementDTO> buttonFormDtoList = new ArrayList<>();
+    buttonFormDtoList.add(button);
+    try {
+      sut.getButtonFormDTOList(buttonFormDtoList);
+    } catch (Error e) {
+      assertThat(e.getMessage()) //
+          .isEqualTo("When adding radio buttons, options must also be defined.");
+      return;
+    }
+    fail("No error from: " + buttonFormDtoList);
   }
 }

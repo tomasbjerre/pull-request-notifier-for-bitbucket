@@ -20,7 +20,6 @@ define('plugin/prnfb/admin', [
   buttonsAdminUrl = buttonsAdminUrlPostUrl + '/projectKey/' + projectKey + '/repositorySlug/' + repositorySlug;
  }
 
-
  $(document)
   .ajaxStart(function() {
    $('.prnfb button').attr('aria-disabled', 'true');

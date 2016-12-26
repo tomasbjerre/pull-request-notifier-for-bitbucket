@@ -87,8 +87,8 @@ define('plugin/prnfb/pr-triggerbutton', [
   var escapedLabel = _.escape(item.label);
   var escapedDescription = _.escape(item.description);
   var checkboxItems = [$('<legend><span>' + escapedLabel + '</span></legend>')];
-  for (var i = 0; i < item.options.length; i++) {
-   checkboxItems.push(checkboxItemTemplate(item.options[i], i));
+  for (var i = 0; i < item.buttonFormElementOptionList.length; i++) {
+   checkboxItems.push(checkboxItemTemplate(item.buttonFormElementOptionList[i], i));
   }
   checkboxItems.push($('<div class="description">' + escapedDescription + '</div>'));
   return $("<fieldset class='group'/>").append(checkboxItems);
@@ -109,8 +109,8 @@ define('plugin/prnfb/pr-triggerbutton', [
   var escapedLabel = _.escape(item.label);
   var escapedDescription = _.escape(item.description);
   var radioItems = [$('<legend><span>' + escapedLabel + '</span></legend>')];
-  for (var i = 0; i < item.options.length; i++) {
-   radioItems.push(radioItemTemplate(item.options[i], i));
+  for (var i = 0; i < item.buttonFormElementOptionList.length; i++) {
+   radioItems.push(radioItemTemplate(item.buttonFormElementOptionList[i], i));
   }
   radioItems.push($('<div class="description">' + escapedDescription + '</div>'));
   return $("<fieldset class='group'/>").append(radioItems);
@@ -121,11 +121,9 @@ define('plugin/prnfb/pr-triggerbutton', [
    return null;
   }
 
-  var parsedForm = JSON.parse(formDescription);
-
   var formItems = [];
-  for (var i = 0; i < parsedForm.length; i++) {
-   var item = parsedForm[i];
+  for (var i = 0; i < formDescription.length; i++) {
+   var item = formDescription[i];
    switch (item.type) {
     case "input":
      {
@@ -246,9 +244,9 @@ define('plugin/prnfb/pr-triggerbutton', [
       });
      };
 
-     if (item.buttonForm) {
+     if (item.buttonFormList && item.buttonFormList.length > 0) {
       // Create the form and dialog     
-      var form = formTemplate(item.buttonForm);
+      var form = formTemplate(item.buttonFormList);
       var formHtml = $("<div/>").append(form).html();
       var $dialog = $(dialogTemplate(item.name, formHtml));
       $dialog.appendTo($("body"));

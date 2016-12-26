@@ -1,10 +1,10 @@
 package se.bjurr.prnfb.service;
 
 import static com.google.common.base.Charsets.UTF_8;
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Throwables.propagate;
 import static java.net.URLEncoder.encode;
 import static org.slf4j.LoggerFactory.getLogger;
-import static se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR.JSON;
 import static se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR.URL;
 import static se.bjurr.prnfb.service.PrnfbVariable.EVERYTHING_URL;
 
@@ -27,7 +27,6 @@ import se.bjurr.prnfb.settings.PrnfbNotification;
 
 public class PrnfbRenderer {
   public enum ENCODE_FOR {
-    JSON,
     NONE,
     URL
   }
@@ -67,6 +66,9 @@ public class PrnfbRenderer {
   }
 
   private boolean containsVariable(String string, final String regExpStr) {
+    if (isNullOrEmpty(string)) {
+      return false;
+    }
     return string.contains(regExpStr.replaceAll("\\\\", ""));
   }
 
@@ -80,12 +82,6 @@ public class PrnfbRenderer {
       } catch (UnsupportedEncodingException e) {
         propagate(e);
       }
-    } else if (encodeFor == JSON) {
-      // The string we're replacing as JSON is already within a string-encoded
-      // JSON blob, so we
-      // just need to replace any quotes with \\", which will have the behavior we
-      // want.
-      replaceWith = resolved.replace("\"", "\\\\\"");
     } else {
       replaceWith = resolved;
     }

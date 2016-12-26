@@ -1,15 +1,18 @@
 package se.bjurr.prnfb.presentation;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.Response.ok;
 import static javax.ws.rs.core.Response.status;
 import static javax.ws.rs.core.Response.Status.OK;
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
+import static se.bjurr.prnfb.presentation.dto.ButtonFormType.radio;
 import static se.bjurr.prnfb.transformer.ButtonTransformer.toButtonDto;
 import static se.bjurr.prnfb.transformer.ButtonTransformer.toButtonDtoList;
 import static se.bjurr.prnfb.transformer.ButtonTransformer.toPrnfbButton;
 import static se.bjurr.prnfb.transformer.ButtonTransformer.toTriggerResultDto;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -26,19 +29,22 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 import com.atlassian.annotations.security.XsrfProtectionExcluded;
-import com.google.gson.Gson;
+import com.google.common.annotations.VisibleForTesting;
 
 import se.bjurr.prnfb.http.NotificationResponse;
 import se.bjurr.prnfb.presentation.dto.ButtonDTO;
+import se.bjurr.prnfb.presentation.dto.ButtonFormElementDTO;
 import se.bjurr.prnfb.presentation.dto.ButtonPressDTO;
 import se.bjurr.prnfb.service.ButtonsService;
+import se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR;
+import se.bjurr.prnfb.service.PrnfbRendererWrapper;
 import se.bjurr.prnfb.service.SettingsService;
 import se.bjurr.prnfb.service.UserCheckService;
 import se.bjurr.prnfb.settings.PrnfbButton;
 
 @Path("/settings/buttons")
 public class ButtonServlet {
-  private static final Gson gson = new Gson();
+
   private final ButtonsService buttonsService;
   private final SettingsService settingsService;
   private final UserCheckService userCheckService;
@@ -58,20 +64,10 @@ public class ButtonServlet {
   @Produces(APPLICATION_JSON)
   public Response create(ButtonDTO buttonDto) {
     if (!userCheckService.isAdminAllowed( //
-        buttonDto.getProjectKey().orNull() //
-        ,
+        buttonDto.getProjectKey().orNull(), //
         buttonDto.getRepositorySlug().orNull())) {
       return status(UNAUTHORIZED) //
           .build();
-    }
-
-    if (buttonDto.getButtonForm() != null && !buttonDto.getButtonForm().isEmpty()) {
-      try {
-        gson.fromJson(buttonDto.getButtonForm(), Object.class);
-        // TODO: Replace string with a DTO
-      } catch (com.google.gson.JsonSyntaxException ex) {
-        throw new Error("The form specification for the button must be a valid JSON string");
-      }
     }
 
     PrnfbButton prnfbButton = toPrnfbButton(buttonDto);
@@ -124,14 +120,7 @@ public class ButtonServlet {
     List<ButtonDTO> dtos = toButtonDtoList(allowedButtons);
     Collections.sort(dtos);
 
-    for (ButtonDTO dto : dtos) {
-      if (dto.getButtonForm() != null) {
-        // TODO: After replace string with a DTO, only render the defaultType string
-        dto.setButtonForm(
-            buttonsService.getRenderedButtonFormData(
-                repositoryId, pullRequestId, dto.getUuid(), dto.getButtonForm()));
-      }
-    }
+    populateButtonFormDtoList(repositoryId, pullRequestId, dtos);
 
     return ok(dtos, APPLICATION_JSON).build();
   }
@@ -176,6 +165,47 @@ public class ButtonServlet {
     }
     ButtonDTO dto = toButtonDto(button);
     return ok(dto, APPLICATION_JSON).build();
+  }
+
+  @VisibleForTesting
+  List<ButtonFormElementDTO> getButtonFormDTOList(List<ButtonFormElementDTO> buttonFormDtoList)
+      throws Error {
+    if (buttonFormDtoList == null || buttonFormDtoList.isEmpty()) {
+      return new ArrayList<>();
+    }
+    for (ButtonFormElementDTO buttonFormDto : buttonFormDtoList) {
+      if (isNullOrEmpty(buttonFormDto.getLabel())) {
+        throw new Error("The label must be set.");
+      }
+      if (isNullOrEmpty(buttonFormDto.getName())) {
+        throw new Error("The name must be set.");
+      }
+      if (buttonFormDto.getType() == radio
+          && (buttonFormDto.getButtonFormElementOptionList() == null
+              || buttonFormDto.getButtonFormElementOptionList().isEmpty())) {
+        throw new Error("When adding radio buttons, options must also be defined.");
+      }
+    }
+    return buttonFormDtoList;
+  }
+
+  private void populateButtonFormDtoList(
+      Integer repositoryId, Long pullRequestId, List<ButtonDTO> dtos) {
+    for (ButtonDTO dto : dtos) {
+      PrnfbRendererWrapper renderer =
+          buttonsService.getRenderer(repositoryId, pullRequestId, dto.getUuid());
+      List<ButtonFormElementDTO> buttonFormDtoList = dto.getButtonFormList();
+      if (buttonFormDtoList != null) {
+        for (ButtonFormElementDTO buttonFormElementDto : buttonFormDtoList) {
+          String defaultValue = buttonFormElementDto.getDefaultValue();
+          if (!isNullOrEmpty(defaultValue)) {
+            String defaultValueRendered = renderer.render(defaultValue, ENCODE_FOR.NONE);
+            buttonFormElementDto.setDefaultValue(defaultValueRendered);
+          }
+        }
+        dto.setButtonFormList(buttonFormDtoList);
+      }
+    }
   }
 
   @POST

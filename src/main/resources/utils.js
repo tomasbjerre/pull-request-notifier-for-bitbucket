@@ -153,6 +153,9 @@ define('plugin/prnfb/utils', [
  }
 
  function populateForm(formSelector, data) {
+  if (data.buttonFormList) {
+   data.buttonFormList = undefined;
+  }
   $(formSelector).populate(data);
 
   $(formSelector).find('.template').each(function(index, el) {

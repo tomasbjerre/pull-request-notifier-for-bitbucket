@@ -220,19 +220,6 @@ public class PrnfbRendererTest {
   }
 
   @Test
-  public void testThatStringCanBeRenderedForJson() {
-    variables.put(PULL_REQUEST_COMMENT_TEXT, Suppliers.ofInstance("abc\"the comment\"def"));
-    String actual =
-        sut.render(
-            "my \"foo_${" + PULL_REQUEST_COMMENT_TEXT + "}_bar\" string",
-            ENCODE_FOR.JSON,
-            clientKeyStore,
-            shouldAcceptAnyCertificate);
-    assertThat(actual) //
-        .isEqualTo("my \"foo_abc\\\"the comment\\\"def_bar\" string");
-  }
-
-  @Test
   public void testThatStringCanBeRenderedForUrl() {
     variables.put(PULL_REQUEST_COMMENT_TEXT, Suppliers.ofInstance("the comment"));
     String actual =

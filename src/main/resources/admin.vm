@@ -247,7 +247,7 @@
 
     <div class="field-group">
      <label>Button Form</label>
-     <textarea class="textarea" rows="6" cols="10" name="buttonForm"></textarea>
+     <textarea class="textarea" rows="6" name="buttonFormListString"></textarea>
      <div class="description">Put a JSON representation of your desired form here. This is documented <a href="https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket" target="_blank">here</a>.</div>
     </div>
 
@@ -501,7 +501,7 @@
    <fieldset class="group">
     <div class="field-group">
      <label>Post content</label>
-     <textarea class="textarea" rows="6" cols="10" name="postContent"></textarea>
+     <textarea class="textarea" rows="6" name="postContent"></textarea>
      <div class="description">This will be used if POST or PUT is selected above.</div>
     </div>
    </fieldset>

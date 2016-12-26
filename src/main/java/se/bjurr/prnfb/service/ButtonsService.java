@@ -24,7 +24,6 @@ import se.bjurr.prnfb.http.ClientKeyStore;
 import se.bjurr.prnfb.http.NotificationResponse;
 import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
 import se.bjurr.prnfb.listener.PrnfbPullRequestEventListener;
-import se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR;
 import se.bjurr.prnfb.settings.PrnfbButton;
 import se.bjurr.prnfb.settings.PrnfbNotification;
 import se.bjurr.prnfb.settings.PrnfbSettingsData;
@@ -58,7 +57,10 @@ public class ButtonsService {
       boolean shouldAcceptAnyCertificate) {
     List<PrnfbButton> allFoundButtons = newArrayList();
     for (PrnfbButton candidate : settingsService.getButtons()) {
-      Map<PrnfbVariable, Supplier<String>> variables = getVariables(candidate.getUuid(), null);
+      Map<PrnfbVariable, Supplier<String>> variables = new HashMap<>();
+      PrnfbButton button = settingsService.getButton(candidate.getUuid());
+      variables.put(BUTTON_TRIGGER_TITLE, Suppliers.ofInstance(button.getName()));
+
       PrnfbPullRequestAction pullRequestAction = BUTTON_TRIGGER;
       if (userCheckService.isAllowedUseButton(candidate) //
           && isTriggeredByAction(
@@ -83,7 +85,11 @@ public class ButtonsService {
       boolean shouldAcceptAnyCertificate,
       final PullRequest pullRequest,
       final String formData) {
-    Map<PrnfbVariable, Supplier<String>> variables = getVariables(buttonUuid, formData);
+    Map<PrnfbVariable, Supplier<String>> variables = new HashMap<>();
+    PrnfbButton button = settingsService.getButton(buttonUuid);
+    variables.put(BUTTON_TRIGGER_TITLE, Suppliers.ofInstance(button.getName()));
+    variables.put(BUTTON_FORM_DATA, Suppliers.ofInstance(formData));
+
     List<NotificationResponse> successes = newArrayList();
     for (PrnfbNotification prnfbNotification : settingsService.getNotifications()) {
       PrnfbPullRequestAction pullRequestAction = BUTTON_TRIGGER;
@@ -122,28 +128,23 @@ public class ButtonsService {
     return doGetButtons(notifications, clientKeyStore, pullRequest, shouldAcceptAnyCertificate);
   }
 
-  public String getRenderedButtonFormData(
-      Integer repositoryId, Long pullRequestId, UUID buttonUuid, String formData) {
+  public PrnfbRendererWrapper getRenderer(
+      Integer repositoryId, Long pullRequestId, UUID buttonUuid) {
     final PrnfbSettingsData settings = settingsService.getPrnfbSettingsData();
     ClientKeyStore clientKeyStore = new ClientKeyStore(settings);
     final PullRequest pullRequest = pullRequestService.getById(repositoryId, pullRequestId);
     boolean shouldAcceptAnyCertificate = settings.isShouldAcceptAnyCertificate();
 
-    Map<PrnfbVariable, Supplier<String>> variables = getVariables(buttonUuid, formData);
+    Map<PrnfbVariable, Supplier<String>> variables = new HashMap<>();
+    PrnfbButton button = settingsService.getButton(buttonUuid);
+    variables.put(BUTTON_TRIGGER_TITLE, Suppliers.ofInstance(button.getName()));
+
     PrnfbPullRequestAction pullRequestAction = BUTTON_TRIGGER;
 
-    PrnfbRenderer renderer =
-        prnfbRendererFactory.create(pullRequest, pullRequestAction, null, variables);
-    return renderer.render(formData, ENCODE_FOR.JSON, clientKeyStore, shouldAcceptAnyCertificate);
-  }
-
-  @VisibleForTesting
-  Map<PrnfbVariable, Supplier<String>> getVariables(final UUID uuid, final String formData) {
-    Map<PrnfbVariable, Supplier<String>> variables = new HashMap<>();
-    PrnfbButton button = settingsService.getButton(uuid);
-    variables.put(BUTTON_TRIGGER_TITLE, Suppliers.ofInstance(button.getName()));
-    variables.put(BUTTON_FORM_DATA, Suppliers.ofInstance(formData));
-    return variables;
+    PrnfbRendererWrapper renderer =
+        prnfbRendererFactory.create(
+            pullRequest, pullRequestAction, variables, clientKeyStore, shouldAcceptAnyCertificate);
+    return renderer;
   }
 
   public List<NotificationResponse> handlePressed(

@@ -4,13 +4,23 @@ Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
 ### GitHub [#173](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/pull/173) Add the ability to specify forms for buttons
+  Refactoring button forms 
+
+ * Triggering without showing dialog, if no form supplied.
+ * Adding DTO:s to properly validate JSON in form.
+ * Storing the button form in objects, not a String.
+ * Adjusting textarea size in GUI.
+ * Supplying form as JSON to GUI, instead of escaped JSON string.
+  
+  [c1c0dc0cc2b382b](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/c1c0dc0cc2b382b) Tomas Bjerre *2016-12-26 19:36:32*
+
   Adjustments after merge of 
 
  * Adding fmt-maven-plugin to format code on Google Java Format.
  * Correcting warnings from Grunt / JSHint.
  * Adding, and using, enum, RENDER_FOR, in PrnfbRenderer.
   
-  [95fcfc4f334fb1e](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/95fcfc4f334fb1e) Tomas Bjerre *2016-12-25 21:29:22*
+  [649638d30d2d32c](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/649638d30d2d32c) Tomas Bjerre *2016-12-25 21:46:25*
 
 ### No issue
   Add interactive forms to buttons
