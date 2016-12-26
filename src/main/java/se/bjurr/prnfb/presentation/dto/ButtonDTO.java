@@ -35,6 +35,15 @@ public class ButtonDTO implements Comparable<ButtonDTO> {
   private String repositorySlug;
   private USER_LEVEL userLevel;
   private UUID uuid;
+  private String confirmationText;
+
+  public void setConfirmationText(String confirmationText) {
+    this.confirmationText = confirmationText;
+  }
+
+  public String getConfirmationText() {
+    return confirmationText;
+  }
 
   @Override
   public int compareTo(ButtonDTO o) {
@@ -60,7 +69,21 @@ public class ButtonDTO implements Comparable<ButtonDTO> {
     } else if (!buttonFormList.equals(other.buttonFormList)) {
       return false;
     }
+    if (buttonFormListString == null) {
+      if (other.buttonFormListString != null) {
+        return false;
+      }
+    } else if (!buttonFormListString.equals(other.buttonFormListString)) {
+      return false;
+    }
     if (confirmation != other.confirmation) {
+      return false;
+    }
+    if (confirmationText == null) {
+      if (other.confirmationText != null) {
+        return false;
+      }
+    } else if (!confirmationText.equals(other.confirmationText)) {
       return false;
     }
     if (name == null) {
@@ -134,7 +157,9 @@ public class ButtonDTO implements Comparable<ButtonDTO> {
     final int prime = 31;
     int result = 1;
     result = prime * result + (buttonFormList == null ? 0 : buttonFormList.hashCode());
+    result = prime * result + (buttonFormListString == null ? 0 : buttonFormListString.hashCode());
     result = prime * result + (confirmation == null ? 0 : confirmation.hashCode());
+    result = prime * result + (confirmationText == null ? 0 : confirmationText.hashCode());
     result = prime * result + (name == null ? 0 : name.hashCode());
     result = prime * result + (projectKey == null ? 0 : projectKey.hashCode());
     result = prime * result + (repositorySlug == null ? 0 : repositorySlug.hashCode());
@@ -181,8 +206,10 @@ public class ButtonDTO implements Comparable<ButtonDTO> {
 
   @Override
   public String toString() {
-    return "ButtonDTO [buttonFormDtoList="
+    return "ButtonDTO [buttonFormList="
         + buttonFormList
+        + ", buttonFormListString="
+        + buttonFormListString
         + ", confirmation="
         + confirmation
         + ", name="
@@ -195,6 +222,8 @@ public class ButtonDTO implements Comparable<ButtonDTO> {
         + userLevel
         + ", uuid="
         + uuid
+        + ", confirmationText="
+        + confirmationText
         + "]";
   }
 }

@@ -12,7 +12,7 @@ Changelog of Pull Request Notifier for Bitbucket.
  * Adjusting textarea size in GUI.
  * Supplying form as JSON to GUI, instead of escaped JSON string.
   
-  [c1c0dc0cc2b382b](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/c1c0dc0cc2b382b) Tomas Bjerre *2016-12-26 19:36:32*
+  [095795704b8e580](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/095795704b8e580) Tomas Bjerre *2016-12-26 20:13:35*
 
   Adjustments after merge of 
 
@@ -21,6 +21,11 @@ Changelog of Pull Request Notifier for Bitbucket.
  * Adding, and using, enum, RENDER_FOR, in PrnfbRenderer.
   
   [649638d30d2d32c](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/649638d30d2d32c) Tomas Bjerre *2016-12-25 21:46:25*
+
+### GitHub [#57](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/57) Trigger button: confirmation dialog 
+  Adding optional confirmation text to buttons
+  
+  [b14d86ed8b986ea](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/b14d86ed8b986ea) Tomas Bjerre *2016-12-26 21:10:45*
 
 ### No issue
   Add interactive forms to buttons

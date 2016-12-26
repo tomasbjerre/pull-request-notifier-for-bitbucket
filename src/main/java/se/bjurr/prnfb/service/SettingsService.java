@@ -18,6 +18,18 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.atlassian.bitbucket.pull.PullRequestState;
+import com.atlassian.bitbucket.user.SecurityService;
+import com.atlassian.bitbucket.util.Operation;
+import com.atlassian.sal.api.pluginsettings.PluginSettings;
+import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
+import com.atlassian.sal.api.transaction.TransactionCallback;
+import com.atlassian.sal.api.transaction.TransactionTemplate;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.gson.Gson;
+
 import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
 import se.bjurr.prnfb.presentation.dto.ON_OR_OFF;
 import se.bjurr.prnfb.settings.HasUuid;
@@ -32,18 +44,6 @@ import se.bjurr.prnfb.settings.ValidationException;
 import se.bjurr.prnfb.settings.legacy.AdminFormValues.BUTTON_VISIBILITY;
 import se.bjurr.prnfb.settings.legacy.Header;
 import se.bjurr.prnfb.settings.legacy.SettingsStorage;
-
-import com.atlassian.bitbucket.pull.PullRequestState;
-import com.atlassian.bitbucket.user.SecurityService;
-import com.atlassian.bitbucket.util.Operation;
-import com.atlassian.sal.api.pluginsettings.PluginSettings;
-import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
-import com.atlassian.sal.api.transaction.TransactionCallback;
-import com.atlassian.sal.api.transaction.TransactionTemplate;
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.gson.Gson;
 
 public class SettingsService {
 
@@ -346,7 +346,14 @@ public class SettingsService {
       }
       newButtons.add(
           new PrnfbButton(
-              UUID.randomUUID(), oldButton.getTitle(), userLevel, ON_OR_OFF.off, null, null, null));
+              UUID.randomUUID(),
+              oldButton.getTitle(),
+              userLevel,
+              ON_OR_OFF.off,
+              null,
+              null,
+              "confirmationText",
+              null));
     }
 
     List<PrnfbNotification> newNotifications = newArrayList();

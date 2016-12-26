@@ -19,12 +19,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import se.bjurr.prnfb.presentation.dto.ON_OR_OFF;
-import se.bjurr.prnfb.settings.PrnfbButton;
-import se.bjurr.prnfb.settings.PrnfbNotification;
-import se.bjurr.prnfb.settings.PrnfbSettings;
-import se.bjurr.prnfb.settings.ValidationException;
-
 import com.atlassian.bitbucket.permission.Permission;
 import com.atlassian.bitbucket.user.EscalatedSecurityContext;
 import com.atlassian.bitbucket.user.SecurityService;
@@ -33,6 +27,12 @@ import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.transaction.TransactionCallback;
 import com.atlassian.sal.api.transaction.TransactionTemplate;
 import com.google.gson.Gson;
+
+import se.bjurr.prnfb.presentation.dto.ON_OR_OFF;
+import se.bjurr.prnfb.settings.PrnfbButton;
+import se.bjurr.prnfb.settings.PrnfbNotification;
+import se.bjurr.prnfb.settings.PrnfbSettings;
+import se.bjurr.prnfb.settings.ValidationException;
 
 public class SettingsServiceTest {
   private EscalatedSecurityContext escalatedSecurityContext;
@@ -97,7 +97,9 @@ public class SettingsServiceTest {
 
   @Test
   public void testThatButtonCanBeAddedUpdatedAndDeleted() {
-    PrnfbButton button1 = new PrnfbButton(null, "title", EVERYONE, ON_OR_OFF.off, "p1", "r1", null);
+    PrnfbButton button1 =
+        new PrnfbButton(
+            null, "title", EVERYONE, ON_OR_OFF.off, "p1", "r1", "confirmationText", null);
     assertThat(this.sut.getButtons()) //
         .isEmpty();
 
@@ -105,13 +107,23 @@ public class SettingsServiceTest {
     assertThat(this.sut.getButtons()) //
         .containsExactly(button1);
 
-    PrnfbButton button2 = new PrnfbButton(null, "title", EVERYONE, ON_OR_OFF.off, "p1", "r1", null);
+    PrnfbButton button2 =
+        new PrnfbButton(
+            null, "title", EVERYONE, ON_OR_OFF.off, "p1", "r1", "confirmationText", null);
     this.sut.addOrUpdateButton(button2);
     assertThat(this.sut.getButtons()) //
         .containsExactly(button1, button2);
 
     PrnfbButton updated =
-        new PrnfbButton(button1.getUuid(), "title2", ADMIN, ON_OR_OFF.off, "p1", "r1", null);
+        new PrnfbButton(
+            button1.getUuid(),
+            "title2",
+            ADMIN,
+            ON_OR_OFF.off,
+            "p1",
+            "r1",
+            "confirmationText",
+            null);
     this.sut.addOrUpdateButton(updated);
     assertThat(this.sut.getButtons()) //
         .containsExactly(button2, updated);

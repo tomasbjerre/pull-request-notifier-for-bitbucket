@@ -116,9 +116,18 @@ define('plugin/prnfb/pr-triggerbutton', [
   return $("<fieldset class='group'/>").append(radioItems);
  };
 
+ var confirmationTextTemplate = function(confirmationText) {
+  if (!confirmationText) {
+   return '';
+  }
+
+  var confirmationDiv = '<div class="description">' + confirmationText + '</div>';
+  return confirmationDiv;
+ };
+
  var formTemplate = function(formDescription) {
   if (!formDescription || formDescription.length === 0) {
-   return null;
+   return '';
   }
 
   var formItems = [];
@@ -244,10 +253,11 @@ define('plugin/prnfb/pr-triggerbutton', [
       });
      };
 
-     if (item.buttonFormList && item.buttonFormList.length > 0) {
+     if (item.confirmationText || item.buttonFormList && item.buttonFormList.length > 0) {
       // Create the form and dialog     
+      var confirmationText = confirmationTextTemplate(item.confirmationText);
       var form = formTemplate(item.buttonFormList);
-      var formHtml = $("<div/>").append(form).html();
+      var formHtml = $("<div/>").append(confirmationText).append(form).html();
       var $dialog = $(dialogTemplate(item.name, formHtml));
       $dialog.appendTo($("body"));
 

@@ -72,9 +72,11 @@ public class ButtonServletTest {
     this.sut = new ButtonServlet(this.buttonsService, this.settingsService, this.userCheckService);
 
     this.buttonDto1 = populatedInstanceOf(ButtonDTO.class);
+    this.buttonDto1.setButtonFormListString(null);
     this.button1 = toPrnfbButton(this.buttonDto1);
 
     this.buttonDto2 = populatedInstanceOf(ButtonDTO.class);
+    this.buttonDto2.setButtonFormListString(null);
     this.button2 = toPrnfbButton(this.buttonDto2);
 
     rendererWrapper =
@@ -106,6 +108,7 @@ public class ButtonServletTest {
             button.getConfirmation(),
             "p1",
             "r1",
+            button.getConfirmationText(),
             new ArrayList<>());
     return prnfbButton;
   }
@@ -136,6 +139,11 @@ public class ButtonServletTest {
 
   @Test
   public void testThatButtonCanBeListed() {
+    this.buttonDto1.setButtonFormListString(null);
+    this.button1 = toPrnfbButton(this.buttonDto1);
+    this.buttonDto2.setButtonFormListString(null);
+    this.button2 = toPrnfbButton(this.buttonDto2);
+
     when(this.settingsService.getButtons()) //
         .thenReturn(newArrayList(this.button1, this.button2));
     allowAll();
@@ -143,6 +151,11 @@ public class ButtonServletTest {
     Response actual = this.sut.get();
     @SuppressWarnings("unchecked")
     Iterable<ButtonDTO> actualList = (Iterable<ButtonDTO>) actual.getEntity();
+    Iterator<ButtonDTO> itr = actualList.iterator();
+    ButtonDTO first = itr.next();
+    first.setButtonFormListString(null);
+    ButtonDTO second = itr.next();
+    second.setButtonFormListString(null);
     assertThat(actualList) //
         .containsOnly(this.buttonDto1, this.buttonDto2);
   }
@@ -150,6 +163,7 @@ public class ButtonServletTest {
   @Test
   public void testThatButtonCanBeListedForAPr() throws Exception {
     this.buttonDto1 = populatedInstanceOf(ButtonDTO.class);
+    this.buttonDto1.setButtonFormListString(null);
     this.buttonDto1.setButtonFormList(this.buttonDto1.getButtonFormList().subList(0, 1));
     this.buttonDto1
         .getButtonFormList()
@@ -161,7 +175,6 @@ public class ButtonServletTest {
                 .getButtonFormElementOptionList()
                 .subList(0, 1));
     this.button1 = toPrnfbButton(this.buttonDto1);
-
     Integer repositoryId = 2;
     Long pullRequestId = 3L;
     when(this.buttonsService.getButtons(repositoryId, pullRequestId)) //
@@ -176,6 +189,7 @@ public class ButtonServletTest {
     Iterable<ButtonDTO> actualList = (Iterable<ButtonDTO>) actual.getEntity();
     Iterator<ButtonDTO> itr = actualList.iterator();
     ButtonDTO buttonDTO1 = itr.next();
+    buttonDTO1.setButtonFormListString(null);
     assertThat(buttonDTO1) //
         .isEqualTo(this.buttonDto1);
   }
@@ -196,8 +210,11 @@ public class ButtonServletTest {
 
     @SuppressWarnings("unchecked")
     Iterable<ButtonDTO> actualList = (Iterable<ButtonDTO>) actual.getEntity();
-    assertThat(actualList) //
-        .hasSize(2);
+    Iterator<ButtonDTO> itr = actualList.iterator();
+    ButtonDTO first = itr.next();
+    first.setButtonFormListString(null);
+    ButtonDTO second = itr.next();
+    second.setButtonFormListString(null);
     assertThat(actualList) //
         .containsOnly(this.buttonDto1, this.buttonDto2);
   }
@@ -211,7 +228,10 @@ public class ButtonServletTest {
     Response actual = this.sut.get(this.buttonDto1.getProjectKey().orNull());
     @SuppressWarnings("unchecked")
     Iterable<ButtonDTO> actualList = (Iterable<ButtonDTO>) actual.getEntity();
-
+    ButtonDTO first = actualList.iterator().next();
+    first.setButtonFormListString(null);
+    assertThat(first) //
+        .isEqualTo(this.buttonDto1);
     assertThat(actualList) //
         .containsOnly(this.buttonDto1);
   }
@@ -222,6 +242,7 @@ public class ButtonServletTest {
             this.buttonDto1.getProjectKey().orNull(),
             this.buttonDto1.getRepositorySlug().orNull())) //
         .thenReturn(newArrayList(this.button1));
+    this.buttonDto1.setButtonFormListString(null);
     allowAll();
 
     Response actual =
@@ -231,7 +252,7 @@ public class ButtonServletTest {
     Iterable<ButtonDTO> actualList = (Iterable<ButtonDTO>) actual.getEntity();
 
     ButtonDTO firstButtonDto = actualList.iterator().next();
-
+    firstButtonDto.setButtonFormListString(null);
     assertThat(actualList) //
         .hasSize(1);
     assertThat(firstButtonDto) //

@@ -36,6 +36,7 @@ public class ButtonTransformer {
     to.setProjectKey(from.getProjectKey().orNull());
     to.setRepositorySlug(from.getRepositorySlug().orNull());
     to.setConfirmation(from.getConfirmation());
+    to.setConfirmationText(from.getConfirmationText());
     to.setButtonFormList(toButtonFormDtoList(from.getButtonFormElementList()));
     String buttonFormDtoListString = gson.toJson(to.getButtonFormList());
     to.setButtonFormListString(buttonFormDtoListString);
@@ -106,6 +107,7 @@ public class ButtonTransformer {
         buttonDto.getConfirmation(), //
         buttonDto.getProjectKey().orNull(), //
         buttonDto.getRepositorySlug().orNull(), //
+        buttonDto.getConfirmationText(), //
         buttonFormElement); //
   }
 

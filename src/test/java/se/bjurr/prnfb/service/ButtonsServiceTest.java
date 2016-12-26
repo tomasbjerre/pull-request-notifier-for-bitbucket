@@ -22,6 +22,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import com.atlassian.bitbucket.auth.AuthenticationContext;
+import com.atlassian.bitbucket.project.Project;
+import com.atlassian.bitbucket.pull.PullRequest;
+import com.atlassian.bitbucket.pull.PullRequestRef;
+import com.atlassian.bitbucket.pull.PullRequestService;
+import com.atlassian.bitbucket.repository.Repository;
+import com.atlassian.bitbucket.repository.RepositoryService;
+import com.atlassian.bitbucket.server.ApplicationPropertiesService;
+import com.google.common.collect.Lists;
+
 import se.bjurr.prnfb.http.ClientKeyStore;
 import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
 import se.bjurr.prnfb.listener.PrnfbPullRequestEventListener;
@@ -32,16 +42,6 @@ import se.bjurr.prnfb.settings.PrnfbButton;
 import se.bjurr.prnfb.settings.PrnfbNotification;
 import se.bjurr.prnfb.settings.USER_LEVEL;
 import se.bjurr.prnfb.settings.ValidationException;
-
-import com.atlassian.bitbucket.auth.AuthenticationContext;
-import com.atlassian.bitbucket.project.Project;
-import com.atlassian.bitbucket.pull.PullRequest;
-import com.atlassian.bitbucket.pull.PullRequestRef;
-import com.atlassian.bitbucket.pull.PullRequestService;
-import com.atlassian.bitbucket.repository.Repository;
-import com.atlassian.bitbucket.repository.RepositoryService;
-import com.atlassian.bitbucket.server.ApplicationPropertiesService;
-import com.google.common.collect.Lists;
 
 public class ButtonsServiceTest {
 
@@ -305,6 +305,7 @@ public class ButtonsServiceTest {
             this.confirmation,
             buttonProjectKey,
             buttonRepositorySlug,
+            "confirmationText",
             null);
     when(this.repository.getProject()).thenReturn(this.project);
     when(this.repository.getProject().getKey()) //

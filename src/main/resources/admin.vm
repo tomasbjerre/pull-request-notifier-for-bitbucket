@@ -246,6 +246,12 @@
     </div>
 
     <div class="field-group">
+     <label>Confirmation message </label>
+     <input class="text long-field" type="text" name="confirmationText">
+     <div class="description">If not empty, a confirmation dialog will be shown with this message, before any notification is triggered.</div>
+    </div>
+
+    <div class="field-group">
      <label>Button Form</label>
      <textarea class="textarea" rows="6" name="buttonFormListString"></textarea>
      <div class="description">Put a JSON representation of your desired form here. This is documented <a href="https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket" target="_blank">here</a>.</div>

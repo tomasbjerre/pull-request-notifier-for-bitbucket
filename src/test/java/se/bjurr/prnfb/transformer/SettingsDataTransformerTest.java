@@ -15,6 +15,7 @@ public class SettingsDataTransformerTest {
   public void testTransformation() throws ValidationException {
     ButtonDTO originalDto = populatedInstanceOf(ButtonDTO.class);
     ButtonDTO retransformedDto = toButtonDto(toPrnfbButton(originalDto));
+    retransformedDto.setButtonFormListString(originalDto.getButtonFormListString());
 
     assertThat(retransformedDto) //
         .isEqualTo(originalDto);

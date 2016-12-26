@@ -22,6 +22,7 @@ public class PrnfbButton implements HasUuid {
   private final List<PrnfbButtonFormElement> buttonFormElementList;
   private final USER_LEVEL userLevel;
   private final UUID uuid;
+  private final String confirmationText;
 
   public PrnfbButton(
       UUID uuid,
@@ -30,6 +31,7 @@ public class PrnfbButton implements HasUuid {
       ON_OR_OFF confirmation,
       String projectKey,
       String repositorySlug,
+      String confirmationText,
       List<PrnfbButtonFormElement> buttonFormElementList) {
     this.uuid = firstNonNull(uuid, randomUUID());
     this.name = name;
@@ -37,8 +39,42 @@ public class PrnfbButton implements HasUuid {
     this.confirmation = confirmation;
     this.repositorySlug = emptyToNull(repositorySlug);
     this.projectKey = emptyToNull(projectKey);
+    this.confirmationText = emptyToNull(confirmationText);
     this.buttonFormElementList =
         firstNonNull(buttonFormElementList, new ArrayList<PrnfbButtonFormElement>());
+  }
+
+  public String getConfirmationText() {
+    return confirmationText;
+  }
+
+  public ON_OR_OFF getConfirmation() {
+    return this.confirmation;
+  }
+
+  public String getName() {
+    return this.name;
+  }
+
+  public List<PrnfbButtonFormElement> getButtonFormElementList() {
+    return buttonFormElementList;
+  }
+
+  public Optional<String> getProjectKey() {
+    return fromNullable(this.projectKey);
+  }
+
+  public Optional<String> getRepositorySlug() {
+    return fromNullable(this.repositorySlug);
+  }
+
+  public USER_LEVEL getUserLevel() {
+    return this.userLevel;
+  }
+
+  @Override
+  public UUID getUuid() {
+    return this.uuid;
   }
 
   @Override
@@ -61,6 +97,13 @@ public class PrnfbButton implements HasUuid {
       return false;
     }
     if (confirmation != other.confirmation) {
+      return false;
+    }
+    if (confirmationText == null) {
+      if (other.confirmationText != null) {
+        return false;
+      }
+    } else if (!confirmationText.equals(other.confirmationText)) {
       return false;
     }
     if (name == null) {
@@ -97,35 +140,6 @@ public class PrnfbButton implements HasUuid {
     return true;
   }
 
-  public ON_OR_OFF getConfirmation() {
-    return this.confirmation;
-  }
-
-  public String getName() {
-    return this.name;
-  }
-
-  public List<PrnfbButtonFormElement> getButtonFormElementList() {
-    return buttonFormElementList;
-  }
-
-  public Optional<String> getProjectKey() {
-    return fromNullable(this.projectKey);
-  }
-
-  public Optional<String> getRepositorySlug() {
-    return fromNullable(this.repositorySlug);
-  }
-
-  public USER_LEVEL getUserLevel() {
-    return this.userLevel;
-  }
-
-  @Override
-  public UUID getUuid() {
-    return this.uuid;
-  }
-
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -133,6 +147,7 @@ public class PrnfbButton implements HasUuid {
     result =
         prime * result + (buttonFormElementList == null ? 0 : buttonFormElementList.hashCode());
     result = prime * result + (confirmation == null ? 0 : confirmation.hashCode());
+    result = prime * result + (confirmationText == null ? 0 : confirmationText.hashCode());
     result = prime * result + (name == null ? 0 : name.hashCode());
     result = prime * result + (projectKey == null ? 0 : projectKey.hashCode());
     result = prime * result + (repositorySlug == null ? 0 : repositorySlug.hashCode());
@@ -157,6 +172,8 @@ public class PrnfbButton implements HasUuid {
         + userLevel
         + ", uuid="
         + uuid
+        + ", confirmationText="
+        + confirmationText
         + "]";
   }
 }
