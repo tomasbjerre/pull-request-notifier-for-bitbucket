@@ -22,10 +22,15 @@ Changelog of Pull Request Notifier for Bitbucket.
   
   [649638d30d2d32c](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/649638d30d2d32c) Tomas Bjerre *2016-12-25 21:46:25*
 
+### GitHub [#174](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/174) java.lang.NullPointerException: null
+  More information if header name/value missing
+  
+  [82765ba693e04cd](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/82765ba693e04cd) Tomas Bjerre *2016-12-26 21:18:18*
+
 ### GitHub [#57](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/57) Trigger button: confirmation dialog 
   Adding optional confirmation text to buttons
   
-  [b14d86ed8b986ea](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/b14d86ed8b986ea) Tomas Bjerre *2016-12-26 21:10:45*
+  [e643e48a8568afc](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/e643e48a8568afc) Tomas Bjerre *2016-12-26 21:16:23*
 
 ### No issue
   Add interactive forms to buttons

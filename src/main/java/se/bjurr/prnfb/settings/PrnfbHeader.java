@@ -10,8 +10,8 @@ public class PrnfbHeader {
   private final String value;
 
   public PrnfbHeader(String name, String value) {
-    this.name = checkNotNull(emptyToNull(nullToEmpty(name).trim()));
-    this.value = checkNotNull(emptyToNull(nullToEmpty(value).trim()));
+    this.name = checkNotNull(emptyToNull(nullToEmpty(name).trim()), "Header name must be set");
+    this.value = checkNotNull(emptyToNull(nullToEmpty(value).trim()), "Header value must be set");
   }
 
   @Override
@@ -55,8 +55,8 @@ public class PrnfbHeader {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
-    result = prime * result + ((this.value == null) ? 0 : this.value.hashCode());
+    result = prime * result + (this.name == null ? 0 : this.name.hashCode());
+    result = prime * result + (this.value == null ? 0 : this.value.hashCode());
     return result;
   }
 
