@@ -3,10 +3,17 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
+### GitHub [#173](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/pull/173) Add the ability to specify forms for buttons
+  Valid JSON in BUTTON_FORM_DATA 
+
+ * Quotes were escaped with slashes.
+  
+  [23680b44f0c2dd7](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/23680b44f0c2dd7) Tomas Bjerre *2016-12-27 09:44:28*
+
 ### No issue
   Doc
   
-  [7e6a120b07de7df](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/7e6a120b07de7df) Tomas Bjerre *2016-12-27 08:15:48*
+  [eae3578be0763bc](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/eae3578be0763bc) Tomas Bjerre *2016-12-27 08:16:06*
 
 ## 2.44
 ### GitHub [#173](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/pull/173) Add the ability to specify forms for buttons

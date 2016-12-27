@@ -270,7 +270,7 @@ define('plugin/prnfb/pr-triggerbutton', [
        e.preventDefault();
        dialogRef.hide();
 
-       submitButton(JSON.stringify(formResult));
+       submitButton(formResult);
       });
       AJS.$("#dialog-close-button").click(function(e) {
        e.preventDefault();
