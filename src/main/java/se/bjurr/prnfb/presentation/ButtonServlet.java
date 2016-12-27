@@ -6,13 +6,11 @@ import static javax.ws.rs.core.Response.ok;
 import static javax.ws.rs.core.Response.status;
 import static javax.ws.rs.core.Response.Status.OK;
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
-import static se.bjurr.prnfb.presentation.dto.ButtonFormType.radio;
 import static se.bjurr.prnfb.transformer.ButtonTransformer.toButtonDto;
 import static se.bjurr.prnfb.transformer.ButtonTransformer.toButtonDtoList;
 import static se.bjurr.prnfb.transformer.ButtonTransformer.toPrnfbButton;
 import static se.bjurr.prnfb.transformer.ButtonTransformer.toTriggerResultDto;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -29,7 +27,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 import com.atlassian.annotations.security.XsrfProtectionExcluded;
-import com.google.common.annotations.VisibleForTesting;
 
 import se.bjurr.prnfb.http.NotificationResponse;
 import se.bjurr.prnfb.presentation.dto.ButtonDTO;
@@ -165,28 +162,6 @@ public class ButtonServlet {
     }
     ButtonDTO dto = toButtonDto(button);
     return ok(dto, APPLICATION_JSON).build();
-  }
-
-  @VisibleForTesting
-  List<ButtonFormElementDTO> getButtonFormDTOList(List<ButtonFormElementDTO> buttonFormDtoList)
-      throws Error {
-    if (buttonFormDtoList == null || buttonFormDtoList.isEmpty()) {
-      return new ArrayList<>();
-    }
-    for (ButtonFormElementDTO buttonFormDto : buttonFormDtoList) {
-      if (isNullOrEmpty(buttonFormDto.getLabel())) {
-        throw new Error("The label must be set.");
-      }
-      if (isNullOrEmpty(buttonFormDto.getName())) {
-        throw new Error("The name must be set.");
-      }
-      if (buttonFormDto.getType() == radio
-          && (buttonFormDto.getButtonFormElementOptionList() == null
-              || buttonFormDto.getButtonFormElementOptionList().isEmpty())) {
-        throw new Error("When adding radio buttons, options must also be defined.");
-      }
-    }
-    return buttonFormDtoList;
   }
 
   private void populateButtonFormDtoList(

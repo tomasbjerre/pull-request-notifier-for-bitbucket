@@ -4,6 +4,10 @@ Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
 ### GitHub [#173](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/pull/173) Add the ability to specify forms for buttons
+  Validating button forms JSON
+  
+  [f2279ddefd9aee8](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/f2279ddefd9aee8) Tomas Bjerre *2016-12-27 08:01:47*
+
   Refactoring button forms 
 
  * Triggering without showing dialog, if no form supplied.
@@ -25,7 +29,7 @@ Changelog of Pull Request Notifier for Bitbucket.
 ### GitHub [#174](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/174) java.lang.NullPointerException: null
   More information if header name/value missing
   
-  [82765ba693e04cd](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/82765ba693e04cd) Tomas Bjerre *2016-12-26 21:18:18*
+  [1384dd2418f3049](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/1384dd2418f3049) Tomas Bjerre *2016-12-26 21:33:56*
 
 ### GitHub [#57](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/57) Trigger button: confirmation dialog 
   Adding optional confirmation text to buttons

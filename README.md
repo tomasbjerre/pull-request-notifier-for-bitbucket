@@ -267,7 +267,7 @@ cd *
 git reset --hard $TO_HASH  
 git status  
 git remote add from $FROM_REPO  
-git fetch from  
+git fetch --all  
 git merge $FROM_HASH  
 git --no-pager log --max-count=10 --graph --abbrev-commit
 

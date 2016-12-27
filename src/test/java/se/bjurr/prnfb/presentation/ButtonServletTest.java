@@ -2,15 +2,12 @@ package se.bjurr.prnfb.presentation;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static se.bjurr.prnfb.presentation.dto.ButtonFormType.radio;
-import static se.bjurr.prnfb.presentation.dto.ButtonFormType.textarea;
 import static se.bjurr.prnfb.settings.USER_LEVEL.EVERYONE;
 import static se.bjurr.prnfb.test.Podam.populatedInstanceOf;
 import static se.bjurr.prnfb.transformer.ButtonTransformer.toPrnfbButton;
@@ -30,7 +27,6 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import se.bjurr.prnfb.presentation.dto.ButtonDTO;
-import se.bjurr.prnfb.presentation.dto.ButtonFormElementDTO;
 import se.bjurr.prnfb.presentation.dto.ON_OR_OFF;
 import se.bjurr.prnfb.service.ButtonsService;
 import se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR;
@@ -291,66 +287,5 @@ public class ButtonServletTest {
 
     verify(this.settingsService) //
         .addOrUpdateButton(prnfbButton);
-  }
-
-  @Test
-  public void testThatButtonFormJsonStringCanBeTransormedToDTO() {
-
-    ButtonFormElementDTO button = new ButtonFormElementDTO();
-    button.setDefaultValue("defaultValue");
-    button.setDescription("descr");
-    button.setLabel("label");
-    button.setName("name");
-    button.setRequired(true);
-    button.setType(textarea);
-    List<ButtonFormElementDTO> buttonFormDtoList = new ArrayList<>();
-    buttonFormDtoList.add(button);
-    List<ButtonFormElementDTO> actual = sut.getButtonFormDTOList(buttonFormDtoList);
-
-    assertThat(actual) //
-        .isNotNull() //
-        .hasSize(1);
-  }
-
-  @Test
-  public void testThatButtonFormJsonStringCanFindProblemsInJsonNoName() {
-    ButtonFormElementDTO button = new ButtonFormElementDTO();
-    button.setDefaultValue("defaultValue");
-    button.setDescription("descr");
-    button.setLabel("label");
-    button.setName("");
-    button.setRequired(true);
-    button.setType(textarea);
-    List<ButtonFormElementDTO> buttonFormDtoList = new ArrayList<>();
-    buttonFormDtoList.add(button);
-    try {
-      sut.getButtonFormDTOList(buttonFormDtoList);
-    } catch (Error e) {
-      assertThat(e.getMessage()) //
-          .isEqualTo("The name must be set.");
-      return;
-    }
-    fail("No error from: " + buttonFormDtoList);
-  }
-
-  @Test
-  public void testThatButtonFormJsonStringCanFindProblemsInJsonNoRadioNoOptions() {
-    ButtonFormElementDTO button = new ButtonFormElementDTO();
-    button.setDefaultValue("defaultValue");
-    button.setDescription("descr");
-    button.setLabel("label");
-    button.setName("name");
-    button.setRequired(true);
-    button.setType(radio);
-    List<ButtonFormElementDTO> buttonFormDtoList = new ArrayList<>();
-    buttonFormDtoList.add(button);
-    try {
-      sut.getButtonFormDTOList(buttonFormDtoList);
-    } catch (Error e) {
-      assertThat(e.getMessage()) //
-          .isEqualTo("When adding radio buttons, options must also be defined.");
-      return;
-    }
-    fail("No error from: " + buttonFormDtoList);
   }
 }

@@ -3,12 +3,15 @@ package se.bjurr.prnfb.transformer;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newArrayList;
 import static se.bjurr.prnfb.presentation.dto.ButtonDTO.BUTTON_FORM_LIST_DTO_TYPE;
+import static se.bjurr.prnfb.presentation.dto.ButtonFormType.checkbox;
+import static se.bjurr.prnfb.presentation.dto.ButtonFormType.radio;
 
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -99,6 +102,7 @@ public class ButtonTransformer {
         || buttonFormDto.isEmpty() && !isNullOrEmpty(buttonDto.getButtonFormListString())) {
       buttonFormDto = gson.fromJson(buttonDto.getButtonFormListString(), BUTTON_FORM_LIST_DTO_TYPE);
     }
+    validateButtonFormDTOList(buttonFormDto);
     List<PrnfbButtonFormElement> buttonFormElement = toPrnfbButtonElementList(buttonFormDto);
     return new PrnfbButton( //
         buttonDto.getUUID(), //
@@ -109,6 +113,26 @@ public class ButtonTransformer {
         buttonDto.getRepositorySlug().orNull(), //
         buttonDto.getConfirmationText(), //
         buttonFormElement); //
+  }
+
+  @VisibleForTesting
+  static void validateButtonFormDTOList(List<ButtonFormElementDTO> buttonFormDtoList) throws Error {
+    if (buttonFormDtoList == null || buttonFormDtoList.isEmpty()) {
+      return;
+    }
+    for (ButtonFormElementDTO buttonFormDto : buttonFormDtoList) {
+      if (isNullOrEmpty(buttonFormDto.getLabel())) {
+        throw new Error("The label must be set.");
+      }
+      if (isNullOrEmpty(buttonFormDto.getName())) {
+        throw new Error("The name must be set.");
+      }
+      if ((buttonFormDto.getType() == radio || buttonFormDto.getType() == checkbox)
+          && (buttonFormDto.getButtonFormElementOptionList() == null
+              || buttonFormDto.getButtonFormElementOptionList().isEmpty())) {
+        throw new Error("When adding radio buttons, options must also be defined.");
+      }
+    }
   }
 
   private static List<PrnfbButtonFormElement> toPrnfbButtonElementList(
