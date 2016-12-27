@@ -1,0 +1,8 @@
+title: Pull-request-notifier-for-bitbucket
+description: Stash plugin that invokes a custom URL when a pull request event is triggered.
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-slate
+
+gems:
+  - jekyll-mentions
