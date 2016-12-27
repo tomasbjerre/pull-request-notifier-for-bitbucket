@@ -1,5 +1,5 @@
-# Pull Request Notifier for Bitbucket [![Build Status](https://travis-ci.org/tomasbjerre/pull-request-notifier-for-bitbucket.svg?branch=master)](https://travis-ci.org/tomasbjerre/pull-request-notifier-for-bitbucket)
-The original use case was to trigger Jenkins jobs to build pull requests that are created in Bitbucket. The plugin can be configured to trigger different Jenkins jobs for different repositories. It can supply custom parameters to the jenkins job using the variables. It can authenticate with HTTP Basic.
+# Pull Request Notifier for Bitbucket Server [![Build Status](https://travis-ci.org/tomasbjerre/pull-request-notifier-for-bitbucket.svg?branch=master)](https://travis-ci.org/tomasbjerre/pull-request-notifier-for-bitbucket)
+The original use case was to trigger Jenkins jobs to build pull requests that are created in Bitbucket Server. The plugin can be configured to trigger different Jenkins jobs for different repositories. It can supply custom parameters to the jenkins job using the variables. It can authenticate with HTTP Basic.
 
 It can, for example, trigger a build in Jenkins. Parameterized Jenkins jobs can be triggered remotely via:
 ```
@@ -16,7 +16,7 @@ The plugin can trigger any system, not only Jenkins. The plugin can notify any s
 Available in [Atlassian Marketplace](https://marketplace.atlassian.com/plugins/se.bjurr.prnfs.pull-request-notifier-for-stash).
 
 ## Features
-The Pull Request Notifier for Bitbucket can:
+The Pull Request Notifier for Bitbucket Server can:
 
 * Invoke any URL, or set of URL:s, when a pull request event happens.
  * With variables available to add necessary parameters.
@@ -27,7 +27,7 @@ The Pull Request Notifier for Bitbucket can:
  * BUTTON_TRIGGER, when trigger button in pull request view is pressed
 * Can invoke CSRF protected systems, using the ${INJECTION_URL_VALUE} variable. How to to that with Jenkins is described below.
 * Be configured to only trigger if the pull request mathches a filter. A filter text is constructed with any combination of the variables and then a regexp is constructed to match that text.
-* Add buttons to pull request view in Bitbucket. And map those buttons to URL invocations. This can be done by setting the filter string to ${BUTTON_TRIGGER_TITLE} and the filter regexp to title of button.
+* Add buttons to pull request view in Bitbucket Server. And map those buttons to URL invocations. This can be done by setting the filter string to ${BUTTON_TRIGGER_TITLE} and the filter regexp to title of button.
  * Buttons can have forms associated with them, and then submit the form data using the ${BUTTON_FORM_DATA} variable.
 * Authenticate with HTTP basic authentication.
 * Optionally allow any SSL certificate.
