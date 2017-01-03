@@ -11,9 +11,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ButtonFormElementOptionDTO {
   private String label;
   private String name;
-  private String defaultValue;
+  private Boolean defaultValue;
 
-  public void setDefaultValue(String defaultValue) {
+  public void setDefaultValue(Boolean defaultValue) {
     this.defaultValue = defaultValue;
   }
 
@@ -25,7 +25,7 @@ public class ButtonFormElementOptionDTO {
     this.name = name;
   }
 
-  public String getDefaultValue() {
+  public Boolean getDefaultValue() {
     return defaultValue;
   }
 
