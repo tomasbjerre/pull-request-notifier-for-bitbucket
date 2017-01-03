@@ -78,7 +78,7 @@ define('plugin/prnfb/pr-triggerbutton', [
    var itemName = _.escape(nestedItem.name);
    var itemLabel = _.escape(nestedItem.label);
    return $('<div class="checkbox">' + //
-    '<input class="checkbox" value="' + itemName + '" type="checkbox" checked=' + (isChecked ? '"checked"' : '""') + //
+    '<input class="checkbox" value="' + itemName + '" type="checkbox" ' + (isChecked ? 'checked="checked"' : '') + //
     ' name="' + outerName + '[]" id="prnfb-form-' + outerName + '-' + num + '">' + //
     '<label for="prnfb-form-' + outerName + '-' + num + '"' + //
     '>' + itemLabel + '</label></div>');

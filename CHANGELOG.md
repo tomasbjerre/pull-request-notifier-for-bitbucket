@@ -4,9 +4,15 @@ Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
 ### GitHub [#178](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/178) Forms with checkboxes that have a default value of false do not work
+  Only select checkboxes marked as default true in button forms
+  
+  [c67aac2253b2fef](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/c67aac2253b2fef) Tomas Bjerre *2017-01-03 17:32:10*
+
+## 2.46
+### GitHub [#178](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/178) Forms with checkboxes that have a default value of false do not work
   Using boolean for defaultValue in ButtonFormElementOption
   
-  [edbe86ab15b83f0](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/edbe86ab15b83f0) Tomas Bjerre *2017-01-03 08:06:27*
+  [857b440e069912f](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/857b440e069912f) Tomas Bjerre *2017-01-03 08:09:39*
 
 ### No issue
   fixed jenkins plugin url
