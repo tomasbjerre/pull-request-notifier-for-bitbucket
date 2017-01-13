@@ -1,5 +1,7 @@
 package se.bjurr.prnfb.service;
 
+import static com.atlassian.bitbucket.pull.PullRequestParticipantStatus.NEEDS_WORK;
+import static com.atlassian.bitbucket.pull.PullRequestParticipantStatus.UNAPPROVED;
 import static com.google.common.base.Joiner.on;
 import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.transform;
@@ -22,6 +24,7 @@ import java.util.regex.Matcher;
 import com.atlassian.bitbucket.permission.Permission;
 import com.atlassian.bitbucket.pull.PullRequest;
 import com.atlassian.bitbucket.pull.PullRequestParticipant;
+import com.atlassian.bitbucket.pull.PullRequestParticipantStatus;
 import com.atlassian.bitbucket.repository.Repository;
 import com.atlassian.bitbucket.repository.RepositoryCloneLinksRequest;
 import com.atlassian.bitbucket.repository.RepositoryService;
@@ -956,7 +959,52 @@ public enum PrnfbVariable {
             SecurityService securityService) {
           return getOrEmpty(variables, BUTTON_FORM_DATA);
         }
+      }),
+  PULL_REQUEST_REVIEWERS_NEEDS_WORK_COUNT(
+      new PrnfbVariableResolver() {
+        @Override
+        public String resolve(
+            PullRequest pullRequest,
+            PrnfbPullRequestAction pullRequestAction,
+            ApplicationUser applicationUser,
+            RepositoryService repositoryService,
+            ApplicationPropertiesService propertiesService,
+            PrnfbNotification prnfbNotification,
+            Map<PrnfbVariable, Supplier<String>> variables,
+            ClientKeyStore clientKeyStore,
+            boolean shouldAcceptAnyCertificate,
+            SecurityService securityService) {
+          return countParticipantsWithStatus(pullRequest.getReviewers(), NEEDS_WORK);
+        }
+      }),
+  PULL_REQUEST_REVIEWERS_UNAPPROVED_COUNT(
+      new PrnfbVariableResolver() {
+        @Override
+        public String resolve(
+            PullRequest pullRequest,
+            PrnfbPullRequestAction pullRequestAction,
+            ApplicationUser applicationUser,
+            RepositoryService repositoryService,
+            ApplicationPropertiesService propertiesService,
+            PrnfbNotification prnfbNotification,
+            Map<PrnfbVariable, Supplier<String>> variables,
+            ClientKeyStore clientKeyStore,
+            boolean shouldAcceptAnyCertificate,
+            SecurityService securityService) {
+          return countParticipantsWithStatus(pullRequest.getReviewers(), UNAPPROVED);
+        }
       });
+
+  private static String countParticipantsWithStatus(
+      Set<PullRequestParticipant> participants, PullRequestParticipantStatus status) {
+    Integer count = 0;
+    for (PullRequestParticipant participant : participants) {
+      if (participant.getStatus() == status) {
+        count++;
+      }
+    }
+    return count.toString();
+  }
 
   private static final Predicate<PullRequestParticipant> isApproved =
       new Predicate<PullRequestParticipant>() {

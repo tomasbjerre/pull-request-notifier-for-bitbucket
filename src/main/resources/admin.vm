@@ -76,6 +76,8 @@
    <li><b>${PULL_REQUEST_REVIEWERS_SLUG}</b> Reviewers slug list.</li>
    <li><b>${PULL_REQUEST_REVIEWERS_EMAIL}</b> Example: admin@example.com,user@example.com.</li>
    <li><b>${PULL_REQUEST_REVIEWERS_APPROVED_COUNT}</b> Number of reviewers that approved the PR.</li>
+   <li><b>${PULL_REQUEST_REVIEWERS_UNAPPROVED_COUNT}</b> Number of reviewers that unapproved the PR.</li>
+   <li><b>${PULL_REQUEST_REVIEWERS_NEEDS_WORK_COUNT}</b> Number of reviewers that says the PR needs work.</li>
    <li><b>${PULL_REQUEST_PARTICIPANTS_APPROVED_COUNT}</b> Number of participants that approved the PR.</li>
    <li><b>${PULL_REQUEST_PARTICIPANTS_EMAIL}</b> Example: admin@example.com,user@example.com.</li>
    <li><b>${PULL_REQUEST_MERGE_COMMIT}</b> Hash of merged commit (only available for merged-event).</li>

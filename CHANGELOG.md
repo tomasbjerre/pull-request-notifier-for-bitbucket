@@ -3,10 +3,16 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
+### GitHub [#179](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/179) Add PULL_REQUEST_REVIEWERS_NEEDS_WORK_COUNT
+  NEEDS_WORK and UNAPPROVED variables
+  
+  [7337969c089b16f](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/7337969c089b16f) Tomas Bjerre *2017-01-13 08:20:58*
+
+## 2.47
 ### GitHub [#178](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/178) Forms with checkboxes that have a default value of false do not work
   Only select checkboxes marked as default true in button forms
   
-  [c67aac2253b2fef](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/c67aac2253b2fef) Tomas Bjerre *2017-01-03 17:32:10*
+  [65de828048c260f](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/65de828048c260f) Tomas Bjerre *2017-01-03 17:33:27*
 
 ## 2.46
 ### GitHub [#178](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/178) Forms with checkboxes that have a default value of false do not work
