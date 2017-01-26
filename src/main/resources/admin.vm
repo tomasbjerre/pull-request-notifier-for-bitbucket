@@ -285,7 +285,7 @@
     <div class="field-group">
      <label>Name </label>
      <input class="text long-field" type="text" name="name">
-     <div class="description">Name of this trigger. This has no other function then just letting the administrator make a note of what this notification does.</div>
+     <div class="description">Name of this trigger. This has no other function than just letting the administrator make a note of what this notification does.</div>
     </div>
    </fieldset>
 
