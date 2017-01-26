@@ -47,59 +47,61 @@ The plugin has its own implementation to create the RESCOPED_FROM and RESCOPED_T
 
 The filter text as well as the URL support variables. These are:
 
-* ${EVERYTHING_URL} This variable is resolved to all available variables. The name of each parameter is the name of that variable. Example: PULL_REQUEST_ID=1&PULL_REQUEST_TITLE=some%20thing...
-* ${PULL_REQUEST_ID} Example: 1
-* ${PULL_REQUEST_TITLE} Example: Anything
-* ${PULL_REQUEST_DESCRIPTION} The ${EVERYTHING_URL} does not include this because it makes the URL very big. Example: Anything
-* ${PULL_REQUEST_VERSION} Example: 1
-* ${PULL_REQUEST_COMMENT_TEXT} Example: A comment
-* ${PULL_REQUEST_COMMENT_ACTION} Example: ADDED, DELETED, EDITED, REPLIED
-* ${PULL_REQUEST_ACTION} Example: OPENED
-* ${PULL_REQUEST_STATE} Example: DECLINED, MERGED, OPEN
-* ${BUTTON_TRIGGER_TITLE} Example: Trigger Notification
-* ${BUTTON_FORM_DATA} The form data that was submitted
-* ${INJECTION_URL_VALUE} Value retrieved from any URL
-* ${PULL_REQUEST_URL} Example: http://localhost:7990/projects/PROJECT_1/repos/rep_1/pull-requests/1
-* ${PULL_REQUEST_USER_DISPLAY_NAME} Example: Some User
-* ${PULL_REQUEST_USER_EMAIL_ADDRESS} Example: some.user@bitbucket.domain
-* ${PULL_REQUEST_USER_ID} Example: 1
-* ${PULL_REQUEST_USER_NAME} Example: user.name
-* ${PULL_REQUEST_USER_SLUG} Example: user.name
-* ${PULL_REQUEST_AUTHOR_DISPLAY_NAME} Example: Administrator
-* ${PULL_REQUEST_AUTHOR_EMAIL} Example: admin@example.com
-* ${PULL_REQUEST_AUTHOR_ID} Example: 1
-* ${PULL_REQUEST_AUTHOR_NAME} Example: admin
-* ${PULL_REQUEST_AUTHOR_SLUG} Example: admin
-* ${PULL_REQUEST_REVIEWERS} Example: Administrator,User
-* ${PULL_REQUEST_REVIEWERS_ID} Example: 1,2
-* ${PULL_REQUEST_REVIEWERS_SLUG} Example: admin,user
-* ${PULL_REQUEST_REVIEWERS_EMAIL} Example: admin@example.com,user@example.com
-* ${PULL_REQUEST_REVIEWERS_APPROVED_COUNT} Number of reviewers that approved the PR.
-* ${PULL_REQUEST_REVIEWERS_UNAPPROVED_COUNT} Number of reviewers that unapproved the PR.
-* ${PULL_REQUEST_REVIEWERS_NEEDS_WORK_COUNT} Number of reviewers that says the PR needs work.
-* ${PULL_REQUEST_PARTICIPANTS_APPROVED_COUNT} Number of participants that approved the PR.
-* ${PULL_REQUEST_PARTICIPANTS_EMAIL} Example: admin@example.com,user@example.com
-* ${PULL_REQUEST_MERGE_COMMIT} Hash of merged commit (only available for merged-event).
-* ${PULL_REQUEST_FROM_SSH_CLONE_URL} Example: ssh://git@localhost:7999/project_1/rep_1
-* ${PULL_REQUEST_FROM_HTTP_CLONE_URL} Example: http://admin@localhost:7990/bitbucket/scm/project_1/rep_1.git
-* ${PULL_REQUEST_FROM_HASH} Example: 6053a1eaa1c009dd11092d09a72f3c41af1b59ad
-* ${PULL_REQUEST_FROM_ID} Example: refs/heads/branchmodmerge
-* ${PULL_REQUEST_FROM_BRANCH} Example: branchmodmerge
-* ${PULL_REQUEST_FROM_REPO_ID} Example: 1
-* ${PULL_REQUEST_FROM_REPO_NAME} Example: rep_1
-* ${PULL_REQUEST_FROM_REPO_PROJECT_ID} Example: 1
-* ${PULL_REQUEST_FROM_REPO_PROJECT_KEY} Example: PROJECT_1
-* ${PULL_REQUEST_FROM_REPO_SLUG} Example: rep_1
-* ${PULL_REQUEST_TO_SSH_CLONE_URL} Example: ssh://git@localhost:7999/project_1/rep_1
-* ${PULL_REQUEST_TO_HTTP_CLONE_URL} Example: http://admin@localhost:7990/bitbucket/scm/project_1/rep_1.git
-* ${PULL_REQUEST_TO_HASH} Example: 6053a1eaa1c009dd11092d09a72f3c41af1b59ad
-* ${PULL_REQUEST_TO_ID} Example: refs/heads/branchmodmerge
-* ${PULL_REQUEST_TO_BRANCH} Example: branchmodmerge
-* ${PULL_REQUEST_TO_REPO_ID} Example: 1
-* ${PULL_REQUEST_TO_REPO_NAME} Example: rep_1
-* ${PULL_REQUEST_TO_REPO_PROJECT_ID} Example: 1
-* ${PULL_REQUEST_TO_REPO_PROJECT_KEY} Example: PROJECT_1
-* ${PULL_REQUEST_TO_REPO_SLUG} Example: rep_1
+| Variable | Description |
+| :------- | :---------- | 
+| `${EVERYTHING_URL}` | This variable is resolved to all available variables. The name of each parameter is the name of that variable. <br /> Example: `PULL_REQUEST_ID=1&PULL_REQUEST_TITLE=some%20thing...` |
+| `${PULL_REQUEST_ID}` | Example: `1` |
+| `${PULL_REQUEST_TITLE}` | Example: `Anything` |
+| `${PULL_REQUEST_DESCRIPTION}` | The `${EVERYTHING_URL}` does not include this because it makes the URL very big. | Example: Anything |
+| `${PULL_REQUEST_VERSION}` | Example: `1` |
+| `${PULL_REQUEST_COMMENT_TEXT}` | Example: `A comment` |
+| `${PULL_REQUEST_COMMENT_ACTION}` | Example: `ADDED`, `DELETED`, `EDITED`, `REPLIED` |
+| `${PULL_REQUEST_ACTION}` | Example: `OPENED` |
+| `${PULL_REQUEST_STATE}` | Example: `DECLINED`, `MERGED`, `OPEN` |
+| `${BUTTON_TRIGGER_TITLE}` | Example: `Trigger Notification` |
+| `${BUTTON_FORM_DATA}` | The form data that was submitted |
+| `${INJECTION_URL_VALUE}` | Value retrieved from any URL |
+| `${PULL_REQUEST_URL}` | Example: `http://localhost:7990/projects/PROJECT_1/repos/rep_1/pull-requests/1` |
+| `${PULL_REQUEST_USER_DISPLAY_NAME}` | Example: `Some User` |
+| `${PULL_REQUEST_USER_EMAIL_ADDRESS}` | Example: `some.user@bitbucket.domain` |
+| `${PULL_REQUEST_USER_ID}` | Example: `1` |
+| `${PULL_REQUEST_USER_NAME}` | Example: `user.name` |
+| `${PULL_REQUEST_USER_SLUG}` | Example: `user.name` |
+| `${PULL_REQUEST_AUTHOR_DISPLAY_NAME}` | Example: `Administrator` |
+| `${PULL_REQUEST_AUTHOR_EMAIL}` | Example: `admin@example.com` |
+| `${PULL_REQUEST_AUTHOR_ID}` | Example: `1` |
+| `${PULL_REQUEST_AUTHOR_NAME}` | Example: `admin` |
+| `${PULL_REQUEST_AUTHOR_SLUG}` | Example: `admin` |
+| `${PULL_REQUEST_REVIEWERS}` | Example: `Administrator,User` |
+| `${PULL_REQUEST_REVIEWERS_ID}` | Example: `1,2` |
+| `${PULL_REQUEST_REVIEWERS_SLUG}` | Example: `admin,user` |
+| `${PULL_REQUEST_REVIEWERS_EMAIL}` | Example: `admin@example.com,user@example.com` |
+| `${PULL_REQUEST_REVIEWERS_APPROVED_COUNT}` | Number of reviewers that approved the PR. |
+| `${PULL_REQUEST_REVIEWERS_UNAPPROVED_COUNT}` | Number of reviewers that unapproved the PR. |
+| `${PULL_REQUEST_REVIEWERS_NEEDS_WORK_COUNT}` | Number of reviewers that says the PR needs work. |
+| `${PULL_REQUEST_PARTICIPANTS_APPROVED_COUNT}` | Number of participants that approved the PR. |
+| `${PULL_REQUEST_PARTICIPANTS_EMAIL}` | Example: `admin@example.com,user@example.com` |
+| `${PULL_REQUEST_MERGE_COMMIT}` | Hash of merged commit (only available for merged-event). |
+| `${PULL_REQUEST_FROM_SSH_CLONE_URL}` | Example: `ssh://git@localhost:7999/project_1/rep_1` |
+| `${PULL_REQUEST_FROM_HTTP_CLONE_URL}` | Example: `http://admin@localhost:7990/bitbucket/scm/project_1/rep_1.git` |
+| `${PULL_REQUEST_FROM_HASH}` | Example: `6053a1eaa1c009dd11092d09a72f3c41af1b59ad` |
+| `${PULL_REQUEST_FROM_ID}` | Example: `refs/heads/branchmodmerge` |
+| `${PULL_REQUEST_FROM_BRANCH}` | Example: `branchmodmerge` |
+| `${PULL_REQUEST_FROM_REPO_ID}` | Example: `1` |
+| `${PULL_REQUEST_FROM_REPO_NAME}` | Example: `rep_1` |
+| `${PULL_REQUEST_FROM_REPO_PROJECT_ID}` | Example: `1` |
+| `${PULL_REQUEST_FROM_REPO_PROJECT_KEY}` | Example: `PROJECT_1` |
+| `${PULL_REQUEST_FROM_REPO_SLUG}` | Example: `rep_1` |
+| `${PULL_REQUEST_TO_SSH_CLONE_URL}` | Example: `ssh://git@localhost:7999/project_1/rep_1` |
+| `${PULL_REQUEST_TO_HTTP_CLONE_URL}` | Example: `http://admin@localhost:7990/bitbucket/scm/project_1/rep_1.git` |
+| `${PULL_REQUEST_TO_HASH}` | Example: `6053a1eaa1c009dd11092d09a72f3c41af1b59ad` |
+| `${PULL_REQUEST_TO_ID}` | Example: `refs/heads/branchmodmerge` |
+| `${PULL_REQUEST_TO_BRANCH}` | Example: `branchmodmerge` |
+| `${PULL_REQUEST_TO_REPO_ID}` | Example: `1` |
+| `${PULL_REQUEST_TO_REPO_NAME}` | Example: `rep_1` |
+| `${PULL_REQUEST_TO_REPO_PROJECT_ID}` | Example: `1` |
+| `${PULL_REQUEST_TO_REPO_PROJECT_KEY}` | Example: `PROJECT_1` |
+| `${PULL_REQUEST_TO_REPO_SLUG}` | Example: `rep_1` |
 
 The ${PULL_REQUEST_USER...} contains information about the user who issued the event. Who commented it, who rejected it, who approved it...
 
