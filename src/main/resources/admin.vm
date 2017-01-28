@@ -514,6 +514,22 @@
     </div>
    </fieldset>
 
+   <fieldset class="group">
+    <legend>
+     <span>Post content variables encoding</span>
+    </legend>
+    <div class="radio">
+     <label>
+      <input class="radio" type="radio" name="postContentEncoding" value="NONE"> Don't encode
+     </label>
+    </div>
+    <div class="radio">
+     <label>
+      <input class="radio" type="radio" name="postContentEncoding" value="HTML"> Encode as HTML
+     </label>
+    </div>
+   </fieldset>
+
    <h4>Headers</h4>
    <p>Optional HTTP headers to send with URL.</p>
    <fieldset class="group">

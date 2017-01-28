@@ -294,7 +294,7 @@ If things don't work as you expect, perhaps you should file an issue. But first,
    `curl -u admin:admin 'http://localhost:7990/bitbucket/rest/prnfb-admin/1.0/settings/notifications' -H 'Accept: application/json, text/javascript, */*; q=0.01'`.
    
    `curl -u admin:admin 'http://localhost:7990/bitbucket/rest/prnfb-admin/1.0/settings/buttons' -H 'Accept: application/json, text/javascript, */*; q=0.01'`.
- * If the system you are trying to notify does not seem to get notified you may check that the triggered URL looks as expected. You can do that by setting up a webserver, let the plugin invoke that with same parameters and then look at its log files to se the requested URL. Or notify *http://cogi.bjurr.se/?${...}* and I can check my logs and tell you what the URL looks like.
+ * If the system you are trying to notify does not seem to get notified you may check that the triggered URL looks as expected. You can do that by invoking https://requestb.in/ and inspect its results.
 
 ## Developer instructions
 There are some scripts to help working with the plugin.

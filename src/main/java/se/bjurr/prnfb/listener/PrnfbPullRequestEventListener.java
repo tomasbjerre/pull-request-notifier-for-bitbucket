@@ -220,11 +220,12 @@ public class PrnfbPullRequestEventListener {
 
     Optional<String> postContent = absent();
     if (notification.getPostContent().isPresent()) {
+      ENCODE_FOR encodePostContentFor = notification.getPostContentEncoding();
       postContent =
           of(
               renderer.render(
                   notification.getPostContent().get(),
-                  ENCODE_FOR.NONE,
+                  encodePostContentFor,
                   clientKeyStore,
                   shouldAcceptAnyCertificate));
     }

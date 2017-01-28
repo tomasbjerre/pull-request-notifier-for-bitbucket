@@ -6,14 +6,14 @@ import static se.bjurr.prnfb.settings.PrnfbNotificationBuilder.prnfbNotification
 
 import java.util.List;
 
+import com.atlassian.bitbucket.pull.PullRequestState;
+
 import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
 import se.bjurr.prnfb.presentation.dto.HeaderDTO;
 import se.bjurr.prnfb.presentation.dto.NotificationDTO;
 import se.bjurr.prnfb.settings.PrnfbHeader;
 import se.bjurr.prnfb.settings.PrnfbNotification;
 import se.bjurr.prnfb.settings.ValidationException;
-
-import com.atlassian.bitbucket.pull.PullRequestState;
 
 public class NotificationTransformer {
 
@@ -30,6 +30,7 @@ public class NotificationTransformer {
     to.setHeaders(toHeaders(from.getHeaders()));
     to.setPassword(from.getPassword().orNull());
     to.setPostContent(from.getPostContent().orNull());
+    to.setPostContentEncoding(from.getPostContentEncoding());
     to.setProxyPassword(from.getProxyPassword().orNull());
     to.setProxyPort(from.getProxyPort());
     to.setProxyServer(from.getProxyServer().orNull());
@@ -65,6 +66,7 @@ public class NotificationTransformer {
         .withName(from.getName()) //
         .withPassword(from.getPassword()) //
         .withPostContent(from.getPostContent()) //
+        .withPostContentEncoding(from.getPostContentEncoding()) //
         .withProxyPassword(from.getProxyPassword()) //
         .withProxyPort(from.getProxyPort()) //
         .withProxyServer(from.getProxyServer()) //

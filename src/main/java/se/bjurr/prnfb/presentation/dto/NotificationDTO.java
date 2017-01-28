@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD;
+import se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR;
 import se.bjurr.prnfb.settings.TRIGGER_IF_MERGE;
 
 @XmlRootElement
@@ -35,6 +36,11 @@ public class NotificationDTO implements Comparable<NotificationDTO> {
   private String url;
   private String user;
   private UUID uuid;
+  private ENCODE_FOR postContentEncoding;
+
+  public void setPostContentEncoding(ENCODE_FOR postContentEncoding) {
+    this.postContentEncoding = postContentEncoding;
+  }
 
   @Override
   public int compareTo(NotificationDTO o) {
@@ -283,32 +289,31 @@ public class NotificationDTO implements Comparable<NotificationDTO> {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((this.filterRegexp == null) ? 0 : this.filterRegexp.hashCode());
-    result = prime * result + ((this.filterString == null) ? 0 : this.filterString.hashCode());
-    result = prime * result + ((this.headers == null) ? 0 : this.headers.hashCode());
-    result = prime * result + ((this.injectionUrl == null) ? 0 : this.injectionUrl.hashCode());
+    result = prime * result + (this.filterRegexp == null ? 0 : this.filterRegexp.hashCode());
+    result = prime * result + (this.filterString == null ? 0 : this.filterString.hashCode());
+    result = prime * result + (this.headers == null ? 0 : this.headers.hashCode());
+    result = prime * result + (this.injectionUrl == null ? 0 : this.injectionUrl.hashCode());
+    result =
+        prime * result + (this.injectionUrlRegexp == null ? 0 : this.injectionUrlRegexp.hashCode());
+    result = prime * result + (this.method == null ? 0 : this.method.hashCode());
+    result = prime * result + (this.name == null ? 0 : this.name.hashCode());
+    result = prime * result + (this.password == null ? 0 : this.password.hashCode());
+    result = prime * result + (this.postContent == null ? 0 : this.postContent.hashCode());
+    result = prime * result + (this.projectKey == null ? 0 : this.projectKey.hashCode());
+    result = prime * result + (this.proxyPassword == null ? 0 : this.proxyPassword.hashCode());
+    result = prime * result + (this.proxyPort == null ? 0 : this.proxyPort.hashCode());
+    result = prime * result + (this.proxyServer == null ? 0 : this.proxyServer.hashCode());
+    result = prime * result + (this.proxyUser == null ? 0 : this.proxyUser.hashCode());
+    result = prime * result + (this.repositorySlug == null ? 0 : this.repositorySlug.hashCode());
+    result =
+        prime * result + (this.triggerIfCanMerge == null ? 0 : this.triggerIfCanMerge.hashCode());
     result =
         prime * result
-            + ((this.injectionUrlRegexp == null) ? 0 : this.injectionUrlRegexp.hashCode());
-    result = prime * result + ((this.method == null) ? 0 : this.method.hashCode());
-    result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
-    result = prime * result + ((this.password == null) ? 0 : this.password.hashCode());
-    result = prime * result + ((this.postContent == null) ? 0 : this.postContent.hashCode());
-    result = prime * result + ((this.projectKey == null) ? 0 : this.projectKey.hashCode());
-    result = prime * result + ((this.proxyPassword == null) ? 0 : this.proxyPassword.hashCode());
-    result = prime * result + ((this.proxyPort == null) ? 0 : this.proxyPort.hashCode());
-    result = prime * result + ((this.proxyServer == null) ? 0 : this.proxyServer.hashCode());
-    result = prime * result + ((this.proxyUser == null) ? 0 : this.proxyUser.hashCode());
-    result = prime * result + ((this.repositorySlug == null) ? 0 : this.repositorySlug.hashCode());
-    result =
-        prime * result + ((this.triggerIfCanMerge == null) ? 0 : this.triggerIfCanMerge.hashCode());
-    result =
-        prime * result
-            + ((this.triggerIgnoreStateList == null) ? 0 : this.triggerIgnoreStateList.hashCode());
-    result = prime * result + ((this.triggers == null) ? 0 : this.triggers.hashCode());
-    result = prime * result + ((this.url == null) ? 0 : this.url.hashCode());
-    result = prime * result + ((this.user == null) ? 0 : this.user.hashCode());
-    result = prime * result + ((this.uuid == null) ? 0 : this.uuid.hashCode());
+            + (this.triggerIgnoreStateList == null ? 0 : this.triggerIgnoreStateList.hashCode());
+    result = prime * result + (this.triggers == null ? 0 : this.triggers.hashCode());
+    result = prime * result + (this.url == null ? 0 : this.url.hashCode());
+    result = prime * result + (this.user == null ? 0 : this.user.hashCode());
+    result = prime * result + (this.uuid == null ? 0 : this.uuid.hashCode());
     return result;
   }
 
@@ -394,5 +399,9 @@ public class NotificationDTO implements Comparable<NotificationDTO> {
 
   public void setUuid(UUID uuid) {
     this.uuid = uuid;
+  }
+
+  public ENCODE_FOR getPostContentEncoding() {
+    return postContentEncoding;
   }
 }

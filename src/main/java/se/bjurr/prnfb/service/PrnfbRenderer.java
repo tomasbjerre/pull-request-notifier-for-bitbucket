@@ -5,12 +5,14 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Throwables.propagate;
 import static java.net.URLEncoder.encode;
 import static org.slf4j.LoggerFactory.getLogger;
+import static se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR.HTML;
 import static se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR.URL;
 import static se.bjurr.prnfb.service.PrnfbVariable.EVERYTHING_URL;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.slf4j.Logger;
 
 import com.atlassian.bitbucket.pull.PullRequest;
@@ -28,7 +30,8 @@ import se.bjurr.prnfb.settings.PrnfbNotification;
 public class PrnfbRenderer {
   public enum ENCODE_FOR {
     NONE,
-    URL
+    URL,
+    HTML
   }
 
   private static final Logger LOG = getLogger(PrnfbRenderer.class);
@@ -82,6 +85,8 @@ public class PrnfbRenderer {
       } catch (UnsupportedEncodingException e) {
         propagate(e);
       }
+    } else if (encodeFor == HTML) {
+      replaceWith = StringEscapeUtils.escapeHtml4(resolved);
     } else {
       replaceWith = resolved;
     }

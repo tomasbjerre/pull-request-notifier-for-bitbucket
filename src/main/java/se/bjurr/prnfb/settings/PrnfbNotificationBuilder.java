@@ -9,10 +9,11 @@ import static se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD.GET;
 import java.util.List;
 import java.util.UUID;
 
+import com.atlassian.bitbucket.pull.PullRequestState;
+
 import se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD;
 import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
-
-import com.atlassian.bitbucket.pull.PullRequestState;
+import se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR;
 
 public class PrnfbNotificationBuilder {
   public static PrnfbNotificationBuilder prnfbNotificationBuilder() {
@@ -41,6 +42,7 @@ public class PrnfbNotificationBuilder {
     b.injectionUrl = from.getInjectionUrl().orNull();
     b.injectionUrlRegexp = from.getInjectionUrlRegexp().orNull();
     b.triggerIfCanMerge = from.getTriggerIfCanMerge();
+    b.postContentEncoding = from.getPostContentEncoding();
     return b;
   }
 
@@ -65,9 +67,14 @@ public class PrnfbNotificationBuilder {
   private String url;
   private String user;
   private UUID uuid;
+  private ENCODE_FOR postContentEncoding;
 
   private PrnfbNotificationBuilder() {
     this.uuid = randomUUID();
+  }
+
+  public ENCODE_FOR getPostContentEncoding() {
+    return postContentEncoding;
   }
 
   public PrnfbNotification build() throws ValidationException {
@@ -275,6 +282,11 @@ public class PrnfbNotificationBuilder {
 
   public PrnfbNotificationBuilder withUser(String user) {
     this.user = emptyToNull(user);
+    return this;
+  }
+
+  public PrnfbNotificationBuilder withPostContentEncoding(ENCODE_FOR postContentEncoding) {
+    this.postContentEncoding = postContentEncoding;
     return this;
   }
 

@@ -14,11 +14,13 @@ import java.net.URL;
 import java.util.List;
 import java.util.UUID;
 
+import com.atlassian.bitbucket.pull.PullRequestState;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Optional;
+
 import se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD;
 import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
-
-import com.atlassian.bitbucket.pull.PullRequestState;
-import com.google.common.base.Optional;
+import se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR;
 
 public class PrnfbNotification implements HasUuid {
 
@@ -44,6 +46,7 @@ public class PrnfbNotification implements HasUuid {
   private final String url;
   private final String user;
   private final UUID uuid;
+  private final ENCODE_FOR postContentEncoding;
 
   public PrnfbNotification(PrnfbNotificationBuilder builder) throws ValidationException {
     this.uuid = firstNonNull(builder.getUUID(), randomUUID());
@@ -87,6 +90,7 @@ public class PrnfbNotification implements HasUuid {
     this.injectionUrl = emptyToNull(nullToEmpty(builder.getInjectionUrl()).trim());
     this.injectionUrlRegexp = emptyToNull(nullToEmpty(builder.getInjectionUrlRegexp()).trim());
     this.triggerIgnoreStateList = builder.getTriggerIgnoreStateList();
+    this.postContentEncoding = builder.getPostContentEncoding();
   }
 
   @Override
@@ -101,143 +105,146 @@ public class PrnfbNotification implements HasUuid {
       return false;
     }
     PrnfbNotification other = (PrnfbNotification) obj;
-    if (this.filterRegexp == null) {
+    if (filterRegexp == null) {
       if (other.filterRegexp != null) {
         return false;
       }
-    } else if (!this.filterRegexp.equals(other.filterRegexp)) {
+    } else if (!filterRegexp.equals(other.filterRegexp)) {
       return false;
     }
-    if (this.filterString == null) {
+    if (filterString == null) {
       if (other.filterString != null) {
         return false;
       }
-    } else if (!this.filterString.equals(other.filterString)) {
+    } else if (!filterString.equals(other.filterString)) {
       return false;
     }
-    if (this.headers == null) {
+    if (headers == null) {
       if (other.headers != null) {
         return false;
       }
-    } else if (!this.headers.equals(other.headers)) {
+    } else if (!headers.equals(other.headers)) {
       return false;
     }
-    if (this.injectionUrl == null) {
+    if (injectionUrl == null) {
       if (other.injectionUrl != null) {
         return false;
       }
-    } else if (!this.injectionUrl.equals(other.injectionUrl)) {
+    } else if (!injectionUrl.equals(other.injectionUrl)) {
       return false;
     }
-    if (this.injectionUrlRegexp == null) {
+    if (injectionUrlRegexp == null) {
       if (other.injectionUrlRegexp != null) {
         return false;
       }
-    } else if (!this.injectionUrlRegexp.equals(other.injectionUrlRegexp)) {
+    } else if (!injectionUrlRegexp.equals(other.injectionUrlRegexp)) {
       return false;
     }
-    if (this.method != other.method) {
+    if (method != other.method) {
       return false;
     }
-    if (this.name == null) {
+    if (name == null) {
       if (other.name != null) {
         return false;
       }
-    } else if (!this.name.equals(other.name)) {
+    } else if (!name.equals(other.name)) {
       return false;
     }
-    if (this.password == null) {
+    if (password == null) {
       if (other.password != null) {
         return false;
       }
-    } else if (!this.password.equals(other.password)) {
+    } else if (!password.equals(other.password)) {
       return false;
     }
-    if (this.postContent == null) {
+    if (postContent == null) {
       if (other.postContent != null) {
         return false;
       }
-    } else if (!this.postContent.equals(other.postContent)) {
+    } else if (!postContent.equals(other.postContent)) {
       return false;
     }
-    if (this.projectKey == null) {
+    if (postContentEncoding != other.postContentEncoding) {
+      return false;
+    }
+    if (projectKey == null) {
       if (other.projectKey != null) {
         return false;
       }
-    } else if (!this.projectKey.equals(other.projectKey)) {
+    } else if (!projectKey.equals(other.projectKey)) {
       return false;
     }
-    if (this.proxyPassword == null) {
+    if (proxyPassword == null) {
       if (other.proxyPassword != null) {
         return false;
       }
-    } else if (!this.proxyPassword.equals(other.proxyPassword)) {
+    } else if (!proxyPassword.equals(other.proxyPassword)) {
       return false;
     }
-    if (this.proxyPort == null) {
+    if (proxyPort == null) {
       if (other.proxyPort != null) {
         return false;
       }
-    } else if (!this.proxyPort.equals(other.proxyPort)) {
+    } else if (!proxyPort.equals(other.proxyPort)) {
       return false;
     }
-    if (this.proxyServer == null) {
+    if (proxyServer == null) {
       if (other.proxyServer != null) {
         return false;
       }
-    } else if (!this.proxyServer.equals(other.proxyServer)) {
+    } else if (!proxyServer.equals(other.proxyServer)) {
       return false;
     }
-    if (this.proxyUser == null) {
+    if (proxyUser == null) {
       if (other.proxyUser != null) {
         return false;
       }
-    } else if (!this.proxyUser.equals(other.proxyUser)) {
+    } else if (!proxyUser.equals(other.proxyUser)) {
       return false;
     }
-    if (this.repositorySlug == null) {
+    if (repositorySlug == null) {
       if (other.repositorySlug != null) {
         return false;
       }
-    } else if (!this.repositorySlug.equals(other.repositorySlug)) {
+    } else if (!repositorySlug.equals(other.repositorySlug)) {
       return false;
     }
-    if (this.triggerIfCanMerge != other.triggerIfCanMerge) {
+    if (triggerIfCanMerge != other.triggerIfCanMerge) {
       return false;
     }
-    if (this.triggerIgnoreStateList == null) {
+    if (triggerIgnoreStateList == null) {
       if (other.triggerIgnoreStateList != null) {
         return false;
       }
-    } else if (!this.triggerIgnoreStateList.equals(other.triggerIgnoreStateList)) {
+    } else if (!triggerIgnoreStateList.equals(other.triggerIgnoreStateList)) {
       return false;
     }
-    if (this.triggers == null) {
+    if (triggers == null) {
       if (other.triggers != null) {
         return false;
       }
-    } else if (!this.triggers.equals(other.triggers)) {
+    } else if (!triggers.equals(other.triggers)) {
       return false;
     }
-    if (this.url == null) {
+    if (url == null) {
       if (other.url != null) {
         return false;
       }
-    } else if (!this.url.equals(other.url)) {
+    } else if (!url.equals(other.url)) {
       return false;
     }
-    if (this.user == null) {
+    if (user == null) {
       if (other.user != null) {
         return false;
       }
-    } else if (!this.user.equals(other.user)) {
+    } else if (!user.equals(other.user)) {
       return false;
     }
-    if (this.uuid == null) {
+    if (uuid == null) {
       if (other.uuid != null) {
         return false;
       }
-    } else if (!this.uuid.equals(other.uuid)) {
+    } else if (!uuid.equals(other.uuid)) {
       return false;
     }
     return true;
@@ -332,79 +339,82 @@ public class PrnfbNotification implements HasUuid {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((this.filterRegexp == null) ? 0 : this.filterRegexp.hashCode());
-    result = prime * result + ((this.filterString == null) ? 0 : this.filterString.hashCode());
-    result = prime * result + ((this.headers == null) ? 0 : this.headers.hashCode());
-    result = prime * result + ((this.injectionUrl == null) ? 0 : this.injectionUrl.hashCode());
+    result = prime * result + (filterRegexp == null ? 0 : filterRegexp.hashCode());
+    result = prime * result + (filterString == null ? 0 : filterString.hashCode());
+    result = prime * result + (headers == null ? 0 : headers.hashCode());
+    result = prime * result + (injectionUrl == null ? 0 : injectionUrl.hashCode());
+    result = prime * result + (injectionUrlRegexp == null ? 0 : injectionUrlRegexp.hashCode());
+    result = prime * result + (method == null ? 0 : method.hashCode());
+    result = prime * result + (name == null ? 0 : name.hashCode());
+    result = prime * result + (password == null ? 0 : password.hashCode());
+    result = prime * result + (postContent == null ? 0 : postContent.hashCode());
+    result = prime * result + (postContentEncoding == null ? 0 : postContentEncoding.hashCode());
+    result = prime * result + (projectKey == null ? 0 : projectKey.hashCode());
+    result = prime * result + (proxyPassword == null ? 0 : proxyPassword.hashCode());
+    result = prime * result + (proxyPort == null ? 0 : proxyPort.hashCode());
+    result = prime * result + (proxyServer == null ? 0 : proxyServer.hashCode());
+    result = prime * result + (proxyUser == null ? 0 : proxyUser.hashCode());
+    result = prime * result + (repositorySlug == null ? 0 : repositorySlug.hashCode());
+    result = prime * result + (triggerIfCanMerge == null ? 0 : triggerIfCanMerge.hashCode());
     result =
-        prime * result
-            + ((this.injectionUrlRegexp == null) ? 0 : this.injectionUrlRegexp.hashCode());
-    result = prime * result + ((this.method == null) ? 0 : this.method.hashCode());
-    result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
-    result = prime * result + ((this.password == null) ? 0 : this.password.hashCode());
-    result = prime * result + ((this.postContent == null) ? 0 : this.postContent.hashCode());
-    result = prime * result + ((this.projectKey == null) ? 0 : this.projectKey.hashCode());
-    result = prime * result + ((this.proxyPassword == null) ? 0 : this.proxyPassword.hashCode());
-    result = prime * result + ((this.proxyPort == null) ? 0 : this.proxyPort.hashCode());
-    result = prime * result + ((this.proxyServer == null) ? 0 : this.proxyServer.hashCode());
-    result = prime * result + ((this.proxyUser == null) ? 0 : this.proxyUser.hashCode());
-    result = prime * result + ((this.repositorySlug == null) ? 0 : this.repositorySlug.hashCode());
-    result =
-        prime * result + ((this.triggerIfCanMerge == null) ? 0 : this.triggerIfCanMerge.hashCode());
-    result =
-        prime * result
-            + ((this.triggerIgnoreStateList == null) ? 0 : this.triggerIgnoreStateList.hashCode());
-    result = prime * result + ((this.triggers == null) ? 0 : this.triggers.hashCode());
-    result = prime * result + ((this.url == null) ? 0 : this.url.hashCode());
-    result = prime * result + ((this.user == null) ? 0 : this.user.hashCode());
-    result = prime * result + ((this.uuid == null) ? 0 : this.uuid.hashCode());
+        prime * result + (triggerIgnoreStateList == null ? 0 : triggerIgnoreStateList.hashCode());
+    result = prime * result + (triggers == null ? 0 : triggers.hashCode());
+    result = prime * result + (url == null ? 0 : url.hashCode());
+    result = prime * result + (user == null ? 0 : user.hashCode());
+    result = prime * result + (uuid == null ? 0 : uuid.hashCode());
     return result;
   }
 
   @Override
   public String toString() {
     return "PrnfbNotification [filterRegexp="
-        + this.filterRegexp
+        + filterRegexp
         + ", filterString="
-        + this.filterString
+        + filterString
         + ", headers="
-        + this.headers
+        + headers
         + ", injectionUrl="
-        + this.injectionUrl
+        + injectionUrl
         + ", injectionUrlRegexp="
-        + this.injectionUrlRegexp
+        + injectionUrlRegexp
         + ", method="
-        + this.method
+        + method
         + ", name="
-        + this.name
+        + name
         + ", password="
-        + this.password
+        + password
         + ", postContent="
-        + this.postContent
+        + postContent
         + ", projectKey="
-        + this.projectKey
+        + projectKey
         + ", proxyPassword="
-        + this.proxyPassword
+        + proxyPassword
         + ", proxyPort="
-        + this.proxyPort
+        + proxyPort
         + ", proxyServer="
-        + this.proxyServer
+        + proxyServer
         + ", proxyUser="
-        + this.proxyUser
+        + proxyUser
         + ", repositorySlug="
-        + this.repositorySlug
+        + repositorySlug
         + ", triggerIfCanMerge="
-        + this.triggerIfCanMerge
+        + triggerIfCanMerge
         + ", triggerIgnoreStateList="
-        + this.triggerIgnoreStateList
+        + triggerIgnoreStateList
         + ", triggers="
-        + this.triggers
+        + triggers
         + ", url="
-        + this.url
+        + url
         + ", user="
-        + this.user
+        + user
         + ", uuid="
-        + this.uuid
+        + uuid
+        + ", postContentEncoding="
+        + postContentEncoding
         + "]";
+  }
+
+  public ENCODE_FOR getPostContentEncoding() {
+    return MoreObjects.firstNonNull(this.postContentEncoding, ENCODE_FOR.NONE);
   }
 }

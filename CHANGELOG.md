@@ -3,10 +3,27 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
+### GitHub [#187](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/187) Support HTML escaping in variable expansion?
+  Optionally HTML encode variables in post content 
+
+ * Also adding a .gitattributes to force line endings
+  
+  [6c5ea57e189e213](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/6c5ea57e189e213) Tomas Bjerre *2017-01-28 13:24:47*
+
+### No issue
+  Use table instead of list for variable documentation
+  
+  [bfea25b36db3cb2](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/bfea25b36db3cb2) Joshua Shearer *2017-01-26 04:05:48*
+
+  Fix misspelling
+  
+  [532d0203e03a92b](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/532d0203e03a92b) Joshua Shearer *2017-01-26 03:46:41*
+
+## 2.48
 ### GitHub [#179](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/179) Add PULL_REQUEST_REVIEWERS_NEEDS_WORK_COUNT
   NEEDS_WORK and UNAPPROVED variables
   
-  [7337969c089b16f](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/7337969c089b16f) Tomas Bjerre *2017-01-13 08:20:58*
+  [85558ecd08f2321](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/85558ecd08f2321) Tomas Bjerre *2017-01-13 08:33:22*
 
 ## 2.47
 ### GitHub [#178](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/178) Forms with checkboxes that have a default value of false do not work
