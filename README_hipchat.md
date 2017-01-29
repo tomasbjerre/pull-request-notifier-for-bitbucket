@@ -45,6 +45,8 @@
          }
         }
        ```
+     - **Post content encoding**
+       Check the *HTML encode* checkbox.
      - **Headers**:
        
        | Name            | Value               |
