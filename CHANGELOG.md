@@ -3,10 +3,16 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
+### No issue
+  doc
+  
+  [8cb27b306f10201](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/8cb27b306f10201) Tomas Bjerre *2017-01-30 18:28:23*
+
+## 2.50
 ### GitHub [#190](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/190) button forms: descriptions not showing for types input and textarea
   Showing description for input and textarea in buttons form
   
-  [11175eea4da9eba](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/11175eea4da9eba) Tomas Bjerre *2017-01-30 18:22:11*
+  [c3df65fc66369fa](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/c3df65fc66369fa) Tomas Bjerre *2017-01-30 18:22:51*
 
 ### No issue
   Doc

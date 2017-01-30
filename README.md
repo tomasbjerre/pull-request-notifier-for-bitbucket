@@ -219,7 +219,7 @@ You may use Chrome and Developer Tools (press F12) to view rest calls while edit
 
 ## Integration guides
 
-Generally, when working fiddling with this plugin, you may want to use something like [RequestBin](https://requestb.in/). Let the notification URL point to it and you can inspect what the invoked URL looks like.
+Generally, when fiddling with this plugin, you may want to use something like [RequestBin](https://requestb.in/). Let the notification URL point to it and you can inspect what the invoked URL looks like.
 
 Here are some guides on how to use the plugin with different systems. Feel free to add guides through pull requests to this repo!
 
