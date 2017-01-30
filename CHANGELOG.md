@@ -3,12 +3,35 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
+### GitHub [#190](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/190) button forms: descriptions not showing for types input and textarea
+  Showing description for input and textarea in buttons form
+  
+  [11175eea4da9eba](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/11175eea4da9eba) Tomas Bjerre *2017-01-30 18:22:11*
+
+### No issue
+  Doc
+  
+  [cefc0c985ac96ae](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/cefc0c985ac96ae) Tomas Bjerre *2017-01-29 16:25:48*
+
+  Fiddling with Docker
+  
+  [a674860740e4e90](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/a674860740e4e90) Tomas Bjerre *2017-01-29 14:52:39*
+
+## 2.49
 ### GitHub [#187](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/187) Support HTML escaping in variable expansion?
+  Adding HipChat documentation 
+
+ * The HipChat docs were privided by [Rychard](https://github.com/Rychard).
+ * Moving Jenkins docs to its own file.
+ * Moving issue reporting guidelines to ISSUE_TEMPLATE.
+  
+  [f6e6fe6953e57b6](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/f6e6fe6953e57b6) Tomas Bjerre *2017-01-28 13:45:12*
+
   Optionally HTML encode variables in post content 
 
  * Also adding a .gitattributes to force line endings
   
-  [6c5ea57e189e213](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/6c5ea57e189e213) Tomas Bjerre *2017-01-28 13:24:47*
+  [51f4c6041458893](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/51f4c6041458893) Tomas Bjerre *2017-01-28 13:29:33*
 
 ### No issue
   Use table instead of list for variable documentation

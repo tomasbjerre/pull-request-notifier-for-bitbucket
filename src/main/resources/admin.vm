@@ -471,7 +471,7 @@
 
 
    <h4>URL</h4>
-   <p>The URL to invoke when notification is triggered.</p>
+   <p>The URL to invoke when notification is triggered. You may want to try <a href="https://requestb.in/" target="_blank">RequestBin</a> to fiddle with the plugin settings.</p>
    <fieldset class="group">
     <div class="field-group">
      <label>URL </label>

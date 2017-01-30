@@ -45,7 +45,7 @@ define('plugin/prnfb/pr-triggerbutton', [
   var escapedName = _.escape(name);
   var escapedLabel = _.escape(item.label);
   var escapedValue = _.escape(item.defaultValue);
-  var escapedDescription = _.escape(item.defaultDescription);
+  var escapedDescription = _.escape(item.description);
   return $('' +
    '<div class="field-group">' + //
    '<label for="' + name + '">' + escapedLabel + //
@@ -60,7 +60,7 @@ define('plugin/prnfb/pr-triggerbutton', [
   var escapedName = _.escape(name);
   var escapedLabel = _.escape(item.label);
   var escapedValue = _.escape(item.defaultValue);
-  var escapedDescription = _.escape(item.defaultDescription);
+  var escapedDescription = _.escape(item.description);
   return $('' +
    '<div class="field-group">' + //
    '<label for="' + escapedName + '">' + escapedLabel + //
