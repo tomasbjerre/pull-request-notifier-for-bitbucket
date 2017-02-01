@@ -406,6 +406,10 @@
     </div>
     <div class="checkbox">
      <label>
+      <input class="checkbox" type="checkbox" name="triggers[]" value="REVIEWED">REVIEWED, participant updates status to NEEDS_WORK</label>
+    </div>
+    <div class="checkbox">
+     <label>
       <input class="checkbox" type="checkbox" name="triggers[]" value="UNAPPROVED">UNAPPROVED</label>
     </div>
     <div class="checkbox">

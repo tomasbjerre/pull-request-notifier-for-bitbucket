@@ -1,9 +1,9 @@
 package se.bjurr.prnfb.listener;
 
-import se.bjurr.prnfb.settings.PrnfbNotification;
-
 import com.atlassian.bitbucket.event.pull.PullRequestEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestRescopedEvent;
+
+import se.bjurr.prnfb.settings.PrnfbNotification;
 
 public enum PrnfbPullRequestAction {
   APPROVED, //
@@ -17,7 +17,8 @@ public enum PrnfbPullRequestAction {
   RESCOPED_FROM, //
   RESCOPED_TO, //
   UNAPPROVED, //
-  UPDATED;
+  UPDATED,
+  REVIEWED; //
 
   public static PrnfbPullRequestAction fromPullRequestEvent(
       PullRequestEvent event, PrnfbNotification notification) {

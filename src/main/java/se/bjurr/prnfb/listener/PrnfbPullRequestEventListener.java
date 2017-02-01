@@ -21,7 +21,6 @@ import java.util.concurrent.ExecutorService;
 
 import org.slf4j.Logger;
 
-import com.atlassian.bitbucket.event.pull.PullRequestApprovedEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestCommentAddedEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestCommentDeletedEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestCommentEditedEvent;
@@ -31,9 +30,9 @@ import com.atlassian.bitbucket.event.pull.PullRequestDeclinedEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestMergedEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestOpenedEvent;
+import com.atlassian.bitbucket.event.pull.PullRequestParticipantStatusUpdatedEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestReopenedEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestRescopedEvent;
-import com.atlassian.bitbucket.event.pull.PullRequestUnapprovedEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestUpdatedEvent;
 import com.atlassian.bitbucket.pull.PullRequest;
 import com.atlassian.bitbucket.pull.PullRequestService;
@@ -273,7 +272,7 @@ public class PrnfbPullRequestEventListener {
   }
 
   @EventListener
-  public void onEvent(@SuppressWarnings("deprecation") PullRequestApprovedEvent e) {
+  public void onEvent(PullRequestParticipantStatusUpdatedEvent e) {
     handleEventAsync(e);
   }
 
@@ -319,11 +318,6 @@ public class PrnfbPullRequestEventListener {
 
   @EventListener
   public void onEvent(final PullRequestRescopedEvent e) {
-    handleEventAsync(e);
-  }
-
-  @EventListener
-  public void onEvent(@SuppressWarnings("deprecation") PullRequestUnapprovedEvent e) {
     handleEventAsync(e);
   }
 

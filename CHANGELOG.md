@@ -3,10 +3,17 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
+### GitHub [#191](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/191) Notification for &quot;Needs Work&quot;
+  Adding REVIEWED as trigger 
+
+ * This is what happens when reviewer clicks "needs work".
+  
+  [f0755ff21dc7ae2](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/f0755ff21dc7ae2) Tomas Bjerre *2017-02-01 18:16:39*
+
 ### No issue
   doc
   
-  [8cb27b306f10201](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/8cb27b306f10201) Tomas Bjerre *2017-01-30 18:28:23*
+  [48b7b744a94f01e](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/48b7b744a94f01e) Tomas Bjerre *2017-01-30 18:28:50*
 
 ## 2.50
 ### GitHub [#190](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/190) button forms: descriptions not showing for types input and textarea
