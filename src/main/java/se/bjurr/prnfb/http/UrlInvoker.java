@@ -46,11 +46,11 @@ import org.apache.http.ssl.TrustStrategy;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 
-import se.bjurr.prnfb.settings.PrnfbHeader;
-import se.bjurr.prnfb.settings.PrnfbNotification;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
+
+import se.bjurr.prnfb.settings.PrnfbHeader;
+import se.bjurr.prnfb.settings.PrnfbNotification;
 
 /**
  * If told to accept all certificates, an unsafe X509 trust manager is used.<br>
@@ -352,10 +352,13 @@ public class UrlInvoker {
               .execute(httpRequestBase);
 
       HttpEntity entity = httpResponse.getEntity();
-      return new HttpResponse(
-          httpRequestBase.getURI(),
-          httpResponse.getStatusLine().getStatusCode(),
-          EntityUtils.toString(entity, UTF_8));
+      String entityString = "";
+      if (entity != null) {
+        entityString = EntityUtils.toString(entity, UTF_8);
+      }
+      URI uri = httpRequestBase.getURI();
+      int statusCode = httpResponse.getStatusLine().getStatusCode();
+      return new HttpResponse(uri, statusCode, entityString);
     } catch (final Exception e) {
       LOG.error("", e);
     } finally {

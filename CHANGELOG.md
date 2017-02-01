@@ -23,7 +23,12 @@ Changelog of Pull Request Notifier for Bitbucket.
  * PULL_REQUEST_REVIEWERS_NEEDS_WORK_EMAIL
  * PULL_REQUEST_REVIEWERS_NEEDS_WORK_NAME
   
-  [72607d4617b0e7d](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/72607d4617b0e7d) Tomas Bjerre *2017-02-01 19:16:26*
+  [6b8832e587d55b0](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/6b8832e587d55b0) Tomas Bjerre *2017-02-01 19:23:38*
+
+### GitHub [#194](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/194) Pull Request activity throws IllegalArgumentException
+  Avoiding trying to read empty responses from notifications
+  
+  [6723e59c0b892d0](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/6723e59c0b892d0) Tomas Bjerre *2017-02-01 19:29:09*
 
 ### No issue
   doc
