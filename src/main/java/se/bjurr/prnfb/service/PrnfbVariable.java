@@ -1,5 +1,6 @@
 package se.bjurr.prnfb.service;
 
+import static com.atlassian.bitbucket.pull.PullRequestParticipantStatus.APPROVED;
 import static com.atlassian.bitbucket.pull.PullRequestParticipantStatus.NEEDS_WORK;
 import static com.atlassian.bitbucket.pull.PullRequestParticipantStatus.UNAPPROVED;
 import static com.google.common.base.Joiner.on;
@@ -580,6 +581,177 @@ public enum PrnfbVariable {
             SecurityService securityService) {
           return iterableToString(
               transform(pullRequest.getReviewers(), (p) -> p.getUser().getEmailAddress()));
+        }
+      }),
+  PULL_REQUEST_REVIEWERS_NEEDS_WORK_SLUG(
+      new PrnfbVariableResolver() {
+        @Override
+        public String resolve(
+            PullRequest pullRequest,
+            PrnfbPullRequestAction pullRequestAction,
+            ApplicationUser applicationUser,
+            RepositoryService repositoryService,
+            ApplicationPropertiesService propertiesService,
+            PrnfbNotification prnfbNotification,
+            Map<PrnfbVariable, Supplier<String>> variables,
+            ClientKeyStore clientKeyStore,
+            boolean shouldAcceptAnyCertificate,
+            SecurityService securityService) {
+          Iterable<PullRequestParticipant> reviewers =
+              filter(pullRequest.getReviewers(), (r) -> r.getStatus() == NEEDS_WORK);
+          return iterableToString(transform(reviewers, (p) -> p.getUser().getSlug()));
+        }
+      }),
+  PULL_REQUEST_REVIEWERS_NEEDS_WORK_EMAIL(
+      new PrnfbVariableResolver() {
+        @Override
+        public String resolve(
+            PullRequest pullRequest,
+            PrnfbPullRequestAction pullRequestAction,
+            ApplicationUser applicationUser,
+            RepositoryService repositoryService,
+            ApplicationPropertiesService propertiesService,
+            PrnfbNotification prnfbNotification,
+            Map<PrnfbVariable, Supplier<String>> variables,
+            ClientKeyStore clientKeyStore,
+            boolean shouldAcceptAnyCertificate,
+            SecurityService securityService) {
+          Iterable<PullRequestParticipant> reviewers =
+              filter(pullRequest.getReviewers(), (r) -> r.getStatus() == NEEDS_WORK);
+          return iterableToString(transform(reviewers, (p) -> p.getUser().getEmailAddress()));
+        }
+      }),
+  PULL_REQUEST_REVIEWERS_NEEDS_WORK_NAME(
+      new PrnfbVariableResolver() {
+        @Override
+        public String resolve(
+            PullRequest pullRequest,
+            PrnfbPullRequestAction pullRequestAction,
+            ApplicationUser applicationUser,
+            RepositoryService repositoryService,
+            ApplicationPropertiesService propertiesService,
+            PrnfbNotification prnfbNotification,
+            Map<PrnfbVariable, Supplier<String>> variables,
+            ClientKeyStore clientKeyStore,
+            boolean shouldAcceptAnyCertificate,
+            SecurityService securityService) {
+          Iterable<PullRequestParticipant> reviewers =
+              filter(pullRequest.getReviewers(), (r) -> r.getStatus() == NEEDS_WORK);
+          return iterableToString(transform(reviewers, (p) -> p.getUser().getName()));
+        }
+      }),
+  PULL_REQUEST_REVIEWERS_UNAPPROVED_SLUG(
+      new PrnfbVariableResolver() {
+        @Override
+        public String resolve(
+            PullRequest pullRequest,
+            PrnfbPullRequestAction pullRequestAction,
+            ApplicationUser applicationUser,
+            RepositoryService repositoryService,
+            ApplicationPropertiesService propertiesService,
+            PrnfbNotification prnfbNotification,
+            Map<PrnfbVariable, Supplier<String>> variables,
+            ClientKeyStore clientKeyStore,
+            boolean shouldAcceptAnyCertificate,
+            SecurityService securityService) {
+          Iterable<PullRequestParticipant> reviewers =
+              filter(pullRequest.getReviewers(), (r) -> r.getStatus() == UNAPPROVED);
+          return iterableToString(transform(reviewers, (p) -> p.getUser().getSlug()));
+        }
+      }),
+  PULL_REQUEST_REVIEWERS_UNAPPROVED_EMAIL(
+      new PrnfbVariableResolver() {
+        @Override
+        public String resolve(
+            PullRequest pullRequest,
+            PrnfbPullRequestAction pullRequestAction,
+            ApplicationUser applicationUser,
+            RepositoryService repositoryService,
+            ApplicationPropertiesService propertiesService,
+            PrnfbNotification prnfbNotification,
+            Map<PrnfbVariable, Supplier<String>> variables,
+            ClientKeyStore clientKeyStore,
+            boolean shouldAcceptAnyCertificate,
+            SecurityService securityService) {
+          Iterable<PullRequestParticipant> reviewers =
+              filter(pullRequest.getReviewers(), (r) -> r.getStatus() == UNAPPROVED);
+          return iterableToString(transform(reviewers, (p) -> p.getUser().getEmailAddress()));
+        }
+      }),
+  PULL_REQUEST_REVIEWERS_UNAPPROVED_NAME(
+      new PrnfbVariableResolver() {
+        @Override
+        public String resolve(
+            PullRequest pullRequest,
+            PrnfbPullRequestAction pullRequestAction,
+            ApplicationUser applicationUser,
+            RepositoryService repositoryService,
+            ApplicationPropertiesService propertiesService,
+            PrnfbNotification prnfbNotification,
+            Map<PrnfbVariable, Supplier<String>> variables,
+            ClientKeyStore clientKeyStore,
+            boolean shouldAcceptAnyCertificate,
+            SecurityService securityService) {
+          Iterable<PullRequestParticipant> reviewers =
+              filter(pullRequest.getReviewers(), (r) -> r.getStatus() == UNAPPROVED);
+          return iterableToString(transform(reviewers, (p) -> p.getUser().getName()));
+        }
+      }),
+  PULL_REQUEST_REVIEWERS_APPROVED_SLUG(
+      new PrnfbVariableResolver() {
+        @Override
+        public String resolve(
+            PullRequest pullRequest,
+            PrnfbPullRequestAction pullRequestAction,
+            ApplicationUser applicationUser,
+            RepositoryService repositoryService,
+            ApplicationPropertiesService propertiesService,
+            PrnfbNotification prnfbNotification,
+            Map<PrnfbVariable, Supplier<String>> variables,
+            ClientKeyStore clientKeyStore,
+            boolean shouldAcceptAnyCertificate,
+            SecurityService securityService) {
+          Iterable<PullRequestParticipant> reviewers =
+              filter(pullRequest.getReviewers(), (r) -> r.getStatus() == APPROVED);
+          return iterableToString(transform(reviewers, (p) -> p.getUser().getSlug()));
+        }
+      }),
+  PULL_REQUEST_REVIEWERS_APPROVED_EMAIL(
+      new PrnfbVariableResolver() {
+        @Override
+        public String resolve(
+            PullRequest pullRequest,
+            PrnfbPullRequestAction pullRequestAction,
+            ApplicationUser applicationUser,
+            RepositoryService repositoryService,
+            ApplicationPropertiesService propertiesService,
+            PrnfbNotification prnfbNotification,
+            Map<PrnfbVariable, Supplier<String>> variables,
+            ClientKeyStore clientKeyStore,
+            boolean shouldAcceptAnyCertificate,
+            SecurityService securityService) {
+          Iterable<PullRequestParticipant> reviewers =
+              filter(pullRequest.getReviewers(), (r) -> r.getStatus() == APPROVED);
+          return iterableToString(transform(reviewers, (p) -> p.getUser().getEmailAddress()));
+        }
+      }),
+  PULL_REQUEST_REVIEWERS_APPROVED_NAME(
+      new PrnfbVariableResolver() {
+        @Override
+        public String resolve(
+            PullRequest pullRequest,
+            PrnfbPullRequestAction pullRequestAction,
+            ApplicationUser applicationUser,
+            RepositoryService repositoryService,
+            ApplicationPropertiesService propertiesService,
+            PrnfbNotification prnfbNotification,
+            Map<PrnfbVariable, Supplier<String>> variables,
+            ClientKeyStore clientKeyStore,
+            boolean shouldAcceptAnyCertificate,
+            SecurityService securityService) {
+          Iterable<PullRequestParticipant> reviewers =
+              filter(pullRequest.getReviewers(), (r) -> r.getStatus() == APPROVED);
+          return iterableToString(transform(reviewers, (p) -> p.getUser().getName()));
         }
       }),
   PULL_REQUEST_REVIEWERS_ID(

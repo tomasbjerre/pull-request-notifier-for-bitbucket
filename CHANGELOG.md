@@ -8,7 +8,22 @@ Changelog of Pull Request Notifier for Bitbucket.
 
  * This is what happens when reviewer clicks "needs work".
   
-  [f0755ff21dc7ae2](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/f0755ff21dc7ae2) Tomas Bjerre *2017-02-01 18:16:39*
+  [020dfc3bb372ca2](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/020dfc3bb372ca2) Tomas Bjerre *2017-02-01 18:17:48*
+
+### GitHub [#192](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/192) Include status for participants
+  New variables to list approved, unapproved and needs work 
+
+ * PULL_REQUEST_REVIEWERS_APPROVED_SLUG
+ * PULL_REQUEST_REVIEWERS_APPROVED_EMAIL
+ * PULL_REQUEST_REVIEWERS_APPROVED_NAME
+ * PULL_REQUEST_REVIEWERS_UNAPPROVED_SLUG
+ * PULL_REQUEST_REVIEWERS_UNAPPROVED_EMAIL
+ * PULL_REQUEST_REVIEWERS_UNAPPROVED_NAME
+ * PULL_REQUEST_REVIEWERS_NEEDS_WORK_SLUG
+ * PULL_REQUEST_REVIEWERS_NEEDS_WORK_EMAIL
+ * PULL_REQUEST_REVIEWERS_NEEDS_WORK_NAME
+  
+  [72607d4617b0e7d](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/72607d4617b0e7d) Tomas Bjerre *2017-02-01 19:16:26*
 
 ### No issue
   doc

@@ -77,8 +77,17 @@ The filter text as well as the URL support variables. These are:
 | `${PULL_REQUEST_REVIEWERS_SLUG}` | Example: `admin,user` |
 | `${PULL_REQUEST_REVIEWERS_EMAIL}` | Example: `admin@example.com,user@example.com` |
 | `${PULL_REQUEST_REVIEWERS_APPROVED_COUNT}` | Number of reviewers that approved the PR. |
+| `${PULL_REQUEST_REVIEWERS_APPROVED_SLUG}` | Example: admin,user. |
+| `${PULL_REQUEST_REVIEWERS_APPROVED_EMAIL}` | Example: admin@example.com,user@example.com. |
+| `${PULL_REQUEST_REVIEWERS_APPROVED_NAME}` | Example: Admin,User. |
 | `${PULL_REQUEST_REVIEWERS_UNAPPROVED_COUNT}` | Number of reviewers that unapproved the PR. |
+| `${PULL_REQUEST_REVIEWERS_UNAPPROVED_SLUG}` | Example: admin,user. |
+| `${PULL_REQUEST_REVIEWERS_UNAPPROVED_EMAIL}` | Example: admin@example.com,user@example.com. |
+| `${PULL_REQUEST_REVIEWERS_UNAPPROVED_NAME}` | Example: Admin,User. |
 | `${PULL_REQUEST_REVIEWERS_NEEDS_WORK_COUNT}` | Number of reviewers that says the PR needs work. |
+| `${PULL_REQUEST_REVIEWERS_NEEDS_WORK_SLUG}` | Example: admin,user. |
+| `${PULL_REQUEST_REVIEWERS_NEEDS_WORK_EMAIL}` | Example: admin@example.com,user@example.com. |
+| `${PULL_REQUEST_REVIEWERS_NEEDS_WORK_NAME}` | Example: Admin,User. |
 | `${PULL_REQUEST_PARTICIPANTS_APPROVED_COUNT}` | Number of participants that approved the PR. |
 | `${PULL_REQUEST_PARTICIPANTS_EMAIL}` | Example: `admin@example.com,user@example.com` |
 | `${PULL_REQUEST_MERGE_COMMIT}` | Hash of merged commit (only available for merged-event). |
