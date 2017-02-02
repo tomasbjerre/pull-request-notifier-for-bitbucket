@@ -1,19 +1,12 @@
 # Pull Request Notifier for Bitbucket Server [![Build Status](https://travis-ci.org/tomasbjerre/pull-request-notifier-for-bitbucket.svg?branch=master)](https://travis-ci.org/tomasbjerre/pull-request-notifier-for-bitbucket)
-The original use case was to trigger Jenkins jobs to build pull requests that are created in Bitbucket Server. The plugin can be configured to trigger different Jenkins jobs for different repositories. It can supply custom parameters to the jenkins job using the variables. It can authenticate with HTTP Basic.
 
-It can, for example, trigger a build in Jenkins. Parameterized Jenkins jobs can be triggered remotely via:
-```
-http://server/job/theJob/buildWithParameters?token=TOKEN&PARAMETER=Value
-```
+This is a Bitbucket Server plugin that can invoke custom URL:s, supporting variables, when configured events occur on pull requests in Bitbucket Server. It can notify Jenkins, Bamboo, TeamCity, HipChat and many more!
 
-The plugin can trigger any system, not only Jenkins. The plugin can notify any system that can be notified with a URL.
+The original use case was to trigger Jenkins jobs to build and verify pull requests but it can trigger any system. The plugin can notify any system that can be notified with a URL.
 
 [Here](https://raw.githubusercontent.com/tomasbjerre/pull-request-notifier-for-bitbucket/master/sandbox/all.png) is a screenshot of the admin GUI on global level. And [here](https://raw.githubusercontent.com/tomasbjerre/pull-request-notifier-for-bitbucket/master/sandbox/repo.png) is a screenshot of the admin GUI on repository level.
 
-
 [Here](http://bjurr.com/continuous-integration-with-bitbucket-server-and-jenkins/) is a blog post that includes the plugin.
-
-Available in [Atlassian Marketplace](https://marketplace.atlassian.com/plugins/se.bjurr.prnfs.pull-request-notifier-for-stash).
 
 ## Features
 The Pull Request Notifier for Bitbucket Server can:
@@ -49,10 +42,10 @@ The filter text as well as the URL support variables. These are:
 
 | Variable | Description |
 | :------- | :---------- | 
-| `${EVERYTHING_URL}` | This variable is resolved to all available variables. The name of each parameter is the name of that variable. <br /> Example: `PULL_REQUEST_ID=1&PULL_REQUEST_TITLE=some%20thing...` |
+| `${EVERYTHING_URL}` | This variable is resolved to all available variables. The name of each parameter is the name of that variable. Example: `PULL_REQUEST_ID=1&PULL_REQUEST_TITLE=some%20thing...` |
 | `${PULL_REQUEST_ID}` | Example: `1` |
 | `${PULL_REQUEST_TITLE}` | Example: `Anything` |
-| `${PULL_REQUEST_DESCRIPTION}` | The `${EVERYTHING_URL}` does not include this because it makes the URL very big. | Example: Anything |
+| `${PULL_REQUEST_DESCRIPTION}` | The `${EVERYTHING_URL}` does not include this because it makes the URL very big. Example: Anything |
 | `${PULL_REQUEST_VERSION}` | Example: `1` |
 | `${PULL_REQUEST_COMMENT_TEXT}` | Example: `A comment` |
 | `${PULL_REQUEST_COMMENT_ACTION}` | Example: `ADDED`, `DELETED`, `EDITED`, `REPLIED` |
@@ -119,7 +112,17 @@ The ${PULL_REQUEST_USER...} contains information about the user who issued the e
 
 You may want to use [Violation Comments to Bitbucket Server plugin](https://wiki.jenkins-ci.org/display/JENKINS/Violation+Comments+to+Bitbucket+Server+Plugin) and/or [StashNotifier plugin](https://wiki.jenkins-ci.org/display/JENKINS/StashNotifier+Plugin) to report results back to Bitbucket.
 
-#### Button Forms
+### Integration guides
+
+Generally, when fiddling with this plugin, you may want to use something like [RequestBin](https://requestb.in/). Let the notification URL point to it and you can inspect what the invoked URL looks like.
+
+Here are some guides on how to use the plugin with different systems. Feel free to add guides through pull requests to this repo!
+
+ * [Jenkins](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/blob/master/README_jenkins.md)
+ * [HipChat](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/blob/master/README_hipchat.md)
+ * [Slack](https://github.com/Igogrek/bitbucket-slack-notifier)
+
+### Button Forms
 
 For each button you can specify a form that will show up when the button is pressed. That form data will then be submitted and will be available in the ${BUTTON_FORM_DATA} variable. Additionally, the form itself can reference other variables (with the exception of the ${BUTTON_...} ones) and will have those resolved prior to rendering.
 
@@ -182,7 +185,7 @@ When submitted with the default values, it will look like this:
 }
 ```
 
-### REST
+### REST API
 Some rest resources are available. You can figure out the JSON structure by looking at the [DTO:s](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/tree/master/src/main/java/se/bjurr/prnfb/presentation/dto).
 
 * `/bitbucket/rest/prnfb-admin/1.0/settings`
@@ -228,54 +231,3 @@ It will respond with something like this.
 ```
 
 You may use Chrome and Developer Tools (press F12) to view rest calls while editing in GUI to find more examples.
-
-## Integration guides
-
-Generally, when fiddling with this plugin, you may want to use something like [RequestBin](https://requestb.in/). Let the notification URL point to it and you can inspect what the invoked URL looks like.
-
-Here are some guides on how to use the plugin with different systems. Feel free to add guides through pull requests to this repo!
-
- * [Jenkins](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/blob/master/README_jenkins.md)
- * [HipChat](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/blob/master/README_hipchat.md)
-
-## Developer instructions
-There are some scripts to help working with the plugin.
-
- * `./setup-atlassian-sdk.sh` Setup Atlassian SDK.
- * `./docker-build.sh` Build Docker container.
- * `./docker-run.sh` Run the Docker container.
- * `./integration-test-local.sh` Run integration tests against localhost.
- * `./integration-test.sh` Start Docker container and then runs integration tests against it.
-
-The .travis.yml is setting up Atlas SDK and building the plugin. It may help you setup your environment.
-
-Prerequisites:
-
-* Atlas SDK [(installation instructions)](https://developer.atlassian.com/docs/getting-started/set-up-the-atlassian-plugin-sdk-and-build-a-project).
-* JDK 1.8 or newer
-
-Generate Eclipse project:
-```
-atlas-compile eclipse:eclipse
-```
-
-Package the plugin:
-```
-atlas-package
-```
-
-Run Bitbucket, with the plugin, on localhost:
-```
-export MAVEN_OPTS=-Dplugin.resource.directories=`pwd`/src/main/resources
-atlas-run
-```
-
-You can also remote debug on port 5005 with:
-```
-atlas-debug
-```
-
-Make a release [(detailed instructions)](https://developer.atlassian.com/docs/common-coding-tasks/development-cycle/packaging-and-releasing-your-plugin):
-```
-mvn -B release:prepare -DperformRelease=true release:perform
-```

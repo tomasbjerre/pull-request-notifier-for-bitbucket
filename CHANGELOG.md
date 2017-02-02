@@ -6,7 +6,7 @@ Changelog of Pull Request Notifier for Bitbucket.
 ### GitHub [#192](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/192) Include status for participants
   Variables to display names of approved, unapproved and needs work
   
-  [5417db3500e869c](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/5417db3500e869c) Tomas Bjerre *2017-02-02 16:48:45*
+  [dba06db7fd2b4d9](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/dba06db7fd2b4d9) Tomas Bjerre *2017-02-02 17:12:47*
 
 ### No issue
   doc
