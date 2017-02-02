@@ -640,6 +640,25 @@ public enum PrnfbVariable {
           return iterableToString(transform(reviewers, (p) -> p.getUser().getName()));
         }
       }),
+  PULL_REQUEST_REVIEWERS_NEEDS_WORK_DISPLAY_NAME(
+      new PrnfbVariableResolver() {
+        @Override
+        public String resolve(
+            PullRequest pullRequest,
+            PrnfbPullRequestAction pullRequestAction,
+            ApplicationUser applicationUser,
+            RepositoryService repositoryService,
+            ApplicationPropertiesService propertiesService,
+            PrnfbNotification prnfbNotification,
+            Map<PrnfbVariable, Supplier<String>> variables,
+            ClientKeyStore clientKeyStore,
+            boolean shouldAcceptAnyCertificate,
+            SecurityService securityService) {
+          Iterable<PullRequestParticipant> reviewers =
+              filter(pullRequest.getReviewers(), (r) -> r.getStatus() == NEEDS_WORK);
+          return iterableToString(transform(reviewers, (p) -> p.getUser().getDisplayName()));
+        }
+      }),
   PULL_REQUEST_REVIEWERS_UNAPPROVED_SLUG(
       new PrnfbVariableResolver() {
         @Override
@@ -697,6 +716,25 @@ public enum PrnfbVariable {
           return iterableToString(transform(reviewers, (p) -> p.getUser().getName()));
         }
       }),
+  PULL_REQUEST_REVIEWERS_UNAPPROVED_DISPLAY_NAME(
+      new PrnfbVariableResolver() {
+        @Override
+        public String resolve(
+            PullRequest pullRequest,
+            PrnfbPullRequestAction pullRequestAction,
+            ApplicationUser applicationUser,
+            RepositoryService repositoryService,
+            ApplicationPropertiesService propertiesService,
+            PrnfbNotification prnfbNotification,
+            Map<PrnfbVariable, Supplier<String>> variables,
+            ClientKeyStore clientKeyStore,
+            boolean shouldAcceptAnyCertificate,
+            SecurityService securityService) {
+          Iterable<PullRequestParticipant> reviewers =
+              filter(pullRequest.getReviewers(), (r) -> r.getStatus() == UNAPPROVED);
+          return iterableToString(transform(reviewers, (p) -> p.getUser().getDisplayName()));
+        }
+      }),
   PULL_REQUEST_REVIEWERS_APPROVED_SLUG(
       new PrnfbVariableResolver() {
         @Override
@@ -752,6 +790,25 @@ public enum PrnfbVariable {
           Iterable<PullRequestParticipant> reviewers =
               filter(pullRequest.getReviewers(), (r) -> r.getStatus() == APPROVED);
           return iterableToString(transform(reviewers, (p) -> p.getUser().getName()));
+        }
+      }),
+  PULL_REQUEST_REVIEWERS_APPROVED_DISPLAY_NAME(
+      new PrnfbVariableResolver() {
+        @Override
+        public String resolve(
+            PullRequest pullRequest,
+            PrnfbPullRequestAction pullRequestAction,
+            ApplicationUser applicationUser,
+            RepositoryService repositoryService,
+            ApplicationPropertiesService propertiesService,
+            PrnfbNotification prnfbNotification,
+            Map<PrnfbVariable, Supplier<String>> variables,
+            ClientKeyStore clientKeyStore,
+            boolean shouldAcceptAnyCertificate,
+            SecurityService securityService) {
+          Iterable<PullRequestParticipant> reviewers =
+              filter(pullRequest.getReviewers(), (r) -> r.getStatus() == APPROVED);
+          return iterableToString(transform(reviewers, (p) -> p.getUser().getDisplayName()));
         }
       }),
   PULL_REQUEST_REVIEWERS_ID(
