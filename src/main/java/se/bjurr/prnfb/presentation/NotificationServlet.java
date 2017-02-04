@@ -23,12 +23,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+import com.atlassian.annotations.security.XsrfProtectionExcluded;
+
 import se.bjurr.prnfb.presentation.dto.NotificationDTO;
 import se.bjurr.prnfb.service.SettingsService;
 import se.bjurr.prnfb.service.UserCheckService;
 import se.bjurr.prnfb.settings.PrnfbNotification;
-
-import com.atlassian.annotations.security.XsrfProtectionExcluded;
 
 @Path("/settings/notifications")
 public class NotificationServlet {
@@ -45,8 +45,7 @@ public class NotificationServlet {
   @Consumes(APPLICATION_JSON)
   @Produces(APPLICATION_JSON)
   public Response create(NotificationDTO notificationDto) {
-    if (!this.userCheckService.isAdminAllowed(
-        notificationDto.getProjectKey(), notificationDto.getRepositorySlug())) {
+    if (!this.userCheckService.isAdminAllowed(notificationDto)) {
       return status(UNAUTHORIZED).build();
     }
     try {
@@ -67,9 +66,7 @@ public class NotificationServlet {
   @Produces(APPLICATION_JSON)
   public Response delete(@PathParam("uuid") UUID notification) {
     PrnfbNotification notificationDto = this.settingsService.getNotification(notification);
-    if (!this.userCheckService.isAdminAllowed( //
-        notificationDto.getProjectKey().orNull(), //
-        notificationDto.getRepositorySlug().orNull())) {
+    if (!this.userCheckService.isAdminAllowed(notificationDto)) {
       return status(UNAUTHORIZED).build();
     }
     this.settingsService.deleteNotification(notification);
@@ -79,11 +76,10 @@ public class NotificationServlet {
   @GET
   @Produces(APPLICATION_JSON)
   public Response get() {
-    if (!this.userCheckService.isViewAllowed()) {
-      return status(UNAUTHORIZED).build();
-    }
     List<PrnfbNotification> notifications = this.settingsService.getNotifications();
-    List<NotificationDTO> dtos = toNotificationDtoList(notifications);
+    Iterable<PrnfbNotification> notificationsFiltered =
+        userCheckService.filterAdminAllowed(notifications);
+    List<NotificationDTO> dtos = toNotificationDtoList(notificationsFiltered);
     Collections.sort(dtos);
     return ok(dtos).build();
   }
@@ -92,11 +88,10 @@ public class NotificationServlet {
   @Path("/projectKey/{projectKey}")
   @Produces(APPLICATION_JSON)
   public Response get(@PathParam("projectKey") String projectKey) {
-    if (!this.userCheckService.isViewAllowed()) {
-      return status(UNAUTHORIZED).build();
-    }
     List<PrnfbNotification> notifications = this.settingsService.getNotifications(projectKey);
-    List<NotificationDTO> dtos = toNotificationDtoList(notifications);
+    Iterable<PrnfbNotification> notificationsFiltered =
+        userCheckService.filterAdminAllowed(notifications);
+    List<NotificationDTO> dtos = toNotificationDtoList(notificationsFiltered);
     Collections.sort(dtos);
     return ok(dtos).build();
   }
@@ -107,12 +102,11 @@ public class NotificationServlet {
   public Response get(
       @PathParam("projectKey") String projectKey,
       @PathParam("repositorySlug") String repositorySlug) {
-    if (!this.userCheckService.isViewAllowed()) {
-      return status(UNAUTHORIZED).build();
-    }
     List<PrnfbNotification> notifications =
         this.settingsService.getNotifications(projectKey, repositorySlug);
-    List<NotificationDTO> dtos = toNotificationDtoList(notifications);
+    Iterable<PrnfbNotification> notificationsFiltered =
+        userCheckService.filterAdminAllowed(notifications);
+    List<NotificationDTO> dtos = toNotificationDtoList(notificationsFiltered);
     Collections.sort(dtos);
     return ok(dtos).build();
   }
@@ -121,10 +115,10 @@ public class NotificationServlet {
   @Path("{uuid}")
   @Produces(APPLICATION_JSON)
   public Response get(@PathParam("uuid") UUID notificationUuid) {
-    if (!this.userCheckService.isViewAllowed()) {
+    PrnfbNotification notification = this.settingsService.getNotification(notificationUuid);
+    if (!this.userCheckService.isAdminAllowed(notification)) {
       return status(UNAUTHORIZED).build();
     }
-    PrnfbNotification notification = this.settingsService.getNotification(notificationUuid);
     NotificationDTO dto = toNotificationDto(notification);
     return ok(dto).build();
   }

@@ -3,6 +3,17 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
+### GitHub [#193](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/193) Enable project level admins to configure on project level
+  Enable project level admins to configure on project level
+  
+  [64f670125111045](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/64f670125111045) Tomas Bjerre *2017-02-05 09:00:55*
+
+### No issue
+  doc
+  
+  [e6717f40011194e](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/e6717f40011194e) Tomas Bjerre *2017-02-03 13:15:33*
+
+## 2.52
 ### GitHub [#192](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/192) Include status for participants
   Variables to display names of approved, unapproved and needs work
   

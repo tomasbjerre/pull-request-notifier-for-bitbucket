@@ -22,6 +22,7 @@
  <component-import key="pluginSettingsFactory" interface="com.atlassian.sal.api.pluginsettings.PluginSettingsFactory" />
  <component-import key="transactionTemplate" interface="com.atlassian.sal.api.transaction.TransactionTemplate" />
  <component-import key="repositoryService" interface="com.atlassian.bitbucket.repository.RepositoryService" />
+ <component-import key="projectService" interface="com.atlassian.bitbucket.project.ProjectService" />
  <component-import key="executorService" interface="java.util.concurrent.ExecutorService" />
  <component-import key="permissionService" interface="com.atlassian.bitbucket.permission.PermissionService" />
 
@@ -45,6 +46,12 @@
  <web-item key="se.bjurr.prnfb.repolevel" name="repolevel" section="bitbucket.repository.settings.panel/repository-settings-addons-section">
   <label key="se.bjurr.prnfb.repolevel">Pull request notifications</label>
   <link>/plugins/servlet/prnfb/admin/${repository.project.key}/${repository.slug}
+  </link>
+ </web-item>
+
+ <web-item key="se.bjurr.prnfb.projectlevel" name="projectlevel" section="bitbucket.project.settings.panel/project-settings-addons-section">
+  <label key="se.bjurr.prnfb.projectlevel">Pull request notifications</label>
+  <link>/plugins/servlet/prnfb/admin/${project.key}
   </link>
  </web-item>
 

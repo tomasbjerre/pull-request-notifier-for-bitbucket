@@ -201,14 +201,23 @@
    <!-- //-->
    #else
    <!-- //-->
-   <div class="field-group">
-    <label>Project
-    </label>
-    <select class="select" name="projectKey">
-     <option value="">Any</option>
-    </select>
-    <div class="description">If project selected, this notification will only trigger for pull requests to that project.</div>
-   </div>
+
+    #if($project)
+    <!-- //-->
+    <input type="hidden" name="projectKey" value="$project.key" />
+    <!-- //-->
+    #else
+    <!-- //-->
+    <div class="field-group">
+     <label>Project
+     </label>
+     <select class="select" name="projectKey">
+      <option value="">Any</option>
+     </select>
+     <div class="description">If project selected, this notification will only trigger for pull requests to that project.</div>
+    </div>
+    <!-- //-->
+    #end
 
    <div class="field-group">
     <label>Repository </label>
@@ -312,6 +321,13 @@
     <!-- //-->
     #else
     <!-- //-->
+
+    #if($project)
+    <!-- //-->
+    <input type="hidden" name="projectKey" value="$project.key" />
+    <!-- //-->
+    #else
+    <!-- //-->
     <div class="field-group">
      <label>Project
      </label>
@@ -320,6 +336,8 @@
      </select>
      <div class="description">If project selected, this notification will only trigger for pull requests to that project.</div>
     </div>
+    <!-- //-->
+    #end
 
     <div class="field-group">
      <label>Repository </label>

@@ -4,6 +4,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.Response.ok;
 import static javax.ws.rs.core.Response.status;
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static javax.ws.rs.core.Response.Status.OK;
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 import static se.bjurr.prnfb.transformer.ButtonTransformer.toButtonDto;
@@ -27,6 +28,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 import com.atlassian.annotations.security.XsrfProtectionExcluded;
+import com.google.common.base.Optional;
+import com.google.common.collect.Iterables;
 
 import se.bjurr.prnfb.http.NotificationResponse;
 import se.bjurr.prnfb.presentation.dto.ButtonDTO;
@@ -60,9 +63,7 @@ public class ButtonServlet {
   @Consumes(APPLICATION_JSON)
   @Produces(APPLICATION_JSON)
   public Response create(ButtonDTO buttonDto) {
-    if (!userCheckService.isAdminAllowed( //
-        buttonDto.getProjectKey().orNull(), //
-        buttonDto.getRepositorySlug().orNull())) {
+    if (!userCheckService.isAdminAllowed(buttonDto)) {
       return status(UNAUTHORIZED) //
           .build();
     }
@@ -82,10 +83,7 @@ public class ButtonServlet {
   @Produces(APPLICATION_JSON)
   public Response delete(@PathParam("uuid") UUID prnfbButtonUuid) {
     PrnfbButton prnfbButton = settingsService.getButton(prnfbButtonUuid);
-    if (!userCheckService.isAdminAllowed( //
-        prnfbButton.getProjectKey().orNull() //
-        ,
-        prnfbButton.getRepositorySlug().orNull())) {
+    if (!userCheckService.isAdminAllowed(prnfbButton)) {
       return status(UNAUTHORIZED) //
           .build();
     }
@@ -97,28 +95,9 @@ public class ButtonServlet {
   @Produces(APPLICATION_JSON)
   public Response get() {
     List<PrnfbButton> buttons = settingsService.getButtons();
-    Iterable<PrnfbButton> allowedButtons = userCheckService.filterAllowed(buttons);
+    Iterable<PrnfbButton> allowedButtons = userCheckService.filterAdminAllowed(buttons);
     List<ButtonDTO> dtos = toButtonDtoList(allowedButtons);
     Collections.sort(dtos);
-    return ok(dtos, APPLICATION_JSON).build();
-  }
-
-  @GET
-  @Path("/repository/{repositoryId}/pullrequest/{pullRequestId}")
-  @Produces(APPLICATION_JSON)
-  public Response get(
-      @PathParam("repositoryId") Integer repositoryId,
-      @PathParam("pullRequestId") Long pullRequestId) {
-    if (!userCheckService.isViewAllowed()) {
-      return status(UNAUTHORIZED).build();
-    }
-    List<PrnfbButton> buttons = buttonsService.getButtons(repositoryId, pullRequestId);
-    Iterable<PrnfbButton> allowedButtons = userCheckService.filterAllowed(buttons);
-    List<ButtonDTO> dtos = toButtonDtoList(allowedButtons);
-    Collections.sort(dtos);
-
-    populateButtonFormDtoList(repositoryId, pullRequestId, dtos);
-
     return ok(dtos, APPLICATION_JSON).build();
   }
 
@@ -126,11 +105,8 @@ public class ButtonServlet {
   @Path("/projectKey/{projectKey}")
   @Produces(APPLICATION_JSON)
   public Response get(@PathParam("projectKey") String projectKey) {
-    if (!userCheckService.isViewAllowed()) {
-      return status(UNAUTHORIZED).build();
-    }
     List<PrnfbButton> buttons = settingsService.getButtons(projectKey);
-    Iterable<PrnfbButton> allowedButtons = userCheckService.filterAllowed(buttons);
+    Iterable<PrnfbButton> allowedButtons = userCheckService.filterAdminAllowed(buttons);
     List<ButtonDTO> dtos = toButtonDtoList(allowedButtons);
     Collections.sort(dtos);
     return ok(dtos, APPLICATION_JSON).build();
@@ -142,11 +118,8 @@ public class ButtonServlet {
   public Response get(
       @PathParam("projectKey") String projectKey,
       @PathParam("repositorySlug") String repositorySlug) {
-    if (!userCheckService.isViewAllowed()) {
-      return status(UNAUTHORIZED).build();
-    }
     List<PrnfbButton> buttons = settingsService.getButtons(projectKey, repositorySlug);
-    Iterable<PrnfbButton> allowedButtons = userCheckService.filterAllowed(buttons);
+    Iterable<PrnfbButton> allowedButtons = userCheckService.filterAdminAllowed(buttons);
     List<ButtonDTO> dtos = toButtonDtoList(allowedButtons);
     Collections.sort(dtos);
     return ok(dtos, APPLICATION_JSON).build();
@@ -157,10 +130,48 @@ public class ButtonServlet {
   @Produces(APPLICATION_JSON)
   public Response get(@PathParam("uuid") UUID uuid) {
     PrnfbButton button = settingsService.getButton(uuid);
-    if (!userCheckService.isAllowedUseButton(button)) {
+    if (!userCheckService.isAdminAllowed(button)) {
       return status(UNAUTHORIZED).build();
     }
     ButtonDTO dto = toButtonDto(button);
+    return ok(dto, APPLICATION_JSON).build();
+  }
+
+  @GET
+  @Path("/repository/{repositoryId}/pullrequest/{pullRequestId}")
+  @Produces(APPLICATION_JSON)
+  public Response get(
+      @PathParam("repositoryId") Integer repositoryId,
+      @PathParam("pullRequestId") Long pullRequestId) {
+    List<PrnfbButton> buttons = buttonsService.getButtons(repositoryId, pullRequestId);
+    List<ButtonDTO> dtos = toButtonDtoList(buttons);
+    Collections.sort(dtos);
+
+    populateButtonFormDtoList(repositoryId, pullRequestId, dtos);
+
+    return ok(dtos, APPLICATION_JSON).build();
+  }
+
+  @POST
+  @Path("{uuid}/press/repository/{repositoryId}/pullrequest/{pullRequestId}")
+  @XsrfProtectionExcluded
+  @Produces(APPLICATION_JSON)
+  public Response press(
+      @Context HttpServletRequest request,
+      @PathParam("repositoryId") Integer repositoryId,
+      @PathParam("pullRequestId") Long pullRequestId,
+      @PathParam("uuid") final UUID buttionUuid) {
+    List<PrnfbButton> buttons = buttonsService.getButtons(repositoryId, pullRequestId);
+    Optional<PrnfbButton> button =
+        Iterables.tryFind(buttons, (b) -> b.getUuid().equals(buttionUuid));
+    if (!button.isPresent()) {
+      return status(NOT_FOUND).build();
+    }
+    String formData = request.getParameter("form");
+    List<NotificationResponse> results =
+        buttonsService.handlePressed(repositoryId, pullRequestId, buttionUuid, formData);
+
+    ButtonPressDTO dto = toTriggerResultDto(button.get(), results);
     return ok(dto, APPLICATION_JSON).build();
   }
 
@@ -181,26 +192,5 @@ public class ButtonServlet {
         dto.setButtonFormList(buttonFormDtoList);
       }
     }
-  }
-
-  @POST
-  @Path("{uuid}/press/repository/{repositoryId}/pullrequest/{pullRequestId}")
-  @XsrfProtectionExcluded
-  @Produces(APPLICATION_JSON)
-  public Response press(
-      @Context HttpServletRequest request,
-      @PathParam("repositoryId") Integer repositoryId,
-      @PathParam("pullRequestId") Long pullRequestId,
-      @PathParam("uuid") final UUID buttionUuid) {
-    PrnfbButton button = settingsService.getButton(buttionUuid);
-    if (!userCheckService.isAllowedUseButton(button)) {
-      return status(UNAUTHORIZED).build();
-    }
-    String formData = request.getParameter("form");
-    List<NotificationResponse> results =
-        buttonsService.handlePressed(repositoryId, pullRequestId, buttionUuid, formData);
-
-    ButtonPressDTO dto = toTriggerResultDto(button, results);
-    return ok(dto, APPLICATION_JSON).build();
   }
 }

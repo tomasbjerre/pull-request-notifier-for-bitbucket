@@ -100,12 +100,15 @@ public class ButtonsServiceTest {
     this.buttonDto1 = populatedInstanceOf(ButtonDTO.class);
     this.buttonDto1.setProjectKey(null);
     this.buttonDto1.setRepositorySlug(null);
+    this.buttonDto1.setUserLevel(null);
     this.button1 = toPrnfbButton(this.buttonDto1);
     this.buttonDto2 = populatedInstanceOf(ButtonDTO.class);
     this.buttonDto2.setProjectKey(null);
     this.buttonDto2.setRepositorySlug(null);
+    this.buttonDto2.setUserLevel(null);
     this.button2 = toPrnfbButton(this.buttonDto2);
     this.buttonDto3 = populatedInstanceOf(ButtonDTO.class);
+    this.buttonDto3.setUserLevel(null);
     this.button3 = toPrnfbButton(this.buttonDto3);
 
     when(this.settingsService.getButton(this.button1.getUuid())) //
@@ -130,6 +133,12 @@ public class ButtonsServiceTest {
     this.notifications = newArrayList(this.notification1, this.notification2);
     when(this.settingsService.getNotifications()) //
         .thenReturn(this.notifications);
+
+    when(this.pullRequest.getToRef()).thenReturn(this.prRef);
+    when(this.prRef.getRepository()).thenReturn(this.repository);
+    when(this.repository.getSlug()).thenReturn(this.button3.getRepositorySlug().get());
+    when(this.repository.getProject()).thenReturn(this.project);
+    when(this.project.getKey()).thenReturn(this.button3.getProjectKey().get());
   }
 
   @Test
@@ -137,12 +146,25 @@ public class ButtonsServiceTest {
     List<PrnfbButton> candidates = newArrayList(this.button1, this.button2, this.button3);
     when(this.settingsService.getButtons()) //
         .thenReturn(candidates);
-    when(this.userCheckService.isAllowedUseButton(this.button1)) //
+    String projectKey = prRef.getRepository().getProject().getKey();
+    String repoSlug = prRef.getRepository().getSlug();
+    when(this.userCheckService.isAllowed(this.button1.getUserLevel(), projectKey, repoSlug)) //
         .thenReturn(true);
-    when(this.userCheckService.isAllowedUseButton(this.button2)) //
+    when(this.userCheckService.isAllowed(this.button2.getUserLevel(), projectKey, repoSlug)) //
         .thenReturn(true);
-    when(this.userCheckService.isAllowedUseButton(this.button3)) //
+    when(this.userCheckService.isAllowed(this.button3.getUserLevel(), projectKey, repoSlug)) //
         .thenReturn(true);
+
+    when(this.userCheckService.isAllowed(
+            this.button1.getUserLevel(), projectKey, "otherrepository")) //
+        .thenReturn(true);
+    when(this.userCheckService.isAllowed(
+            this.button2.getUserLevel(), projectKey, "otherrepository")) //
+        .thenReturn(true);
+    when(this.userCheckService.isAllowed(
+            this.button3.getUserLevel(), projectKey, "otherrepository")) //
+        .thenReturn(true);
+
     when(this.prnfbPullRequestEventListener.isNotificationTriggeredByAction(
             this.notification1,
             this.pullRequestAction,
@@ -159,11 +181,6 @@ public class ButtonsServiceTest {
             this.clientKeyStore,
             this.shouldAcceptAnyCertificate)) //
         .thenReturn(true);
-    when(this.pullRequest.getToRef()).thenReturn(this.prRef);
-    when(this.prRef.getRepository()).thenReturn(this.repository);
-    when(this.repository.getSlug()).thenReturn(this.button3.getRepositorySlug().get());
-    when(this.repository.getProject()).thenReturn(this.project);
-    when(this.project.getKey()).thenReturn(this.button3.getProjectKey().get());
 
     List<PrnfbButton> actual =
         this.sut.doGetButtons(
@@ -205,9 +222,11 @@ public class ButtonsServiceTest {
     List<PrnfbButton> candidates = newArrayList(this.button1, this.button2);
     when(this.settingsService.getButtons()) //
         .thenReturn(candidates);
-    when(this.userCheckService.isAllowedUseButton(this.button1)) //
+    String projectKey = prRef.getRepository().getProject().getKey();
+    String repoSlug = prRef.getRepository().getSlug();
+    when(this.userCheckService.isAllowed(this.button1.getUserLevel(), projectKey, repoSlug)) //
         .thenReturn(false);
-    when(this.userCheckService.isAllowedUseButton(this.button2)) //
+    when(this.userCheckService.isAllowed(this.button2.getUserLevel(), projectKey, repoSlug)) //
         .thenReturn(false);
 
     List<PrnfbButton> actual =

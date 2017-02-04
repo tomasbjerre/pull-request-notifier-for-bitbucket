@@ -13,11 +13,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 import com.google.common.base.Optional;
 import com.google.gson.reflect.TypeToken;
 
+import se.bjurr.prnfb.settings.Restricted;
 import se.bjurr.prnfb.settings.USER_LEVEL;
 
 @XmlRootElement
 @XmlAccessorType(FIELD)
-public class ButtonDTO implements Comparable<ButtonDTO> {
+public class ButtonDTO implements Comparable<ButtonDTO>, Restricted {
   public static Type BUTTON_FORM_LIST_DTO_TYPE =
       new TypeToken<ArrayList<ButtonFormElementDTO>>() {}.getType();
 
@@ -132,10 +133,12 @@ public class ButtonDTO implements Comparable<ButtonDTO> {
     return this.name;
   }
 
+  @Override
   public Optional<String> getProjectKey() {
     return Optional.fromNullable(this.projectKey);
   }
 
+  @Override
   public Optional<String> getRepositorySlug() {
     return Optional.fromNullable(this.repositorySlug);
   }

@@ -13,7 +13,7 @@ import com.google.common.base.Optional;
 
 import se.bjurr.prnfb.presentation.dto.ON_OR_OFF;
 
-public class PrnfbButton implements HasUuid {
+public class PrnfbButton implements HasUuid, Restricted {
 
   private final ON_OR_OFF confirmation;
   private final String name;
@@ -60,10 +60,12 @@ public class PrnfbButton implements HasUuid {
     return buttonFormElementList;
   }
 
+  @Override
   public Optional<String> getProjectKey() {
     return fromNullable(this.projectKey);
   }
 
+  @Override
   public Optional<String> getRepositorySlug() {
     return fromNullable(this.repositorySlug);
   }

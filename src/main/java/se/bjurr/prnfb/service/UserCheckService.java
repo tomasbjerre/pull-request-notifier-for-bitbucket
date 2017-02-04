@@ -27,9 +27,8 @@ import com.atlassian.sal.api.user.UserKey;
 import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.sal.api.user.UserProfile;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Predicate;
 
-import se.bjurr.prnfb.settings.PrnfbButton;
+import se.bjurr.prnfb.settings.Restricted;
 import se.bjurr.prnfb.settings.USER_LEVEL;
 
 public class UserCheckService {
@@ -56,17 +55,18 @@ public class UserCheckService {
     this.securityService = securityService;
   }
 
-  public Iterable<PrnfbButton> filterAllowed(List<PrnfbButton> buttons) {
-    Iterable<PrnfbButton> allowedButtons =
-        filter(
-            buttons,
-            new Predicate<PrnfbButton>() {
-              @Override
-              public boolean apply(PrnfbButton input) {
-                return isAllowedUseButton(input);
-              }
-            });
-    return allowedButtons;
+  public <R extends Restricted> Iterable<R> filterAllowed(USER_LEVEL adminRestriction, List<R> r) {
+    return filter(
+        r,
+        (c) ->
+            isAllowed( //
+                adminRestriction, //
+                c.getProjectKey().orNull(), //
+                c.getRepositorySlug().orNull()));
+  }
+
+  public <R extends Restricted> Iterable<R> filterAdminAllowed(List<R> list) {
+    return filter(list, (r) -> isAdminAllowed(r));
   }
 
   @VisibleForTesting
@@ -140,35 +140,25 @@ public class UserCheckService {
     return false;
   }
 
-  /** null if global. */
-  public boolean isAdminAllowed(@Nullable String projectKey, @Nullable String repositorySlug) {
-    final UserProfile user = userManager.getRemoteUser();
-    if (user == null) {
-      return false;
-    }
+  public boolean isAdminAllowed(Restricted restricted) {
     USER_LEVEL adminRestriction = settingsService.getPrnfbSettingsData().getAdminRestriction();
-    return isAdminAllowed(adminRestriction, projectKey, repositorySlug);
+    String projectKey = restricted.getProjectKey().orNull();
+    String repositorySlug = restricted.getRepositorySlug().orNull();
+    return isAllowed(adminRestriction, projectKey, repositorySlug);
   }
 
-  private boolean isAdminAllowed(
-      USER_LEVEL adminRestriction, @Nullable String projectKey, @Nullable String repositorySlug) {
+  public boolean isAllowed(
+      USER_LEVEL userLevel, @Nullable String projectKey, @Nullable String repositorySlug) {
     UserKey userKey = userManager.getRemoteUser().getUserKey();
     boolean isAdmin = isAdmin(userKey, projectKey, repositorySlug);
     boolean isSystemAdmin = isSystemAdmin(userKey);
-    return isAdminAllowedCheck(adminRestriction, isAdmin, isSystemAdmin);
+    return isAllowed(userLevel, isAdmin, isSystemAdmin);
   }
 
-  boolean isAdminAllowedCheck(USER_LEVEL userLevel, boolean isAdmin, boolean isSystemAdmin) {
+  boolean isAllowed(USER_LEVEL userLevel, boolean isAdmin, boolean isSystemAdmin) {
     return userLevel == EVERYONE //
         || isSystemAdmin //
         || isAdmin && userLevel == ADMIN;
-  }
-
-  public boolean isAllowedUseButton(PrnfbButton candidate) {
-    return isAdminAllowed( //
-        candidate.getUserLevel(), //
-        candidate.getProjectKey().orNull(), //
-        candidate.getRepositorySlug().orNull());
   }
 
   public boolean isSystemAdmin(UserKey userKey) {

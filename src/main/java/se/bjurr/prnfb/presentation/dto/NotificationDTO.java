@@ -8,13 +8,16 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.google.common.base.Optional;
+
 import se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD;
 import se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR;
+import se.bjurr.prnfb.settings.Restricted;
 import se.bjurr.prnfb.settings.TRIGGER_IF_MERGE;
 
 @XmlRootElement
 @XmlAccessorType(FIELD)
-public class NotificationDTO implements Comparable<NotificationDTO> {
+public class NotificationDTO implements Comparable<NotificationDTO>, Restricted {
   private String filterRegexp;
   private String filterString;
   private List<HeaderDTO> headers;
@@ -237,8 +240,14 @@ public class NotificationDTO implements Comparable<NotificationDTO> {
     return this.postContent;
   }
 
-  public String getProjectKey() {
-    return this.projectKey;
+  @Override
+  public Optional<String> getProjectKey() {
+    return Optional.fromNullable(this.projectKey);
+  }
+
+  @Override
+  public Optional<String> getRepositorySlug() {
+    return Optional.fromNullable(this.repositorySlug);
   }
 
   public String getProxyPassword() {
@@ -255,10 +264,6 @@ public class NotificationDTO implements Comparable<NotificationDTO> {
 
   public String getProxyUser() {
     return this.proxyUser;
-  }
-
-  public String getRepositorySlug() {
-    return this.repositorySlug;
   }
 
   public TRIGGER_IF_MERGE getTriggerIfCanMerge() {

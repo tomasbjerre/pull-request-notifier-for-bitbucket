@@ -44,7 +44,7 @@ public class NotificationTransformer {
     return to;
   }
 
-  public static List<NotificationDTO> toNotificationDtoList(List<PrnfbNotification> from) {
+  public static List<NotificationDTO> toNotificationDtoList(Iterable<PrnfbNotification> from) {
     List<NotificationDTO> to = newArrayList();
     if (from != null) {
       for (PrnfbNotification n : from) {
@@ -77,8 +77,8 @@ public class NotificationTransformer {
         .withUrl(from.getUrl()) //
         .withUser(from.getUser()) //
         .withUuid(from.getUuid()) //
-        .withRepositorySlug(from.getRepositorySlug()) //
-        .withProjectKey(from.getProjectKey()) //
+        .withRepositorySlug(from.getRepositorySlug().orNull()) //
+        .withProjectKey(from.getProjectKey().orNull()) //
         .build();
   }
 

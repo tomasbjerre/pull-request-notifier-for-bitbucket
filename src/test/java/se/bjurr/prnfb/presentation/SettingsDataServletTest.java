@@ -1,7 +1,6 @@
 package se.bjurr.prnfb.presentation;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -12,6 +11,7 @@ import static se.bjurr.prnfb.settings.USER_LEVEL.ADMIN;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import se.bjurr.prnfb.presentation.dto.SettingsDataDTO;
 import se.bjurr.prnfb.service.SettingsService;
@@ -29,7 +29,7 @@ public class SettingsDataServletTest {
     initMocks(this);
     when(this.userCheckService.isViewAllowed()) //
         .thenReturn(true);
-    when(this.userCheckService.isAdminAllowed(anyString(), anyString())) //
+    when(this.userCheckService.isAdminAllowed(Mockito.any())) //
         .thenReturn(true);
     this.sut = new SettingsDataServlet(this.userCheckService, this.settingsService);
   }

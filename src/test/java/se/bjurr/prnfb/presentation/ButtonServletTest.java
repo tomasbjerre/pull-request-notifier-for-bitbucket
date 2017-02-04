@@ -3,11 +3,11 @@ package se.bjurr.prnfb.presentation;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
 import static se.bjurr.prnfb.settings.USER_LEVEL.EVERYONE;
 import static se.bjurr.prnfb.test.Podam.populatedInstanceOf;
 import static se.bjurr.prnfb.transformer.ButtonTransformer.toPrnfbButton;
@@ -23,6 +23,7 @@ import javax.ws.rs.core.Response;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -47,7 +48,7 @@ public class ButtonServletTest {
   private PrnfbRendererWrapper rendererWrapper;
 
   private void allowAll() {
-    when(this.userCheckService.filterAllowed(anyListOf(PrnfbButton.class))) //
+    when(this.userCheckService.filterAdminAllowed(anyListOf(PrnfbButton.class))) //
         .thenAnswer(
             new Answer<List<PrnfbButton>>() {
               @SuppressWarnings("unchecked")
@@ -63,7 +64,7 @@ public class ButtonServletTest {
     initMocks(this);
     when(this.userCheckService.isViewAllowed()) //
         .thenReturn(true);
-    when(this.userCheckService.isAdminAllowed(anyString(), anyString())) //
+    when(this.userCheckService.isAdminAllowed(Mockito.any())) //
         .thenReturn(true);
     this.sut = new ButtonServlet(this.buttonsService, this.settingsService, this.userCheckService);
 
@@ -259,12 +260,9 @@ public class ButtonServletTest {
   public void testThatButtonCanBePressed() throws Exception {
     Integer repositoryId = 1;
     Long pullRequestId = 2L;
-    UUID buttonUuid = UUID.randomUUID();
-    PrnfbButton button = createPrnfbButton(createButton());
-    when(this.settingsService.getButton(buttonUuid)) //
-        .thenReturn(button);
-    when(this.userCheckService.isAllowedUseButton(button)) //
-        .thenReturn(true);
+    UUID buttonUuid = button1.getUuid();
+    when(buttonsService.getButtons(repositoryId, pullRequestId))
+        .thenReturn(newArrayList(this.button1));
 
     HttpServletRequest mockRequest = mock(HttpServletRequest.class);
     String formDataFromUserInPrView = "{}";
@@ -272,7 +270,25 @@ public class ButtonServletTest {
 
     this.sut.press(mockRequest, repositoryId, pullRequestId, buttonUuid);
 
-    verify(this.buttonsService) //
+    verify(this.buttonsService, times(1)) //
+        .handlePressed(repositoryId, pullRequestId, buttonUuid, formDataFromUserInPrView);
+  }
+
+  @Test
+  public void testThatButtonCanNotBePressed() throws Exception {
+    Integer repositoryId = 1;
+    Long pullRequestId = 2L;
+    UUID buttonUuid = UUID.randomUUID();
+    when(buttonsService.getButtons(repositoryId, pullRequestId))
+        .thenReturn(newArrayList(this.button1));
+
+    HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+    String formDataFromUserInPrView = "{}";
+    when(mockRequest.getParameter("form")).thenReturn(formDataFromUserInPrView);
+
+    this.sut.press(mockRequest, repositoryId, pullRequestId, buttonUuid);
+
+    verify(this.buttonsService, times(0)) //
         .handlePressed(repositoryId, pullRequestId, buttonUuid, formDataFromUserInPrView);
   }
 

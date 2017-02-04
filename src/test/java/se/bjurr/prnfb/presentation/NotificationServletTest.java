@@ -3,7 +3,6 @@ package se.bjurr.prnfb.presentation;
 import static com.atlassian.bitbucket.pull.PullRequestState.DECLINED;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -19,13 +18,14 @@ import javax.ws.rs.core.Response;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+
+import com.google.common.collect.Lists;
 
 import se.bjurr.prnfb.presentation.dto.NotificationDTO;
 import se.bjurr.prnfb.service.SettingsService;
 import se.bjurr.prnfb.service.UserCheckService;
 import se.bjurr.prnfb.settings.PrnfbNotification;
-
-import com.google.common.collect.Lists;
 
 public class NotificationServletTest {
   private PrnfbNotification notification1;
@@ -41,7 +41,7 @@ public class NotificationServletTest {
     initMocks(this);
     when(this.userCheckService.isViewAllowed()) //
         .thenReturn(true);
-    when(this.userCheckService.isAdminAllowed(anyString(), anyString())) //
+    when(this.userCheckService.isAdminAllowed(Mockito.any())) //
         .thenReturn(true);
     this.sut = new NotificationServlet(this.settingsService, this.userCheckService);
     this.notificationDto1 = populatedInstanceOf(NotificationDTO.class);
@@ -89,6 +89,8 @@ public class NotificationServletTest {
     List<PrnfbNotification> storedSettings = newArrayList(this.notification1, this.notification2);
     when(this.settingsService.getNotifications()) //
         .thenReturn(storedSettings);
+    when(userCheckService.filterAdminAllowed(storedSettings)) //
+        .thenReturn(storedSettings);
 
     List<NotificationDTO> actual = (List<NotificationDTO>) this.sut.get().getEntity();
 
@@ -98,10 +100,13 @@ public class NotificationServletTest {
 
   @Test
   public void testThatNotificationCanBeListedPerProject() throws Exception {
-    when(this.settingsService.getNotifications(this.notificationDto1.getProjectKey())) //
-        .thenReturn(newArrayList(this.notification1));
+    List<PrnfbNotification> notifications = newArrayList(this.notification1);
+    when(this.settingsService.getNotifications(this.notificationDto1.getProjectKey().orNull())) //
+        .thenReturn(notifications);
+    when(userCheckService.filterAdminAllowed(notifications)) //
+        .thenReturn(notifications);
 
-    Response actual = this.sut.get(this.notificationDto1.getProjectKey());
+    Response actual = this.sut.get(this.notificationDto1.getProjectKey().orNull());
     @SuppressWarnings("unchecked")
     Iterable<NotificationDTO> actualList = (Iterable<NotificationDTO>) actual.getEntity();
 
@@ -111,13 +116,18 @@ public class NotificationServletTest {
 
   @Test
   public void testThatNotificationCanBeListedPerProjectAndRepo() throws Exception {
+    List<PrnfbNotification> notifications = newArrayList(this.notification1);
     when(this.settingsService.getNotifications(
-            this.notificationDto1.getProjectKey(), this.notificationDto1.getRepositorySlug())) //
-        .thenReturn(newArrayList(this.notification1));
+            this.notificationDto1.getProjectKey().orNull(),
+            this.notificationDto1.getRepositorySlug().orNull())) //
+        .thenReturn(notifications);
+    when(userCheckService.filterAdminAllowed(notifications)) //
+        .thenReturn(notifications);
 
     Response actual =
         this.sut.get(
-            this.notificationDto1.getProjectKey(), this.notificationDto1.getRepositorySlug());
+            this.notificationDto1.getProjectKey().orNull(),
+            this.notificationDto1.getRepositorySlug().orNull());
     @SuppressWarnings("unchecked")
     Iterable<NotificationDTO> actualList = (Iterable<NotificationDTO>) actual.getEntity();
 

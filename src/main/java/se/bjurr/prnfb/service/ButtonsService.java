@@ -55,6 +55,9 @@ public class ButtonsService {
       ClientKeyStore clientKeyStore,
       final PullRequest pullRequest,
       boolean shouldAcceptAnyCertificate) {
+
+    String projectKey = pullRequest.getToRef().getRepository().getProject().getKey();
+    String repositoryKey = pullRequest.getToRef().getRepository().getSlug();
     List<PrnfbButton> allFoundButtons = newArrayList();
     for (PrnfbButton candidate : settingsService.getButtons()) {
       Map<PrnfbVariable, Supplier<String>> variables = new HashMap<>();
@@ -62,7 +65,7 @@ public class ButtonsService {
       variables.put(BUTTON_TRIGGER_TITLE, Suppliers.ofInstance(button.getName()));
 
       PrnfbPullRequestAction pullRequestAction = BUTTON_TRIGGER;
-      if (userCheckService.isAllowedUseButton(candidate) //
+      if (userCheckService.isAllowed(candidate.getUserLevel(), projectKey, repositoryKey) //
           && isTriggeredByAction(
               clientKeyStore,
               notifications,

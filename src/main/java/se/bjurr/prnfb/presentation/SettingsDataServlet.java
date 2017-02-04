@@ -15,12 +15,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+import com.atlassian.annotations.security.XsrfProtectionExcluded;
+import com.google.common.base.Optional;
+
 import se.bjurr.prnfb.presentation.dto.SettingsDataDTO;
 import se.bjurr.prnfb.service.SettingsService;
 import se.bjurr.prnfb.service.UserCheckService;
 import se.bjurr.prnfb.settings.PrnfbSettingsData;
-
-import com.atlassian.annotations.security.XsrfProtectionExcluded;
+import se.bjurr.prnfb.settings.Restricted;
 
 @Path("/settings")
 public class SettingsDataServlet {
@@ -50,7 +52,18 @@ public class SettingsDataServlet {
   @Consumes(APPLICATION_JSON)
   @Produces(APPLICATION_JSON)
   public Response post(SettingsDataDTO settingsDataDto) {
-    if (!this.userCheckService.isAdminAllowed(null, null)) {
+    if (!this.userCheckService.isAdminAllowed(
+        new Restricted() {
+          @Override
+          public Optional<String> getRepositorySlug() {
+            return Optional.absent();
+          }
+
+          @Override
+          public Optional<String> getProjectKey() {
+            return Optional.absent();
+          }
+        })) {
       return status(UNAUTHORIZED).build();
     }
 

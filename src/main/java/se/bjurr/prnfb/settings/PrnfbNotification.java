@@ -22,7 +22,7 @@ import se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD;
 import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
 import se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR;
 
-public class PrnfbNotification implements HasUuid {
+public class PrnfbNotification implements HasUuid, Restricted {
 
   private static final String DEFAULT_NAME = "Notification";
   private final String filterRegexp;
@@ -286,6 +286,7 @@ public class PrnfbNotification implements HasUuid {
     return fromNullable(this.postContent);
   }
 
+  @Override
   public Optional<String> getProjectKey() {
     return fromNullable(this.projectKey);
   }
@@ -306,6 +307,7 @@ public class PrnfbNotification implements HasUuid {
     return fromNullable(this.proxyUser);
   }
 
+  @Override
   public Optional<String> getRepositorySlug() {
     return fromNullable(this.repositorySlug);
   }

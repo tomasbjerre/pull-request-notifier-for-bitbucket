@@ -1,14 +1,14 @@
 package se.bjurr.prnfb.service;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static se.bjurr.prnfb.settings.PrnfbSettingsDataBuilder.prnfbSettingsDataBuilder;
 import static se.bjurr.prnfb.settings.USER_LEVEL.ADMIN;
 import static se.bjurr.prnfb.settings.USER_LEVEL.EVERYONE;
 import static se.bjurr.prnfb.settings.USER_LEVEL.SYSTEM_ADMIN;
 
-import java.util.List;
 import java.util.Set;
 
 import org.junit.Before;
@@ -26,9 +26,10 @@ import com.atlassian.bitbucket.util.Operation;
 import com.atlassian.sal.api.user.UserKey;
 import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.sal.api.user.UserProfile;
+import com.google.common.base.Optional;
 
-import se.bjurr.prnfb.presentation.dto.ON_OR_OFF;
-import se.bjurr.prnfb.settings.PrnfbButton;
+import se.bjurr.prnfb.settings.PrnfbSettingsData;
+import se.bjurr.prnfb.settings.Restricted;
 
 public class UserCheckServiceTest {
   private final EscalatedSecurityContext escalatedSecurityContext =
@@ -59,10 +60,8 @@ public class UserCheckServiceTest {
       };
 
   @Mock private PermissionService permissionService;
-  private String projectKey;
   @Mock private ProjectService projectService;
   @Mock private RepositoryService repositoryService;
-  private String repositorySlug;
   @Mock private SecurityService securityService;
   @Mock private SettingsService settingsService;
   private UserCheckService sut;
@@ -88,63 +87,38 @@ public class UserCheckServiceTest {
 
   @Test
   public void testThatAdminAllowedCanBeChecked() {
-    this.projectKey = null;
-    this.repositorySlug = null;
-    this.sut.isAdminAllowed(this.projectKey, this.repositorySlug);
-  }
+    PrnfbSettingsData prnfbSettingsData =
+        prnfbSettingsDataBuilder().setAdminRestriction(SYSTEM_ADMIN).build();
+    when(settingsService.getPrnfbSettingsData()).thenReturn(prnfbSettingsData);
+    UserProfile remoteUser = mock(UserProfile.class);
+    when(remoteUser.getUserKey()).thenReturn(userKey);
+    when(userManager.getRemoteUser()).thenReturn(remoteUser);
+    when(userManager.isAdmin(userKey)).thenReturn(false);
+    when(userManager.isSystemAdmin(userKey)).thenReturn(false);
+    boolean actual =
+        this.sut.isAdminAllowed(
+            new Restricted() {
+              @Override
+              public Optional<String> getRepositorySlug() {
+                return Optional.absent();
+              }
 
-  @Test
-  public void testThatAllowedButtonsCanBeFiltered() {
-    this.projectKey = "p1";
-    this.repositorySlug = "r1";
+              @Override
+              public Optional<String> getProjectKey() {
+                return Optional.absent();
+              }
+            });
 
-    when(this.userManager.getRemoteUser()) //
-        .thenReturn(this.user);
-    when(this.userManager.getRemoteUser().getUserKey()) //
-        .thenReturn(this.userKey);
-    when(this.userManager.isSystemAdmin(this.userKey)) //
-        .thenReturn(false);
-    when(this.userManager.isAdmin(this.userKey)) //
-        .thenReturn(false);
-
-    PrnfbButton button1 =
-        new PrnfbButton(null, "title1", ADMIN, ON_OR_OFF.off, "p1", "r1", "confirmationText", null);
-    PrnfbButton button2 =
-        new PrnfbButton(
-            null, "title2", EVERYONE, ON_OR_OFF.off, "p1", "r1", "confirmationText", null);
-    PrnfbButton button3 =
-        new PrnfbButton(
-            null, "title3", SYSTEM_ADMIN, ON_OR_OFF.off, "p1", "r1", "confirmationText", null);
-    List<PrnfbButton> buttons = newArrayList(button1, button2, button3);
-
-    Iterable<PrnfbButton> onlyAllowed = this.sut.filterAllowed(buttons);
-
-    assertThat(onlyAllowed) //
-        .containsOnly(button2);
+    assertThat(actual).isFalse();
   }
 
   @Test
   public void testThatAllowedCanBeChecked() {
-    this.projectKey = "p1";
-    this.repositorySlug = "r1";
-
-    when(this.userManager.getRemoteUser()) //
-        .thenReturn(this.user);
-    when(this.userManager.getRemoteUser().getUserKey()) //
-        .thenReturn(this.userKey);
-    when(this.userManager.isSystemAdmin(this.userKey)) //
-        .thenReturn(true);
-
-    PrnfbButton candidate =
-        new PrnfbButton(null, "title", ADMIN, ON_OR_OFF.off, "p1", "r1", "confirmationText", null);
-    assertThat(this.sut.isAllowedUseButton(candidate)) //
+    assertThat(this.sut.isAllowed(ADMIN, true, false)) //
         .isTrue();
-
-    assertThat(this.sut.isAdminAllowedCheck(ADMIN, true, false)) //
+    assertThat(this.sut.isAllowed(EVERYONE, false, false)) //
         .isTrue();
-    assertThat(this.sut.isAdminAllowedCheck(EVERYONE, false, false)) //
-        .isTrue();
-    assertThat(this.sut.isAdminAllowedCheck(SYSTEM_ADMIN, false, true)) //
+    assertThat(this.sut.isAllowed(SYSTEM_ADMIN, false, true)) //
         .isTrue();
   }
 
