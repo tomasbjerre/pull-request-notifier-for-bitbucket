@@ -6,7 +6,7 @@ Changelog of Pull Request Notifier for Bitbucket.
 ### GitHub [#193](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/193) Enable project level admins to configure on project level
   Enable project level admins to configure on project level
   
-  [64f670125111045](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/64f670125111045) Tomas Bjerre *2017-02-05 09:00:55*
+  [3026116d25fb0d4](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/3026116d25fb0d4) Tomas Bjerre *2017-02-05 13:27:24*
 
 ### No issue
   doc

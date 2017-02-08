@@ -119,9 +119,10 @@ Generally, when fiddling with this plugin, you may want to use something like [R
 
 Here are some guides on how to use the plugin with different systems. Feel free to add guides through pull requests to this repo!
 
- * [Jenkins](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/blob/master/README_jenkins.md)
  * [HipChat](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/blob/master/README_hipchat.md)
+ * [Jenkins](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/blob/master/README_jenkins.md)
  * [Slack](https://github.com/Igogrek/bitbucket-slack-notifier)
+ * [TeamCity](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/blob/master/README_teamcity.md)
 
 ### Button Forms
 
