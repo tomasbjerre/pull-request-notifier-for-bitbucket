@@ -7,10 +7,10 @@ before_install:
   - ./setup-atlassian-sdk.sh
   - export PATH=opt/atlassian-plugin-sdk/bin:opt/atlassian-plugin-sdk/apache-maven-*/bin:$PATH
 install:
-  - atlas-mvn -q install -Dstash.version=4.0.0
+  - atlas-mvn -q install -Dbitbucket.version=4.2.0
   - atlas-mvn -q install
 script:
-  - atlas-package -q -Dstash.version=4.0.0
+  - atlas-package -q -Dbitbucket.version=4.2.0
   - atlas-package -q
 notifications:
   email: false
