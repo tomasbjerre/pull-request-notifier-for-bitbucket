@@ -382,7 +382,7 @@
 
    <fieldset class="group">
     <legend>
-     <span>State</span>
+     <span>Ignore if</span>
     </legend>
     <div class="checkbox">
      <label>

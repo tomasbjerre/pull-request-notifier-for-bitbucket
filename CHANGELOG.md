@@ -3,6 +3,21 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
+### GitHub [#195](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/195) Merges are not triggering a request?
+  Clarifying 'state' option in notification GUI
+  
+  [8e84ae0e76aac69](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/8e84ae0e76aac69) Tomas Bjerre *2017-02-15 16:31:23*
+
+### No issue
+  Building for current and 4.2.0 in Travis
+  
+  [50596f863a4fbab](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/50596f863a4fbab) Tomas Bjerre *2017-02-15 16:30:03*
+
+  Documenting TeamCity
+  
+  [1f554c7a3bbe0ef](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/1f554c7a3bbe0ef) Tomas Bjerre *2017-02-08 19:28:07*
+
+## 2.53
 ### GitHub [#193](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/193) Enable project level admins to configure on project level
   Enable project level admins to configure on project level
   
