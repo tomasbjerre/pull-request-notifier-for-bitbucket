@@ -84,8 +84,8 @@ public class PrnfbNotification implements HasUuid, Restricted {
     if (this.triggers.isEmpty()) {
       throw new ValidationException("triggers", "At least one trigger must be selected.");
     }
-    this.filterString = builder.getFilterString();
-    this.filterRegexp = builder.getFilterRegexp();
+    this.filterString = emptyToNull(nullToEmpty(builder.getFilterString()).trim());
+    this.filterRegexp = emptyToNull(nullToEmpty(builder.getFilterRegexp()).trim());
     this.name = firstNonNull(emptyToNull(nullToEmpty(builder.getName()).trim()), DEFAULT_NAME);
     this.injectionUrl = emptyToNull(nullToEmpty(builder.getInjectionUrl()).trim());
     this.injectionUrlRegexp = emptyToNull(nullToEmpty(builder.getInjectionUrlRegexp()).trim());

@@ -361,6 +361,31 @@ public class PrnfbPullRequestEventListenerTest {
   }
 
   @Test
+  public void testThatNotifiationIsTriggeredByActionIfAFilterIsMatchingWhenTrimmed()
+      throws ValidationException {
+    PrnfbNotification notification =
+        prnfbNotificationBuilder() //
+            .withTrigger(RESCOPED_FROM) //
+            .withUrl("http://hej.com") //
+            .withFilterRegexp(" ^abc$   ") //
+            .withFilterString("  abc ") //
+            .build();
+    PrnfbPullRequestAction pullRequestAction = RESCOPED_FROM;
+
+    boolean actual =
+        sut.isNotificationTriggeredByAction(
+            notification,
+            pullRequestAction,
+            renderer,
+            pullRequest,
+            clientKeyStore,
+            shouldAcceptAnyCertificate);
+
+    assertThat(actual) //
+        .isTrue();
+  }
+
+  @Test
   public void testThatNotifiationIsTriggeredByActionIfProjectSame() throws ValidationException {
     PrnfbNotification notification =
         prnfbNotificationBuilder() //

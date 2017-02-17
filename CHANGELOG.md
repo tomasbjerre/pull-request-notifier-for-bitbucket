@@ -3,10 +3,16 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
+### GitHub [#197](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/197) Button not displaying on PRs which are merged
+  Trimmin regexp filter and string
+  
+  [fcb16d4c700e7d8](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/fcb16d4c700e7d8) Tomas Bjerre *2017-02-17 13:10:58*
+
+## 2.54
 ### GitHub [#195](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/195) Merges are not triggering a request?
   Clarifying 'state' option in notification GUI
   
-  [8e84ae0e76aac69](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/8e84ae0e76aac69) Tomas Bjerre *2017-02-15 16:31:23*
+  [ba67df63342b90e](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/ba67df63342b90e) Tomas Bjerre *2017-02-15 16:55:43*
 
 ### No issue
   Building for current and 4.2.0 in Travis
