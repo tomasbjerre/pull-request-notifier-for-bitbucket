@@ -2,6 +2,18 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## Unreleased
+### No issue
+  Moving from web-item to client-web-item
+
+ * web-item was deprecated in 4.4 and will be removed in 5.0.
+  
+  [30d1b329f6e16de](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/30d1b329f6e16de) Tomas Bjerre *2017-02-18 19:21:06*
+
+  doc
+  
+  [a4e0b54acf18d30](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/a4e0b54acf18d30) Tomas Bjerre *2017-02-18 18:23:48*
+
 ## 2.55
 ### GitHub [#197](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/197) Button not displaying on PRs which are merged
   Trimmin regexp filter and string

@@ -55,11 +55,11 @@
   </link>
  </web-item>
 
- <web-item key="se.bjurr.prnfb.triggerbutton" name="Trigger Notification" weight="50" section="bitbucket.pull-request.toolbar.actions">
+ <client-web-item key="se.bjurr.prnfb.triggerbutton" name="Trigger Notification" weight="50" section="bitbucket.pullrequest.action">
   <label key="bitbucket.web.pull-request.toolbar.triggerbutton">Trigger Notification</label>
   <styleClass>triggerManualNotification</styleClass>
   <dependency>${project.groupId}-${project.artifactId}:pr-triggerbutton</dependency>
- </web-item>
+ </client-web-item>
 
  <web-resource key="pr-triggerbutton">
   <resource type="download" name="3rdparty.js" location="3rdparty.js" />
