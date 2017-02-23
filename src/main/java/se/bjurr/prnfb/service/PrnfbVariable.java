@@ -493,6 +493,108 @@ public enum PrnfbVariable {
           return getOrEmpty(variables, PULL_REQUEST_MERGE_COMMIT);
         }
       }),
+  PULL_REQUEST_REVIEWERS_ADDED_SLUG(
+      new PrnfbVariableResolver() {
+        @Override
+        public String resolve(
+            PullRequest pullRequest,
+            PrnfbPullRequestAction prnfsPullRequestAction,
+            ApplicationUser stashUser,
+            RepositoryService repositoryService,
+            ApplicationPropertiesService propertiesService,
+            PrnfbNotification prnfsNotification,
+            Map<PrnfbVariable, Supplier<String>> variables,
+            ClientKeyStore clientKeyStore,
+            boolean shouldAcceptAnyCertificate,
+            SecurityService securityService) {
+          return getOrEmpty(variables, PULL_REQUEST_REVIEWERS_ADDED_SLUG);
+        }
+      }),
+  PULL_REQUEST_REVIEWERS_ADDED_EMAIL(
+      new PrnfbVariableResolver() {
+        @Override
+        public String resolve(
+            PullRequest pullRequest,
+            PrnfbPullRequestAction prnfsPullRequestAction,
+            ApplicationUser stashUser,
+            RepositoryService repositoryService,
+            ApplicationPropertiesService propertiesService,
+            PrnfbNotification prnfsNotification,
+            Map<PrnfbVariable, Supplier<String>> variables,
+            ClientKeyStore clientKeyStore,
+            boolean shouldAcceptAnyCertificate,
+            SecurityService securityService) {
+          return getOrEmpty(variables, PULL_REQUEST_REVIEWERS_ADDED_EMAIL);
+        }
+      }),
+  PULL_REQUEST_REVIEWERS_ADDED_DISPLAY_NAME(
+      new PrnfbVariableResolver() {
+        @Override
+        public String resolve(
+            PullRequest pullRequest,
+            PrnfbPullRequestAction prnfsPullRequestAction,
+            ApplicationUser stashUser,
+            RepositoryService repositoryService,
+            ApplicationPropertiesService propertiesService,
+            PrnfbNotification prnfsNotification,
+            Map<PrnfbVariable, Supplier<String>> variables,
+            ClientKeyStore clientKeyStore,
+            boolean shouldAcceptAnyCertificate,
+            SecurityService securityService) {
+          return getOrEmpty(variables, PULL_REQUEST_REVIEWERS_ADDED_DISPLAY_NAME);
+        }
+      }),
+  PULL_REQUEST_REVIEWERS_REMOVED_SLUG(
+      new PrnfbVariableResolver() {
+        @Override
+        public String resolve(
+            PullRequest pullRequest,
+            PrnfbPullRequestAction prnfsPullRequestAction,
+            ApplicationUser stashUser,
+            RepositoryService repositoryService,
+            ApplicationPropertiesService propertiesService,
+            PrnfbNotification prnfsNotification,
+            Map<PrnfbVariable, Supplier<String>> variables,
+            ClientKeyStore clientKeyStore,
+            boolean shouldAcceptAnyCertificate,
+            SecurityService securityService) {
+          return getOrEmpty(variables, PULL_REQUEST_REVIEWERS_REMOVED_SLUG);
+        }
+      }),
+  PULL_REQUEST_REVIEWERS_REMOVED_EMAIL(
+      new PrnfbVariableResolver() {
+        @Override
+        public String resolve(
+            PullRequest pullRequest,
+            PrnfbPullRequestAction prnfsPullRequestAction,
+            ApplicationUser stashUser,
+            RepositoryService repositoryService,
+            ApplicationPropertiesService propertiesService,
+            PrnfbNotification prnfsNotification,
+            Map<PrnfbVariable, Supplier<String>> variables,
+            ClientKeyStore clientKeyStore,
+            boolean shouldAcceptAnyCertificate,
+            SecurityService securityService) {
+          return getOrEmpty(variables, PULL_REQUEST_REVIEWERS_REMOVED_EMAIL);
+        }
+      }),
+  PULL_REQUEST_REVIEWERS_REMOVED_DISPLAY_NAME(
+      new PrnfbVariableResolver() {
+        @Override
+        public String resolve(
+            PullRequest pullRequest,
+            PrnfbPullRequestAction prnfsPullRequestAction,
+            ApplicationUser stashUser,
+            RepositoryService repositoryService,
+            ApplicationPropertiesService propertiesService,
+            PrnfbNotification prnfsNotification,
+            Map<PrnfbVariable, Supplier<String>> variables,
+            ClientKeyStore clientKeyStore,
+            boolean shouldAcceptAnyCertificate,
+            SecurityService securityService) {
+          return getOrEmpty(variables, PULL_REQUEST_REVIEWERS_REMOVED_DISPLAY_NAME);
+        }
+      }),
   PULL_REQUEST_PARTICIPANTS_APPROVED_COUNT(
       new PrnfbVariableResolver() {
         @Override

@@ -85,6 +85,12 @@ The filter text as well as the URL support variables. These are:
 | `${PULL_REQUEST_REVIEWERS_NEEDS_WORK_EMAIL}` | Example: admin@example.com,user@example.com. |
 | `${PULL_REQUEST_REVIEWERS_NEEDS_WORK_NAME}` | Example: Admin,User. |
 | `${PULL_REQUEST_REVIEWERS_NEEDS_WORK_DISPLAY_NAME}` | Example: Admin Adminson,User Userson. |
+| `${PULL_REQUEST_REVIEWERS_ADDED_DISPLAY_NAME}` | Example: Admin Adminson,User Userson. |
+| `${PULL_REQUEST_REVIEWERS_ADDED_EMAIL}` | Example: admin@example.com,user@example.com. |
+| `${PULL_REQUEST_REVIEWERS_ADDED_SLUG}` | Example: admin,user. |
+| `${PULL_REQUEST_REVIEWERS_REMOVED_DISPLAY_NAME}` | Example: Admin Adminson,User Userson. |
+| `${PULL_REQUEST_REVIEWERS_REMOVED_EMAIL}` | Example: admin@example.com,user@example.com. |
+| `${PULL_REQUEST_REVIEWERS_REMOVED_SLUG}` | Example: admin,user. |
 | `${PULL_REQUEST_PARTICIPANTS_APPROVED_COUNT}` | Number of participants that approved the PR. |
 | `${PULL_REQUEST_PARTICIPANTS_EMAIL}` | Example: `admin@example.com,user@example.com` |
 | `${PULL_REQUEST_MERGE_COMMIT}` | Hash of merged commit (only available for merged-event). |

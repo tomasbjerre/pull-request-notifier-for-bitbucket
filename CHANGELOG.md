@@ -3,12 +3,17 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
+### GitHub [#200](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/200) New trigger for reviewers added event
+  PULL_REQUEST_REVIEWERS_ADDED/REMOVED variables
+  
+  [375fd3d477ec629](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/375fd3d477ec629) Tomas Bjerre *2017-02-23 18:35:52*
+
 ### No issue
   Moving from web-item to client-web-item
 
  * web-item was deprecated in 4.4 and will be removed in 5.0.
   
-  [30d1b329f6e16de](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/30d1b329f6e16de) Tomas Bjerre *2017-02-18 19:21:06*
+  [d1ca3cd0d7c8ccd](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/d1ca3cd0d7c8ccd) Tomas Bjerre *2017-02-18 19:21:58*
 
   doc
   

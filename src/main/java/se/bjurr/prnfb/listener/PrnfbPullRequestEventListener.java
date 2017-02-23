@@ -1,7 +1,9 @@
 package se.bjurr.prnfb.listener;
 
+import static com.google.common.base.Joiner.on;
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.of;
+import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Maps.newHashMap;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -12,11 +14,18 @@ import static se.bjurr.prnfb.listener.PrnfbPullRequestAction.fromPullRequestEven
 import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_COMMENT_ACTION;
 import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_COMMENT_TEXT;
 import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_MERGE_COMMIT;
+import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_REVIEWERS_ADDED_DISPLAY_NAME;
+import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_REVIEWERS_ADDED_EMAIL;
+import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_REVIEWERS_ADDED_SLUG;
+import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_REVIEWERS_REMOVED_DISPLAY_NAME;
+import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_REVIEWERS_REMOVED_EMAIL;
+import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_REVIEWERS_REMOVED_SLUG;
 import static se.bjurr.prnfb.settings.TRIGGER_IF_MERGE.ALWAYS;
 import static se.bjurr.prnfb.settings.TRIGGER_IF_MERGE.CONFLICTING;
 import static se.bjurr.prnfb.settings.TRIGGER_IF_MERGE.NOT_CONFLICTING;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
 import org.slf4j.Logger;
@@ -33,9 +42,11 @@ import com.atlassian.bitbucket.event.pull.PullRequestOpenedEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestParticipantStatusUpdatedEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestReopenedEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestRescopedEvent;
+import com.atlassian.bitbucket.event.pull.PullRequestReviewersUpdatedEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestUpdatedEvent;
 import com.atlassian.bitbucket.pull.PullRequest;
 import com.atlassian.bitbucket.pull.PullRequestService;
+import com.atlassian.bitbucket.user.ApplicationUser;
 import com.atlassian.event.api.EventListener;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
@@ -307,6 +318,11 @@ public class PrnfbPullRequestEventListener {
   }
 
   @EventListener
+  public void onEvent(PullRequestReviewersUpdatedEvent e) {
+    handleEventAsync(e);
+  }
+
+  @EventListener
   public void onEvent(PullRequestOpenedEvent e) {
     handleEventAsync(e);
   }
@@ -348,6 +364,67 @@ public class PrnfbPullRequestEventListener {
             @Override
             public String get() {
               return ((PullRequestMergedEvent) pullRequestEvent).getCommit().getId();
+            }
+          });
+    } else if (pullRequestEvent instanceof PullRequestReviewersUpdatedEvent) {
+      variables.put(
+          PULL_REQUEST_REVIEWERS_ADDED_SLUG,
+          new Supplier<String>() {
+            @Override
+            public String get() {
+              Set<ApplicationUser> reviewers =
+                  ((PullRequestReviewersUpdatedEvent) pullRequestEvent).getAddedReviewers();
+              return on(",").join(transform(reviewers, (a) -> a.getSlug()));
+            }
+          });
+      variables.put(
+          PULL_REQUEST_REVIEWERS_ADDED_EMAIL,
+          new Supplier<String>() {
+            @Override
+            public String get() {
+              Set<ApplicationUser> reviewers =
+                  ((PullRequestReviewersUpdatedEvent) pullRequestEvent).getAddedReviewers();
+              return on(",").join(transform(reviewers, (a) -> a.getEmailAddress()));
+            }
+          });
+      variables.put(
+          PULL_REQUEST_REVIEWERS_ADDED_DISPLAY_NAME,
+          new Supplier<String>() {
+            @Override
+            public String get() {
+              Set<ApplicationUser> reviewers =
+                  ((PullRequestReviewersUpdatedEvent) pullRequestEvent).getAddedReviewers();
+              return on(",").join(transform(reviewers, (a) -> a.getDisplayName()));
+            }
+          });
+      variables.put(
+          PULL_REQUEST_REVIEWERS_REMOVED_SLUG,
+          new Supplier<String>() {
+            @Override
+            public String get() {
+              Set<ApplicationUser> reviewers =
+                  ((PullRequestReviewersUpdatedEvent) pullRequestEvent).getRemovedReviewers();
+              return on(",").join(transform(reviewers, (a) -> a.getSlug()));
+            }
+          });
+      variables.put(
+          PULL_REQUEST_REVIEWERS_REMOVED_EMAIL,
+          new Supplier<String>() {
+            @Override
+            public String get() {
+              Set<ApplicationUser> reviewers =
+                  ((PullRequestReviewersUpdatedEvent) pullRequestEvent).getRemovedReviewers();
+              return on(",").join(transform(reviewers, (a) -> a.getEmailAddress()));
+            }
+          });
+      variables.put(
+          PULL_REQUEST_REVIEWERS_REMOVED_DISPLAY_NAME,
+          new Supplier<String>() {
+            @Override
+            public String get() {
+              Set<ApplicationUser> reviewers =
+                  ((PullRequestReviewersUpdatedEvent) pullRequestEvent).getRemovedReviewers();
+              return on(",").join(transform(reviewers, (a) -> a.getDisplayName()));
             }
           });
     }

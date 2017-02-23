@@ -90,6 +90,12 @@
    <li><b>${PULL_REQUEST_REVIEWERS_NEEDS_WORK_EMAIL}</b> Example: admin@example.com,user@example.com.</li>
    <li><b>${PULL_REQUEST_REVIEWERS_NEEDS_WORK_NAME}</b> Example: Admin,User.</li>
    <li><b>${PULL_REQUEST_REVIEWERS_NEEDS_WORK_DISPLAY_NAME}</b> Example: Admin Adminson,User Userson.</li>
+   <li><b>${PULL_REQUEST_REVIEWERS_ADDED_DISPLAY_NAME}</b> Example: Admin Adminson,User Userson.</li>
+   <li><b>${PULL_REQUEST_REVIEWERS_ADDED_EMAIL}</b> Example: admin@example.com,user@example.com.</li>
+   <li><b>${PULL_REQUEST_REVIEWERS_ADDED_SLUG}</b> Example: admin,user.</li>
+   <li><b>${PULL_REQUEST_REVIEWERS_REMOVED_DISPLAY_NAME}</b> Example: Admin Adminson,User Userson.</li>
+   <li><b>${PULL_REQUEST_REVIEWERS_REMOVED_EMAIL}</b> Example: admin@example.com,user@example.com.</li>
+   <li><b>${PULL_REQUEST_REVIEWERS_REMOVED_SLUG}</b> Example: admin,user.</li>
    <li><b>${PULL_REQUEST_PARTICIPANTS_APPROVED_COUNT}</b> Number of participants that approved the PR.</li>
    <li><b>${PULL_REQUEST_PARTICIPANTS_EMAIL}</b> Example: admin@example.com,user@example.com.</li>
    <li><b>${PULL_REQUEST_MERGE_COMMIT}</b> Hash of merged commit (only available for merged-event).</li>
