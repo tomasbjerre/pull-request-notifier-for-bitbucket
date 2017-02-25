@@ -15,13 +15,13 @@ Changelog of Pull Request Notifier for Bitbucket.
   [a4e0b54acf18d30](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/a4e0b54acf18d30) Tomas Bjerre *2017-02-18 18:23:48*
 
 ## 2.55
-### GitHub [#197](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/197) Button not displaying on PRs which are merged
+### GitHub
   Trimmin regexp filter and string
   
   [b73fde18aed111a](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/b73fde18aed111a) Tomas Bjerre *2017-02-17 13:11:38*
 
 ## 2.54
-### GitHub [#195](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/195) Merges are not triggering a request?
+### GitHub
   Clarifying 'state' option in notification GUI
   
   [ba67df63342b90e](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/ba67df63342b90e) Tomas Bjerre *2017-02-15 16:55:43*
@@ -36,7 +36,7 @@ Changelog of Pull Request Notifier for Bitbucket.
   [1f554c7a3bbe0ef](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/1f554c7a3bbe0ef) Tomas Bjerre *2017-02-08 19:28:07*
 
 ## 2.53
-### GitHub [#193](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/193) Enable project level admins to configure on project level
+### GitHub
   Enable project level admins to configure on project level
   
   [3026116d25fb0d4](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/3026116d25fb0d4) Tomas Bjerre *2017-02-05 13:27:24*
@@ -47,7 +47,7 @@ Changelog of Pull Request Notifier for Bitbucket.
   [e6717f40011194e](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/e6717f40011194e) Tomas Bjerre *2017-02-03 13:15:33*
 
 ## 2.52
-### GitHub [#192](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/192) Include status for participants
+### GitHub
   Variables to display names of approved, unapproved and needs work
   
   [dba06db7fd2b4d9](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/dba06db7fd2b4d9) Tomas Bjerre *2017-02-02 17:12:47*
@@ -58,14 +58,14 @@ Changelog of Pull Request Notifier for Bitbucket.
   [7654610bc8ecd9a](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/7654610bc8ecd9a) Tomas Bjerre *2017-02-01 19:51:51*
 
 ## 2.51
-### GitHub [#191](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/191) Notification for &quot;Needs Work&quot;
+### GitHub
   Adding REVIEWED as trigger 
 
  * This is what happens when reviewer clicks "needs work".
   
   [020dfc3bb372ca2](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/020dfc3bb372ca2) Tomas Bjerre *2017-02-01 18:17:48*
 
-### GitHub [#192](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/192) Include status for participants
+### GitHub
   New variables to list approved, unapproved and needs work 
 
  * PULL_REQUEST_REVIEWERS_APPROVED_SLUG
@@ -80,7 +80,7 @@ Changelog of Pull Request Notifier for Bitbucket.
   
   [6b8832e587d55b0](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/6b8832e587d55b0) Tomas Bjerre *2017-02-01 19:23:38*
 
-### GitHub [#194](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/194) Pull Request activity throws IllegalArgumentException
+### GitHub
   Avoiding trying to read empty responses from notifications
   
   [12f22579a64b7d7](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/12f22579a64b7d7) Tomas Bjerre *2017-02-01 19:29:29*
@@ -91,7 +91,7 @@ Changelog of Pull Request Notifier for Bitbucket.
   [48b7b744a94f01e](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/48b7b744a94f01e) Tomas Bjerre *2017-01-30 18:28:50*
 
 ## 2.50
-### GitHub [#190](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/190) button forms: descriptions not showing for types input and textarea
+### GitHub
   Showing description for input and textarea in buttons form
   
   [c3df65fc66369fa](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/c3df65fc66369fa) Tomas Bjerre *2017-01-30 18:22:51*
@@ -106,7 +106,7 @@ Changelog of Pull Request Notifier for Bitbucket.
   [a674860740e4e90](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/a674860740e4e90) Tomas Bjerre *2017-01-29 14:52:39*
 
 ## 2.49
-### GitHub [#187](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/187) Support HTML escaping in variable expansion?
+### GitHub
   Adding HipChat documentation 
 
  * The HipChat docs were privided by [Rychard](https://github.com/Rychard).
@@ -131,19 +131,19 @@ Changelog of Pull Request Notifier for Bitbucket.
   [532d0203e03a92b](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/532d0203e03a92b) Joshua Shearer *2017-01-26 03:46:41*
 
 ## 2.48
-### GitHub [#179](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/179) Add PULL_REQUEST_REVIEWERS_NEEDS_WORK_COUNT
+### GitHub
   NEEDS_WORK and UNAPPROVED variables
   
   [85558ecd08f2321](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/85558ecd08f2321) Tomas Bjerre *2017-01-13 08:33:22*
 
 ## 2.47
-### GitHub [#178](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/178) Forms with checkboxes that have a default value of false do not work
+### GitHub
   Only select checkboxes marked as default true in button forms
   
   [65de828048c260f](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/65de828048c260f) Tomas Bjerre *2017-01-03 17:33:27*
 
 ## 2.46
-### GitHub [#178](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/178) Forms with checkboxes that have a default value of false do not work
+### GitHub
   Using boolean for defaultValue in ButtonFormElementOption
   
   [857b440e069912f](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/857b440e069912f) Tomas Bjerre *2017-01-03 08:09:39*
@@ -158,7 +158,7 @@ Changelog of Pull Request Notifier for Bitbucket.
   [aef9959f68fa4e4](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/aef9959f68fa4e4) Tomas Bjerre *2016-12-27 10:42:56*
 
 ## 2.45
-### GitHub [#173](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/pull/173) Add the ability to specify forms for buttons
+### GitHub
   Valid JSON in BUTTON_FORM_DATA 
 
  * Quotes were escaped with slashes.
@@ -175,7 +175,7 @@ Changelog of Pull Request Notifier for Bitbucket.
   [eae3578be0763bc](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/eae3578be0763bc) Tomas Bjerre *2016-12-27 08:16:06*
 
 ## 2.44
-### GitHub [#173](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/pull/173) Add the ability to specify forms for buttons
+### GitHub
   Validating button forms JSON
   
   [e52ff1d1da15f31](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/e52ff1d1da15f31) Tomas Bjerre *2016-12-27 08:02:12*
@@ -198,12 +198,12 @@ Changelog of Pull Request Notifier for Bitbucket.
   
   [649638d30d2d32c](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/649638d30d2d32c) Tomas Bjerre *2016-12-25 21:46:25*
 
-### GitHub [#174](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/174) java.lang.NullPointerException: null
+### GitHub
   More information if header name/value missing
   
   [1384dd2418f3049](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/1384dd2418f3049) Tomas Bjerre *2016-12-26 21:33:56*
 
-### GitHub [#57](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/57) Trigger button: confirmation dialog 
+### GitHub
   Adding optional confirmation text to buttons
   
   [e643e48a8568afc](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/e643e48a8568afc) Tomas Bjerre *2016-12-26 21:16:23*
@@ -222,13 +222,13 @@ look at README.md in the change.
   [2a5c79347b713c8](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/2a5c79347b713c8) Itay Neeman *2016-12-24 20:55:47*
 
 ## 2.43
-### GitHub [#169](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/169) What about pull request description ?
+### GitHub
   Removing PULL_REQUEST_DESCRIPTION from EVERYTHING_URL
   
   [5af97f531cae647](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/5af97f531cae647) Tomas Bjerre *2016-12-15 21:19:12*
 
 ## 2.42
-### GitHub [#169](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/169) What about pull request description ?
+### GitHub
   Adding PULL_REQUEST_DESCRIPTION
   
   [986b61f32e72b44](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/986b61f32e72b44) Tomas Bjerre *2016-12-15 17:51:11*
@@ -239,7 +239,7 @@ look at README.md in the change.
   [025f6fe9c62c65d](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/025f6fe9c62c65d) Tomas Bjerre *2016-11-30 19:35:52*
 
 ## 2.41
-### GitHub [#162](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/162) Provide list of email addressed for PR reviewers and participants as URL support variables 
+### GitHub
   Adjustments after merging PR 
 
  * Formatting code
@@ -254,13 +254,13 @@ look at README.md in the change.
   [8c1ba38e561e02b](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/8c1ba38e561e02b) Christian Galsterer *2016-11-23 17:41:02*
 
 ## 2.40
-### GitHub [#154](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/154) PR button not appearing for a project in a Bitbucket host
+### GitHub
   Avoid crash if button configured having none existing repo/project
   
   [42280c4a26e5880](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/42280c4a26e5880) Tomas Bjerre *2016-11-16 21:13:28*
 
 ## 2.39
-### GitHub [#159](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/159) Replacement failure can result in bad URLs
+### GitHub
   Replacing unresolved variables with nothing 
 
  * If a crash happens, like NPE, when a variable was resolved. Then that variable would be kept unchanged. Resulting in illegal chars in URL.
@@ -268,7 +268,7 @@ look at README.md in the change.
   [316cb796c3eedcf](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/316cb796c3eedcf) Tomas Bjerre *2016-11-16 20:39:20*
 
 ## 2.38
-### GitHub [#148](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/148) Grunt identifies a missing semicolon in src/main/resources/utils.js
+### GitHub
   Adding semicolon at end of statement
   
   [250ec4d56be6f3a](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/250ec4d56be6f3a) Tomas Bjerre *2016-09-28 05:38:11*
@@ -291,13 +291,13 @@ look at README.md in the change.
   [2fb2ce7d37c417c](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/2fb2ce7d37c417c) Tomas Bjerre *2016-09-10 07:42:58*
 
 ## 2.37
-### GitHub [#140](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/140) Show notification when settings are saved
+### GitHub
   Showing message on successful save
   
   [3a94670ff85a25c](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/3a94670ff85a25c) Tomas Bjerre *2016-08-17 17:53:21*
 
 ## 2.36
-### GitHub [#139](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/139) Bitbucket - PR Button created at project level shows up for other projects in the same host
+### GitHub
   Hiding project-level buttons from other projects
   
   [ad97c910e5cf25f](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/ad97c910e5cf25f) Tomas Bjerre *2016-08-12 15:32:45*
@@ -308,7 +308,7 @@ look at README.md in the change.
   [0230d6dd0ea44f2](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/0230d6dd0ea44f2) Tomas Bjerre *2016-08-11 18:07:42*
 
 ## 2.35
-### GitHub [#132](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/132) How to trigger Jenkins 2.1 with parameters
+### GitHub
   Better documenting how to trigger Jenkins
   
   [fe0d68fed224d5e](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/fe0d68fed224d5e) Tomas Bjerre *2016-07-31 19:37:11*
@@ -322,20 +322,20 @@ look at README.md in the change.
   [484f0837e8cf5f4](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/484f0837e8cf5f4) Tomas Bjerre *2016-08-11 18:03:43*
 
 ## 2.34
-### GitHub [#137](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/137) Triigger build button appears in the merged PR view too.
+### GitHub
   Adding PULL_REQUEST_STATE variable
   
   [2455b339fceebf4](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/2455b339fceebf4) Tomas Bjerre *2016-07-30 08:49:20*
 
 ## 2.33
-### GitHub [#134](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/134) Not able to see PR buttons
+### GitHub
   Checking privilegies for both project and repo 
 
  * So that the user may be admin in the repo, but not in the project.
   
   [4ee1f0d0a754a04](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/4ee1f0d0a754a04) Tomas Bjerre *2016-07-30 07:15:22*
 
-### GitHub [#135](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/135) Not permitted to access buttons settings as project/repo admin
+### GitHub
   Getting project and repo with sys admin permissions
   
   [474e1fd252eebf4](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/474e1fd252eebf4) Tomas Bjerre *2016-07-30 06:56:50*
@@ -382,7 +382,7 @@ successful (or if no triggers were hit).
   [fbdec988218c8d9](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/fbdec988218c8d9) Tomas Bjerre *2016-07-18 21:19:06*
 
 ## 2.31
-### GitHub [#131](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/131) Buttons do not appear [4.3.1]
+### GitHub
   Making buttons compatible with 4.0.0 to 4.3.x 
 
  * The HTML structure of how buttons are presented in Bitbucket Server was changed in 4.4.0.
@@ -397,20 +397,20 @@ successful (or if no triggers were hit).
   [d6a4dfbc24e8967](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/d6a4dfbc24e8967) Tomas Bjerre *2016-07-09 06:08:13*
 
 ## 2.30
-### GitHub [#128](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/128) Trigger button not showing up.
+### GitHub
   Removing falty code left from
   
   [10becd4a18bd77b](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/10becd4a18bd77b) Tomas Bjerre *2016-07-07 15:36:26*
 
 ## 2.29
-### GitHub [#129](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/129) Unable to use wildcard for &#39;Repository&#39;
+### GitHub
   Avoiding crash when administring global admin page as admin 
 
  * Did not correctly check for repo level admin privilegies.
   
   [067014dcc6988f2](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/067014dcc6988f2) Tomas Bjerre *2016-07-05 20:33:49*
 
-### GitHub [#130](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/130) Cannot delete Buttons or Notifications
+### GitHub
   Correcting deletion of buttons on repo level
   
   [60c84463ee5d38a](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/60c84463ee5d38a) Tomas Bjerre *2016-07-06 19:59:41*
@@ -422,7 +422,7 @@ successful (or if no triggers were hit).
   [620ae59a58aaa9d](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/620ae59a58aaa9d) Tomas Bjerre *2016-06-29 18:47:19*
 
 ## 2.27
-### GitHub [#128](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/128) Trigger button not showing up.
+### GitHub
   Making buttons compatible with 4.7.1
   
   [f88dcfea158ea3f](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/f88dcfea158ea3f) Tomas Bjerre *2016-06-29 18:26:13*
@@ -433,7 +433,7 @@ successful (or if no triggers were hit).
   [daf75d6290a7d25](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/daf75d6290a7d25) Tomas Bjerre *2016-06-24 21:25:53*
 
 ## 2.26
-### GitHub [#124](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/124) PR Updated not triggering a Job
+### GitHub
   Using ApplicationUser from PR event 
 
  * Was taking it from AuthenticationContext when a RESCOPED event occured. At that time the getCurrentUser() returns null.
@@ -446,7 +446,7 @@ successful (or if no triggers were hit).
   [3e9d67a80f506cc](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/3e9d67a80f506cc) Tomas Bjerre *2016-06-22 19:29:28*
 
 ## 2.25
-### GitHub [#123](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/123) Question on the configuration permissions.
+### GitHub
   Only showing repo settings on repo admin page 
 
  * Was also showing global settings, with "any" repo/project. Changing it to make implementation simpler.
@@ -454,7 +454,7 @@ successful (or if no triggers were hit).
   [2d290b7b9599ee1](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/2d290b7b9599ee1) Tomas Bjerre *2016-06-22 19:07:27*
 
 ## 2.24
-### GitHub [#123](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/123) Question on the configuration permissions.
+### GitHub
   Checking for admin permission on the repo/project 
 
  * If a user is only admin in one repo, the user should not be able to administrate the plugin in another repo.
@@ -464,7 +464,7 @@ successful (or if no triggers were hit).
   [15d2bd2ed9f8d6b](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/15d2bd2ed9f8d6b) Tomas Bjerre *2016-06-20 17:37:21*
 
 ## 2.23
-### GitHub [#122](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/122) Preserving configs when upgrading from stash 3.x to bitbucket 4.x
+### GitHub
   Loading legacy settings correctly 
 
  * Did not save loaded legacy settings in new format when found. Got new UUID:s on every load.
@@ -472,7 +472,7 @@ successful (or if no triggers were hit).
   [56827de4eb8310d](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/56827de4eb8310d) Tomas Bjerre *2016-06-04 21:25:42*
 
 ## 2.22
-### GitHub [#119](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/119) You are not permitted to access this resource
+### GitHub
   Getting clone URL:s with admin permission
   
   [c520e3654fb7608](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/c520e3654fb7608) Tomas Bjerre *2016-05-28 16:33:40*
@@ -491,7 +491,7 @@ successful (or if no triggers were hit).
   [76aa6838a73a556](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/76aa6838a73a556) Tomas Bjerre *2016-05-15 10:24:55*
 
 ## 2.21
-### GitHub [#117](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/117) PULL_REQUEST_TO_HASH resolved to old commit
+### GitHub
   Adding missing consumes annotation on REST resources 
 
  * Adding integration test for REST API.
@@ -513,7 +513,7 @@ Logging legacy settings
   [53eff487fbacd3b](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/53eff487fbacd3b) Tomas Bjerre *2016-05-12 17:18:11*
 
 ## 2.20
-### GitHub [#116](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/116) Not saving configuration
+### GitHub
   Linting with JSHint
 
  * Found JS that may crashes in IE9.
@@ -544,7 +544,7 @@ Logging legacy settings
   [27750702101f275](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/27750702101f275) Stefan Anzinger *2016-05-10 15:22:41*
 
 ## 2.18
-### GitHub [#109](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/109) Refactor admin pages
+### GitHub
   Adding buttons after refactoring
   
   [5a16a6941de3a53](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/5a16a6941de3a53) Tomas Bjerre *2016-05-08 20:23:13*
@@ -561,7 +561,7 @@ Logging legacy settings
   
   [3e1fddaecb4aab8](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/3e1fddaecb4aab8) Tomas Bjerre *2016-05-03 16:01:52*
 
-### GitHub [#25](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/25) Enable  configuration in per-repository hook screen
+### GitHub
   Admin GUI
   
   [319f5de5c123e06](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/319f5de5c123e06) Tomas Bjerre *2016-05-08 13:07:55*
@@ -574,7 +574,7 @@ Logging legacy settings
   
   [1fc12a72100afe8](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/1fc12a72100afe8) Tomas Bjerre *2016-05-03 16:44:25*
 
-### GitHub [#55](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/55) remove width limit
+### GitHub
   Admin GUI
   
   [319f5de5c123e06](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/319f5de5c123e06) Tomas Bjerre *2016-05-08 13:07:55*
@@ -589,7 +589,7 @@ Logging legacy settings
   [25ccd05b465bd4a](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/25ccd05b465bd4a) Tomas Bjerre *2016-04-14 16:36:16*
 
 ## 2.17
-### GitHub [#107](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/107) java.lang.NullPointerException: null at PrnfbRenderer.java:367
+### GitHub
   Finding current user correctly 
 
  * Was looking up currently logged in user with the users username. That caused NullPointerException  if username not same as user slug.
@@ -602,12 +602,12 @@ Logging legacy settings
   [97dc36d24773408](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/97dc36d24773408) Tomas Bjerre *2016-03-15 21:15:55*
 
 ## 2.16
-### GitHub [#103](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/103) Support Bitbucket Server 4.4
+### GitHub
   Build with 4.4.0
   
   [a94e4e4ce65df7d](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/a94e4e4ce65df7d) Tomas Bjerre *2016-03-02 17:09:53*
 
-### GitHub [#106](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/106) Don&#39;t log Authorization header value
+### GitHub
   Not logging authorization header value
   
   [40f8652541336a8](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/40f8652541336a8) Tomas Bjerre *2016-03-14 16:03:54*
@@ -622,7 +622,7 @@ Logging legacy settings
   [620b9287a424852](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/620b9287a424852) Tomas Bjerre *2016-02-24 18:16:13*
 
 ## 2.15
-### GitHub [#91](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/91) Change multiple buttons to be in a dropdown
+### GitHub
   Sorting buttons
   
   [c253934c0cc7569](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/c253934c0cc7569) Tomas Bjerre *2016-01-30 07:12:19*
@@ -656,14 +656,14 @@ and a lot easier to add multiple actions.
   [d84ea711e189fa8](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/d84ea711e189fa8) Tomas Bjerre *2016-01-25 20:43:25*
 
 ## 2.13
-### GitHub [#90](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/90) Add an option to ignore certificates
+### GitHub
   Allowing SSL certificates to be ignored 
 
  * Also making keystore configurable in admin GUI.
   
   [cd2321799656b26](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/cd2321799656b26) Tomas Bjerre *2016-01-24 18:12:02*
 
-### GitHub [#93](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/93) Get reviewers of pr
+### GitHub
   update: update changelog.md and readme.md.
   
   [60732c85dbda9a8](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/60732c85dbda9a8) 张盟 *2016-01-25 14:24:07*
@@ -680,7 +680,7 @@ and a lot easier to add multiple actions.
   [982d5db365e5ff5](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/982d5db365e5ff5) Tomas Bjerre *2016-01-22 17:03:09*
 
 ## 2.12
-### GitHub [#82](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/82) Wrong PULL_REQUEST_URL
+### GitHub
   Fixing PULL_REQUEST_URL-bug correctly with getSlug
   
   [c19f72f04d33d9e](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/c19f72f04d33d9e) Tomas Bjerre *2015-11-09 16:36:20*
@@ -691,7 +691,7 @@ and a lot easier to add multiple actions.
   [0cd2c14c0b1f1e3](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/0cd2c14c0b1f1e3) Tomas Bjerre *2015-11-09 16:28:05*
 
 ## 2.11
-### GitHub [#82](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/82) Wrong PULL_REQUEST_URL
+### GitHub
   Replacing spaces with dashes in PULL_REQUEST_URL 
 
  * Was evaluating to wrong URL if repo name included spaces.
@@ -699,19 +699,19 @@ and a lot easier to add multiple actions.
   [1e2d237a8c565b9](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/1e2d237a8c565b9) Tomas Bjerre *2015-11-06 19:27:17*
 
 ## 2.10
-### GitHub [#78](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/78) Processing on Bitbucket Server&#39;s event threads
+### GitHub
   Processing events on Bitbucket Server's event threads
   
   [eef94cd53904b7e](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/eef94cd53904b7e) Tomas Bjerre *2015-10-16 15:48:32*
 
 ## 2.9
-### GitHub [#76](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/76) Wrong url built when using &amp; in branch names
+### GitHub
   Url encoding evaluated values when they are used in URL invocations
   
   [6925ea2649c3b8a](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/6925ea2649c3b8a) Tomas Bjerre *2015-10-15 14:55:40*
 
 ## 2.8
-### GitHub [#75](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/75) Variable for merged pull request commit hash
+### GitHub
   Hash of merged commit (only available for merged-event)
   
   [d04d4bbcb5b1a6e](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/d04d4bbcb5b1a6e) Tomas Bjerre *2015-10-14 19:06:05*
@@ -726,18 +726,18 @@ and a lot easier to add multiple actions.
   [af17e040766546b](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/af17e040766546b) Tomas Bjerre *2015-10-13 18:49:22*
 
 ## 2.6
-### GitHub [#73](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/73) In Bitbucket, no forms are visible in the plugin&#39;s configuration screen
+### GitHub
   Saving with checked checkboxes RESCOPED_FROM/TO and BUTTON_TRIGGER was not reflected in GUI
   
   [8884fb08982f2d0](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/8884fb08982f2d0) Tomas Bjerre *2015-10-09 20:54:28*
 
-### GitHub [#74](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/74) In configuration on a save, not saving all info (e.g. checkbox checked).
+### GitHub
   Saving with checked checkboxes RESCOPED_FROM/TO and BUTTON_TRIGGER was not reflected in GUI
   
   [8884fb08982f2d0](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/8884fb08982f2d0) Tomas Bjerre *2015-10-09 20:54:28*
 
 ## 2.5
-### GitHub [#73](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/73) In Bitbucket, no forms are visible in the plugin&#39;s configuration screen
+### GitHub
   Avoiding admin page to crash if entering quote as value of a field
   
   [b3b7d01fcdfbd4f](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/b3b7d01fcdfbd4f) Tomas Bjerre *2015-10-08 16:09:32*
@@ -748,12 +748,12 @@ and a lot easier to add multiple actions.
   [7913ee7538b8a34](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/7913ee7538b8a34) Tomas Bjerre *2015-09-26 17:47:16*
 
 ## 2.4
-### GitHub [#68](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/68) wording of new &quot;trigger conditions&quot;
+### GitHub
   Wording of new trigger conditions
   
   [737d040fe33511a](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/737d040fe33511a) Tomas Bjerre *2015-09-26 06:55:08*
 
-### GitHub [#71](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/71) buttons should be disabled (or just plain hidden) when the PR is closed (declined/merged)
+### GitHub
   Adding 'Triggers do not apply to' option with values DECLINED and MERGED
   
   [7e956068fee19be](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/7e956068fee19be) Tomas Bjerre *2015-09-26 09:35:01*
@@ -777,7 +777,7 @@ and a lot easier to add multiple actions.
   [a65efc689746dd0](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/a65efc689746dd0) Tomas Bjerre *2015-09-22 19:25:44*
 
 ## 2.1
-### GitHub [#69](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/69) No authentication in the injection url
+### GitHub
   Adding authentication in the injection url
   
   [ac0b07f4647d520](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/ac0b07f4647d520) Tomas Bjerre *2015-09-22 19:02:17*
@@ -797,18 +797,18 @@ and a lot easier to add multiple actions.
   [8515ee50aa7da3a](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/8515ee50aa7da3a) Tomas Bjerre *2015-09-10 17:12:32*
 
 ## 1.28
-### GitHub [#64](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/64) [feature] disable a trigger if there are merge conflicts
+### GitHub
   Disable a trigger if there are merge conflicts
   
   [26977070d5f8b53](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/26977070d5f8b53) Tomas Bjerre *2015-09-09 20:09:16*
 
-### GitHub [#65](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/65) [feature] new parameter PULL_REQUEST_TITLE
+### GitHub
   New variable PULL_REQUEST_TITLE
   
   [693476d0c3cac7e](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/693476d0c3cac7e) Tomas Bjerre *2015-09-09 18:00:46*
 
 ## 1.27
-### GitHub [#56](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/56) No valid crumb in POST request
+### GitHub
   Adding optional regular expression to injection feature 
 
  * To be able to extract crumb from Jenkins even if primitive XPath result sets forbidden
@@ -825,27 +825,27 @@ and a lot easier to add multiple actions.
   [defa1014c12bb8c](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/defa1014c12bb8c) Tomas Bjerre *2015-09-01 19:42:36*
 
 ## 1.25
-### GitHub [#62](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/62) bug: no POST content
+### GitHub
   Bugfix: Sending post content in POST and PUT notifications
   
   [041c84213f9f48c](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/041c84213f9f48c) Tomas Bjerre *2015-09-01 16:07:09*
 
 ## 1.24
-### GitHub [#60](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/60) NullPointerException after upgrading
+### GitHub
   Removing JsonPath alternative, introduced in version 1.22
 
  * It causes classpath issues for some users
   
   [74efd45df49109d](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/74efd45df49109d) Tomas Bjerre *2015-09-01 15:40:24*
 
-### GitHub [#61](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/61) NoClassDefFoundError JsonReader
+### GitHub
   Removing JsonPath alternative, introduced in version 1.22
 
  * It causes classpath issues for some users
   
   [74efd45df49109d](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/74efd45df49109d) Tomas Bjerre *2015-09-01 15:40:24*
 
-### GitHub [#62](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/62) bug: no POST content
+### GitHub
   Removing JsonPath alternative, introduced in version 1.22
 
  * It causes classpath issues for some users
@@ -853,7 +853,7 @@ and a lot easier to add multiple actions.
   [74efd45df49109d](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/74efd45df49109d) Tomas Bjerre *2015-09-01 15:40:24*
 
 ## 1.23
-### GitHub [#60](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/60) NullPointerException after upgrading
+### GitHub
   Removing SLF4J usage to deal with class path issues
   
   [f5d9426be0b8a72](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/f5d9426be0b8a72) Tomas Bjerre *2015-08-31 18:17:22*
@@ -866,7 +866,7 @@ and a lot easier to add multiple actions.
   [fecf223f8a962c1](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/fecf223f8a962c1) Tomas Bjerre *2015-08-29 20:02:39*
 
 ## 1.22
-### GitHub [#56](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/56) No valid crumb in POST request
+### GitHub
   Adding INJECTION_URL_VALUE variable 
 
  * Evaluated in content of a URL. Raw content or value of a xPath or JsonPath
@@ -875,14 +875,14 @@ and a lot easier to add multiple actions.
   [e984b77686d1583](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/e984b77686d1583) Tomas Bjerre *2015-08-29 12:41:39*
 
 ## 1.21
-### GitHub [#50](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/50) ids of HTML elements need to be unique
+### GitHub
   Using label without ID:s in admin GUI 
 
 * To avoid using same ID:s multiple times
   
   [abfd8128aec2784](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/abfd8128aec2784) Tomas Bjerre *2015-08-18 19:38:21*
 
-### GitHub [#51](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/51) trigger button should be hidden if no rule with BUTTON_TRIGGER event matches the PR
+### GitHub
   Hide buttons in PR if no notification configured
   
   [c67d1a7a8566245](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/c67d1a7a8566245) Tomas Bjerre *2015-08-18 20:13:40*
@@ -895,23 +895,23 @@ and a lot easier to add multiple actions.
   [4914c81b382579d](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/4914c81b382579d) Tomas Bjerre *2015-08-18 18:58:58*
 
 ## 1.20
-### GitHub [#25](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/25) Enable  configuration in per-repository hook screen
+### GitHub
   Optionally allow users and admins to configure the plugin
   
   [325719d15073ec6](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/325719d15073ec6) Tomas Bjerre *2015-08-17 20:27:48*
 
-### GitHub [#48](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/48) MERGED event is not risen
+### GitHub
   Testing correct bug reported in
   
   [7e125b1d34d8e61](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/7e125b1d34d8e61) Tomas Bjerre *2015-08-13 09:55:42*
 
 ## 1.19
-### GitHub [#42](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/42) Comments on closed/merged issues trigger Commented event
+### GitHub
   Only ignore events on closed pull requests if its a COMMENT-event
   
   [c1912f15db492c7](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/c1912f15db492c7) Tomas Bjerre *2015-08-13 09:44:16*
 
-### GitHub [#48](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/48) MERGED event is not risen
+### GitHub
   Only ignore events on closed pull requests if its a COMMENT-event
   
   [c1912f15db492c7](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/c1912f15db492c7) Tomas Bjerre *2015-08-13 09:44:16*
@@ -927,12 +927,12 @@ and a lot easier to add multiple actions.
   [4497d053f0e857c](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/4497d053f0e857c) Tomas Bjerre *2015-08-09 18:48:39*
 
 ## 1.18
-### GitHub [#33](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/33) Add an Trigger Notification Button on Pull Request View
+### GitHub
   Trigger Notification Button on Pull Request View
   
   [a3854c75c7af440](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/a3854c75c7af440) Tomas Bjerre *2015-08-09 11:10:10*
 
-### GitHub [#39](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/39) Possible issue with isAdmin
+### GitHub
   Avoiding endless loop if user not 'System Admin' when editing configuration 
 
 * Plugin will now respond with error message saying user must be 'System Admin'
@@ -940,12 +940,12 @@ and a lot easier to add multiple actions.
   
   [4c1c37c3abd3b68](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/4c1c37c3abd3b68) Tomas Bjerre *2015-08-07 20:08:48*
 
-### GitHub [#43](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/43) Config page becomes rather long (hard to overview) in large installations
+### GitHub
   Naming triggers
   
   [da1c1dde94e3443](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/da1c1dde94e3443) Tomas Bjerre *2015-08-07 14:18:38*
 
-### GitHub [#45](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/45) Provide URL for Pull Request as parameter to be used in notification
+### GitHub
   Adding test cases and formatting code after merge
 
 * PR: 
@@ -953,7 +953,7 @@ and a lot easier to add multiple actions.
   
   [bc2820ea6e97a41](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/bc2820ea6e97a41) Tomas Bjerre *2015-08-08 07:14:29*
 
-### GitHub [#47](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/pull/47) [Issue-45] Make URL for Pull Request as parameter ${PULL_REQUEST_URL} available
+### GitHub
   Adding test cases and formatting code after merge
 
 * PR: 
@@ -975,13 +975,13 @@ and a lot easier to add multiple actions.
   [ced8eb759739ba4](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/ced8eb759739ba4) Tomas Bjerre *2015-08-06 19:11:22*
 
 ## 1.17
-### GitHub [#42](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/42) Comments on closed/merged issues trigger Commented event
+### GitHub
   Comments on closed/merged issues trigger Commented event
   
   [f43a38efc4de0bf](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/f43a38efc4de0bf) Tomas Bjerre *2015-08-04 14:52:47*
 
 ## 1.16
-### GitHub [#40](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/40) Reply on Comment, doesn&#39;t trigger Commented event
+### GitHub
   Reply on Comment, doesn't trigger Commented event 
 * Solved by listening for PullRequestCommentRepliedEvent
   
@@ -993,7 +993,7 @@ and a lot easier to add multiple actions.
   [30039a0e09718a2](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/30039a0e09718a2) Tomas Bjerre *2015-06-27 16:42:51*
 
 ## 1.15
-### GitHub [#37](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/37) Pull Request Trigger Firing Twice
+### GitHub
   Removing RESCOPED event, will trigger _FROM and _TO instead 
 * Also adding logging that shows event name together with from and to hashes.
   

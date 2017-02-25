@@ -146,7 +146,7 @@
    <plugin>
     <groupId>se.bjurr.gitchangelog</groupId>
     <artifactId>git-changelog-maven-plugin</artifactId>
-    <version>1.32</version>
+    <version>1.39</version>
     <executions>
      <execution>
       <id>GenerateGitChangelog</id>
@@ -156,7 +156,7 @@
       </goals>
       <configuration>
        <readableTagName>-([^-]+?)$</readableTagName>
-       <gitHubApi>https://api.github.com/repos/tomasbjerre/pull-request-notifier-for-bitbucket</gitHubApi>
+       <gitHubApi>http://api.github.com/repos/tomasbjerre/pull-request-notifier-for-bitbucket</gitHubApi>
        <gitHubToken>${GITHUB_OAUTH2TOKEN}</gitHubToken>
        <gitHubIssuePattern>#([0-9]*)</gitHubIssuePattern>
        <filePath>CHANGELOG.md</filePath>
