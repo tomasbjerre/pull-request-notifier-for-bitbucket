@@ -6,7 +6,7 @@ Changelog of Pull Request Notifier for Bitbucket.
 ### GitHub [#202](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/202) Pull Request Notifier for Bitbucket: project-level admin page displays objects from more than one project.
   Only projects objects on project level
   
-  [120aa353cb3fc2c](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/120aa353cb3fc2c) Tomas Bjerre *2017-03-01 18:53:50*
+  [58f4f91835fff9f](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/58f4f91835fff9f) Tomas Bjerre *2017-03-01 19:10:40*
 
 ### GitHub [#204](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/204) Allow only specific users or group triggering a custom button?
   PULL_REQUEST_USER_GROUPS variable

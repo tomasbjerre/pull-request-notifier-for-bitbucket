@@ -1084,7 +1084,7 @@ public enum PrnfbVariable {
             ClientKeyStore clientKeyStore,
             boolean shouldAcceptAnyCertificate,
             SecurityService securityService) {
-          return getOrEmpty(variables,PULL_REQUEST_USER_GROUPS);
+          return getOrEmpty(variables, PULL_REQUEST_USER_GROUPS);
         }
       }),
   PULL_REQUEST_USER_DISPLAY_NAME(
