@@ -35,6 +35,14 @@
  #end
  <!-- //-->
 
+ <!-- //-->
+ #if($project)
+ <!-- //-->
+ <input type="hidden" id="prnfbProjectKey" name="projectKey" value="$project.key" />
+ <!-- //-->
+ #end
+ <!-- //-->
+
  <div class="statusresponse"></div>
 
 
@@ -66,6 +74,7 @@
    <li><b>${PULL_REQUEST_USER_ID}</b> Example: 1</li>
    <li><b>${PULL_REQUEST_USER_NAME}</b> Example: some.user</li>
    <li><b>${PULL_REQUEST_USER_SLUG}</b> Example: some.user</li>
+   <li><b>${PULL_REQUEST_USER_GROUPS}</b> Example: ADMIN,DEV</li>
    <li><b>${PULL_REQUEST_AUTHOR_DISPLAY_NAME}</b> Example: Administrator</li>
    <li><b>${PULL_REQUEST_AUTHOR_EMAIL}</b> Example: admin@example.com</li>
    <li><b>${PULL_REQUEST_AUTHOR_ID}</b> Example: 1</li>
