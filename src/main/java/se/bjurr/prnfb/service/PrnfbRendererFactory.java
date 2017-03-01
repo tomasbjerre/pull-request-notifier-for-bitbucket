@@ -1,14 +1,11 @@
 package se.bjurr.prnfb.service;
 
-import java.util.Map;
-
 import com.atlassian.bitbucket.auth.AuthenticationContext;
 import com.atlassian.bitbucket.pull.PullRequest;
 import com.atlassian.bitbucket.repository.RepositoryService;
 import com.atlassian.bitbucket.server.ApplicationPropertiesService;
 import com.atlassian.bitbucket.user.ApplicationUser;
 import com.atlassian.bitbucket.user.SecurityService;
-import com.google.common.base.Supplier;
 
 import se.bjurr.prnfb.http.ClientKeyStore;
 import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
@@ -35,7 +32,7 @@ public class PrnfbRendererFactory {
   public PrnfbRendererWrapper create(
       PullRequest pullRequest,
       PrnfbPullRequestAction pullRequestAction,
-      Map<PrnfbVariable, Supplier<String>> variables,
+      VariablesContext variables,
       ClientKeyStore clientKeyStore,
       boolean shouldAcceptAnyCertificate) {
     PrnfbNotification prnfbNotification = null;
@@ -47,7 +44,7 @@ public class PrnfbRendererFactory {
       PullRequest pullRequest,
       PrnfbPullRequestAction pullRequestAction,
       PrnfbNotification prnfbNotification,
-      Map<PrnfbVariable, Supplier<String>> variables) {
+      VariablesContext variables) {
     return create(
         pullRequest,
         pullRequestAction,
@@ -60,7 +57,7 @@ public class PrnfbRendererFactory {
       PullRequest pullRequest,
       PrnfbPullRequestAction pullRequestAction,
       PrnfbNotification prnfbNotification,
-      Map<PrnfbVariable, Supplier<String>> variables,
+      VariablesContext variables,
       ApplicationUser currentUser) {
     return new PrnfbRenderer(
         pullRequest,
@@ -69,7 +66,7 @@ public class PrnfbRendererFactory {
         this.repositoryService,
         this.propertiesService,
         prnfbNotification,
-        variables,
+        variables.getVariables(),
         this.securityService);
   }
 }

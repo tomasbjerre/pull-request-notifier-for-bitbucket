@@ -4,7 +4,6 @@ import static com.atlassian.bitbucket.pull.PullRequestState.DECLINED;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyMap;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -94,7 +93,7 @@ public class ButtonsServiceTest {
             any(PullRequest.class),
             any(PrnfbPullRequestAction.class),
             any(PrnfbNotification.class),
-            anyMap())) //
+            any(VariablesContext.class))) //
         .thenReturn(this.renderer);
 
     this.buttonDto1 = populatedInstanceOf(ButtonDTO.class);

@@ -1,6 +1,5 @@
 package se.bjurr.prnfb.listener;
 
-import static com.atlassian.bitbucket.comment.CommentAction.ADDED;
 import static com.atlassian.bitbucket.pull.PullRequestAction.OPENED;
 import static com.atlassian.bitbucket.pull.PullRequestState.DECLINED;
 import static com.google.common.collect.Iterables.transform;
@@ -13,9 +12,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static se.bjurr.prnfb.listener.PrnfbPullRequestAction.APPROVED;
 import static se.bjurr.prnfb.listener.PrnfbPullRequestAction.RESCOPED_FROM;
 import static se.bjurr.prnfb.listener.PrnfbPullRequestEventListener.setInvoker;
-import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_COMMENT_ACTION;
-import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_COMMENT_TEXT;
-import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_MERGE_COMMIT;
 import static se.bjurr.prnfb.settings.PrnfbNotificationBuilder.prnfbNotificationBuilder;
 import static se.bjurr.prnfb.settings.PrnfbSettingsDataBuilder.prnfbSettingsDataBuilder;
 import static se.bjurr.prnfb.settings.TRIGGER_IF_MERGE.ALWAYS;
@@ -25,7 +21,6 @@ import static se.bjurr.prnfb.settings.TRIGGER_IF_MERGE.NOT_CONFLICTING;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 import org.junit.Before;
@@ -34,18 +29,14 @@ import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import com.atlassian.bitbucket.comment.Comment;
-import com.atlassian.bitbucket.commit.MinimalCommit;
 import com.atlassian.bitbucket.event.pull.PullRequestCommentAddedEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestEvent;
-import com.atlassian.bitbucket.event.pull.PullRequestMergedEvent;
 import com.atlassian.bitbucket.project.Project;
 import com.atlassian.bitbucket.pull.PullRequest;
 import com.atlassian.bitbucket.pull.PullRequestRef;
 import com.atlassian.bitbucket.pull.PullRequestService;
 import com.atlassian.bitbucket.repository.Repository;
 import com.google.common.base.Function;
-import com.google.common.base.Supplier;
 
 import se.bjurr.prnfb.http.ClientKeyStore;
 import se.bjurr.prnfb.http.HttpResponse;
@@ -53,7 +44,6 @@ import se.bjurr.prnfb.http.Invoker;
 import se.bjurr.prnfb.http.UrlInvoker;
 import se.bjurr.prnfb.service.PrnfbRenderer;
 import se.bjurr.prnfb.service.PrnfbRendererFactory;
-import se.bjurr.prnfb.service.PrnfbVariable;
 import se.bjurr.prnfb.service.SettingsService;
 import se.bjurr.prnfb.settings.PrnfbNotification;
 import se.bjurr.prnfb.settings.PrnfbSettingsData;
@@ -465,44 +455,6 @@ public class PrnfbPullRequestEventListenerTest {
 
     assertThat(actual) //
         .isTrue();
-  }
-
-  @Test
-  public void testThatPullRequestCommentIsAddedToVariables() {
-    PullRequestCommentAddedEvent pullRequestEvent = mock(PullRequestCommentAddedEvent.class);
-    Comment comment = mock(Comment.class);
-    when(pullRequestEvent.getComment()) //
-        .thenReturn(comment);
-    when(pullRequestEvent.getComment().getText()) //
-        .thenReturn("The comment");
-    when(pullRequestEvent.getCommentAction()) //
-        .thenReturn(ADDED);
-
-    Map<PrnfbVariable, Supplier<String>> actual = sut.populateVariables(pullRequestEvent);
-
-    assertThat(actual) //
-        .hasSize(2);
-    assertThat(actual.get(PULL_REQUEST_COMMENT_TEXT).get()) //
-        .isEqualTo("The comment");
-    assertThat(actual.get(PULL_REQUEST_COMMENT_ACTION).get()) //
-        .isEqualTo("ADDED");
-  }
-
-  @Test
-  public void testThatPullRequestMergeComitIsAddedToVariables() {
-    PullRequestMergedEvent pullRequestEvent = mock(PullRequestMergedEvent.class);
-    MinimalCommit commit = mock(MinimalCommit.class);
-    when(pullRequestEvent.getCommit()) //
-        .thenReturn(commit);
-    when(pullRequestEvent.getCommit().getId()) //
-        .thenReturn("hash");
-
-    Map<PrnfbVariable, Supplier<String>> actual = sut.populateVariables(pullRequestEvent);
-
-    assertThat(actual) //
-        .hasSize(1);
-    assertThat(actual.get(PULL_REQUEST_MERGE_COMMIT).get()) //
-        .isEqualTo("hash");
   }
 
   @Test

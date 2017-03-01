@@ -5,25 +5,20 @@ import static com.google.common.collect.Ordering.usingToString;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static se.bjurr.prnfb.listener.PrnfbPullRequestAction.BUTTON_TRIGGER;
-import static se.bjurr.prnfb.service.PrnfbVariable.BUTTON_FORM_DATA;
-import static se.bjurr.prnfb.service.PrnfbVariable.BUTTON_TRIGGER_TITLE;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import com.atlassian.bitbucket.pull.PullRequest;
 import com.atlassian.bitbucket.pull.PullRequestService;
 import com.atlassian.bitbucket.repository.Repository;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 
 import se.bjurr.prnfb.http.ClientKeyStore;
 import se.bjurr.prnfb.http.NotificationResponse;
 import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
 import se.bjurr.prnfb.listener.PrnfbPullRequestEventListener;
+import se.bjurr.prnfb.service.VariablesContext.VariablesContextBuilder;
 import se.bjurr.prnfb.settings.PrnfbButton;
 import se.bjurr.prnfb.settings.PrnfbNotification;
 import se.bjurr.prnfb.settings.PrnfbSettingsData;
@@ -60,9 +55,11 @@ public class ButtonsService {
     String repositoryKey = pullRequest.getToRef().getRepository().getSlug();
     List<PrnfbButton> allFoundButtons = newArrayList();
     for (PrnfbButton candidate : settingsService.getButtons()) {
-      Map<PrnfbVariable, Supplier<String>> variables = new HashMap<>();
       PrnfbButton button = settingsService.getButton(candidate.getUuid());
-      variables.put(BUTTON_TRIGGER_TITLE, Suppliers.ofInstance(button.getName()));
+      VariablesContext variables =
+          new VariablesContextBuilder() //
+              .setButton(button) //
+              .build();
 
       PrnfbPullRequestAction pullRequestAction = BUTTON_TRIGGER;
       if (userCheckService.isAllowed(candidate.getUserLevel(), projectKey, repositoryKey) //
@@ -88,10 +85,12 @@ public class ButtonsService {
       boolean shouldAcceptAnyCertificate,
       final PullRequest pullRequest,
       final String formData) {
-    Map<PrnfbVariable, Supplier<String>> variables = new HashMap<>();
     PrnfbButton button = settingsService.getButton(buttonUuid);
-    variables.put(BUTTON_TRIGGER_TITLE, Suppliers.ofInstance(button.getName()));
-    variables.put(BUTTON_FORM_DATA, Suppliers.ofInstance(formData));
+    VariablesContext variables =
+        new VariablesContextBuilder() //
+            .setButton(button) //
+            .setFormData(formData) //
+            .build();
 
     List<NotificationResponse> successes = newArrayList();
     for (PrnfbNotification prnfbNotification : settingsService.getNotifications()) {
@@ -138,9 +137,11 @@ public class ButtonsService {
     final PullRequest pullRequest = pullRequestService.getById(repositoryId, pullRequestId);
     boolean shouldAcceptAnyCertificate = settings.isShouldAcceptAnyCertificate();
 
-    Map<PrnfbVariable, Supplier<String>> variables = new HashMap<>();
     PrnfbButton button = settingsService.getButton(buttonUuid);
-    variables.put(BUTTON_TRIGGER_TITLE, Suppliers.ofInstance(button.getName()));
+    VariablesContext variables =
+        new VariablesContextBuilder() //
+            .setButton(button) //
+            .build();
 
     PrnfbPullRequestAction pullRequestAction = BUTTON_TRIGGER;
 
@@ -166,7 +167,7 @@ public class ButtonsService {
       boolean shouldAcceptAnyCertificate,
       PrnfbPullRequestAction pullRequestAction,
       PullRequest pullRequest,
-      Map<PrnfbVariable, Supplier<String>> variables) {
+      VariablesContext variables) {
     for (PrnfbNotification prnfbNotification : notifications) {
       PrnfbRenderer renderer =
           prnfbRendererFactory.create(pullRequest, pullRequestAction, prnfbNotification, variables);

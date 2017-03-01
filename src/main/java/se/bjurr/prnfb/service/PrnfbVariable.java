@@ -1070,6 +1070,23 @@ public enum PrnfbVariable {
           return getPullRequestUrl(propertiesService, pullRequest);
         }
       }),
+  PULL_REQUEST_USER_GROUPS(
+      new PrnfbVariableResolver() {
+        @Override
+        public String resolve(
+            PullRequest pullRequest,
+            PrnfbPullRequestAction prnfbPullRequestAction,
+            ApplicationUser applicationUser,
+            RepositoryService repositoryService,
+            ApplicationPropertiesService propertiesService,
+            PrnfbNotification prnfbNotification,
+            Map<PrnfbVariable, Supplier<String>> variables,
+            ClientKeyStore clientKeyStore,
+            boolean shouldAcceptAnyCertificate,
+            SecurityService securityService) {
+          return variables.get(PULL_REQUEST_USER_GROUPS).get();
+        }
+      }),
   PULL_REQUEST_USER_DISPLAY_NAME(
       new PrnfbVariableResolver() {
         @Override

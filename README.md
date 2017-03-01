@@ -61,6 +61,7 @@ The filter text as well as the URL support variables. These are:
 | `${PULL_REQUEST_USER_ID}` | Example: `1` |
 | `${PULL_REQUEST_USER_NAME}` | Example: `user.name` |
 | `${PULL_REQUEST_USER_SLUG}` | Example: `user.name` |
+| `${PULL_REQUEST_USER_GROUPS}` | Example: `ADMIN,DEV` |
 | `${PULL_REQUEST_AUTHOR_DISPLAY_NAME}` | Example: `Administrator` |
 | `${PULL_REQUEST_AUTHOR_EMAIL}` | Example: `admin@example.com` |
 | `${PULL_REQUEST_AUTHOR_ID}` | Example: `1` |

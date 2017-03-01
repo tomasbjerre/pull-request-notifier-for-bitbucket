@@ -2,21 +2,16 @@ package se.bjurr.prnfb.listener;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.of;
-import static com.google.common.collect.Maps.newHashMap;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static java.util.regex.Pattern.compile;
 import static org.slf4j.LoggerFactory.getLogger;
 import static se.bjurr.prnfb.http.UrlInvoker.urlInvoker;
 import static se.bjurr.prnfb.listener.PrnfbPullRequestAction.fromPullRequestEvent;
-import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_COMMENT_ACTION;
-import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_COMMENT_TEXT;
-import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_MERGE_COMMIT;
 import static se.bjurr.prnfb.settings.TRIGGER_IF_MERGE.ALWAYS;
 import static se.bjurr.prnfb.settings.TRIGGER_IF_MERGE.CONFLICTING;
 import static se.bjurr.prnfb.settings.TRIGGER_IF_MERGE.NOT_CONFLICTING;
 
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 import org.slf4j.Logger;
@@ -39,7 +34,6 @@ import com.atlassian.bitbucket.pull.PullRequestService;
 import com.atlassian.event.api.EventListener;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
-import com.google.common.base.Supplier;
 
 import se.bjurr.prnfb.http.ClientKeyStore;
 import se.bjurr.prnfb.http.HttpResponse;
@@ -49,8 +43,9 @@ import se.bjurr.prnfb.http.UrlInvoker;
 import se.bjurr.prnfb.service.PrnfbRenderer;
 import se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR;
 import se.bjurr.prnfb.service.PrnfbRendererFactory;
-import se.bjurr.prnfb.service.PrnfbVariable;
 import se.bjurr.prnfb.service.SettingsService;
+import se.bjurr.prnfb.service.VariablesContext;
+import se.bjurr.prnfb.service.VariablesContext.VariablesContextBuilder;
 import se.bjurr.prnfb.settings.PrnfbHeader;
 import se.bjurr.prnfb.settings.PrnfbNotification;
 import se.bjurr.prnfb.settings.PrnfbSettingsData;
@@ -104,7 +99,10 @@ public class PrnfbPullRequestEventListener {
     ClientKeyStore clientKeyStore = new ClientKeyStore(settings);
     for (final PrnfbNotification notification : settingsService.getNotifications()) {
       PrnfbPullRequestAction action = fromPullRequestEvent(pullRequestEvent, notification);
-      Map<PrnfbVariable, Supplier<String>> variables = populateVariables(pullRequestEvent);
+      VariablesContext variables =
+          new VariablesContextBuilder() //
+              .setPullRequestEvent(pullRequestEvent) //
+              .build();
       PrnfbRenderer renderer =
           prnfbRendererFactory.create(
               pullRequestEvent.getPullRequest(),
@@ -324,33 +322,5 @@ public class PrnfbPullRequestEventListener {
   @EventListener
   public void onEvent(PullRequestUpdatedEvent e) {
     handleEventAsync(e);
-  }
-
-  @VisibleForTesting
-  Map<PrnfbVariable, Supplier<String>> populateVariables(final PullRequestEvent pullRequestEvent) {
-    Map<PrnfbVariable, Supplier<String>> variables = newHashMap();
-    if (pullRequestEvent instanceof PullRequestCommentEvent) {
-      PullRequestCommentEvent pullRequestCommentEvent = (PullRequestCommentEvent) pullRequestEvent;
-      variables.put(
-          PULL_REQUEST_COMMENT_TEXT,
-          () -> {
-            return pullRequestCommentEvent.getComment().getText();
-          });
-      variables.put(
-          PULL_REQUEST_COMMENT_ACTION,
-          () -> {
-            return pullRequestCommentEvent.getCommentAction().name();
-          });
-    } else if (pullRequestEvent instanceof PullRequestMergedEvent) {
-      variables.put(
-          PULL_REQUEST_MERGE_COMMIT,
-          new Supplier<String>() {
-            @Override
-            public String get() {
-              return ((PullRequestMergedEvent) pullRequestEvent).getCommit().getId();
-            }
-          });
-    }
-    return variables;
   }
 }
