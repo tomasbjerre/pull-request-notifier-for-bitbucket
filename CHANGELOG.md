@@ -3,6 +3,23 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
+### No issue
+  doc
+  
+  [24ae3907127c7f4](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/24ae3907127c7f4) Tomas Bjerre *2017-03-04 21:37:40*
+
+## 2.57
+### GitHub [#206](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/206) Duplicate menu entries when using &quot;Needs Work&quot;
+  Avoid adding same button multiple times
+  
+  [51b86d712403f3c](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/51b86d712403f3c) Tomas Bjerre *2017-03-04 15:51:12*
+
+### No issue
+  doc
+  
+  [87db2236cf91acb](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/87db2236cf91acb) Tomas Bjerre *2017-03-01 19:16:03*
+
+## 2.56
 ### GitHub [#202](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/202) Pull Request Notifier for Bitbucket: project-level admin page displays objects from more than one project.
   Only projects objects on project level
   
