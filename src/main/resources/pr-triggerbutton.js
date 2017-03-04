@@ -11,7 +11,7 @@ define('plugin/prnfb/pr-triggerbutton', [
 
  var $buttonArea = $(".triggerManualNotification").closest('ul');
  var buttonTemplate = function(name) {
-  return $('<li><button class="aui-button aui-button-link" role="menuitem">' + name + '</button></li>');
+  return $('<li><button class="aui-button aui-button-link prnfb-button" role="menuitem">' + name + '</button></li>');
  };
 
  var dialogTemplate = function(name, content) {
@@ -209,6 +209,7 @@ define('plugin/prnfb/pr-triggerbutton', [
 
  function loadSettingsAndShowButtons() {
   $.get(buttonsAdminUrl + '/repository/' + pageState.getRepository().id + '/pullrequest/' + pageState.getPullRequest().id, function(settings) {
+   $buttonArea.find('.prnfb-button').remove();
    settings.forEach(function(item) {
     var $buttonDropdownItem = buttonTemplate(item.name.replace(/<script>/g, 'script'));
     $buttonDropdownItem.click(function() {
