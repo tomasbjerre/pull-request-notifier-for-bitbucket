@@ -162,6 +162,7 @@
        <filePath>CHANGELOG.md</filePath>
        <ignoreTagsIfNameMatches>.*RC.*</ignoreTagsIfNameMatches>
        <removeIssueFromMessage>true</removeIssueFromMessage>
+       <jiraIssuePattern>no pattern</jiraIssuePattern>
        <templateContent>
         <![CDATA[
 # Pull Request Notifier for Bitbucket Changelog

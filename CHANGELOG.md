@@ -2,20 +2,13 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
-## Unreleased
+## 2.58
 ### GitHub [#197](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/197) Button not displaying on PRs which are merged
-  Workaround for  
+  Workaround for BSERV-8896 
 
- * Buttons are not showing. Probably because of an Atlassian Bug .
+ * Buttons are not showing. Probably because of an Atlassian Bug BSERV-8896.
   
-  [25bafb7cf78497f](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/25bafb7cf78497f) Tomas Bjerre *2017-03-06 18:21:24*
-
-### Jira
-  Workaround for  
-
- * Buttons are not showing. Probably because of an Atlassian Bug .
-  
-  [25bafb7cf78497f](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/25bafb7cf78497f) Tomas Bjerre *2017-03-06 18:21:24*
+  [46db79cf30af1bf](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/46db79cf30af1bf) Tomas Bjerre *2017-03-06 18:25:08*
 
 ### No issue
   doc
@@ -293,8 +286,8 @@ look at README.md in the change.
   
   [ef8d4960b03467b](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/ef8d4960b03467b) Tomas Bjerre *2016-11-23 18:07:18*
 
-### Jira
-  [] Provide list of PR reviewers and participants as URL support variables
+### No issue
+  [Issue-162] Provide list of PR reviewers and participants as URL support variables
   
   [8c1ba38e561e02b](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/8c1ba38e561e02b) Christian Galsterer *2016-11-23 17:41:02*
 
@@ -1006,12 +999,11 @@ and a lot easier to add multiple actions.
   
   [bc2820ea6e97a41](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/bc2820ea6e97a41) Tomas Bjerre *2015-08-08 07:14:29*
 
-### Jira
-  [] Provide URL for Pull Request as parameter to be used in notification
+### No issue
+  [Issue-45] Provide URL for Pull Request as parameter to be used in notification
   
   [788d1069899cd63](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/788d1069899cd63) Christian Galsterer *2015-08-08 06:05:47*
 
-### No issue
   Building against latest Stash and AMPS versions
 
 * Stash: 3.11.1
@@ -1064,27 +1056,25 @@ and a lot easier to add multiple actions.
   [075534c181a7eeb](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/075534c181a7eeb) Tomas Bjerre *2015-05-01 08:36:11*
 
 ## 1.13
-### Jira
-  [] PULL_REQUEST_FROM_BRANCH and PULL_REQUEST_TO_BRANCH now contains fhe full branch name.
-  
-  [8f00c461d72c96e](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/8f00c461d72c96e) Christian Galsterer *2015-04-22 17:50:41*
-
 ### No issue
   Updating changelog with BRANCH name bug fix
   
   [c3c9c70e7ef6e48](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/c3c9c70e7ef6e48) Tomas Bjerre *2015-04-22 18:06:29*
 
-## 1.12
-### Jira
-  [] Add new variables for SSH and HTTP clone URL source and target branch
+  [Issue-31] PULL_REQUEST_FROM_BRANCH and PULL_REQUEST_TO_BRANCH now contains fhe full branch name.
   
-  [001a9c7ce0d89b9](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/001a9c7ce0d89b9) Christian Galsterer *2015-04-18 20:36:11*
+  [8f00c461d72c96e](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/8f00c461d72c96e) Christian Galsterer *2015-04-22 17:50:41*
 
+## 1.12
 ### No issue
   Testing clone URL variables
 * Updating README and CHANGELOG
   
   [580f1cca1e2f0b6](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/580f1cca1e2f0b6) Tomas Bjerre *2015-04-19 18:54:17*
+
+  [Issue-28] Add new variables for SSH and HTTP clone URL source and target branch
+  
+  [001a9c7ce0d89b9](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/001a9c7ce0d89b9) Christian Galsterer *2015-04-18 20:36:11*
 
   Cleanup and more tests
   
