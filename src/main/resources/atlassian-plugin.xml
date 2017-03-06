@@ -68,4 +68,9 @@
   <dependency>com.atlassian.bitbucket.bitbucket-web-plugin:global</dependency>
   <context>bitbucket.page.pullRequest.view</context>
  </web-resource>
+ 
+ <web-resource key="fix-dependency-bug">
+  <context>bitbucket.page.pullRequest.view</context>
+  <dependency>com.atlassian.bitbucket.server.bitbucket-client-web-fragments:pull-request-header-more-location</dependency>
+ </web-resource>
 </atlassian-plugin>

@@ -3,10 +3,24 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
+### GitHub [#197](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/197) Button not displaying on PRs which are merged
+  Workaround for  
+
+ * Buttons are not showing. Probably because of an Atlassian Bug .
+  
+  [25bafb7cf78497f](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/25bafb7cf78497f) Tomas Bjerre *2017-03-06 18:21:24*
+
+### Jira
+  Workaround for  
+
+ * Buttons are not showing. Probably because of an Atlassian Bug .
+  
+  [25bafb7cf78497f](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/25bafb7cf78497f) Tomas Bjerre *2017-03-06 18:21:24*
+
 ### No issue
   doc
   
-  [24ae3907127c7f4](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/24ae3907127c7f4) Tomas Bjerre *2017-03-04 21:37:40*
+  [fe1c08d921ff125](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/fe1c08d921ff125) Tomas Bjerre *2017-03-04 21:37:58*
 
 ## 2.57
 ### GitHub [#206](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/206) Duplicate menu entries when using &quot;Needs Work&quot;
