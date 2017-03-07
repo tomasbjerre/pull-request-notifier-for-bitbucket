@@ -2,6 +2,19 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## Unreleased
+### GitHub [#197](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/197) Button not displaying on PRs which are merged
+  Another attempt on fixing button issue 
+
+ * This fix is not relying on the button being added by web-client-item configuration in atlassian-plugin.xml. The JS will now find the button-area without using the triggerManualNotification-class.
+  
+  [92ee168c6078f78](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/92ee168c6078f78) Tomas Bjerre *2017-03-07 15:59:15*
+
+### No issue
+  doc
+  
+  [2fdba488eb8d2f6](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/2fdba488eb8d2f6) Tomas Bjerre *2017-03-06 18:30:55*
+
 ## 2.58
 ### GitHub [#197](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/197) Button not displaying on PRs which are merged
   Workaround for BSERV-8896 

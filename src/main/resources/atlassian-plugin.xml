@@ -56,9 +56,8 @@
  </web-item>
 
  <client-web-item key="se.bjurr.prnfb.triggerbutton" name="Trigger Notification" weight="50" section="bitbucket.pullrequest.action">
-  <label key="bitbucket.web.pull-request.toolbar.triggerbutton">Trigger Notification</label>
-  <styleClass>triggerManualNotification</styleClass>
   <dependency>${project.groupId}-${project.artifactId}:pr-triggerbutton</dependency>
+  <label key="bitbucket.web.pull-request.toolbar.triggerbutton"></label>
  </client-web-item>
 
  <web-resource key="pr-triggerbutton">
@@ -67,10 +66,5 @@
   <resource type="download" name="pr-triggerbutton.js" location="/pr-triggerbutton.js" />
   <dependency>com.atlassian.bitbucket.bitbucket-web-plugin:global</dependency>
   <context>bitbucket.page.pullRequest.view</context>
- </web-resource>
- 
- <web-resource key="fix-dependency-bug">
-  <context>bitbucket.page.pullRequest.view</context>
-  <dependency>com.atlassian.bitbucket.server.bitbucket-client-web-fragments:pull-request-header-more-location</dependency>
  </web-resource>
 </atlassian-plugin>

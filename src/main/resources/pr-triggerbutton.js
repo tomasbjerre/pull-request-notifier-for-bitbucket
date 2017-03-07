@@ -8,8 +8,14 @@ define('plugin/prnfb/pr-triggerbutton', [
  var buttonsAdminUrl = AJS.contextPath() + "/rest/prnfb-admin/1.0/settings/buttons";
 
  var waiting = '<span class="aui-icon aui-icon-wait aui-icon-small">Wait</span>';
+ var $buttonArea = $('#pull-request-header-more').find('.aui-button').first().closest('ul');
+ $buttonArea.find('.aui-button').each(function(index, auiButton) {
+  if ($(auiButton).text().trim() === '') {
+   //An empty button is added by 'client-web-item' in atlassian-plugin.xml
+   auiButton.remove();
+  }
+ });
 
- var $buttonArea = $(".triggerManualNotification").closest('ul');
  var buttonTemplate = function(name) {
   return $('<li><button class="aui-button aui-button-link prnfb-button" role="menuitem">' + name + '</button></li>');
  };
@@ -196,16 +202,6 @@ define('plugin/prnfb/pr-triggerbutton', [
    });
   }
  };
-
- if ($buttonArea.length === 0) {
-  //Before 4.4.0
-  $buttonArea = $(".triggerManualNotification").parent();
-  buttonTemplate = function(name) {
-   return $('<button class="aui-button">' + name + '</button>');
-  };
- }
-
- $(".triggerManualNotification").remove();
 
  function loadSettingsAndShowButtons() {
   $.get(buttonsAdminUrl + '/repository/' + pageState.getRepository().id + '/pullrequest/' + pageState.getPullRequest().id, function(settings) {
