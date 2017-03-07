@@ -10,7 +10,8 @@ define('plugin/prnfb/pr-triggerbutton', [
  var waiting = '<span class="aui-icon aui-icon-wait aui-icon-small">Wait</span>';
  var $buttonArea = $('#pull-request-header-more').find('.aui-button').first().closest('ul');
  $buttonArea.find('.aui-button').each(function(index, auiButton) {
-  if ($(auiButton).text().trim() === '') {
+  var buttonText = $(auiButton).text().trim();
+  if (buttonText === '' || buttonText === 'pr-triggerbutton') {
    //An empty button is added by 'client-web-item' in atlassian-plugin.xml
    auiButton.remove();
   }

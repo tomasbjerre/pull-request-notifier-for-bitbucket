@@ -57,7 +57,7 @@
 
  <client-web-item key="se.bjurr.prnfb.triggerbutton" name="Trigger Notification" weight="50" section="bitbucket.pullrequest.action">
   <dependency>${project.groupId}-${project.artifactId}:pr-triggerbutton</dependency>
-  <label key="bitbucket.web.pull-request.toolbar.triggerbutton"></label>
+  <label key="bitbucket.web.pull-request.toolbar.triggerbutton">pr-triggerbutton</label>
  </client-web-item>
 
  <web-resource key="pr-triggerbutton">
