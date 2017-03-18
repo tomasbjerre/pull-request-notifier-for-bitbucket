@@ -6,6 +6,8 @@ The job that you want to trigger must have:
  * *Trigger builds remotely* checkbox checked.
   * You may, or may not, use a token here.
 
+There is a full job-dsl for this in [here](https://github.com/jenkinsci/violation-comments-to-stash-plugin).
+
 I like to add an *Execute shell* build step and then just do `echo param: $paramName` to test that my parameter shows up in the build job log.
 
 First, you may try to trigger Jenkins with [Curl](https://github.com/curl/curl) from command line and then, when you know how it should be done, configure the plugin.

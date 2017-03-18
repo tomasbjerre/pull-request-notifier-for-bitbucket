@@ -2,7 +2,12 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
-## Unreleased
+## 2.60
+### GitHub [#197](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/197) Button not displaying on PRs which are merged
+  Adding previously uncommitted change for
+  
+  [ba712899a44e6f8](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/ba712899a44e6f8) Tomas Bjerre *2017-03-07 16:30:56*
+
 ### No issue
   doc
   
