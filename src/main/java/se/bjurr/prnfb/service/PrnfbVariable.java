@@ -43,6 +43,7 @@ import se.bjurr.prnfb.http.HttpResponse;
 import se.bjurr.prnfb.http.Invoker;
 import se.bjurr.prnfb.http.UrlInvoker;
 import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
+import se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR;
 import se.bjurr.prnfb.settings.PrnfbNotification;
 
 public enum PrnfbVariable {
@@ -105,9 +106,25 @@ public enum PrnfbVariable {
           if (prnfbNotification == null || !prnfbNotification.getInjectionUrl().isPresent()) {
             return "";
           }
+          PrnfbRenderer renderer =
+              new PrnfbRenderer(
+                  pullRequest,
+                  pullRequestAction,
+                  applicationUser,
+                  repositoryService,
+                  propertiesService,
+                  prnfbNotification,
+                  variables,
+                  securityService);
+          String renderedUrlParam =
+              renderer.render(
+                  prnfbNotification.getInjectionUrl().get(),
+                  ENCODE_FOR.URL,
+                  clientKeyStore,
+                  shouldAcceptAnyCertificate);
           UrlInvoker urlInvoker =
               urlInvoker() //
-                  .withUrlParam(prnfbNotification.getInjectionUrl().get()) //
+                  .withUrlParam(renderedUrlParam) //
                   .withMethod(GET) //
                   .withProxyServer(prnfbNotification.getProxyServer()) //
                   .withProxyPort(prnfbNotification.getProxyPort()) //
