@@ -3,10 +3,16 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
+### No issue
+  doc
+  
+  [aaab4df796efde4](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/aaab4df796efde4) Tomas Bjerre *2017-03-25 08:01:32*
+
+## 2.61
 ### GitHub [#208](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/208) Injection URL does not allow variables
   Rendering variables in injection URL
   
-  [2fb4a6760970dd9](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/2fb4a6760970dd9) Tomas Bjerre *2017-03-25 07:45:57*
+  [e69d23103a5c311](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/e69d23103a5c311) Tomas Bjerre *2017-03-25 08:00:12*
 
 ### No issue
   Refering to violation comments to bbs for job DSL
