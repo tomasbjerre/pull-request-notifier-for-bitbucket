@@ -4,13 +4,11 @@ If things don't work as you expect, perhaps you should file an issue. But first,
  * Bitbucket Server version used.
  * Stack traces in Bitbucket Server log file.
  * Any browser console log messages, you can find it in Developer Tools in Chome by pressing F12.
- * Screenshot of plugin configuration in your issue.
- * Your configuration.
-   You can get it with something like this:
-   
-   `curl -u admin:admin 'http://localhost:7990/bitbucket/rest/prnfb-admin/1.0/settings' -H 'Accept: application/json, text/javascript, */*; q=0.01'`
-   
-   `curl -u admin:admin 'http://localhost:7990/bitbucket/rest/prnfb-admin/1.0/settings/notifications' -H 'Accept: application/json, text/javascript, */*; q=0.01'`.
-   
-   `curl -u admin:admin 'http://localhost:7990/bitbucket/rest/prnfb-admin/1.0/settings/buttons' -H 'Accept: application/json, text/javascript, */*; q=0.01'`.
- * If the system you are trying to notify does not seem to get notified you may check that the triggered URL looks as expected. You can do that by invoking https://requestb.in/ and inspect its results.
+ * Screenshot of plugin configuration in your issue. Or the actual persisted settings:
+ * Your configuration:
+   * http://localhost:7990/bitbucket/rest/prnfb-admin/1.0/settings
+   * http://localhost:7990/bitbucket/rest/prnfb-admin/1.0/settings/buttons
+   * http://localhost:7990/bitbucket/rest/prnfb-admin/1.0/settings/notifications
+ * If the system you are trying to notify does not seem to get notified:
+  * Check that the triggered URL looks as expected. You can do that by invoking https://requestb.in/ and inspect its results.
+  * Try to SSH to the Bitbucket Server machine and run same URL with Curl to make sure it's not a firewall issue.

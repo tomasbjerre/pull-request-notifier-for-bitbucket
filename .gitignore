@@ -5,3 +5,6 @@ target
 *~
 .okhttpcache
 node_modules
+opt
+atlassian-plugin-sdk-tgz
+
