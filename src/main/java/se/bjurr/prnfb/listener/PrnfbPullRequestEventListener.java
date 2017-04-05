@@ -262,6 +262,7 @@ public class PrnfbPullRequestEventListener {
                 urlInvoker //
                     .withProxyServer(notification.getProxyServer()) //
                     .withProxyPort(notification.getProxyPort()) //
+                    .withProxySchema(notification.getProxySchema()) //
                     .withProxyUser(notification.getProxyUser()) //
                     .withProxyPassword(notification.getProxyPassword()) //
                     .shouldAcceptAnyCertificate(shouldAcceptAnyCertificate));

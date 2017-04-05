@@ -37,6 +37,7 @@ public class PrnfbNotificationBuilder {
     b.proxyUser = from.getProxyUser().orNull();
     b.proxyPassword = from.getProxyPassword().orNull();
     b.proxyServer = from.getProxyServer().orNull();
+    b.proxySchema = from.getProxySchema().orNull();
     b.proxyPort = from.getProxyPort();
     b.name = from.getName();
     b.injectionUrl = from.getInjectionUrl().orNull();
@@ -68,6 +69,7 @@ public class PrnfbNotificationBuilder {
   private String user;
   private UUID uuid;
   private ENCODE_FOR postContentEncoding;
+  private String proxySchema;
 
   private PrnfbNotificationBuilder() {
     this.uuid = randomUUID();
@@ -131,6 +133,10 @@ public class PrnfbNotificationBuilder {
 
   public String getProxyServer() {
     return this.proxyServer;
+  }
+
+  public String getProxySchema() {
+    return proxySchema;
   }
 
   public String getProxyUser() {
@@ -292,6 +298,11 @@ public class PrnfbNotificationBuilder {
 
   public PrnfbNotificationBuilder withUuid(UUID uuid) {
     this.uuid = uuid;
+    return this;
+  }
+
+  public PrnfbNotificationBuilder withProxySchema(String proxySchema) {
+    this.proxySchema = proxySchema;
     return this;
   }
 }

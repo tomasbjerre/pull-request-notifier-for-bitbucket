@@ -511,6 +511,19 @@
      <div class="description"></div>
     </div>
    </fieldset>
+   <fieldset class="group">
+    <legend>
+     <span>Schema</span>
+    </legend>
+    <div class="radio">
+     <label>
+      <input class="radio" type="radio" name="proxySchema" value="http"> HTTP</label>
+    </div>
+    <div class="radio">
+     <label>
+      <input class="radio" type="radio" name="proxySchema" value="https"> HTTPS</label>
+    </div>
+   </fieldset>
 
 
    <h4>URL</h4>

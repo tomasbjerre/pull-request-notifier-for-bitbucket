@@ -6,7 +6,7 @@ Changelog of Pull Request Notifier for Bitbucket.
 ### No issue
   doc
   
-  [aaab4df796efde4](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/aaab4df796efde4) Tomas Bjerre *2017-03-25 08:01:32*
+  [34e16b98c5fde82](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/34e16b98c5fde82) Tomas Bjerre *2017-03-25 08:02:02*
 
 ## 2.61
 ### GitHub [#208](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/208) Injection URL does not allow variables

@@ -47,12 +47,14 @@ public class PrnfbNotification implements HasUuid, Restricted {
   private final String user;
   private final UUID uuid;
   private final ENCODE_FOR postContentEncoding;
+  private final String proxySchema;
 
   public PrnfbNotification(PrnfbNotificationBuilder builder) throws ValidationException {
     this.uuid = firstNonNull(builder.getUUID(), randomUUID());
     this.proxyUser = emptyToNull(nullToEmpty(builder.getProxyUser()).trim());
     this.proxyPassword = emptyToNull(nullToEmpty(builder.getProxyPassword()).trim());
     this.proxyServer = emptyToNull(nullToEmpty(builder.getProxyServer()).trim());
+    this.proxySchema = emptyToNull(nullToEmpty(builder.getProxySchema()).trim());
     this.proxyPort = builder.getProxyPort();
     this.headers = checkNotNull(builder.getHeaders());
     this.postContent = emptyToNull(nullToEmpty(builder.getPostContent()).trim());
@@ -297,6 +299,10 @@ public class PrnfbNotification implements HasUuid, Restricted {
 
   public Integer getProxyPort() {
     return this.proxyPort;
+  }
+
+  public Optional<String> getProxySchema() {
+    return fromNullable(this.proxySchema);
   }
 
   public Optional<String> getProxyServer() {

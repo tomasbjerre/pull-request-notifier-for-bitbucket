@@ -34,6 +34,7 @@ public class NotificationTransformer {
     to.setProxyPassword(from.getProxyPassword().orNull());
     to.setProxyPort(from.getProxyPort());
     to.setProxyServer(from.getProxyServer().orNull());
+    to.setProxySchema(from.getProxySchema().orNull());
     to.setProxyUser(from.getProxyUser().orNull());
     to.setTriggerIfCanMerge(from.getTriggerIfCanMerge());
     to.setTriggerIgnoreStateList(toPullRequestStateStrings(from.getTriggerIgnoreStateList()));
@@ -70,6 +71,7 @@ public class NotificationTransformer {
         .withProxyPassword(from.getProxyPassword()) //
         .withProxyPort(from.getProxyPort()) //
         .withProxyServer(from.getProxyServer()) //
+        .withProxySchema(from.getProxySchema()) //
         .withProxyUser(from.getProxyUser()) //
         .setTriggers(toPrnfbPullRequestActions(from.getTriggers())) //
         .withTriggerIfCanMerge(from.getTriggerIfCanMerge()) //

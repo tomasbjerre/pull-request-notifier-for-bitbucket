@@ -88,6 +88,7 @@ public class UrlInvoker {
   private Optional<String> proxyHost = absent();
   private Optional<String> proxyPassword = absent();
   private Optional<Integer> proxyPort = absent();
+  private Optional<String> proxySchema = absent();
   private Optional<String> proxyUser = absent();
   private HttpResponse response;
 
@@ -132,6 +133,10 @@ public class UrlInvoker {
 
   public Optional<Integer> getProxyPort() {
     return this.proxyPort;
+  }
+
+  public Optional<String> getProxySchema() {
+    return proxySchema;
   }
 
   public Optional<String> getProxyUser() {
@@ -230,6 +235,11 @@ public class UrlInvoker {
     return this;
   }
 
+  public UrlInvoker withProxySchema(Optional<String> proxySchema) {
+    this.proxySchema = proxySchema;
+    return this;
+  }
+
   public UrlInvoker withProxyServer(Optional<String> proxyHost) {
     this.proxyHost = proxyHost;
     return this;
@@ -314,7 +324,8 @@ public class UrlInvoker {
     }
 
     builder.useSystemProperties();
-    builder.setProxy(new HttpHost(this.proxyHost.get(), this.proxyPort.get()));
+    builder.setProxy(
+        new HttpHost(this.proxyHost.get(), this.proxyPort.get(), this.proxySchema.orNull()));
     builder.setProxyAuthenticationStrategy(new ProxyAuthenticationStrategy());
     return builder;
   }

@@ -128,6 +128,7 @@ public enum PrnfbVariable {
                   .withMethod(GET) //
                   .withProxyServer(prnfbNotification.getProxyServer()) //
                   .withProxyPort(prnfbNotification.getProxyPort()) //
+                  .withProxySchema(prnfbNotification.getProxySchema()) //
                   .withProxyUser(prnfbNotification.getProxyUser()) //
                   .withProxyPassword(prnfbNotification.getProxyPassword()) //
                   .appendBasicAuth(prnfbNotification) //
