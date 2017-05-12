@@ -4,9 +4,13 @@ Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
 ### No issue
+  Updating install script
+  
+  [3f63db715413e9b](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/3f63db715413e9b) Tomas Bjerre *2017-05-13 09:01:49*
+
   doc
   
-  [c5a68b3c849098f](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/c5a68b3c849098f) Tomas Bjerre *2017-04-21 14:46:49*
+  [1b211572d28559a](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/1b211572d28559a) Tomas Bjerre *2017-04-21 16:49:33*
 
 ## 2.62
 ### GitHub [#211](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/211) https proxy settings
