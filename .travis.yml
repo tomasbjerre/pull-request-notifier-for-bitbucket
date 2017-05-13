@@ -4,7 +4,7 @@ jdk:
   - oraclejdk8
 
 before_install:
-  - ./setup-atlassian-sdk.sh
+  - ./setup-atlassian-sdk.sh `pwd`
   - export PATH=opt/atlassian-plugin-sdk/bin:opt/atlassian-plugin-sdk/apache-maven-*/bin:$PATH
 install:
   - atlas-mvn -q install -Dbitbucket.version=4.4.0
