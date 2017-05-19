@@ -19,7 +19,7 @@ The Pull Request Notifier for Bitbucket Server can:
  * RESCOPED_TO, when target branch change
  * BUTTON_TRIGGER, when trigger button in pull request view is pressed
 * Can invoke CSRF protected systems, using the ${INJECTION_URL_VALUE} variable. How to to that with Jenkins is described below.
-* Be configured to only trigger if the pull request mathches a filter. A filter text is constructed with any combination of the variables and then a regexp is constructed to match that text.
+* Be configured to only trigger if the pull request matches a filter. A filter text is constructed with any combination of the variables and then a regexp is constructed to match that text.
 * Add buttons to pull request view in Bitbucket Server. And map those buttons to URL invocations. This can be done by setting the filter string to ${BUTTON_TRIGGER_TITLE} and the filter regexp to title of button.
  * Buttons can have forms associated with them, and then submit the form data using the ${BUTTON_FORM_DATA} variable.
 * Authenticate with HTTP basic authentication.
