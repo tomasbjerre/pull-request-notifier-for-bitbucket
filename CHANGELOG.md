@@ -4,6 +4,17 @@ Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
 ### No issue
+  Fix typo
+  
+  [7e9306755d0f9f4](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/7e9306755d0f9f4) J.T. Conklin *2017-05-18 15:18:35*
+
+## 3.0
+### GitHub [#215](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/215) Bitbucket Server 5.0 support
+  Bitbucket Server 5.0
+  
+  [37aed01e288ac56](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/37aed01e288ac56) Tomas Bjerre *2017-05-13 12:18:26*
+
+### No issue
   Updating install script
   
   [3f63db715413e9b](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/3f63db715413e9b) Tomas Bjerre *2017-05-13 09:01:49*

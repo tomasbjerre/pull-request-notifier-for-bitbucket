@@ -29,15 +29,6 @@ import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import com.atlassian.bitbucket.event.pull.PullRequestCommentAddedEvent;
-import com.atlassian.bitbucket.event.pull.PullRequestEvent;
-import com.atlassian.bitbucket.project.Project;
-import com.atlassian.bitbucket.pull.PullRequest;
-import com.atlassian.bitbucket.pull.PullRequestRef;
-import com.atlassian.bitbucket.pull.PullRequestService;
-import com.atlassian.bitbucket.repository.Repository;
-import com.google.common.base.Function;
-
 import se.bjurr.prnfb.http.ClientKeyStore;
 import se.bjurr.prnfb.http.HttpResponse;
 import se.bjurr.prnfb.http.Invoker;
@@ -45,9 +36,20 @@ import se.bjurr.prnfb.http.UrlInvoker;
 import se.bjurr.prnfb.service.PrnfbRenderer;
 import se.bjurr.prnfb.service.PrnfbRendererFactory;
 import se.bjurr.prnfb.service.SettingsService;
+import se.bjurr.prnfb.service.VariablesContext;
 import se.bjurr.prnfb.settings.PrnfbNotification;
 import se.bjurr.prnfb.settings.PrnfbSettingsData;
 import se.bjurr.prnfb.settings.ValidationException;
+
+import com.atlassian.bitbucket.event.pull.PullRequestCommentAddedEvent;
+import com.atlassian.bitbucket.event.pull.PullRequestEvent;
+import com.atlassian.bitbucket.project.Project;
+import com.atlassian.bitbucket.pull.PullRequest;
+import com.atlassian.bitbucket.pull.PullRequestRef;
+import com.atlassian.bitbucket.pull.PullRequestService;
+import com.atlassian.bitbucket.repository.Repository;
+import com.atlassian.bitbucket.user.ApplicationUser;
+import com.google.common.base.Function;
 
 public class PrnfbPullRequestEventListenerTest {
 
@@ -144,7 +146,12 @@ public class PrnfbPullRequestEventListenerTest {
     when(settingsService.getNotifications()) //
         .thenReturn(notifications);
 
-    when(prnfbRendererFactory.create(any(), any(), any(), any(), any())) //
+    when(prnfbRendererFactory.create(
+            any(PullRequest.class),
+            any(PrnfbPullRequestAction.class),
+            any(PrnfbNotification.class),
+            any(VariablesContext.class),
+            any(ApplicationUser.class))) //
         .thenReturn(renderer);
     when(renderer.render(any(), any(), any(), any())) //
         .thenAnswer(
