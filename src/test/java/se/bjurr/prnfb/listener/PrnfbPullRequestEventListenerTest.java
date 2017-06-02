@@ -34,6 +34,7 @@ import se.bjurr.prnfb.http.ClientKeyStore;
 import se.bjurr.prnfb.http.HttpResponse;
 import se.bjurr.prnfb.http.Invoker;
 import se.bjurr.prnfb.http.UrlInvoker;
+import se.bjurr.prnfb.service.MockedEscalatedSecurityContext;
 import se.bjurr.prnfb.service.PrnfbRenderer;
 import se.bjurr.prnfb.service.PrnfbRendererFactory;
 import se.bjurr.prnfb.service.SettingsService;
@@ -91,18 +92,9 @@ public class PrnfbPullRequestEventListenerTest {
   public void before() throws ValidationException {
     initMocks(this);
     SecurityService securityService = mock(SecurityService.class);
-    EscalatedSecurityContext escalatedSecurityContext = mock(EscalatedSecurityContext.class);
+    EscalatedSecurityContext escalatedSecurityContext = new MockedEscalatedSecurityContext();
     when(securityService.withPermission(Mockito.any(), Mockito.any())) //
         .thenReturn(escalatedSecurityContext);
-    when(escalatedSecurityContext.call(Mockito.any())) //
-        .thenAnswer(
-            new Answer<Boolean>() {
-              @Override
-              public Boolean answer(InvocationOnMock invocation) throws Throwable {
-                return (Boolean) invocation.callRealMethod();
-              }
-            });
-
     sut =
         new PrnfbPullRequestEventListener(
             prnfbRendererFactory,
