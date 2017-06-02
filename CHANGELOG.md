@@ -3,10 +3,15 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
+### GitHub [#220](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/220) Feature: add PREVIOUS_FROM_HASH and PREVIOUS_TO_HASH to variables
+  PREVIOUS_FROM_HASH and PREVIOUS_TO_HASH
+  
+  [92e8643f55178fe](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/92e8643f55178fe) Tomas Bjerre *2017-06-02 07:09:48*
+
 ### GitHub [#221](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/221) &quot;You are not permitted to access this resource&quot; after upgrade from Stash(v3) to Bitbucket(v4)
   Checking if canMerge with escalated (ADMIN) permission
   
-  [465d0fb7befdbb8](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/465d0fb7befdbb8) Tomas Bjerre *2017-06-02 06:43:34*
+  [835b214f1b6d59c](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/835b214f1b6d59c) Tomas Bjerre *2017-06-02 06:45:05*
 
 ### No issue
   Avoiding error in Eclipse
