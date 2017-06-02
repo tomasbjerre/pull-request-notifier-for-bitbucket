@@ -3,10 +3,16 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
+### No issue
+  doc
+  
+  [ddbf3b6a86162a9](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/ddbf3b6a86162a9) Tomas Bjerre *2017-06-02 07:56:38*
+
+## 3.1
 ### GitHub [#220](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/220) Feature: add PREVIOUS_FROM_HASH and PREVIOUS_TO_HASH to variables
   PREVIOUS_FROM_HASH and PREVIOUS_TO_HASH
   
-  [92e8643f55178fe](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/92e8643f55178fe) Tomas Bjerre *2017-06-02 07:09:48*
+  [085e0959e0b2f5a](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/085e0959e0b2f5a) Tomas Bjerre *2017-06-02 07:10:20*
 
 ### GitHub [#221](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/221) &quot;You are not permitted to access this resource&quot; after upgrade from Stash(v3) to Bitbucket(v4)
   Checking if canMerge with escalated (ADMIN) permission
