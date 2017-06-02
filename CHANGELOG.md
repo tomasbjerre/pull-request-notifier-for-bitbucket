@@ -3,7 +3,16 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
+### GitHub [#221](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/221) &quot;You are not permitted to access this resource&quot; after upgrade from Stash(v3) to Bitbucket(v4)
+  Checking if canMerge with escalated (ADMIN) permission
+  
+  [465d0fb7befdbb8](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/465d0fb7befdbb8) Tomas Bjerre *2017-06-02 06:43:34*
+
 ### No issue
+  Avoiding error in Eclipse
+  
+  [3a64aa749946f0a](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/3a64aa749946f0a) Tomas Bjerre *2017-06-02 06:04:43*
+
   Fix typo
   
   [7e9306755d0f9f4](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/7e9306755d0f9f4) J.T. Conklin *2017-05-18 15:18:35*

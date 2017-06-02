@@ -26,6 +26,7 @@ import java.util.concurrent.ExecutorService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -49,6 +50,8 @@ import com.atlassian.bitbucket.pull.PullRequestRef;
 import com.atlassian.bitbucket.pull.PullRequestService;
 import com.atlassian.bitbucket.repository.Repository;
 import com.atlassian.bitbucket.user.ApplicationUser;
+import com.atlassian.bitbucket.user.EscalatedSecurityContext;
+import com.atlassian.bitbucket.user.SecurityService;
 import com.google.common.base.Function;
 
 public class PrnfbPullRequestEventListenerTest {
@@ -87,9 +90,26 @@ public class PrnfbPullRequestEventListenerTest {
   @Before
   public void before() throws ValidationException {
     initMocks(this);
+    SecurityService securityService = mock(SecurityService.class);
+    EscalatedSecurityContext escalatedSecurityContext = mock(EscalatedSecurityContext.class);
+    when(securityService.withPermission(Mockito.any(), Mockito.any())) //
+        .thenReturn(escalatedSecurityContext);
+    when(escalatedSecurityContext.call(Mockito.any())) //
+        .thenAnswer(
+            new Answer<Boolean>() {
+              @Override
+              public Boolean answer(InvocationOnMock invocation) throws Throwable {
+                return (Boolean) invocation.callRealMethod();
+              }
+            });
+
     sut =
         new PrnfbPullRequestEventListener(
-            prnfbRendererFactory, pullRequestService, executorService, settingsService);
+            prnfbRendererFactory,
+            pullRequestService,
+            executorService,
+            settingsService,
+            securityService);
     setInvoker(
         new Invoker() {
           @Override
