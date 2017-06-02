@@ -6,20 +6,23 @@ import static se.bjurr.prnfb.service.PrnfbVariable.BUTTON_TRIGGER_TITLE;
 import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_COMMENT_ACTION;
 import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_COMMENT_TEXT;
 import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_MERGE_COMMIT;
+import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_PREVIOUS_FROM_HASH;
+import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_PREVIOUS_TO_HASH;
 import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_USER_GROUPS;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import se.bjurr.prnfb.settings.PrnfbButton;
+
 import com.atlassian.bitbucket.event.pull.PullRequestCommentEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestMergedEvent;
+import com.atlassian.bitbucket.event.pull.PullRequestRescopedEvent;
 import com.google.common.base.Joiner;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
-
-import se.bjurr.prnfb.settings.PrnfbButton;
 
 /**
  * {@link PrnfbVariable} is becoming a bit messy with a lot of parameters to resolve different
@@ -104,6 +107,25 @@ public class VariablesContext {
             PULL_REQUEST_COMMENT_ACTION,
             () -> {
               return pullRequestCommentEvent.getCommentAction().name();
+            });
+      } else if (pullRequestEvent instanceof PullRequestRescopedEvent) {
+        PullRequestRescopedEvent pullRequestRescopedEvent =
+            (PullRequestRescopedEvent) pullRequestEvent;
+        variables.put(
+            PULL_REQUEST_PREVIOUS_FROM_HASH,
+            () -> {
+              if (pullRequestEvent instanceof PullRequestRescopedEvent) {
+                return pullRequestRescopedEvent.getPreviousFromHash();
+              }
+              return "";
+            });
+        variables.put(
+            PULL_REQUEST_PREVIOUS_TO_HASH,
+            () -> {
+              if (pullRequestEvent instanceof PullRequestRescopedEvent) {
+                return pullRequestRescopedEvent.getPreviousToHash();
+              }
+              return "";
             });
       } else if (pullRequestEvent instanceof PullRequestMergedEvent) {
         variables.put(

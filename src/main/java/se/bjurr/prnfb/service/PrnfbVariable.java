@@ -22,6 +22,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 
+import se.bjurr.prnfb.http.ClientKeyStore;
+import se.bjurr.prnfb.http.HttpResponse;
+import se.bjurr.prnfb.http.Invoker;
+import se.bjurr.prnfb.http.UrlInvoker;
+import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
+import se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR;
+import se.bjurr.prnfb.settings.PrnfbNotification;
+
 import com.atlassian.bitbucket.permission.Permission;
 import com.atlassian.bitbucket.pull.PullRequest;
 import com.atlassian.bitbucket.pull.PullRequestParticipant;
@@ -37,14 +45,6 @@ import com.atlassian.bitbucket.util.Operation;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
-
-import se.bjurr.prnfb.http.ClientKeyStore;
-import se.bjurr.prnfb.http.HttpResponse;
-import se.bjurr.prnfb.http.Invoker;
-import se.bjurr.prnfb.http.UrlInvoker;
-import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
-import se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR;
-import se.bjurr.prnfb.settings.PrnfbNotification;
 
 public enum PrnfbVariable {
   BUTTON_TRIGGER_TITLE(
@@ -337,6 +337,40 @@ public enum PrnfbVariable {
             boolean shouldAcceptAnyCertificate,
             SecurityService securityService) {
           return pullRequest.getFromRef().getLatestCommit();
+        }
+      }),
+  PULL_REQUEST_PREVIOUS_FROM_HASH(
+      new PrnfbVariableResolver() {
+        @Override
+        public String resolve(
+            PullRequest pullRequest,
+            PrnfbPullRequestAction prnfbPullRequestAction,
+            ApplicationUser applicationUser,
+            RepositoryService repositoryService,
+            ApplicationPropertiesService propertiesService,
+            PrnfbNotification prnfbNotification,
+            Map<PrnfbVariable, Supplier<String>> variables,
+            ClientKeyStore clientKeyStore,
+            boolean shouldAcceptAnyCertificate,
+            SecurityService securityService) {
+          return getOrEmpty(variables, PULL_REQUEST_PREVIOUS_FROM_HASH);
+        }
+      }),
+  PULL_REQUEST_PREVIOUS_TO_HASH(
+      new PrnfbVariableResolver() {
+        @Override
+        public String resolve(
+            PullRequest pullRequest,
+            PrnfbPullRequestAction prnfbPullRequestAction,
+            ApplicationUser applicationUser,
+            RepositoryService repositoryService,
+            ApplicationPropertiesService propertiesService,
+            PrnfbNotification prnfbNotification,
+            Map<PrnfbVariable, Supplier<String>> variables,
+            ClientKeyStore clientKeyStore,
+            boolean shouldAcceptAnyCertificate,
+            SecurityService securityService) {
+          return getOrEmpty(variables, PULL_REQUEST_PREVIOUS_TO_HASH);
         }
       }),
   PULL_REQUEST_FROM_HTTP_CLONE_URL(
