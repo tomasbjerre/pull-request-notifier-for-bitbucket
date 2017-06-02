@@ -13,26 +13,24 @@ import static se.bjurr.prnfb.settings.USER_LEVEL.EVERYONE;
 import static se.bjurr.prnfb.test.Podam.populatedInstanceOf;
 
 import java.util.List;
-import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-
-import com.atlassian.bitbucket.permission.Permission;
-import com.atlassian.bitbucket.user.EscalatedSecurityContext;
-import com.atlassian.bitbucket.user.SecurityService;
-import com.atlassian.bitbucket.util.Operation;
-import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
-import com.atlassian.sal.api.transaction.TransactionCallback;
-import com.atlassian.sal.api.transaction.TransactionTemplate;
-import com.google.gson.Gson;
 
 import se.bjurr.prnfb.presentation.dto.ON_OR_OFF;
 import se.bjurr.prnfb.settings.PrnfbButton;
 import se.bjurr.prnfb.settings.PrnfbNotification;
 import se.bjurr.prnfb.settings.PrnfbSettings;
 import se.bjurr.prnfb.settings.ValidationException;
+
+import com.atlassian.bitbucket.permission.Permission;
+import com.atlassian.bitbucket.user.EscalatedSecurityContext;
+import com.atlassian.bitbucket.user.SecurityService;
+import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
+import com.atlassian.sal.api.transaction.TransactionCallback;
+import com.atlassian.sal.api.transaction.TransactionTemplate;
+import com.google.gson.Gson;
 
 public class SettingsServiceTest {
   private EscalatedSecurityContext escalatedSecurityContext;
@@ -48,31 +46,7 @@ public class SettingsServiceTest {
     initMocks(this);
     when(this.pluginSettingsFactory.createGlobalSettings()) //
         .thenReturn(this.pluginSettings);
-    this.escalatedSecurityContext =
-        new EscalatedSecurityContext() {
-          @Override
-          public void applyToRequest() {}
-
-          @Override
-          public <T, E extends Throwable> T call(Operation<T, E> arg0) throws E {
-            return arg0.perform();
-          }
-
-          @Override
-          public EscalatedSecurityContext withPermission(Object arg0, Permission arg1) {
-            return null;
-          }
-
-          @Override
-          public EscalatedSecurityContext withPermission(Permission arg0) {
-            return null;
-          }
-
-          @Override
-          public EscalatedSecurityContext withPermissions(Set<Permission> arg0) {
-            return null;
-          }
-        };
+    this.escalatedSecurityContext = new MockedEscalatedSecurityContext();
     when(this.securityService.withPermission(Permission.ADMIN, "Getting config")) //
         .thenReturn(this.escalatedSecurityContext);
     this.transactionTemplate =

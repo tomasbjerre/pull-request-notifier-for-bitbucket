@@ -3,6 +3,16 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
+### No issue
+  Fixing compile error in Travis
+  
+  [338ae4477962919](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/338ae4477962919) Tomas Bjerre *2017-06-02 08:38:13*
+
+  doc
+  
+  [305d0711327e562](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/305d0711327e562) Tomas Bjerre *2017-06-02 08:07:02*
+
+## 3.1
 ### GitHub [#220](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/220) Feature: add PREVIOUS_FROM_HASH and PREVIOUS_TO_HASH to variables
   PREVIOUS_FROM_HASH and PREVIOUS_TO_HASH
   
