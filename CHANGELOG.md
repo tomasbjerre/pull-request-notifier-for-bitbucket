@@ -3,10 +3,39 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
+### GitHub [#220](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/220) Feature: add PREVIOUS_FROM_HASH and PREVIOUS_TO_HASH to variables
+  PREVIOUS_FROM_HASH and PREVIOUS_TO_HASH
+  
+  [085e0959e0b2f5a](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/085e0959e0b2f5a) Tomas Bjerre *2017-06-02 07:10:20*
+
+### GitHub [#221](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/221) &quot;You are not permitted to access this resource&quot; after upgrade from Stash(v3) to Bitbucket(v4)
+  Checking if canMerge with escalated (ADMIN) permission
+  
+  [835b214f1b6d59c](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/835b214f1b6d59c) Tomas Bjerre *2017-06-02 06:45:05*
+
 ### No issue
+  Avoiding error in Eclipse
+  
+  [3a64aa749946f0a](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/3a64aa749946f0a) Tomas Bjerre *2017-06-02 06:04:43*
+
+  Fix typo
+  
+  [7e9306755d0f9f4](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/7e9306755d0f9f4) J.T. Conklin *2017-05-18 15:18:35*
+
+## 3.0
+### GitHub [#215](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/215) Bitbucket Server 5.0 support
+  Bitbucket Server 5.0
+  
+  [37aed01e288ac56](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/37aed01e288ac56) Tomas Bjerre *2017-05-13 12:18:26*
+
+### No issue
+  Updating install script
+  
+  [3f63db715413e9b](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/3f63db715413e9b) Tomas Bjerre *2017-05-13 09:01:49*
+
   doc
   
-  [c5a68b3c849098f](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/c5a68b3c849098f) Tomas Bjerre *2017-04-21 14:46:49*
+  [1b211572d28559a](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/1b211572d28559a) Tomas Bjerre *2017-04-21 16:49:33*
 
 ## 2.62
 ### GitHub [#211](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/211) https proxy settings
