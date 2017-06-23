@@ -194,26 +194,28 @@ When submitted with the default values, it will look like this:
 Some rest resources are available. You can figure out the JSON structure by looking at the [DTO:s](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/tree/master/src/main/java/se/bjurr/prnfb/presentation/dto).
 
 * `/bitbucket/rest/prnfb-admin/1.0/settings`
- * `GET` Get all global settings.
- * `POST` Store all global settings.
+  * `GET` Get all global settings.
+  * `POST` Store all global settings.
+
 
 * `/bitbucket/rest/prnfb-admin/1.0/settings/notifications`
- * `DELETE /{uuid}` Deletes notification with *uuid*.
- * `GET` Get all notifications.
- * `GET /{uuid}` Get notification with *uuid*.
- * `GET /projectKey/{projectKey}` Get all notifications for the project.
- * `GET /projectKey/{projectKey}/repositorySlug/{repositorySlug}` Get all notifications for the project and repository.
- * `POST` Save a notification.
+  * `DELETE /{uuid}` Deletes notification with *uuid*.
+  * `GET` Get all notifications.
+  * `GET /{uuid}` Get notification with *uuid*.
+  * `GET /projectKey/{projectKey}` Get all notifications for the project.
+  * `GET /projectKey/{projectKey}/repositorySlug/{repositorySlug}` Get all notifications for the project and repository.
+  * `POST` Save a notification.
+
 
 * `/bitbucket/rest/prnfb-admin/1.0/settings/buttons`
- * `DELETE /{uuid}` Deletes button with *uuid*.
- * `GET` Get all buttons that the current user is allowed to use.
- * `GET /{uuid}` Get button with *uuid*.
- * `GET /repository/{repositoryId}/pullrequest/{pullRequestId}` Get all buttons for repository that the current user is allowed to use.
- * `GET /projectKey/{projectKey}` Get all buttons for the project.
- * `GET /projectKey/{projectKey}/repositorySlug/{repositorySlug}` Get all buttons for the project and repository.
- * `POST` Save a button.
- * `POST {uuid}/press/repository/{repositoryId}/pullrequest/{pullRequestId}` Press the button.
+  * `DELETE /{uuid}` Deletes button with *uuid*.
+  * `GET` Get all buttons that the current user is allowed to use.
+  * `GET /{uuid}` Get button with *uuid*.
+  * `GET /repository/{repositoryId}/pullrequest/{pullRequestId}` Get all buttons for repository that the current user is allowed to use.
+  * `GET /projectKey/{projectKey}` Get all buttons for the project.
+  * `GET /projectKey/{projectKey}/repositorySlug/{repositorySlug}` Get all buttons for the project and repository.
+  * `POST` Save a button.
+  * `POST {uuid}/press/repository/{repositoryId}/pullrequest/{pullRequestId}` Press the button.
 
 A new notification to trigger on *COMMENTED* can be added like this.
 ```
