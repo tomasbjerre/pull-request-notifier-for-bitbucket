@@ -470,7 +470,7 @@
     <div class="field-group">
      <label>Injection URL regexp </label>
      <input class="text long-field" type="text" name="injectionUrlRegexp">
-     <div class="description">Optinoal regular expression to extract part of response as value of <b>${INJECTION_URL_VALUE}</b> variable.</div>
+     <div class="description">Optional regular expression to extract part of response as value of <b>${INJECTION_URL_VALUE}</b> variable.</div>
     </div>
    </fieldset>
 
