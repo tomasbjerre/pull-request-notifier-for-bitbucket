@@ -190,28 +190,31 @@ public class PrnfbPullRequestEventListener {
       return FALSE;
     }
 
-    if (notification.getTriggerIfCanMerge() != ALWAYS && pullRequest.isOpen()) {
+    if (notification.getTriggerIfCanMerge() != ALWAYS) {
       // Cannot perform canMerge unless PR is open
-      boolean isConflicted =
-          securityService //
-              .withPermission(ADMIN, "Can merge") //
-              .call(
-                  new Operation<Boolean, RuntimeException>() {
-                    @Override
-                    public Boolean perform() throws RuntimeException {
-                      return pullRequestService //
-                          .canMerge(
-                              pullRequest.getToRef().getRepository().getId(),
-                              pullRequest.getId()) //
-                          .isConflicted();
-                    }
-                  });
+      boolean notYetMerged = pullRequest.isOpen();
+      boolean isConflicted = notYetMerged && hasConflicts(pullRequest);
       if (ignoreBecauseOfConflicting(notification.getTriggerIfCanMerge(), isConflicted)) {
         return FALSE;
       }
     }
 
     return TRUE;
+  }
+
+  private boolean hasConflicts(PullRequest pullRequest) {
+    return securityService //
+        .withPermission(ADMIN, "Can merge") //
+        .call(
+            new Operation<Boolean, RuntimeException>() {
+              @Override
+              public Boolean perform() throws RuntimeException {
+                return pullRequestService //
+                    .canMerge(
+                        pullRequest.getToRef().getRepository().getId(), pullRequest.getId()) //
+                    .isConflicted();
+              }
+            });
   }
 
   public NotificationResponse notify(

@@ -3,10 +3,24 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
+### GitHub [#226](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/226) REST API POST ISSUES
+  Correcting markdown in REST-API
+  
+  [5f555e903069e04](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/5f555e903069e04) Tomas Bjerre *2017-06-23 09:37:28*
+
+### GitHub [#231](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/231) Typo &quot;Optinoal&quot; in admin.vm
+  Typo "Optinoal" in admin.vm
+  
+  [53b27e36155c764](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/53b27e36155c764) Tomas Bjerre *2017-07-12 05:25:41*
+
 ### No issue
+  Fixing compile error in Travis
+  
+  [338ae4477962919](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/338ae4477962919) Tomas Bjerre *2017-06-02 08:38:13*
+
   doc
   
-  [ddbf3b6a86162a9](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/ddbf3b6a86162a9) Tomas Bjerre *2017-06-02 07:56:38*
+  [305d0711327e562](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/305d0711327e562) Tomas Bjerre *2017-06-02 08:07:02*
 
 ## 3.1
 ### GitHub [#220](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/220) Feature: add PREVIOUS_FROM_HASH and PREVIOUS_TO_HASH to variables

@@ -46,8 +46,7 @@ public class SettingsServiceTest {
     initMocks(this);
     when(this.pluginSettingsFactory.createGlobalSettings()) //
         .thenReturn(this.pluginSettings);
-    this.escalatedSecurityContext =
-        new MockedEscalatedSecurityContext();
+    this.escalatedSecurityContext = new MockedEscalatedSecurityContext();
     when(this.securityService.withPermission(Permission.ADMIN, "Getting config")) //
         .thenReturn(this.escalatedSecurityContext);
     this.transactionTemplate =
