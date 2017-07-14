@@ -1,11 +1,4 @@
 # Developer instructions
-There are some scripts to help working with the plugin.
-
- * `./setup-atlassian-sdk.sh` Setup Atlassian SDK.
- * `./docker-build.sh` Build Docker container.
- * `./docker-run.sh` Run the Docker container.
- * `./integration-test-local.sh` Run integration tests against localhost.
- * `./integration-test.sh` Start Docker container and then runs integration tests against it.
 
 The .travis.yml is setting up Atlas SDK and building the plugin. It may help you setup your environment.
 
@@ -16,7 +9,7 @@ Prerequisites:
 
 Generate Eclipse project:
 ```
-atlas-compile eclipse:eclipse
+atlas-mvn eclipse:eclipse
 ```
 
 Package the plugin:

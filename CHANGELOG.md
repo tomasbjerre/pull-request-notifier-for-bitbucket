@@ -8,6 +8,13 @@ Changelog of Pull Request Notifier for Bitbucket.
   
   [5f555e903069e04](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/5f555e903069e04) Tomas Bjerre *2017-06-23 09:37:28*
 
+### GitHub [#228](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/228) Merge conflict trigger settings for events with PULL_REQUEST_ACTION = &quot;MERGED&quot;
+  Determining conflicing state correctly  
+
+ * PR has to be open in order to check if it can be merged. Any closed PR is now considered not conflicting.
+  
+  [a6fdac1474a704a](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/a6fdac1474a704a) Tomas Bjerre *2017-07-14 13:12:36*
+
 ### GitHub [#231](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/231) Typo &quot;Optinoal&quot; in admin.vm
   Typo "Optinoal" in admin.vm
   
