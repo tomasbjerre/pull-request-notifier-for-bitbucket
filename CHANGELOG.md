@@ -2,7 +2,12 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
-## Unreleased
+## 3.3
+### GitHub [#233](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/233) Variable renderer tries to render extra variables
+  Avoid crash when variable resolved to string with dollar sign
+  
+  [40b9c33c9a95892](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/40b9c33c9a95892) Tomas Bjerre *2017-07-17 17:19:35*
+
 ### No issue
   doc
   
