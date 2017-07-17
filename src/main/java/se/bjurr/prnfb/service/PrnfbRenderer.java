@@ -11,9 +11,14 @@ import static se.bjurr.prnfb.service.PrnfbVariable.EVERYTHING_URL;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.slf4j.Logger;
+
+import se.bjurr.prnfb.http.ClientKeyStore;
+import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
+import se.bjurr.prnfb.settings.PrnfbNotification;
 
 import com.atlassian.bitbucket.pull.PullRequest;
 import com.atlassian.bitbucket.repository.RepositoryService;
@@ -22,10 +27,6 @@ import com.atlassian.bitbucket.user.ApplicationUser;
 import com.atlassian.bitbucket.user.SecurityService;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Supplier;
-
-import se.bjurr.prnfb.http.ClientKeyStore;
-import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
-import se.bjurr.prnfb.settings.PrnfbNotification;
 
 public class PrnfbRenderer {
   public enum ENCODE_FOR {
@@ -91,6 +92,7 @@ public class PrnfbRenderer {
       replaceWith = resolved;
     }
     try {
+      replaceWith = Matcher.quoteReplacement(replaceWith);
       string = string.replaceAll(regExpStr, replaceWith);
     } catch (IllegalArgumentException e) {
       throw new RuntimeException("Tried to replace " + regExpStr + " with " + replaceWith, e);

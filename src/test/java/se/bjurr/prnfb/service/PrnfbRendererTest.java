@@ -13,6 +13,7 @@ import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_COMMENT_TEXT;
 import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_DESCRIPTION;
 import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_FROM_HASH;
 import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_MERGE_COMMIT;
+import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_TITLE;
 import static se.bjurr.prnfb.settings.PrnfbNotificationBuilder.prnfbNotificationBuilder;
 
 import java.io.UnsupportedEncodingException;
@@ -24,6 +25,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import se.bjurr.prnfb.http.ClientKeyStore;
+import se.bjurr.prnfb.http.HttpResponse;
+import se.bjurr.prnfb.http.Invoker;
+import se.bjurr.prnfb.http.UrlInvoker;
+import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
+import se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR;
+import se.bjurr.prnfb.settings.PrnfbNotification;
+import se.bjurr.prnfb.settings.ValidationException;
+
 import com.atlassian.bitbucket.pull.PullRequest;
 import com.atlassian.bitbucket.pull.PullRequestParticipant;
 import com.atlassian.bitbucket.pull.PullRequestRef;
@@ -33,15 +43,6 @@ import com.atlassian.bitbucket.user.ApplicationUser;
 import com.atlassian.bitbucket.user.SecurityService;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
-
-import se.bjurr.prnfb.http.ClientKeyStore;
-import se.bjurr.prnfb.http.HttpResponse;
-import se.bjurr.prnfb.http.Invoker;
-import se.bjurr.prnfb.http.UrlInvoker;
-import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
-import se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR;
-import se.bjurr.prnfb.settings.PrnfbNotification;
-import se.bjurr.prnfb.settings.ValidationException;
 
 public class PrnfbRendererTest {
 
@@ -131,6 +132,20 @@ public class PrnfbRendererTest {
 
     assertThat(actual) //
         .startsWith("asd ");
+  }
+
+  @Test
+  public void testThatDollarInStringCanBeRendered() throws UnsupportedEncodingException {
+    String actual =
+        sut.getRenderedStringResolved(
+            "asd ${" + PULL_REQUEST_TITLE.name() + "} asd",
+            encodeFor,
+            sut.regexp(PULL_REQUEST_TITLE),
+            "BNRSD-387 Fix circular reference logging on $host errors in RSD abstract client");
+
+    assertThat(actual) //
+        .isEqualTo(
+            "asd BNRSD-387 Fix circular reference logging on $host errors in RSD abstract client asd");
   }
 
   @Test

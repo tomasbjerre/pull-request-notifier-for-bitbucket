@@ -13,6 +13,10 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import se.bjurr.prnfb.http.ClientKeyStore;
+import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
+import se.bjurr.prnfb.settings.PrnfbNotification;
+
 import com.atlassian.bitbucket.pull.PullRequest;
 import com.atlassian.bitbucket.repository.RepositoryService;
 import com.atlassian.bitbucket.server.ApplicationPropertiesService;
@@ -21,10 +25,6 @@ import com.atlassian.bitbucket.user.SecurityService;
 import com.google.common.base.Supplier;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
-
-import se.bjurr.prnfb.http.ClientKeyStore;
-import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
-import se.bjurr.prnfb.settings.PrnfbNotification;
 
 public class PrnfbVariableTest {
 
@@ -80,7 +80,7 @@ public class PrnfbVariableTest {
     for (PrnfbVariable v : PrnfbVariable.values()) {
       if (v != EVERYTHING_URL && v != PULL_REQUEST_DESCRIPTION) {
         assertThat(actual) //
-            .containsOnlyOnce(v.name() + "=\\${" + v.name() + "}") //
+            .containsOnlyOnce(v.name() + "=${" + v.name() + "}") //
             .doesNotContain(EVERYTHING_URL.name());
       }
     }

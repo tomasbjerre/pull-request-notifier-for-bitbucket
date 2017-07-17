@@ -82,7 +82,7 @@ public enum PrnfbVariable {
           for (PrnfbVariable v : PrnfbVariable.values()) {
             if (v != EVERYTHING_URL //
                 && v != PULL_REQUEST_DESCRIPTION) {
-              parts.add(v.name() + "=\\${" + v.name() + "}");
+              parts.add(v.name() + "=${" + v.name() + "}");
             }
           }
           Collections.sort(parts);

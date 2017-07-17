@@ -3,6 +3,12 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
+### No issue
+  doc
+  
+  [d23fe8fe5b339d9](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/d23fe8fe5b339d9) Tomas Bjerre *2017-07-16 05:55:13*
+
+## 3.2
 ### GitHub [#226](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/226) REST API POST ISSUES
   Correcting markdown in REST-API
   
