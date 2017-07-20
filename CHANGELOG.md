@@ -3,6 +3,47 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
+<<<<<<< HEAD
+=======
+### No issue
+  Not exposing username, password, in REST
+  
+  [a565291be41b9b3](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/a565291be41b9b3) Tomas Bjerre *2017-07-20 18:05:37*
+
+  doc
+  
+  [51599e783601d51](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/51599e783601d51) Tomas Bjerre *2017-07-17 17:21:19*
+
+## 3.3
+### GitHub [#233](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/233) Variable renderer tries to render extra variables
+  Avoid crash when variable resolved to string with dollar sign
+  
+  [40b9c33c9a95892](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/40b9c33c9a95892) Tomas Bjerre *2017-07-17 17:19:35*
+
+### No issue
+  doc
+  
+  [d23fe8fe5b339d9](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/d23fe8fe5b339d9) Tomas Bjerre *2017-07-16 05:55:13*
+
+## 3.2
+### GitHub [#226](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/226) REST API POST ISSUES
+  Correcting markdown in REST-API
+  
+  [5f555e903069e04](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/5f555e903069e04) Tomas Bjerre *2017-06-23 09:37:28*
+
+### GitHub [#228](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/228) Merge conflict trigger settings for events with PULL_REQUEST_ACTION = &quot;MERGED&quot;
+  Determining conflicing state correctly  
+
+ * PR has to be open in order to check if it can be merged. Any closed PR is now considered not conflicting.
+  
+  [a6fdac1474a704a](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/a6fdac1474a704a) Tomas Bjerre *2017-07-14 13:12:36*
+
+### GitHub [#231](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/231) Typo &quot;Optinoal&quot; in admin.vm
+  Typo "Optinoal" in admin.vm
+  
+  [53b27e36155c764](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/53b27e36155c764) Tomas Bjerre *2017-07-12 05:25:41*
+
+>>>>>>> ff78ac1... Not exposing username, password, in REST
 ### No issue
   Fixing compile error in Travis
   

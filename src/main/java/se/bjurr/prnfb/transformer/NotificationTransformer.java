@@ -3,10 +3,9 @@ package se.bjurr.prnfb.transformer;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newArrayList;
 import static se.bjurr.prnfb.settings.PrnfbNotificationBuilder.prnfbNotificationBuilder;
+import static se.bjurr.prnfb.settings.PrnfbSettings.UNCHANGED;
 
 import java.util.List;
-
-import com.atlassian.bitbucket.pull.PullRequestState;
 
 import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
 import se.bjurr.prnfb.presentation.dto.HeaderDTO;
@@ -14,6 +13,8 @@ import se.bjurr.prnfb.presentation.dto.NotificationDTO;
 import se.bjurr.prnfb.settings.PrnfbHeader;
 import se.bjurr.prnfb.settings.PrnfbNotification;
 import se.bjurr.prnfb.settings.ValidationException;
+
+import com.atlassian.bitbucket.pull.PullRequestState;
 
 public class NotificationTransformer {
 
@@ -28,19 +29,19 @@ public class NotificationTransformer {
     to.setMethod(from.getMethod());
     to.setName(from.getName());
     to.setHeaders(toHeaders(from.getHeaders()));
-    to.setPassword(from.getPassword().orNull());
     to.setPostContent(from.getPostContent().orNull());
     to.setPostContentEncoding(from.getPostContentEncoding());
-    to.setProxyPassword(from.getProxyPassword().orNull());
     to.setProxyPort(from.getProxyPort());
     to.setProxyServer(from.getProxyServer().orNull());
     to.setProxySchema(from.getProxySchema().orNull());
-    to.setProxyUser(from.getProxyUser().orNull());
+    to.setProxyUser(UNCHANGED);
+    to.setProxyPassword(UNCHANGED);
     to.setTriggerIfCanMerge(from.getTriggerIfCanMerge());
     to.setTriggerIgnoreStateList(toPullRequestStateStrings(from.getTriggerIgnoreStateList()));
     to.setTriggers(toStrings(from.getTriggers()));
     to.setUrl(from.getUrl());
-    to.setUser(from.getUser().orNull());
+    to.setUser(UNCHANGED);
+    to.setPassword(UNCHANGED);
     to.setUuid(from.getUuid());
     return to;
   }

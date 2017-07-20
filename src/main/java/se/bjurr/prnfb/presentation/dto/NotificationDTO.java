@@ -8,12 +8,12 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.google.common.base.Optional;
-
 import se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD;
 import se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR;
 import se.bjurr.prnfb.settings.Restricted;
 import se.bjurr.prnfb.settings.TRIGGER_IF_MERGE;
+
+import com.google.common.base.Optional;
 
 @XmlRootElement
 @XmlAccessorType(FIELD)
@@ -426,5 +426,56 @@ public class NotificationDTO implements Comparable<NotificationDTO>, Restricted 
 
   public String getProxySchema() {
     return proxySchema;
+  }
+
+  @Override
+  public String toString() {
+    return "NotificationDTO [filterRegexp="
+        + filterRegexp
+        + ", filterString="
+        + filterString
+        + ", headers="
+        + headers
+        + ", injectionUrl="
+        + injectionUrl
+        + ", injectionUrlRegexp="
+        + injectionUrlRegexp
+        + ", method="
+        + method
+        + ", name="
+        + name
+        + ", password="
+        + password
+        + ", postContent="
+        + postContent
+        + ", projectKey="
+        + projectKey
+        + ", proxyPassword="
+        + proxyPassword
+        + ", proxyPort="
+        + proxyPort
+        + ", proxyServer="
+        + proxyServer
+        + ", proxySchema="
+        + proxySchema
+        + ", proxyUser="
+        + proxyUser
+        + ", repositorySlug="
+        + repositorySlug
+        + ", triggerIfCanMerge="
+        + triggerIfCanMerge
+        + ", triggerIgnoreStateList="
+        + triggerIgnoreStateList
+        + ", triggers="
+        + triggers
+        + ", url="
+        + url
+        + ", user="
+        + user
+        + ", uuid="
+        + uuid
+        + ", postContentEncoding="
+        + postContentEncoding
+        + "]";
   }
 }

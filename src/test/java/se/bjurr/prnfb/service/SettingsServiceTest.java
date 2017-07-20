@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static se.bjurr.prnfb.listener.PrnfbPullRequestAction.APPROVED;
+import static se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR.NONE;
 import static se.bjurr.prnfb.service.SettingsService.STORAGE_KEY;
 import static se.bjurr.prnfb.settings.PrnfbNotificationBuilder.prnfbNotificationBuilder;
 import static se.bjurr.prnfb.settings.PrnfbSettingsBuilder.prnfbSettingsBuilder;
@@ -161,8 +162,13 @@ public class SettingsServiceTest {
             .withUuid(this.notification1.getUuid()) //
             .withUrl("http://hej2.com/") //
             .withTrigger(APPROVED) //
+            .withPostContentEncoding(NONE) //
             .build();
     this.sut.addOrUpdateNotification(updated);
+    assertThat(this.sut.getNotifications().get(0).toString()) //
+        .isEqualTo(notification2.toString());
+    assertThat(this.sut.getNotifications().get(1).toString()) //
+        .isEqualTo(updated.toString());
     assertThat(this.sut.getNotifications()) //
         .containsExactly(notification2, updated);
 
