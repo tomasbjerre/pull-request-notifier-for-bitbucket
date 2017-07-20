@@ -3,12 +3,16 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
-<<<<<<< HEAD
-=======
+### No issue
+  doc
+  
+  [72a6a8a151cf2a0](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/72a6a8a151cf2a0) Tomas Bjerre *2017-07-20 18:08:15*
+
+## 3.4
 ### No issue
   Not exposing username, password, in REST
   
-  [a565291be41b9b3](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/a565291be41b9b3) Tomas Bjerre *2017-07-20 18:05:37*
+  [ff78ac1ec9e3518](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/ff78ac1ec9e3518) Tomas Bjerre *2017-07-20 18:06:00*
 
   doc
   
@@ -43,7 +47,6 @@ Changelog of Pull Request Notifier for Bitbucket.
   
   [53b27e36155c764](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/53b27e36155c764) Tomas Bjerre *2017-07-12 05:25:41*
 
->>>>>>> ff78ac1... Not exposing username, password, in REST
 ### No issue
   Fixing compile error in Travis
   
