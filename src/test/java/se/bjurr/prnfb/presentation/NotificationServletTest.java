@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static se.bjurr.prnfb.listener.PrnfbPullRequestAction.MERGED;
+import static se.bjurr.prnfb.settings.PrnfbSettings.UNCHANGED;
 import static se.bjurr.prnfb.test.Podam.populatedInstanceOf;
 import static se.bjurr.prnfb.transformer.NotificationTransformer.toPrnfbNotification;
 
@@ -20,12 +21,12 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import com.google.common.collect.Lists;
-
 import se.bjurr.prnfb.presentation.dto.NotificationDTO;
 import se.bjurr.prnfb.service.SettingsService;
 import se.bjurr.prnfb.service.UserCheckService;
 import se.bjurr.prnfb.settings.PrnfbNotification;
+
+import com.google.common.collect.Lists;
 
 public class NotificationServletTest {
   private PrnfbNotification notification1;
@@ -93,9 +94,17 @@ public class NotificationServletTest {
         .thenReturn(storedSettings);
 
     List<NotificationDTO> actual = (List<NotificationDTO>) this.sut.get().getEntity();
-
+    setUnchanged(notificationDto1);
+    setUnchanged(notificationDto2);
     assertThat(actual) //
         .containsOnly(this.notificationDto1, this.notificationDto2);
+  }
+
+  private void setUnchanged(NotificationDTO dto) {
+    dto.setUser(UNCHANGED);
+    dto.setPassword(UNCHANGED);
+    dto.setProxyUser(UNCHANGED);
+    dto.setProxyPassword(UNCHANGED);
   }
 
   @Test
@@ -110,6 +119,7 @@ public class NotificationServletTest {
     @SuppressWarnings("unchecked")
     Iterable<NotificationDTO> actualList = (Iterable<NotificationDTO>) actual.getEntity();
 
+    setUnchanged(notificationDto1);
     assertThat(actualList) //
         .containsOnly(this.notificationDto1);
   }
@@ -130,6 +140,8 @@ public class NotificationServletTest {
             this.notificationDto1.getRepositorySlug().orNull());
     @SuppressWarnings("unchecked")
     Iterable<NotificationDTO> actualList = (Iterable<NotificationDTO>) actual.getEntity();
+
+    setUnchanged(notificationDto1);
 
     assertThat(actualList) //
         .containsOnly(this.notificationDto1);

@@ -9,6 +9,7 @@ import static com.google.common.collect.Iterables.find;
 import static com.google.common.collect.Iterables.tryFind;
 import static com.google.common.collect.Lists.newArrayList;
 import static se.bjurr.prnfb.settings.PrnfbNotificationBuilder.prnfbNotificationBuilder;
+import static se.bjurr.prnfb.settings.PrnfbSettings.UNCHANGED;
 import static se.bjurr.prnfb.settings.PrnfbSettingsBuilder.prnfbSettingsBuilder;
 import static se.bjurr.prnfb.settings.PrnfbSettingsDataBuilder.prnfbSettingsDataBuilder;
 
@@ -17,18 +18,6 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.atlassian.bitbucket.pull.PullRequestState;
-import com.atlassian.bitbucket.user.SecurityService;
-import com.atlassian.bitbucket.util.Operation;
-import com.atlassian.sal.api.pluginsettings.PluginSettings;
-import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
-import com.atlassian.sal.api.transaction.TransactionCallback;
-import com.atlassian.sal.api.transaction.TransactionTemplate;
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.gson.Gson;
 
 import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
 import se.bjurr.prnfb.presentation.dto.ON_OR_OFF;
@@ -44,6 +33,18 @@ import se.bjurr.prnfb.settings.ValidationException;
 import se.bjurr.prnfb.settings.legacy.AdminFormValues.BUTTON_VISIBILITY;
 import se.bjurr.prnfb.settings.legacy.Header;
 import se.bjurr.prnfb.settings.legacy.SettingsStorage;
+
+import com.atlassian.bitbucket.pull.PullRequestState;
+import com.atlassian.bitbucket.user.SecurityService;
+import com.atlassian.bitbucket.util.Operation;
+import com.atlassian.sal.api.pluginsettings.PluginSettings;
+import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
+import com.atlassian.sal.api.transaction.TransactionCallback;
+import com.atlassian.sal.api.transaction.TransactionTemplate;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.gson.Gson;
 
 public class SettingsService {
 
@@ -233,20 +234,44 @@ public class SettingsService {
     return prnfbButton;
   }
 
-  private PrnfbNotification doAddOrUpdateNotification(PrnfbNotification prnfbNotification)
+  private PrnfbNotification doAddOrUpdateNotification(PrnfbNotification newNotification)
       throws ValidationException {
-    if (findNotification(prnfbNotification.getUuid()).isPresent()) {
-      doDeleteNotification(prnfbNotification.getUuid());
+    Optional<PrnfbNotification> oldNotification = findNotification(newNotification.getUuid());
+    if (oldNotification.isPresent()) {
+      String user = keepIfUnchanged(newNotification.getUser(), oldNotification.get().getUser());
+      String password =
+          keepIfUnchanged(newNotification.getPassword(), oldNotification.get().getPassword());
+      String proxyUser =
+          keepIfUnchanged(newNotification.getProxyUser(), oldNotification.get().getProxyUser());
+      String proxyPassword =
+          keepIfUnchanged(
+              newNotification.getProxyPassword(), oldNotification.get().getProxyPassword());
+      newNotification =
+          prnfbNotificationBuilder(newNotification) //
+              .withUser(user) //
+              .withPassword(password) //
+              .withProxyUser(proxyUser) //
+              .withPassword(proxyPassword) //
+              .build();
+      doDeleteNotification(newNotification.getUuid());
     }
 
     PrnfbSettings originalSettings = doGetPrnfbSettings();
     PrnfbSettings updated =
         prnfbSettingsBuilder(originalSettings) //
-            .withNotification(prnfbNotification) //
+            .withNotification(newNotification) //
             .build();
 
     doSetPrnfbSettings(updated);
-    return prnfbNotification;
+    return newNotification;
+  }
+
+  private String keepIfUnchanged(Optional<String> newValue, Optional<String> oldValue) {
+    boolean isUnchanged = newValue.isPresent() && newValue.get().equals(UNCHANGED);
+    if (isUnchanged) {
+      return oldValue.orNull();
+    }
+    return newValue.orNull();
   }
 
   private void doDeleteButton(UUID uuid) {
@@ -303,8 +328,24 @@ public class SettingsService {
     return gson.fromJson(storedSettings.toString(), PrnfbSettings.class);
   }
 
-  private void doSetPrnfbSettings(PrnfbSettings PrnfbSettings) {
-    String data = gson.toJson(PrnfbSettings);
+  private void doSetPrnfbSettings(PrnfbSettings newSettings) {
+    PrnfbSettingsData oldSettingsData = doGetPrnfbSettings().getPrnfbSettingsData();
+    PrnfbSettingsData newSettingsData = newSettings.getPrnfbSettingsData();
+    String keyStorePassword =
+        keepIfUnchanged(
+            newSettingsData.getKeyStorePassword(), oldSettingsData.getKeyStorePassword());
+
+    PrnfbSettingsData adjustedSettingsData =
+        prnfbSettingsDataBuilder(newSettingsData) //
+            .setKeyStorePassword(keyStorePassword) //
+            .build();
+
+    PrnfbSettings adjustedSettings =
+        prnfbSettingsBuilder(newSettings) //
+            .setPrnfbSettingsData(adjustedSettingsData) //
+            .build();
+
+    String data = gson.toJson(adjustedSettings);
     this.pluginSettings.put(STORAGE_KEY, data);
   }
 

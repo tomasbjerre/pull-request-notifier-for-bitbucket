@@ -5,6 +5,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static se.bjurr.prnfb.settings.PrnfbSettings.UNCHANGED;
 import static se.bjurr.prnfb.settings.PrnfbSettingsDataBuilder.prnfbSettingsDataBuilder;
 import static se.bjurr.prnfb.settings.USER_LEVEL.ADMIN;
 
@@ -39,7 +40,7 @@ public class SettingsDataServletTest {
     SettingsDataDTO expected = new SettingsDataDTO();
     expected.setAdminRestriction(ADMIN);
     expected.setKeyStore("keyStore");
-    expected.setKeyStorePassword("keyStorePassword");
+    expected.setKeyStorePassword(UNCHANGED);
     expected.setKeyStoreType("keyStoreType");
     expected.setShouldAcceptAnyCertificate(true);
 

@@ -2,6 +2,16 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## Unreleased
+### No issue
+  Not exposing username, password, in REST
+  
+  [a565291be41b9b3](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/a565291be41b9b3) Tomas Bjerre *2017-07-20 18:05:37*
+
+  doc
+  
+  [51599e783601d51](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/51599e783601d51) Tomas Bjerre *2017-07-17 17:21:19*
+
 ## 3.3
 ### GitHub [#233](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/233) Variable renderer tries to render extra variables
   Avoid crash when variable resolved to string with dollar sign

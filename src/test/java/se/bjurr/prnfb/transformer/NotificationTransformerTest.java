@@ -4,6 +4,7 @@ import static com.atlassian.bitbucket.pull.PullRequestState.DECLINED;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.bjurr.prnfb.listener.PrnfbPullRequestAction.MERGED;
+import static se.bjurr.prnfb.settings.PrnfbSettings.UNCHANGED;
 import static se.bjurr.prnfb.test.Podam.populatedInstanceOf;
 import static se.bjurr.prnfb.transformer.NotificationTransformer.toNotificationDto;
 import static se.bjurr.prnfb.transformer.NotificationTransformer.toPrnfbNotification;
@@ -22,6 +23,10 @@ public class NotificationTransformerTest {
     originalDto.setUrl("http://hej.com/");
     originalDto.setTriggerIgnoreStateList(Lists.newArrayList(DECLINED.name()));
     originalDto.setTriggers(newArrayList(MERGED.name()));
+    originalDto.setUser(UNCHANGED);
+    originalDto.setPassword(UNCHANGED);
+    originalDto.setProxyUser(UNCHANGED);
+    originalDto.setProxyPassword(UNCHANGED);
     NotificationDTO retransformedDto = toNotificationDto(toPrnfbNotification(originalDto));
 
     assertThat(retransformedDto) //

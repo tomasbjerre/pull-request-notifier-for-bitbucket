@@ -6,6 +6,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import java.util.List;
 
 public class PrnfbSettings {
+  public static final String UNCHANGED = "KEEP_THIS_TO_LEAVE_UNCHANGED";
   private final List<PrnfbButton> buttons;
   private List<PrnfbNotification> notifications = newArrayList();
   private final PrnfbSettingsData prnfbSettingsData;
@@ -68,10 +69,10 @@ public class PrnfbSettings {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((this.buttons == null) ? 0 : this.buttons.hashCode());
-    result = prime * result + ((this.notifications == null) ? 0 : this.notifications.hashCode());
+    result = prime * result + (this.buttons == null ? 0 : this.buttons.hashCode());
+    result = prime * result + (this.notifications == null ? 0 : this.notifications.hashCode());
     result =
-        prime * result + ((this.prnfbSettingsData == null) ? 0 : this.prnfbSettingsData.hashCode());
+        prime * result + (this.prnfbSettingsData == null ? 0 : this.prnfbSettingsData.hashCode());
     return result;
   }
 }

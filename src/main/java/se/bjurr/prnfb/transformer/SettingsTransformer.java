@@ -1,5 +1,6 @@
 package se.bjurr.prnfb.transformer;
 
+import static se.bjurr.prnfb.settings.PrnfbSettings.UNCHANGED;
 import static se.bjurr.prnfb.settings.PrnfbSettingsDataBuilder.prnfbSettingsDataBuilder;
 import se.bjurr.prnfb.presentation.dto.SettingsDataDTO;
 import se.bjurr.prnfb.settings.PrnfbSettingsData;
@@ -10,7 +11,7 @@ public class SettingsTransformer {
     SettingsDataDTO dto = new SettingsDataDTO();
     dto.setAdminRestriction(settingsData.getAdminRestriction());
     dto.setKeyStore(settingsData.getKeyStore().orNull());
-    dto.setKeyStorePassword(settingsData.getKeyStorePassword().orNull());
+    dto.setKeyStorePassword(UNCHANGED);
     dto.setKeyStoreType(settingsData.getKeyStoreType());
     dto.setShouldAcceptAnyCertificate(settingsData.isShouldAcceptAnyCertificate());
     return dto;

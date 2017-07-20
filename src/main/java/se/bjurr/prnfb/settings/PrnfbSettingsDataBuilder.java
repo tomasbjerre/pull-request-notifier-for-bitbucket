@@ -22,6 +22,7 @@ public class PrnfbSettingsDataBuilder {
     this.keyStore = settings.getKeyStore().orNull();
     this.keyStoreType = settings.getKeyStoreType();
     this.keyStorePassword = settings.getKeyStorePassword().orNull();
+    this.adminRestriction = settings.getAdminRestriction();
   }
 
   public PrnfbSettingsData build() {

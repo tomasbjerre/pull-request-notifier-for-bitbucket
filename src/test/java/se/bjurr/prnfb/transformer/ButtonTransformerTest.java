@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static se.bjurr.prnfb.presentation.dto.ButtonFormType.radio;
 import static se.bjurr.prnfb.presentation.dto.ButtonFormType.textarea;
+import static se.bjurr.prnfb.settings.PrnfbSettings.UNCHANGED;
 import static se.bjurr.prnfb.test.Podam.populatedInstanceOf;
 import static se.bjurr.prnfb.transformer.ButtonTransformer.validateButtonFormDTOList;
 import static se.bjurr.prnfb.transformer.SettingsTransformer.toDto;
@@ -23,6 +24,7 @@ public class ButtonTransformerTest {
   public void testTransformation() throws ValidationException {
     SettingsDataDTO originalDto = populatedInstanceOf(SettingsDataDTO.class);
     SettingsDataDTO retransformedDto = toDto(toPrnfbSettingsData(originalDto));
+    originalDto.setKeyStorePassword(UNCHANGED);
 
     assertThat(retransformedDto) //
         .isEqualTo(originalDto);
