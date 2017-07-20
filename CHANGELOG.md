@@ -2,11 +2,11 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
-## Unreleased
+## 3.4
 ### No issue
   Not exposing username, password, in REST
   
-  [a565291be41b9b3](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/a565291be41b9b3) Tomas Bjerre *2017-07-20 18:05:37*
+  [ff78ac1ec9e3518](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/ff78ac1ec9e3518) Tomas Bjerre *2017-07-20 18:06:00*
 
   doc
   
