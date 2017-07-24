@@ -251,7 +251,7 @@ public class SettingsService {
               .withUser(user) //
               .withPassword(password) //
               .withProxyUser(proxyUser) //
-              .withPassword(proxyPassword) //
+              .withProxyPassword(proxyPassword) //
               .build();
       doDeleteNotification(newNotification.getUuid());
     }
