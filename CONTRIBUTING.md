@@ -1,3 +1,15 @@
+# Inspect DB
+
+* Turn off BBS
+* java -cp ./target/bitbucket/app/WEB-INF/lib/h2-1.3.176.jar org.h2.tools.Shell
+* User: sa
+* Driver Leave blank, just enter
+* URL: jdbc:h2:file:///home/bjerre/workspace/pull-request-notifier-for-bitbucket/target/bitbucket/home/shared/data/db;DB_CLOSE_ON_EXIT=TRUE
+* Password Leave blank, just enter
+* maxwidth 9999
+* SELECT * FROM PLUGIN_SETTING WHERE KEY_NAME LIKE '%pull%';
+* SELECT KEY_VALUE FROM PLUGIN_SETTING WHERE KEY_NAME='se.bjurr.prnfb.pull-request-notifier-for-bitbucket-3'
+
 # Developer instructions
 
 The .travis.yml is setting up Atlas SDK and building the plugin. It may help you setup your environment.

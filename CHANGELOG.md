@@ -2,6 +2,18 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## Unreleased
+### No issue
+  doc
+  
+  [c4eb36d3853c9cb](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/c4eb36d3853c9cb) Tomas Bjerre *2017-07-28 10:19:35*
+
+## 3.6
+### GitHub [#236](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/236) username and password missing from saved configuration and HTTP requests
+  Bugfix setting credentials correctly
+  
+  [22a891b66e992a1](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/22a891b66e992a1) Tomas Bjerre *2017-07-24 20:53:30*
+
 ## 3.5
 ### No issue
   doc

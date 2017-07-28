@@ -1,11 +1,13 @@
 #!/bin/bash
 
-if [ "$1" -gt "-1" ]
-  then echo Give param, like /home/username
+installdir=$1
+if [ $# -eq 0 ]; then
+ installdir=~
 fi
 
-installdir=$1
-cd $1
+echo Installing in $installdir
+
+cd $installdir
 wget https://marketplace.atlassian.com/download/plugins/atlassian-plugin-sdk-tgz
 mkdir opt
 tar -xvzf *plugin-sdk* -C opt
