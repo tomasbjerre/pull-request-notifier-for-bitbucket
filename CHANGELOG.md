@@ -6,11 +6,18 @@ Changelog of Pull Request Notifier for Bitbucket.
 ### No issue
   doc
   
-<<<<<<< HEAD
-  [c4eb36d3853c9cb](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/c4eb36d3853c9cb) Tomas Bjerre *2017-07-28 10:19:35*
-=======
+  [ec92968f70f4ddf](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/ec92968f70f4ddf) Tomas Bjerre *2017-07-30 19:27:54*
+
+## 3.7
+### GitHub [#238](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/238) Project and Repo not shown correctly in dropboxes in global admin GUI
+  Storing projectKey and repoSlug
+  
+  [74ac44bb6ae5648](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/74ac44bb6ae5648) Tomas Bjerre *2017-07-30 19:24:31*
+
+### No issue
+  doc
+  
   [34ef39f654c3a36](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/34ef39f654c3a36) Tomas Bjerre *2017-07-30 17:21:43*
->>>>>>> 3bade5f... Storing projectKey and repoSlug #238
 
 ## 3.6
 ### GitHub [#236](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/236) username and password missing from saved configuration and HTTP requests
