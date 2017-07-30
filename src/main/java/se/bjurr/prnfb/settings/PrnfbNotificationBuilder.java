@@ -9,19 +9,68 @@ import static se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD.GET;
 import java.util.List;
 import java.util.UUID;
 
-import com.atlassian.bitbucket.pull.PullRequestState;
-
 import se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD;
 import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
 import se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR;
+
+import com.atlassian.bitbucket.pull.PullRequestState;
 
 public class PrnfbNotificationBuilder {
   public static PrnfbNotificationBuilder prnfbNotificationBuilder() {
     return new PrnfbNotificationBuilder();
   }
 
+  public PrnfbNotificationBuilder(
+      String filterRegexp,
+      String filterString,
+      List<PrnfbHeader> headers,
+      String injectionUrl,
+      String injectionUrlRegexp,
+      HTTP_METHOD method,
+      String name,
+      String password,
+      String postContent,
+      String projectKey,
+      String proxyPassword,
+      Integer proxyPort,
+      String proxyServer,
+      String proxyUser,
+      String repositorySlug,
+      TRIGGER_IF_MERGE triggerIfCanMerge,
+      List<PullRequestState> triggerIgnoreStateList,
+      List<PrnfbPullRequestAction> triggers,
+      String url,
+      String user,
+      UUID uuid,
+      ENCODE_FOR postContentEncoding,
+      String proxySchema) {
+    this.filterRegexp = filterRegexp;
+    this.filterString = filterString;
+    this.headers = headers;
+    this.injectionUrl = injectionUrl;
+    this.injectionUrlRegexp = injectionUrlRegexp;
+    this.method = method;
+    this.name = name;
+    this.password = password;
+    this.postContent = postContent;
+    this.projectKey = projectKey;
+    this.proxyPassword = proxyPassword;
+    this.proxyPort = proxyPort;
+    this.proxyServer = proxyServer;
+    this.proxyUser = proxyUser;
+    this.repositorySlug = repositorySlug;
+    this.triggerIfCanMerge = triggerIfCanMerge;
+    this.triggerIgnoreStateList = triggerIgnoreStateList;
+    this.triggers = triggers;
+    this.url = url;
+    this.user = user;
+    this.uuid = uuid;
+    this.postContentEncoding = postContentEncoding;
+    this.proxySchema = proxySchema;
+  }
+
   public static PrnfbNotificationBuilder prnfbNotificationBuilder(PrnfbNotification from) {
-    PrnfbNotificationBuilder b = new PrnfbNotificationBuilder();
+    final PrnfbNotificationBuilder b = new PrnfbNotificationBuilder();
 
     b.uuid = from.getUuid();
     b.password = from.getPassword().orNull();
@@ -39,6 +88,8 @@ public class PrnfbNotificationBuilder {
     b.proxyServer = from.getProxyServer().orNull();
     b.proxySchema = from.getProxySchema().orNull();
     b.proxyPort = from.getProxyPort();
+    b.projectKey = from.getProjectKey().orNull();
+    b.repositorySlug = from.getRepositorySlug().orNull();
     b.name = from.getName();
     b.injectionUrl = from.getInjectionUrl().orNull();
     b.injectionUrlRegexp = from.getInjectionUrlRegexp().orNull();
