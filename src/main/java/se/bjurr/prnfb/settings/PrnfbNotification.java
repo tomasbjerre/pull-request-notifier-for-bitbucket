@@ -106,7 +106,7 @@ public class PrnfbNotification implements HasUuid, Restricted {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    PrnfbNotification other = (PrnfbNotification) obj;
+    final PrnfbNotification other = (PrnfbNotification) obj;
     if (filterRegexp == null) {
       if (other.filterRegexp != null) {
         return false;
