@@ -8,6 +8,7 @@ import static com.google.common.base.Strings.nullToEmpty;
 import static java.util.UUID.randomUUID;
 import static java.util.regex.Pattern.compile;
 import static se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD.GET;
+import static se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR.NONE;
 import static se.bjurr.prnfb.settings.TRIGGER_IF_MERGE.ALWAYS;
 
 import java.net.URL;
@@ -92,7 +93,7 @@ public class PrnfbNotification implements HasUuid, Restricted {
     this.injectionUrl = emptyToNull(nullToEmpty(builder.getInjectionUrl()).trim());
     this.injectionUrlRegexp = emptyToNull(nullToEmpty(builder.getInjectionUrlRegexp()).trim());
     this.triggerIgnoreStateList = builder.getTriggerIgnoreStateList();
-    this.postContentEncoding = builder.getPostContentEncoding();
+    this.postContentEncoding = firstNonNull(builder.getPostContentEncoding(), NONE);
   }
 
   @Override

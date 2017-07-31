@@ -72,7 +72,7 @@ public class SettingsServiceTest {
 
   @Test
   public void testThatButtonCanBeAddedUpdatedAndDeleted() {
-    PrnfbButton button1 =
+    final PrnfbButton button1 =
         new PrnfbButton(
             null, "title", EVERYONE, ON_OR_OFF.off, "p1", "r1", "confirmationText", null);
     assertThat(this.sut.getButtons()) //
@@ -82,14 +82,14 @@ public class SettingsServiceTest {
     assertThat(this.sut.getButtons()) //
         .containsExactly(button1);
 
-    PrnfbButton button2 =
+    final PrnfbButton button2 =
         new PrnfbButton(
             null, "title", EVERYONE, ON_OR_OFF.off, "p1", "r1", "confirmationText", null);
     this.sut.addOrUpdateButton(button2);
     assertThat(this.sut.getButtons()) //
         .containsExactly(button1, button2);
 
-    PrnfbButton updated =
+    final PrnfbButton updated =
         new PrnfbButton(
             button1.getUuid(),
             "title2",
@@ -107,7 +107,7 @@ public class SettingsServiceTest {
     assertThat(this.sut.getButtons()) //
         .containsExactly(button2);
 
-    PrnfbButton b2 = this.sut.getButton(button2.getUuid());
+    final PrnfbButton b2 = this.sut.getButton(button2.getUuid());
     assertThat(b2) //
         .isEqualTo(button2);
     assertThat(b2.hashCode()) //
@@ -118,10 +118,10 @@ public class SettingsServiceTest {
 
   @Test
   public void testThatButtonsCanBeRetrievedByProject() {
-    PrnfbButton button1 = populatedInstanceOf(PrnfbButton.class);
+    final PrnfbButton button1 = populatedInstanceOf(PrnfbButton.class);
     this.sut.addOrUpdateButton(button1);
 
-    List<PrnfbButton> actual = this.sut.getButtons(button1.getProjectKey().get());
+    final List<PrnfbButton> actual = this.sut.getButtons(button1.getProjectKey().get());
 
     assertThat(actual) //
         .containsOnly(button1);
@@ -129,10 +129,10 @@ public class SettingsServiceTest {
 
   @Test
   public void testThatButtonsCanBeRetrievedByProjectAndRepo() {
-    PrnfbButton button1 = populatedInstanceOf(PrnfbButton.class);
+    final PrnfbButton button1 = populatedInstanceOf(PrnfbButton.class);
     this.sut.addOrUpdateButton(button1);
 
-    List<PrnfbButton> actual =
+    final List<PrnfbButton> actual =
         this.sut.getButtons(button1.getProjectKey().get(), button1.getRepositorySlug().get());
 
     assertThat(actual) //
@@ -148,7 +148,7 @@ public class SettingsServiceTest {
     assertThat(this.sut.getNotifications()) //
         .containsExactly(this.notification1);
 
-    PrnfbNotification notification2 =
+    final PrnfbNotification notification2 =
         prnfbNotificationBuilder() //
             .withUrl("http://hej.com/") //
             .withTrigger(APPROVED) //
@@ -157,7 +157,7 @@ public class SettingsServiceTest {
     assertThat(this.sut.getNotifications()) //
         .containsExactly(this.notification1, notification2);
 
-    PrnfbNotification updated =
+    final PrnfbNotification updated =
         prnfbNotificationBuilder() //
             .withUuid(this.notification1.getUuid()) //
             .withUrl("http://hej2.com/") //
@@ -185,7 +185,7 @@ public class SettingsServiceTest {
   public void testThatNotificationsCanBeRetrievedByProject() throws ValidationException {
     this.sut.addOrUpdateNotification(this.notification1);
 
-    List<PrnfbNotification> actual =
+    final List<PrnfbNotification> actual =
         this.sut.getNotifications(this.notification1.getProjectKey().orNull());
 
     assertThat(actual) //
@@ -196,20 +196,22 @@ public class SettingsServiceTest {
   public void testThatNotificationsCanBeRetrievedByProjectAndRepo() throws ValidationException {
     this.sut.addOrUpdateNotification(this.notification1);
 
-    List<PrnfbNotification> actual =
+    final List<PrnfbNotification> actual =
         this.sut.getNotifications(
             this.notification1.getProjectKey().orNull(),
             this.notification1.getRepositorySlug().orNull());
 
     assertThat(actual) //
-        .containsOnly(this.notification1);
+        .hasSize(1);
+    assertThat(actual.get(0)) //
+        .isEqualTo(this.notification1);
   }
 
   @Test
   public void testThatNotificationsCanBeRetrievedByUuid() throws ValidationException {
     this.sut.addOrUpdateNotification(this.notification1);
 
-    PrnfbNotification actual = this.sut.getNotification(this.notification1.getUuid());
+    final PrnfbNotification actual = this.sut.getNotification(this.notification1.getUuid());
 
     assertThat(actual) //
         .isEqualTo(this.notification1);
@@ -217,7 +219,7 @@ public class SettingsServiceTest {
 
   @Test
   public void testThatPluginSettingsDataCanBeStored() {
-    PrnfbSettings oldSettings =
+    final PrnfbSettings oldSettings =
         prnfbSettingsBuilder() //
             .setPrnfbSettingsData( //
                 prnfbSettingsDataBuilder() //
@@ -229,11 +231,11 @@ public class SettingsServiceTest {
                     .build() //
                 ) //
             .build();
-    String oldSettingsString = new Gson().toJson(oldSettings);
+    final String oldSettingsString = new Gson().toJson(oldSettings);
 
     this.pluginSettings.getPluginSettingsMap().put(STORAGE_KEY, oldSettingsString);
 
-    PrnfbSettings newSettings =
+    final PrnfbSettings newSettings =
         prnfbSettingsBuilder() //
             .setPrnfbSettingsData( //
                 prnfbSettingsDataBuilder() //
@@ -248,14 +250,14 @@ public class SettingsServiceTest {
 
     this.sut.setPrnfbSettingsData(newSettings.getPrnfbSettingsData());
 
-    String expectedSettingsString = new Gson().toJson(newSettings);
+    final String expectedSettingsString = new Gson().toJson(newSettings);
     assertThat(this.pluginSettings.getPluginSettingsMap().get(STORAGE_KEY)) //
         .isEqualTo(expectedSettingsString);
   }
 
   @Test
   public void testThatSettingsCanBeRead() {
-    PrnfbSettings oldSettings =
+    final PrnfbSettings oldSettings =
         prnfbSettingsBuilder() //
             .setPrnfbSettingsData( //
                 prnfbSettingsDataBuilder() //
@@ -267,10 +269,10 @@ public class SettingsServiceTest {
                     .build() //
                 ) //
             .build();
-    String oldSettingsString = new Gson().toJson(oldSettings);
+    final String oldSettingsString = new Gson().toJson(oldSettings);
     this.pluginSettings.getPluginSettingsMap().put(STORAGE_KEY, oldSettingsString);
 
-    PrnfbSettings actual = this.sut.getPrnfbSettings();
+    final PrnfbSettings actual = this.sut.getPrnfbSettings();
 
     assertThat(actual) //
         .isEqualTo(oldSettings);
@@ -291,7 +293,7 @@ public class SettingsServiceTest {
   public void testThatSettingsCanBeReadWhenNoneAreSaved() {
     this.pluginSettings.getPluginSettingsMap().put(STORAGE_KEY, null);
 
-    PrnfbSettings actual = this.sut.getPrnfbSettings();
+    final PrnfbSettings actual = this.sut.getPrnfbSettings();
     assertThat(actual) //
         .isNotNull();
   }

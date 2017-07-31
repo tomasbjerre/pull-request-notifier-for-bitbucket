@@ -4,9 +4,15 @@ Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
 ### No issue
+  Blocking KEEP_THIS_TO_LEAVE_UNCHANGED from being accidently saved
+  
+  [d3b0537c21dded1](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/d3b0537c21dded1) Tomas Bjerre *2017-07-31 05:41:23*
+
+## 3.8
+### No issue
   doc
   
-  [ec92968f70f4ddf](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/ec92968f70f4ddf) Tomas Bjerre *2017-07-30 19:27:54*
+  [a9fbe75c3fcca7d](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/a9fbe75c3fcca7d) Tomas Bjerre *2017-07-30 19:28:12*
 
 ## 3.7
 ### GitHub [#238](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/238) Project and Repo not shown correctly in dropboxes in global admin GUI
