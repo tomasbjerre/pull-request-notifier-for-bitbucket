@@ -82,7 +82,7 @@ public class SettingsService {
           public PrnfbNotification doInTransaction() {
             try {
               return doAddOrUpdateNotification(prnfbNotification);
-            } catch (ValidationException e) {
+            } catch (final ValidationException e) {
               propagate(e);
             }
             return null;
@@ -121,7 +121,7 @@ public class SettingsService {
   }
 
   public PrnfbButton getButton(UUID buttionUuid) {
-    Optional<PrnfbButton> foundOpt = findButton(buttionUuid);
+    final Optional<PrnfbButton> foundOpt = findButton(buttionUuid);
     if (!foundOpt.isPresent()) {
       throw new RuntimeException(buttionUuid + " not fond in:\n" + on('\n').join(getButtons()));
     }
@@ -133,8 +133,8 @@ public class SettingsService {
   }
 
   public List<PrnfbButton> getButtons(String projectKey) {
-    List<PrnfbButton> found = newArrayList();
-    for (PrnfbButton candidate : getPrnfbSettings().getButtons()) {
+    final List<PrnfbButton> found = newArrayList();
+    for (final PrnfbButton candidate : getPrnfbSettings().getButtons()) {
       if (candidate.getProjectKey().isPresent()
           && candidate.getProjectKey().get().equals(projectKey)) {
         found.add(candidate);
@@ -144,8 +144,8 @@ public class SettingsService {
   }
 
   public List<PrnfbButton> getButtons(String projectKey, String repositorySlug) {
-    List<PrnfbButton> found = newArrayList();
-    for (PrnfbButton candidate : getPrnfbSettings().getButtons()) {
+    final List<PrnfbButton> found = newArrayList();
+    for (final PrnfbButton candidate : getPrnfbSettings().getButtons()) {
       if (candidate.getProjectKey().isPresent()
           && candidate.getProjectKey().get().equals(projectKey) //
           && candidate.getRepositorySlug().isPresent()
@@ -165,8 +165,8 @@ public class SettingsService {
   }
 
   public List<PrnfbNotification> getNotifications(String projectKey) {
-    List<PrnfbNotification> found = newArrayList();
-    for (PrnfbNotification candidate : getPrnfbSettings().getNotifications()) {
+    final List<PrnfbNotification> found = newArrayList();
+    for (final PrnfbNotification candidate : getPrnfbSettings().getNotifications()) {
       if (candidate.getProjectKey().isPresent()
           && candidate.getProjectKey().get().equals(projectKey)) {
         found.add(candidate);
@@ -176,8 +176,8 @@ public class SettingsService {
   }
 
   public List<PrnfbNotification> getNotifications(String projectKey, String repositorySlug) {
-    List<PrnfbNotification> found = newArrayList();
-    for (PrnfbNotification candidate : getPrnfbSettings().getNotifications()) {
+    final List<PrnfbNotification> found = newArrayList();
+    for (final PrnfbNotification candidate : getPrnfbSettings().getNotifications()) {
       if (candidate.getProjectKey().isPresent()
           && candidate.getProjectKey().get().equals(projectKey) //
           && candidate.getRepositorySlug().isPresent()
@@ -208,8 +208,8 @@ public class SettingsService {
         new TransactionCallback<Void>() {
           @Override
           public Void doInTransaction() {
-            PrnfbSettings oldSettings = doGetPrnfbSettings();
-            PrnfbSettings newPrnfbSettings =
+            final PrnfbSettings oldSettings = doGetPrnfbSettings();
+            final PrnfbSettings newPrnfbSettings =
                 prnfbSettingsBuilder(oldSettings) //
                     .setPrnfbSettingsData(prnfbSettingsData) //
                     .build();
@@ -224,8 +224,8 @@ public class SettingsService {
       doDeleteButton(prnfbButton.getUuid());
     }
 
-    PrnfbSettings originalSettings = doGetPrnfbSettings();
-    PrnfbSettings updated =
+    final PrnfbSettings originalSettings = doGetPrnfbSettings();
+    final PrnfbSettings updated =
         prnfbSettingsBuilder(originalSettings) //
             .withButton(prnfbButton) //
             .build();
@@ -236,28 +236,39 @@ public class SettingsService {
 
   private PrnfbNotification doAddOrUpdateNotification(PrnfbNotification newNotification)
       throws ValidationException {
-    Optional<PrnfbNotification> oldNotification = findNotification(newNotification.getUuid());
+    final UUID notificationUuid = newNotification.getUuid();
+
+    Optional<String> oldUser = Optional.absent();
+    Optional<String> oldPassword = Optional.absent();
+    Optional<String> oldProxyUser = Optional.absent();
+    Optional<String> oldProxyPassword = Optional.absent();
+    final Optional<PrnfbNotification> oldNotification = findNotification(notificationUuid);
     if (oldNotification.isPresent()) {
-      String user = keepIfUnchanged(newNotification.getUser(), oldNotification.get().getUser());
-      String password =
-          keepIfUnchanged(newNotification.getPassword(), oldNotification.get().getPassword());
-      String proxyUser =
-          keepIfUnchanged(newNotification.getProxyUser(), oldNotification.get().getProxyUser());
-      String proxyPassword =
-          keepIfUnchanged(
-              newNotification.getProxyPassword(), oldNotification.get().getProxyPassword());
-      newNotification =
-          prnfbNotificationBuilder(newNotification) //
-              .withUser(user) //
-              .withPassword(password) //
-              .withProxyUser(proxyUser) //
-              .withProxyPassword(proxyPassword) //
-              .build();
-      doDeleteNotification(newNotification.getUuid());
+      oldUser = oldNotification.get().getUser();
+      oldPassword = oldNotification.get().getPassword();
+      oldProxyUser = oldNotification.get().getProxyUser();
+      oldProxyPassword = oldNotification.get().getProxyPassword();
     }
 
-    PrnfbSettings originalSettings = doGetPrnfbSettings();
-    PrnfbSettings updated =
+    final String user = keepIfUnchanged(newNotification.getUser(), oldUser);
+    final String password = keepIfUnchanged(newNotification.getPassword(), oldPassword);
+    final String proxyUser = keepIfUnchanged(newNotification.getProxyUser(), oldProxyUser);
+    final String proxyPassword =
+        keepIfUnchanged(newNotification.getProxyPassword(), oldProxyPassword);
+    newNotification =
+        prnfbNotificationBuilder(newNotification) //
+            .withUser(user) //
+            .withPassword(password) //
+            .withProxyUser(proxyUser) //
+            .withProxyPassword(proxyPassword) //
+            .build();
+
+    if (oldNotification.isPresent()) {
+      doDeleteNotification(notificationUuid);
+    }
+
+    final PrnfbSettings originalSettings = doGetPrnfbSettings();
+    final PrnfbSettings updated =
         prnfbSettingsBuilder(originalSettings) //
             .withNotification(newNotification) //
             .build();
@@ -267,7 +278,7 @@ public class SettingsService {
   }
 
   private String keepIfUnchanged(Optional<String> newValue, Optional<String> oldValue) {
-    boolean isUnchanged = newValue.isPresent() && newValue.get().equals(UNCHANGED);
+    final boolean isUnchanged = newValue.isPresent() && newValue.get().equals(UNCHANGED);
     if (isUnchanged) {
       return oldValue.orNull();
     }
@@ -275,10 +286,10 @@ public class SettingsService {
   }
 
   private void doDeleteButton(UUID uuid) {
-    PrnfbSettings originalSettings = doGetPrnfbSettings();
-    List<PrnfbButton> keep =
+    final PrnfbSettings originalSettings = doGetPrnfbSettings();
+    final List<PrnfbButton> keep =
         newArrayList(filter(originalSettings.getButtons(), not(withUuid(uuid))));
-    PrnfbSettings withoutDeleted =
+    final PrnfbSettings withoutDeleted =
         prnfbSettingsBuilder(originalSettings) //
             .setButtons(keep) //
             .build();
@@ -286,10 +297,10 @@ public class SettingsService {
   }
 
   private void doDeleteNotification(UUID uuid) {
-    PrnfbSettings originalSettings = doGetPrnfbSettings();
-    List<PrnfbNotification> keep =
+    final PrnfbSettings originalSettings = doGetPrnfbSettings();
+    final List<PrnfbNotification> keep =
         newArrayList(filter(originalSettings.getNotifications(), not(withUuid(uuid))));
-    PrnfbSettings withoutDeleted =
+    final PrnfbSettings withoutDeleted =
         prnfbSettingsBuilder(originalSettings) //
             .setNotifications(keep) //
             .build();
@@ -307,12 +318,12 @@ public class SettingsService {
               != null) {
         try {
           this.logger.info("Using legacy settings.");
-          se.bjurr.prnfb.settings.legacy.PrnfbSettings legacySettings =
+          final se.bjurr.prnfb.settings.legacy.PrnfbSettings legacySettings =
               SettingsStorage.getPrnfbSettings(this.pluginSettings);
-          PrnfbSettings fromLegacy = settingsFromLegacy(legacySettings);
+          final PrnfbSettings fromLegacy = settingsFromLegacy(legacySettings);
           doSetPrnfbSettings(fromLegacy);
           storedSettings = this.pluginSettings.get(STORAGE_KEY);
-        } catch (Exception e) {
+        } catch (final Exception e) {
           this.logger.error("", e);
         }
       } else {
@@ -329,23 +340,23 @@ public class SettingsService {
   }
 
   private void doSetPrnfbSettings(PrnfbSettings newSettings) {
-    PrnfbSettingsData oldSettingsData = doGetPrnfbSettings().getPrnfbSettingsData();
-    PrnfbSettingsData newSettingsData = newSettings.getPrnfbSettingsData();
-    String keyStorePassword =
+    final PrnfbSettingsData oldSettingsData = doGetPrnfbSettings().getPrnfbSettingsData();
+    final PrnfbSettingsData newSettingsData = newSettings.getPrnfbSettingsData();
+    final String keyStorePassword =
         keepIfUnchanged(
             newSettingsData.getKeyStorePassword(), oldSettingsData.getKeyStorePassword());
 
-    PrnfbSettingsData adjustedSettingsData =
+    final PrnfbSettingsData adjustedSettingsData =
         prnfbSettingsDataBuilder(newSettingsData) //
             .setKeyStorePassword(keyStorePassword) //
             .build();
 
-    PrnfbSettings adjustedSettings =
+    final PrnfbSettings adjustedSettings =
         prnfbSettingsBuilder(newSettings) //
             .setPrnfbSettingsData(adjustedSettingsData) //
             .build();
 
-    String data = gson.toJson(adjustedSettings);
+    final String data = gson.toJson(adjustedSettings);
     this.pluginSettings.put(STORAGE_KEY, data);
   }
 
@@ -363,9 +374,9 @@ public class SettingsService {
 
   private PrnfbSettings settingsFromLegacy(
       se.bjurr.prnfb.settings.legacy.PrnfbSettings oldSettings) {
-    String ks = oldSettings.getKeyStore().orNull();
-    String ksp = oldSettings.getKeyStorePassword().orNull();
-    String kst = oldSettings.getKeyStoreType();
+    final String ks = oldSettings.getKeyStore().orNull();
+    final String ksp = oldSettings.getKeyStorePassword().orNull();
+    final String kst = oldSettings.getKeyStoreType();
     USER_LEVEL adminRestr = USER_LEVEL.SYSTEM_ADMIN;
     if (oldSettings.isAdminsAllowed()) {
       adminRestr = USER_LEVEL.ADMIN;
@@ -374,10 +385,10 @@ public class SettingsService {
       adminRestr = USER_LEVEL.EVERYONE;
     }
 
-    boolean shouldAcceptAnyCertificate = false;
+    final boolean shouldAcceptAnyCertificate = false;
 
-    List<PrnfbButton> newButtons = newArrayList();
-    for (se.bjurr.prnfb.settings.legacy.PrnfbButton oldButton : oldSettings.getButtons()) {
+    final List<PrnfbButton> newButtons = newArrayList();
+    for (final se.bjurr.prnfb.settings.legacy.PrnfbButton oldButton : oldSettings.getButtons()) {
       USER_LEVEL userLevel = USER_LEVEL.SYSTEM_ADMIN;
       if (oldButton.getVisibility() == BUTTON_VISIBILITY.ADMIN) {
         userLevel = USER_LEVEL.ADMIN;
@@ -397,11 +408,11 @@ public class SettingsService {
               null));
     }
 
-    List<PrnfbNotification> newNotifications = newArrayList();
-    for (se.bjurr.prnfb.settings.legacy.PrnfbNotification oldNotification :
+    final List<PrnfbNotification> newNotifications = newArrayList();
+    for (final se.bjurr.prnfb.settings.legacy.PrnfbNotification oldNotification :
         oldSettings.getNotifications()) {
       try {
-        PrnfbNotificationBuilder builder =
+        final PrnfbNotificationBuilder builder =
             prnfbNotificationBuilder() //
                 .withFilterRegexp(oldNotification.getFilterRegexp().orNull()) //
                 .withFilterString(oldNotification.getFilterString().orNull()) //
@@ -420,20 +431,20 @@ public class SettingsService {
                 .withUrl(oldNotification.getUrl()) //
                 .withUser(oldNotification.getUser().orNull());
 
-        for (Header h : oldNotification.getHeaders()) {
+        for (final Header h : oldNotification.getHeaders()) {
           builder.withHeader(h.getName(), h.getValue());
         }
 
-        for (PullRequestState t : oldNotification.getTriggerIgnoreStateList()) {
+        for (final PullRequestState t : oldNotification.getTriggerIgnoreStateList()) {
           builder.withTriggerIgnoreState(t);
         }
 
-        for (PrnfbPullRequestAction t : oldNotification.getTriggers()) {
+        for (final PrnfbPullRequestAction t : oldNotification.getTriggers()) {
           builder.withTrigger(t);
         }
 
         newNotifications.add(builder.build());
-      } catch (ValidationException e) {
+      } catch (final ValidationException e) {
         this.logger.error("", e);
       }
     }

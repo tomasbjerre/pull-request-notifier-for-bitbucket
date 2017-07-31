@@ -4,6 +4,12 @@ Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
 ### No issue
+  Blocking KEEP_THIS_TO_LEAVE_UNCHANGED from being accidently saved
+  
+  [d3b0537c21dded1](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/d3b0537c21dded1) Tomas Bjerre *2017-07-31 05:41:23*
+
+## 3.8
+### No issue
   doc
   
   [a9fbe75c3fcca7d](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/a9fbe75c3fcca7d) Tomas Bjerre *2017-07-30 19:28:12*
