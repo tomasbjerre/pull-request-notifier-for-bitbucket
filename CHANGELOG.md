@@ -2,7 +2,7 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
-## Unreleased
+## 3.10
 ### GitHub [#237](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/237) Listing all notifications via API takes a long time
   Speeding up restriction filter
   
@@ -11,7 +11,7 @@ Changelog of Pull Request Notifier for Bitbucket.
 ### GitHub [#240](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/240) Button config does not show up in the plugin config page.
   Allowing anyone admin moved project/repo
   
-  [ba3d3c131a3d3da](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/ba3d3c131a3d3da) Tomas Bjerre *2017-08-02 19:49:14*
+  [6f690ab3f9b4948](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/6f690ab3f9b4948) Tomas Bjerre *2017-08-02 20:07:01*
 
 ### No issue
   doc
