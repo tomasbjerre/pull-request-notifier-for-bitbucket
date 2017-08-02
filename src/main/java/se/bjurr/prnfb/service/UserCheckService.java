@@ -16,6 +16,9 @@ import javax.annotation.Nullable;
 
 import org.slf4j.Logger;
 
+import se.bjurr.prnfb.settings.Restricted;
+import se.bjurr.prnfb.settings.USER_LEVEL;
+
 import com.atlassian.bitbucket.permission.PermissionService;
 import com.atlassian.bitbucket.project.Project;
 import com.atlassian.bitbucket.project.ProjectService;
@@ -27,9 +30,6 @@ import com.atlassian.sal.api.user.UserKey;
 import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.sal.api.user.UserProfile;
 import com.google.common.annotations.VisibleForTesting;
-
-import se.bjurr.prnfb.settings.Restricted;
-import se.bjurr.prnfb.settings.USER_LEVEL;
 
 public class UserCheckService {
   private static final Logger LOG = getLogger(UserCheckService.class);
@@ -66,7 +66,9 @@ public class UserCheckService {
   }
 
   public <R extends Restricted> Iterable<R> filterAdminAllowed(List<R> list) {
-    return filter(list, (r) -> isAdminAllowed(r));
+    final USER_LEVEL adminRestriction =
+        settingsService.getPrnfbSettingsData().getAdminRestriction();
+    return filter(list, (r) -> isAdminAllowed(r, adminRestriction));
   }
 
   @VisibleForTesting
@@ -81,7 +83,7 @@ public class UserCheckService {
                   return projectService.getByKey(projectKey);
                 }
               });
-    } catch (Exception e) {
+    } catch (final Exception e) {
       throw propagate(e);
     }
   }
@@ -98,13 +100,13 @@ public class UserCheckService {
                   return repositoryService.getBySlug(projectKey, repositorySlug);
                 }
               });
-    } catch (Exception e) {
+    } catch (final Exception e) {
       throw propagate(e);
     }
   }
 
   public boolean isAdmin(UserKey userKey, String projectKey, String repositorySlug) {
-    boolean isAdmin = userManager.isAdmin(userKey);
+    final boolean isAdmin = userManager.isAdmin(userKey);
     if (isAdmin) {
       return isAdmin;
     }
@@ -113,19 +115,19 @@ public class UserCheckService {
     repositorySlug = emptyToNull(repositorySlug);
 
     if (projectKey != null && repositorySlug == null) {
-      Project project = getProject(projectKey);
+      final Project project = getProject(projectKey);
       if (project == null) {
         LOG.error("Button with project " + projectKey + " configured. But no such project exists!");
         return false;
       }
-      boolean isAllowed = permissionService.hasProjectPermission(project, PROJECT_ADMIN);
+      final boolean isAllowed = permissionService.hasProjectPermission(project, PROJECT_ADMIN);
       if (isAllowed) {
         return true;
       }
     }
 
     if (projectKey != null && repositorySlug != null) {
-      Repository repository = getRepo(projectKey, repositorySlug);
+      final Repository repository = getRepo(projectKey, repositorySlug);
       if (repository == null) {
         LOG.error(
             "Button with project "
@@ -140,18 +142,17 @@ public class UserCheckService {
     return false;
   }
 
-  public boolean isAdminAllowed(Restricted restricted) {
-    USER_LEVEL adminRestriction = settingsService.getPrnfbSettingsData().getAdminRestriction();
-    String projectKey = restricted.getProjectKey().orNull();
-    String repositorySlug = restricted.getRepositorySlug().orNull();
+  public boolean isAdminAllowed(Restricted restricted, USER_LEVEL adminRestriction) {
+    final String projectKey = restricted.getProjectKey().orNull();
+    final String repositorySlug = restricted.getRepositorySlug().orNull();
     return isAllowed(adminRestriction, projectKey, repositorySlug);
   }
 
   public boolean isAllowed(
       USER_LEVEL userLevel, @Nullable String projectKey, @Nullable String repositorySlug) {
-    UserKey userKey = userManager.getRemoteUser().getUserKey();
-    boolean isAdmin = isAdmin(userKey, projectKey, repositorySlug);
-    boolean isSystemAdmin = isSystemAdmin(userKey);
+    final UserKey userKey = userManager.getRemoteUser().getUserKey();
+    final boolean isAdmin = isAdmin(userKey, projectKey, repositorySlug);
+    final boolean isSystemAdmin = isSystemAdmin(userKey);
     return isAllowed(userLevel, isAdmin, isSystemAdmin);
   }
 
@@ -166,7 +167,7 @@ public class UserCheckService {
   }
 
   public boolean isViewAllowed() {
-    UserProfile user = userManager.getRemoteUser();
+    final UserProfile user = userManager.getRemoteUser();
     if (user == null) {
       return false;
     }

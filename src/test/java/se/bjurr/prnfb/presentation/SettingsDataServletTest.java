@@ -2,6 +2,7 @@ package se.bjurr.prnfb.presentation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -30,21 +31,21 @@ public class SettingsDataServletTest {
     initMocks(this);
     when(this.userCheckService.isViewAllowed()) //
         .thenReturn(true);
-    when(this.userCheckService.isAdminAllowed(Mockito.any())) //
+    when(this.userCheckService.isAdminAllowed(Mockito.any(), Mockito.any())) //
         .thenReturn(true);
     this.sut = new SettingsDataServlet(this.userCheckService, this.settingsService);
   }
 
   @Test
   public void testThatSettingsCanBeRead() throws Exception {
-    SettingsDataDTO expected = new SettingsDataDTO();
+    final SettingsDataDTO expected = new SettingsDataDTO();
     expected.setAdminRestriction(ADMIN);
     expected.setKeyStore("keyStore");
     expected.setKeyStorePassword(UNCHANGED);
     expected.setKeyStoreType("keyStoreType");
     expected.setShouldAcceptAnyCertificate(true);
 
-    PrnfbSettingsData storedSettings =
+    final PrnfbSettingsData storedSettings =
         prnfbSettingsDataBuilder() //
             .setShouldAcceptAnyCertificate(true) //
             .setAdminRestriction(ADMIN) //
@@ -56,7 +57,7 @@ public class SettingsDataServletTest {
     when(this.settingsService.getPrnfbSettingsData()) //
         .thenReturn(storedSettings);
 
-    SettingsDataDTO actual = (SettingsDataDTO) this.sut.get().getEntity();
+    final SettingsDataDTO actual = (SettingsDataDTO) this.sut.get().getEntity();
 
     assertThat(actual) //
         .isEqualTo(expected);
@@ -64,14 +65,18 @@ public class SettingsDataServletTest {
 
   @Test
   public void testThatSettingsCanBeStored() throws Exception {
-    SettingsDataDTO incoming = new SettingsDataDTO();
+    final PrnfbSettingsData prnfbSettingsData = mock(PrnfbSettingsData.class);
+    when(settingsService.getPrnfbSettingsData()).thenReturn(prnfbSettingsData);
+    when(settingsService.getPrnfbSettingsData().getAdminRestriction()).thenReturn(ADMIN);
+
+    final SettingsDataDTO incoming = new SettingsDataDTO();
     incoming.setAdminRestriction(ADMIN);
     incoming.setKeyStore("keyStore");
     incoming.setKeyStorePassword("keyStorePassword");
     incoming.setKeyStoreType("keyStoreType");
     incoming.setShouldAcceptAnyCertificate(true);
 
-    PrnfbSettingsData storedSettings =
+    final PrnfbSettingsData storedSettings =
         prnfbSettingsDataBuilder() //
             .setShouldAcceptAnyCertificate(true) //
             .setAdminRestriction(ADMIN) //

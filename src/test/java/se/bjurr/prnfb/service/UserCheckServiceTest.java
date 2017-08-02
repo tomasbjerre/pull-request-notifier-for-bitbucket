@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static se.bjurr.prnfb.settings.PrnfbSettingsDataBuilder.prnfbSettingsDataBuilder;
 import static se.bjurr.prnfb.settings.USER_LEVEL.ADMIN;
 import static se.bjurr.prnfb.settings.USER_LEVEL.EVERYONE;
 import static se.bjurr.prnfb.settings.USER_LEVEL.SYSTEM_ADMIN;
@@ -15,6 +14,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+
+import se.bjurr.prnfb.settings.Restricted;
 
 import com.atlassian.bitbucket.permission.Permission;
 import com.atlassian.bitbucket.permission.PermissionService;
@@ -27,9 +28,6 @@ import com.atlassian.sal.api.user.UserKey;
 import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.sal.api.user.UserProfile;
 import com.google.common.base.Optional;
-
-import se.bjurr.prnfb.settings.PrnfbSettingsData;
-import se.bjurr.prnfb.settings.Restricted;
 
 public class UserCheckServiceTest {
   private final EscalatedSecurityContext escalatedSecurityContext =
@@ -87,15 +85,12 @@ public class UserCheckServiceTest {
 
   @Test
   public void testThatAdminAllowedCanBeChecked() {
-    PrnfbSettingsData prnfbSettingsData =
-        prnfbSettingsDataBuilder().setAdminRestriction(SYSTEM_ADMIN).build();
-    when(settingsService.getPrnfbSettingsData()).thenReturn(prnfbSettingsData);
-    UserProfile remoteUser = mock(UserProfile.class);
+    final UserProfile remoteUser = mock(UserProfile.class);
     when(remoteUser.getUserKey()).thenReturn(userKey);
     when(userManager.getRemoteUser()).thenReturn(remoteUser);
     when(userManager.isAdmin(userKey)).thenReturn(false);
     when(userManager.isSystemAdmin(userKey)).thenReturn(false);
-    boolean actual =
+    final boolean actual =
         this.sut.isAdminAllowed(
             new Restricted() {
               @Override
@@ -107,7 +102,8 @@ public class UserCheckServiceTest {
               public Optional<String> getProjectKey() {
                 return Optional.absent();
               }
-            });
+            },
+            SYSTEM_ADMIN);
 
     assertThat(actual).isFalse();
   }

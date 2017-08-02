@@ -23,12 +23,13 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-import com.atlassian.annotations.security.XsrfProtectionExcluded;
-
 import se.bjurr.prnfb.presentation.dto.NotificationDTO;
 import se.bjurr.prnfb.service.SettingsService;
 import se.bjurr.prnfb.service.UserCheckService;
 import se.bjurr.prnfb.settings.PrnfbNotification;
+import se.bjurr.prnfb.settings.USER_LEVEL;
+
+import com.atlassian.annotations.security.XsrfProtectionExcluded;
 
 @Path("/settings/notifications")
 public class NotificationServlet {
@@ -45,17 +46,20 @@ public class NotificationServlet {
   @Consumes(APPLICATION_JSON)
   @Produces(APPLICATION_JSON)
   public Response create(NotificationDTO notificationDto) {
-    if (!this.userCheckService.isAdminAllowed(notificationDto)) {
+    final USER_LEVEL adminRestriction =
+        settingsService.getPrnfbSettingsData().getAdminRestriction();
+    if (!this.userCheckService.isAdminAllowed(notificationDto, adminRestriction)) {
       return status(UNAUTHORIZED).build();
     }
     try {
-      PrnfbNotification prnfbNotification = toPrnfbNotification(notificationDto);
-      PrnfbNotification created = this.settingsService.addOrUpdateNotification(prnfbNotification);
-      NotificationDTO createdDto = toNotificationDto(created);
+      final PrnfbNotification prnfbNotification = toPrnfbNotification(notificationDto);
+      final PrnfbNotification created =
+          this.settingsService.addOrUpdateNotification(prnfbNotification);
+      final NotificationDTO createdDto = toNotificationDto(created);
       return status(OK) //
           .entity(createdDto) //
           .build();
-    } catch (Exception e) {
+    } catch (final Exception e) {
       throw propagate(e);
     }
   }
@@ -65,8 +69,10 @@ public class NotificationServlet {
   @XsrfProtectionExcluded
   @Produces(APPLICATION_JSON)
   public Response delete(@PathParam("uuid") UUID notification) {
-    PrnfbNotification notificationDto = this.settingsService.getNotification(notification);
-    if (!this.userCheckService.isAdminAllowed(notificationDto)) {
+    final PrnfbNotification notificationDto = this.settingsService.getNotification(notification);
+    final USER_LEVEL adminRestriction =
+        settingsService.getPrnfbSettingsData().getAdminRestriction();
+    if (!this.userCheckService.isAdminAllowed(notificationDto, adminRestriction)) {
       return status(UNAUTHORIZED).build();
     }
     this.settingsService.deleteNotification(notification);
@@ -76,10 +82,10 @@ public class NotificationServlet {
   @GET
   @Produces(APPLICATION_JSON)
   public Response get() {
-    List<PrnfbNotification> notifications = this.settingsService.getNotifications();
-    Iterable<PrnfbNotification> notificationsFiltered =
+    final List<PrnfbNotification> notifications = this.settingsService.getNotifications();
+    final Iterable<PrnfbNotification> notificationsFiltered =
         userCheckService.filterAdminAllowed(notifications);
-    List<NotificationDTO> dtos = toNotificationDtoList(notificationsFiltered);
+    final List<NotificationDTO> dtos = toNotificationDtoList(notificationsFiltered);
     Collections.sort(dtos);
     return ok(dtos).build();
   }
@@ -88,10 +94,10 @@ public class NotificationServlet {
   @Path("/projectKey/{projectKey}")
   @Produces(APPLICATION_JSON)
   public Response get(@PathParam("projectKey") String projectKey) {
-    List<PrnfbNotification> notifications = this.settingsService.getNotifications(projectKey);
-    Iterable<PrnfbNotification> notificationsFiltered =
+    final List<PrnfbNotification> notifications = this.settingsService.getNotifications(projectKey);
+    final Iterable<PrnfbNotification> notificationsFiltered =
         userCheckService.filterAdminAllowed(notifications);
-    List<NotificationDTO> dtos = toNotificationDtoList(notificationsFiltered);
+    final List<NotificationDTO> dtos = toNotificationDtoList(notificationsFiltered);
     Collections.sort(dtos);
     return ok(dtos).build();
   }
@@ -102,11 +108,11 @@ public class NotificationServlet {
   public Response get(
       @PathParam("projectKey") String projectKey,
       @PathParam("repositorySlug") String repositorySlug) {
-    List<PrnfbNotification> notifications =
+    final List<PrnfbNotification> notifications =
         this.settingsService.getNotifications(projectKey, repositorySlug);
-    Iterable<PrnfbNotification> notificationsFiltered =
+    final Iterable<PrnfbNotification> notificationsFiltered =
         userCheckService.filterAdminAllowed(notifications);
-    List<NotificationDTO> dtos = toNotificationDtoList(notificationsFiltered);
+    final List<NotificationDTO> dtos = toNotificationDtoList(notificationsFiltered);
     Collections.sort(dtos);
     return ok(dtos).build();
   }
@@ -115,11 +121,13 @@ public class NotificationServlet {
   @Path("{uuid}")
   @Produces(APPLICATION_JSON)
   public Response get(@PathParam("uuid") UUID notificationUuid) {
-    PrnfbNotification notification = this.settingsService.getNotification(notificationUuid);
-    if (!this.userCheckService.isAdminAllowed(notification)) {
+    final PrnfbNotification notification = this.settingsService.getNotification(notificationUuid);
+    final USER_LEVEL adminRestriction =
+        settingsService.getPrnfbSettingsData().getAdminRestriction();
+    if (!this.userCheckService.isAdminAllowed(notification, adminRestriction)) {
       return status(UNAUTHORIZED).build();
     }
-    NotificationDTO dto = toNotificationDto(notification);
+    final NotificationDTO dto = toNotificationDto(notification);
     return ok(dto).build();
   }
 }

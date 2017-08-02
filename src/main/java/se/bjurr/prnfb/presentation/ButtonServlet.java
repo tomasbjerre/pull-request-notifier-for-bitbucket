@@ -27,10 +27,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
-import com.atlassian.annotations.security.XsrfProtectionExcluded;
-import com.google.common.base.Optional;
-import com.google.common.collect.Iterables;
-
 import se.bjurr.prnfb.http.NotificationResponse;
 import se.bjurr.prnfb.presentation.dto.ButtonDTO;
 import se.bjurr.prnfb.presentation.dto.ButtonFormElementDTO;
@@ -41,6 +37,11 @@ import se.bjurr.prnfb.service.PrnfbRendererWrapper;
 import se.bjurr.prnfb.service.SettingsService;
 import se.bjurr.prnfb.service.UserCheckService;
 import se.bjurr.prnfb.settings.PrnfbButton;
+import se.bjurr.prnfb.settings.USER_LEVEL;
+
+import com.atlassian.annotations.security.XsrfProtectionExcluded;
+import com.google.common.base.Optional;
+import com.google.common.collect.Iterables;
 
 @Path("/settings/buttons")
 public class ButtonServlet {
@@ -63,14 +64,16 @@ public class ButtonServlet {
   @Consumes(APPLICATION_JSON)
   @Produces(APPLICATION_JSON)
   public Response create(ButtonDTO buttonDto) {
-    if (!userCheckService.isAdminAllowed(buttonDto)) {
+    final USER_LEVEL adminRestriction =
+        settingsService.getPrnfbSettingsData().getAdminRestriction();
+    if (!userCheckService.isAdminAllowed(buttonDto, adminRestriction)) {
       return status(UNAUTHORIZED) //
           .build();
     }
 
-    PrnfbButton prnfbButton = toPrnfbButton(buttonDto);
-    PrnfbButton created = settingsService.addOrUpdateButton(prnfbButton);
-    ButtonDTO createdDto = toButtonDto(created);
+    final PrnfbButton prnfbButton = toPrnfbButton(buttonDto);
+    final PrnfbButton created = settingsService.addOrUpdateButton(prnfbButton);
+    final ButtonDTO createdDto = toButtonDto(created);
 
     return status(OK) //
         .entity(createdDto) //
@@ -82,8 +85,10 @@ public class ButtonServlet {
   @XsrfProtectionExcluded
   @Produces(APPLICATION_JSON)
   public Response delete(@PathParam("uuid") UUID prnfbButtonUuid) {
-    PrnfbButton prnfbButton = settingsService.getButton(prnfbButtonUuid);
-    if (!userCheckService.isAdminAllowed(prnfbButton)) {
+    final PrnfbButton prnfbButton = settingsService.getButton(prnfbButtonUuid);
+    final USER_LEVEL adminRestriction =
+        settingsService.getPrnfbSettingsData().getAdminRestriction();
+    if (!userCheckService.isAdminAllowed(prnfbButton, adminRestriction)) {
       return status(UNAUTHORIZED) //
           .build();
     }
@@ -94,9 +99,9 @@ public class ButtonServlet {
   @GET
   @Produces(APPLICATION_JSON)
   public Response get() {
-    List<PrnfbButton> buttons = settingsService.getButtons();
-    Iterable<PrnfbButton> allowedButtons = userCheckService.filterAdminAllowed(buttons);
-    List<ButtonDTO> dtos = toButtonDtoList(allowedButtons);
+    final List<PrnfbButton> buttons = settingsService.getButtons();
+    final Iterable<PrnfbButton> allowedButtons = userCheckService.filterAdminAllowed(buttons);
+    final List<ButtonDTO> dtos = toButtonDtoList(allowedButtons);
     Collections.sort(dtos);
     return ok(dtos, APPLICATION_JSON).build();
   }
@@ -105,9 +110,9 @@ public class ButtonServlet {
   @Path("/projectKey/{projectKey}")
   @Produces(APPLICATION_JSON)
   public Response get(@PathParam("projectKey") String projectKey) {
-    List<PrnfbButton> buttons = settingsService.getButtons(projectKey);
-    Iterable<PrnfbButton> allowedButtons = userCheckService.filterAdminAllowed(buttons);
-    List<ButtonDTO> dtos = toButtonDtoList(allowedButtons);
+    final List<PrnfbButton> buttons = settingsService.getButtons(projectKey);
+    final Iterable<PrnfbButton> allowedButtons = userCheckService.filterAdminAllowed(buttons);
+    final List<ButtonDTO> dtos = toButtonDtoList(allowedButtons);
     Collections.sort(dtos);
     return ok(dtos, APPLICATION_JSON).build();
   }
@@ -118,9 +123,9 @@ public class ButtonServlet {
   public Response get(
       @PathParam("projectKey") String projectKey,
       @PathParam("repositorySlug") String repositorySlug) {
-    List<PrnfbButton> buttons = settingsService.getButtons(projectKey, repositorySlug);
-    Iterable<PrnfbButton> allowedButtons = userCheckService.filterAdminAllowed(buttons);
-    List<ButtonDTO> dtos = toButtonDtoList(allowedButtons);
+    final List<PrnfbButton> buttons = settingsService.getButtons(projectKey, repositorySlug);
+    final Iterable<PrnfbButton> allowedButtons = userCheckService.filterAdminAllowed(buttons);
+    final List<ButtonDTO> dtos = toButtonDtoList(allowedButtons);
     Collections.sort(dtos);
     return ok(dtos, APPLICATION_JSON).build();
   }
@@ -129,11 +134,13 @@ public class ButtonServlet {
   @Path("{uuid}")
   @Produces(APPLICATION_JSON)
   public Response get(@PathParam("uuid") UUID uuid) {
-    PrnfbButton button = settingsService.getButton(uuid);
-    if (!userCheckService.isAdminAllowed(button)) {
+    final PrnfbButton button = settingsService.getButton(uuid);
+    final USER_LEVEL adminRestriction =
+        settingsService.getPrnfbSettingsData().getAdminRestriction();
+    if (!userCheckService.isAdminAllowed(button, adminRestriction)) {
       return status(UNAUTHORIZED).build();
     }
-    ButtonDTO dto = toButtonDto(button);
+    final ButtonDTO dto = toButtonDto(button);
     return ok(dto, APPLICATION_JSON).build();
   }
 
@@ -143,8 +150,8 @@ public class ButtonServlet {
   public Response get(
       @PathParam("repositoryId") Integer repositoryId,
       @PathParam("pullRequestId") Long pullRequestId) {
-    List<PrnfbButton> buttons = buttonsService.getButtons(repositoryId, pullRequestId);
-    List<ButtonDTO> dtos = toButtonDtoList(buttons);
+    final List<PrnfbButton> buttons = buttonsService.getButtons(repositoryId, pullRequestId);
+    final List<ButtonDTO> dtos = toButtonDtoList(buttons);
     Collections.sort(dtos);
 
     populateButtonFormDtoList(repositoryId, pullRequestId, dtos);
@@ -161,31 +168,31 @@ public class ButtonServlet {
       @PathParam("repositoryId") Integer repositoryId,
       @PathParam("pullRequestId") Long pullRequestId,
       @PathParam("uuid") final UUID buttionUuid) {
-    List<PrnfbButton> buttons = buttonsService.getButtons(repositoryId, pullRequestId);
-    Optional<PrnfbButton> button =
+    final List<PrnfbButton> buttons = buttonsService.getButtons(repositoryId, pullRequestId);
+    final Optional<PrnfbButton> button =
         Iterables.tryFind(buttons, (b) -> b.getUuid().equals(buttionUuid));
     if (!button.isPresent()) {
       return status(NOT_FOUND).build();
     }
-    String formData = request.getParameter("form");
-    List<NotificationResponse> results =
+    final String formData = request.getParameter("form");
+    final List<NotificationResponse> results =
         buttonsService.handlePressed(repositoryId, pullRequestId, buttionUuid, formData);
 
-    ButtonPressDTO dto = toTriggerResultDto(button.get(), results);
+    final ButtonPressDTO dto = toTriggerResultDto(button.get(), results);
     return ok(dto, APPLICATION_JSON).build();
   }
 
   private void populateButtonFormDtoList(
       Integer repositoryId, Long pullRequestId, List<ButtonDTO> dtos) {
-    for (ButtonDTO dto : dtos) {
-      PrnfbRendererWrapper renderer =
+    for (final ButtonDTO dto : dtos) {
+      final PrnfbRendererWrapper renderer =
           buttonsService.getRenderer(repositoryId, pullRequestId, dto.getUuid());
-      List<ButtonFormElementDTO> buttonFormDtoList = dto.getButtonFormList();
+      final List<ButtonFormElementDTO> buttonFormDtoList = dto.getButtonFormList();
       if (buttonFormDtoList != null) {
-        for (ButtonFormElementDTO buttonFormElementDto : buttonFormDtoList) {
-          String defaultValue = buttonFormElementDto.getDefaultValue();
+        for (final ButtonFormElementDTO buttonFormElementDto : buttonFormDtoList) {
+          final String defaultValue = buttonFormElementDto.getDefaultValue();
           if (!isNullOrEmpty(defaultValue)) {
-            String defaultValueRendered = renderer.render(defaultValue, ENCODE_FOR.NONE);
+            final String defaultValueRendered = renderer.render(defaultValue, ENCODE_FOR.NONE);
             buttonFormElementDto.setDefaultValue(defaultValueRendered);
           }
         }

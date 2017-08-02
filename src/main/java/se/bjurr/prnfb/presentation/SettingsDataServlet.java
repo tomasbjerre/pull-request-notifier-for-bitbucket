@@ -15,14 +15,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-import com.atlassian.annotations.security.XsrfProtectionExcluded;
-import com.google.common.base.Optional;
-
 import se.bjurr.prnfb.presentation.dto.SettingsDataDTO;
 import se.bjurr.prnfb.service.SettingsService;
 import se.bjurr.prnfb.service.UserCheckService;
 import se.bjurr.prnfb.settings.PrnfbSettingsData;
 import se.bjurr.prnfb.settings.Restricted;
+import se.bjurr.prnfb.settings.USER_LEVEL;
+
+import com.atlassian.annotations.security.XsrfProtectionExcluded;
+import com.google.common.base.Optional;
 
 @Path("/settings")
 public class SettingsDataServlet {
@@ -41,8 +42,8 @@ public class SettingsDataServlet {
       return status(UNAUTHORIZED).build();
     }
 
-    PrnfbSettingsData settingsData = this.settingsService.getPrnfbSettingsData();
-    SettingsDataDTO settingsDataDto = toDto(settingsData);
+    final PrnfbSettingsData settingsData = this.settingsService.getPrnfbSettingsData();
+    final SettingsDataDTO settingsDataDto = toDto(settingsData);
 
     return ok(settingsDataDto).build();
   }
@@ -52,6 +53,8 @@ public class SettingsDataServlet {
   @Consumes(APPLICATION_JSON)
   @Produces(APPLICATION_JSON)
   public Response post(SettingsDataDTO settingsDataDto) {
+    final USER_LEVEL adminRestriction =
+        settingsService.getPrnfbSettingsData().getAdminRestriction();
     if (!this.userCheckService.isAdminAllowed(
         new Restricted() {
           @Override
@@ -63,11 +66,12 @@ public class SettingsDataServlet {
           public Optional<String> getProjectKey() {
             return Optional.absent();
           }
-        })) {
+        },
+        adminRestriction)) {
       return status(UNAUTHORIZED).build();
     }
 
-    PrnfbSettingsData prnfbSettingsData = toPrnfbSettingsData(settingsDataDto);
+    final PrnfbSettingsData prnfbSettingsData = toPrnfbSettingsData(settingsDataDto);
     this.settingsService.setPrnfbSettingsData(prnfbSettingsData);
 
     return noContent().build();
