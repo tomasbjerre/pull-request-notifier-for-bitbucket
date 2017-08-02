@@ -4,7 +4,6 @@ import static com.atlassian.bitbucket.permission.Permission.PROJECT_ADMIN;
 import static com.atlassian.bitbucket.permission.Permission.REPO_ADMIN;
 import static com.atlassian.bitbucket.permission.Permission.SYS_ADMIN;
 import static com.google.common.base.Strings.emptyToNull;
-import static com.google.common.base.Throwables.propagate;
 import static com.google.common.collect.Iterables.filter;
 import static org.slf4j.LoggerFactory.getLogger;
 import static se.bjurr.prnfb.settings.USER_LEVEL.ADMIN;
@@ -84,7 +83,8 @@ public class UserCheckService {
                 }
               });
     } catch (final Exception e) {
-      throw propagate(e);
+      LOG.error(e.getMessage(), e);
+      return null;
     }
   }
 
@@ -101,7 +101,8 @@ public class UserCheckService {
                 }
               });
     } catch (final Exception e) {
-      throw propagate(e);
+      LOG.error(e.getMessage(), e);
+      return null;
     }
   }
 
@@ -117,8 +118,11 @@ public class UserCheckService {
     if (projectKey != null && repositorySlug == null) {
       final Project project = getProject(projectKey);
       if (project == null) {
-        LOG.error("Button with project " + projectKey + " configured. But no such project exists!");
-        return false;
+        LOG.error(
+            "Project "
+                + projectKey
+                + " configured. But no such project exists! Allowing anyone to admin.");
+        return true;
       }
       final boolean isAllowed = permissionService.hasProjectPermission(project, PROJECT_ADMIN);
       if (isAllowed) {
@@ -130,12 +134,12 @@ public class UserCheckService {
       final Repository repository = getRepo(projectKey, repositorySlug);
       if (repository == null) {
         LOG.error(
-            "Button with project "
+            "Project "
                 + projectKey
                 + " and repo "
                 + repositorySlug
-                + " configured. But no such repo exists!");
-        return false;
+                + " configured. But no such repo exists! Allowing anyone to admin.");
+        return true;
       }
       return permissionService.hasRepositoryPermission(repository, REPO_ADMIN);
     }
