@@ -13,15 +13,16 @@ define('plugin/prnfb/utils', [
    dataType: "json",
    data: jsonString,
    success: function(data) {
-    whenDone();
-    if (data && data.uuid) {
-     doSetupForm(formSelector, url + '/' + data.uuid);
-    }
-    AJS.flag({
-     close: 'auto',
-     type: 'success',
-     title: 'Saved',
-     body: '<p>=)</p>'
+    whenDone(function() {
+     if (data && data.uuid) {
+      doSetupForm(formSelector, url + '/' + data.uuid);
+     }
+     AJS.flag({
+      close: 'auto',
+      type: 'success',
+      title: 'Saved',
+      body: '<p>=)</p>'
+     });
     });
    },
    error: function(xhr, status, error) {
@@ -184,7 +185,9 @@ define('plugin/prnfb/utils', [
  function setupForm(formSelector, url, postUrl) {
   $(formSelector).submit(function(e) {
    e.preventDefault();
-   postForm(postUrl, formSelector, function() {});
+   postForm(postUrl, formSelector, function(f) {
+    f();
+   });
   });
 
   doSetupForm(formSelector, url);
@@ -208,7 +211,8 @@ define('plugin/prnfb/utils', [
    });
   });
 
-  function populateSelect() {
+  function populateSelect(whenDone) {
+   clearForm(formSelector);
    $.getJSON(restResource, function(data) {
     $(formSelector + ' [name=uuid]').empty();
     $(formSelector + ' [name=uuid]').append('<option value="">New</option>');
@@ -217,8 +221,10 @@ define('plugin/prnfb/utils', [
      name = name.replace(/<script>/g, 'script');
      $(formSelector + ' [name=uuid]').append('<option value="' + data[i].uuid + '">' + (data[i].projectKey || '') + ' ' + (data[i].repositorySlug || '') + ' ' + name + '</option>');
     }
+    if (whenDone) {
+     whenDone();
+    }
    });
-   clearForm(formSelector);
   }
   populateSelect();
 
