@@ -4,6 +4,10 @@ Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
 ### No issue
+  Avoid race condition on save in GUI
+  
+  [776585222c0a31e](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/776585222c0a31e) Tomas Bjerre *2017-08-13 17:13:50*
+
   doc
   
   [9b7e1818eac83aa](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/9b7e1818eac83aa) Tomas Bjerre *2017-08-13 16:41:06*

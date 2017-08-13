@@ -4,7 +4,6 @@ If things don't work as you expect, perhaps you should file an issue. But first,
  * Bitbucket Server version used.
  * Stack traces in Bitbucket Server log file.
  * Any browser console log messages, you can find it in Developer Tools in Chome by pressing F12.
- * Screenshot of plugin configuration in your issue. Or the actual persisted settings:
  * Your configuration:
    * http://localhost:7990/bitbucket/rest/prnfb-admin/1.0/settings
    * http://localhost:7990/bitbucket/rest/prnfb-admin/1.0/settings/buttons
@@ -12,3 +11,11 @@ If things don't work as you expect, perhaps you should file an issue. But first,
  * If the system you are trying to notify does not seem to get notified:
   * Check that the triggered URL looks as expected. You can do that by invoking https://requestb.in/ and inspect its results.
   * Try to SSH to the Bitbucket Server machine and run same URL with Curl to make sure it's not a firewall issue.
+
+If you do not have access to the server log files, one idea is to:
+
+ * Also trigger on button pressed, and add a button
+ * Open a PR
+ * Open Chrome developer tools, F12
+ * Press the button in the PR
+ * Check the response in the network tab in Chrome. See if it contains something interesting
