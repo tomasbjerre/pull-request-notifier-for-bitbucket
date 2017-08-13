@@ -2,6 +2,16 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## Unreleased
+### No issue
+  Continuing with next notification if it crashes
+  
+  [8c9672e661bbbb2](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/8c9672e661bbbb2) Tomas Bjerre *2017-08-13 16:32:02*
+
+  doc
+  
+  [6841f34e051d3f4](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/6841f34e051d3f4) Tomas Bjerre *2017-08-02 20:08:31*
+
 ## 3.10
 ### GitHub [#237](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/237) Listing all notifications via API takes a long time
   Speeding up restriction filter

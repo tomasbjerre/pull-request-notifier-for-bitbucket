@@ -102,28 +102,40 @@ public class PrnfbPullRequestEventListener {
       return;
     }
     final PrnfbSettingsData settings = settingsService.getPrnfbSettingsData();
-    ClientKeyStore clientKeyStore = new ClientKeyStore(settings);
+    final ClientKeyStore clientKeyStore = new ClientKeyStore(settings);
     for (final PrnfbNotification notification : settingsService.getNotifications()) {
-      PrnfbPullRequestAction action = fromPullRequestEvent(pullRequestEvent, notification);
-      VariablesContext variables =
-          new VariablesContextBuilder() //
-              .setPullRequestEvent(pullRequestEvent) //
-              .build();
-      PrnfbRenderer renderer =
-          prnfbRendererFactory.create(
-              pullRequestEvent.getPullRequest(),
-              action,
-              notification,
-              variables,
-              pullRequestEvent.getUser());
-      notify(
-          notification,
-          action,
-          pullRequestEvent.getPullRequest(),
-          renderer,
-          clientKeyStore,
-          settings.isShouldAcceptAnyCertificate());
+      try {
+        handleEventNotification(pullRequestEvent, settings, clientKeyStore, notification);
+      } catch (final Exception e) {
+        LOG.error("Unable to handle notification " + notification, e);
+      }
     }
+  }
+
+  private void handleEventNotification(
+      final PullRequestEvent pullRequestEvent,
+      final PrnfbSettingsData settings,
+      ClientKeyStore clientKeyStore,
+      final PrnfbNotification notification) {
+    final PrnfbPullRequestAction action = fromPullRequestEvent(pullRequestEvent, notification);
+    final VariablesContext variables =
+        new VariablesContextBuilder() //
+            .setPullRequestEvent(pullRequestEvent) //
+            .build();
+    final PrnfbRenderer renderer =
+        prnfbRendererFactory.create(
+            pullRequestEvent.getPullRequest(),
+            action,
+            notification,
+            variables,
+            pullRequestEvent.getUser());
+    notify(
+        notification,
+        action,
+        pullRequestEvent.getPullRequest(),
+        renderer,
+        clientKeyStore,
+        settings.isShouldAcceptAnyCertificate());
   }
 
   @VisibleForTesting
@@ -192,8 +204,8 @@ public class PrnfbPullRequestEventListener {
 
     if (notification.getTriggerIfCanMerge() != ALWAYS) {
       // Cannot perform canMerge unless PR is open
-      boolean notYetMerged = pullRequest.isOpen();
-      boolean isConflicted = notYetMerged && hasConflicts(pullRequest);
+      final boolean notYetMerged = pullRequest.isOpen();
+      final boolean isConflicted = notYetMerged && hasConflicts(pullRequest);
       if (ignoreBecauseOfConflicting(notification.getTriggerIfCanMerge(), isConflicted)) {
         return FALSE;
       }
@@ -236,7 +248,7 @@ public class PrnfbPullRequestEventListener {
 
     Optional<String> postContent = absent();
     if (notification.getPostContent().isPresent()) {
-      ENCODE_FOR encodePostContentFor = notification.getPostContentEncoding();
+      final ENCODE_FOR encodePostContentFor = notification.getPostContentEncoding();
       postContent =
           of(
               renderer.render(
@@ -245,7 +257,7 @@ public class PrnfbPullRequestEventListener {
                   clientKeyStore,
                   shouldAcceptAnyCertificate));
     }
-    String renderedUrl =
+    final String renderedUrl =
         renderer.render(
             notification.getUrl(), ENCODE_FOR.URL, clientKeyStore, shouldAcceptAnyCertificate);
     LOG.info(
@@ -261,21 +273,21 @@ public class PrnfbPullRequestEventListener {
             + ")"
             + " " //
             + renderedUrl);
-    UrlInvoker urlInvoker =
+    final UrlInvoker urlInvoker =
         urlInvoker() //
             .withClientKeyStore(clientKeyStore) //
             .withUrlParam(renderedUrl) //
             .withMethod(notification.getMethod()) //
             .withPostContent(postContent) //
             .appendBasicAuth(notification);
-    for (PrnfbHeader header : notification.getHeaders()) {
+    for (final PrnfbHeader header : notification.getHeaders()) {
       urlInvoker //
           .withHeader(
           header.getName(),
           renderer.render(
               header.getValue(), ENCODE_FOR.NONE, clientKeyStore, shouldAcceptAnyCertificate));
     }
-    HttpResponse httpResponse =
+    final HttpResponse httpResponse =
         createInvoker()
             .invoke(
                 urlInvoker //
