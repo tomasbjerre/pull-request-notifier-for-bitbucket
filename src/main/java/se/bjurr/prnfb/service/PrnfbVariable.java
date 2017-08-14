@@ -78,8 +78,8 @@ public enum PrnfbVariable {
             ClientKeyStore clientKeyStore,
             boolean shouldAcceptAnyCertificate,
             SecurityService securityService) {
-          List<String> parts = newArrayList();
-          for (PrnfbVariable v : PrnfbVariable.values()) {
+          final List<String> parts = newArrayList();
+          for (final PrnfbVariable v : PrnfbVariable.values()) {
             if (v != EVERYTHING_URL //
                 && v != PULL_REQUEST_DESCRIPTION) {
               parts.add(v.name() + "=${" + v.name() + "}");
@@ -106,7 +106,7 @@ public enum PrnfbVariable {
           if (prnfbNotification == null || !prnfbNotification.getInjectionUrl().isPresent()) {
             return "";
           }
-          PrnfbRenderer renderer =
+          final PrnfbRenderer renderer =
               new PrnfbRenderer(
                   pullRequest,
                   pullRequestAction,
@@ -116,13 +116,13 @@ public enum PrnfbVariable {
                   prnfbNotification,
                   variables,
                   securityService);
-          String renderedUrlParam =
+          final String renderedUrlParam =
               renderer.render(
                   prnfbNotification.getInjectionUrl().get(),
                   ENCODE_FOR.URL,
                   clientKeyStore,
                   shouldAcceptAnyCertificate);
-          UrlInvoker urlInvoker =
+          final UrlInvoker urlInvoker =
               urlInvoker() //
                   .withUrlParam(renderedUrlParam) //
                   .withMethod(GET) //
@@ -136,9 +136,9 @@ public enum PrnfbVariable {
                   .shouldAcceptAnyCertificate(shouldAcceptAnyCertificate);
           createInvoker() //
               .invoke(urlInvoker);
-          String rawResponse = urlInvoker.getResponse().getContent().trim();
+          final String rawResponse = urlInvoker.getResponse().getContent().trim();
           if (prnfbNotification.getInjectionUrlRegexp().isPresent()) {
-            Matcher m =
+            final Matcher m =
                 compile(prnfbNotification.getInjectionUrlRegexp().get()).matcher(rawResponse);
             if (!m.find()) {
               return "";
@@ -286,6 +286,23 @@ public enum PrnfbVariable {
             boolean shouldAcceptAnyCertificate,
             SecurityService securityService) {
           return getOrEmpty(variables, PULL_REQUEST_COMMENT_TEXT);
+        }
+      }),
+  PULL_REQUEST_COMMENT_ID(
+      new PrnfbVariableResolver() {
+        @Override
+        public String resolve(
+            PullRequest pullRequest,
+            PrnfbPullRequestAction prnfbPullRequestAction,
+            ApplicationUser applicationUser,
+            RepositoryService repositoryService,
+            ApplicationPropertiesService propertiesService,
+            PrnfbNotification prnfbNotification,
+            Map<PrnfbVariable, Supplier<String>> variables,
+            ClientKeyStore clientKeyStore,
+            boolean shouldAcceptAnyCertificate,
+            SecurityService securityService) {
+          return getOrEmpty(variables, PULL_REQUEST_COMMENT_ID);
         }
       }),
   PULL_REQUEST_DESCRIPTION(
@@ -649,7 +666,7 @@ public enum PrnfbVariable {
             ClientKeyStore clientKeyStore,
             boolean shouldAcceptAnyCertificate,
             SecurityService securityService) {
-          Iterable<PullRequestParticipant> reviewers =
+          final Iterable<PullRequestParticipant> reviewers =
               filter(pullRequest.getReviewers(), (r) -> r.getStatus() == NEEDS_WORK);
           return iterableToString(transform(reviewers, (p) -> p.getUser().getSlug()));
         }
@@ -668,7 +685,7 @@ public enum PrnfbVariable {
             ClientKeyStore clientKeyStore,
             boolean shouldAcceptAnyCertificate,
             SecurityService securityService) {
-          Iterable<PullRequestParticipant> reviewers =
+          final Iterable<PullRequestParticipant> reviewers =
               filter(pullRequest.getReviewers(), (r) -> r.getStatus() == NEEDS_WORK);
           return iterableToString(transform(reviewers, (p) -> p.getUser().getEmailAddress()));
         }
@@ -687,7 +704,7 @@ public enum PrnfbVariable {
             ClientKeyStore clientKeyStore,
             boolean shouldAcceptAnyCertificate,
             SecurityService securityService) {
-          Iterable<PullRequestParticipant> reviewers =
+          final Iterable<PullRequestParticipant> reviewers =
               filter(pullRequest.getReviewers(), (r) -> r.getStatus() == NEEDS_WORK);
           return iterableToString(transform(reviewers, (p) -> p.getUser().getName()));
         }
@@ -706,7 +723,7 @@ public enum PrnfbVariable {
             ClientKeyStore clientKeyStore,
             boolean shouldAcceptAnyCertificate,
             SecurityService securityService) {
-          Iterable<PullRequestParticipant> reviewers =
+          final Iterable<PullRequestParticipant> reviewers =
               filter(pullRequest.getReviewers(), (r) -> r.getStatus() == NEEDS_WORK);
           return iterableToString(transform(reviewers, (p) -> p.getUser().getDisplayName()));
         }
@@ -725,7 +742,7 @@ public enum PrnfbVariable {
             ClientKeyStore clientKeyStore,
             boolean shouldAcceptAnyCertificate,
             SecurityService securityService) {
-          Iterable<PullRequestParticipant> reviewers =
+          final Iterable<PullRequestParticipant> reviewers =
               filter(pullRequest.getReviewers(), (r) -> r.getStatus() == UNAPPROVED);
           return iterableToString(transform(reviewers, (p) -> p.getUser().getSlug()));
         }
@@ -744,7 +761,7 @@ public enum PrnfbVariable {
             ClientKeyStore clientKeyStore,
             boolean shouldAcceptAnyCertificate,
             SecurityService securityService) {
-          Iterable<PullRequestParticipant> reviewers =
+          final Iterable<PullRequestParticipant> reviewers =
               filter(pullRequest.getReviewers(), (r) -> r.getStatus() == UNAPPROVED);
           return iterableToString(transform(reviewers, (p) -> p.getUser().getEmailAddress()));
         }
@@ -763,7 +780,7 @@ public enum PrnfbVariable {
             ClientKeyStore clientKeyStore,
             boolean shouldAcceptAnyCertificate,
             SecurityService securityService) {
-          Iterable<PullRequestParticipant> reviewers =
+          final Iterable<PullRequestParticipant> reviewers =
               filter(pullRequest.getReviewers(), (r) -> r.getStatus() == UNAPPROVED);
           return iterableToString(transform(reviewers, (p) -> p.getUser().getName()));
         }
@@ -782,7 +799,7 @@ public enum PrnfbVariable {
             ClientKeyStore clientKeyStore,
             boolean shouldAcceptAnyCertificate,
             SecurityService securityService) {
-          Iterable<PullRequestParticipant> reviewers =
+          final Iterable<PullRequestParticipant> reviewers =
               filter(pullRequest.getReviewers(), (r) -> r.getStatus() == UNAPPROVED);
           return iterableToString(transform(reviewers, (p) -> p.getUser().getDisplayName()));
         }
@@ -801,7 +818,7 @@ public enum PrnfbVariable {
             ClientKeyStore clientKeyStore,
             boolean shouldAcceptAnyCertificate,
             SecurityService securityService) {
-          Iterable<PullRequestParticipant> reviewers =
+          final Iterable<PullRequestParticipant> reviewers =
               filter(pullRequest.getReviewers(), (r) -> r.getStatus() == APPROVED);
           return iterableToString(transform(reviewers, (p) -> p.getUser().getSlug()));
         }
@@ -820,7 +837,7 @@ public enum PrnfbVariable {
             ClientKeyStore clientKeyStore,
             boolean shouldAcceptAnyCertificate,
             SecurityService securityService) {
-          Iterable<PullRequestParticipant> reviewers =
+          final Iterable<PullRequestParticipant> reviewers =
               filter(pullRequest.getReviewers(), (r) -> r.getStatus() == APPROVED);
           return iterableToString(transform(reviewers, (p) -> p.getUser().getEmailAddress()));
         }
@@ -839,7 +856,7 @@ public enum PrnfbVariable {
             ClientKeyStore clientKeyStore,
             boolean shouldAcceptAnyCertificate,
             SecurityService securityService) {
-          Iterable<PullRequestParticipant> reviewers =
+          final Iterable<PullRequestParticipant> reviewers =
               filter(pullRequest.getReviewers(), (r) -> r.getStatus() == APPROVED);
           return iterableToString(transform(reviewers, (p) -> p.getUser().getName()));
         }
@@ -858,7 +875,7 @@ public enum PrnfbVariable {
             ClientKeyStore clientKeyStore,
             boolean shouldAcceptAnyCertificate,
             SecurityService securityService) {
-          Iterable<PullRequestParticipant> reviewers =
+          final Iterable<PullRequestParticipant> reviewers =
               filter(pullRequest.getReviewers(), (r) -> r.getStatus() == APPROVED);
           return iterableToString(transform(reviewers, (p) -> p.getUser().getDisplayName()));
         }
@@ -1296,7 +1313,7 @@ public enum PrnfbVariable {
   private static String countParticipantsWithStatus(
       Set<PullRequestParticipant> participants, PullRequestParticipantStatus status) {
     Integer count = 0;
-    for (PullRequestParticipant participant : participants) {
+    for (final PullRequestParticipant participant : participants) {
       if (participant.getStatus() == status) {
         count++;
       }
@@ -1331,14 +1348,14 @@ public enum PrnfbVariable {
             new Operation<String, RuntimeException>() {
               @Override
               public String perform() throws RuntimeException {
-                RepositoryCloneLinksRequest request =
+                final RepositoryCloneLinksRequest request =
                     new RepositoryCloneLinksRequest.Builder() //
                         .protocol(protocol.name()) //
                         .repository(repository) //
                         .build();
                 final Set<NamedLink> cloneLinks = repositoryService.getCloneLinks(request);
-                Set<String> allUrls = newTreeSet();
-                Iterator<NamedLink> itr = cloneLinks.iterator();
+                final Set<String> allUrls = newTreeSet();
+                final Iterator<NamedLink> itr = cloneLinks.iterator();
                 while (itr.hasNext()) {
                   allUrls.add(itr.next().getHref());
                 }
@@ -1382,7 +1399,7 @@ public enum PrnfbVariable {
   }
 
   private static String iterableToString(Iterable<String> slist) {
-    List<String> sorted = usingToString().sortedCopy(slist);
+    final List<String> sorted = usingToString().sortedCopy(slist);
     return on(',').join(sorted);
   }
 

@@ -4,6 +4,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static se.bjurr.prnfb.service.PrnfbVariable.BUTTON_FORM_DATA;
 import static se.bjurr.prnfb.service.PrnfbVariable.BUTTON_TRIGGER_TITLE;
 import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_COMMENT_ACTION;
+import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_COMMENT_ID;
 import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_COMMENT_TEXT;
 import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_MERGE_COMMIT;
 import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_PREVIOUS_FROM_HASH;
@@ -80,7 +81,7 @@ public class VariablesContext {
   }
 
   public Map<PrnfbVariable, Supplier<String>> getVariables() {
-    Map<PrnfbVariable, Supplier<String>> variables = new HashMap<>();
+    final Map<PrnfbVariable, Supplier<String>> variables = new HashMap<>();
 
     if (groups != null) {
       variables.put(PULL_REQUEST_USER_GROUPS, Suppliers.ofInstance(Joiner.on(',').join(groups)));
@@ -96,7 +97,7 @@ public class VariablesContext {
 
     if (pullRequestEvent != null) {
       if (pullRequestEvent instanceof PullRequestCommentEvent) {
-        PullRequestCommentEvent pullRequestCommentEvent =
+        final PullRequestCommentEvent pullRequestCommentEvent =
             (PullRequestCommentEvent) pullRequestEvent;
         variables.put(
             PULL_REQUEST_COMMENT_TEXT,
@@ -108,8 +109,13 @@ public class VariablesContext {
             () -> {
               return pullRequestCommentEvent.getCommentAction().name();
             });
+        variables.put(
+            PULL_REQUEST_COMMENT_ID,
+            () -> {
+              return pullRequestCommentEvent.getComment().getId() + "";
+            });
       } else if (pullRequestEvent instanceof PullRequestRescopedEvent) {
-        PullRequestRescopedEvent pullRequestRescopedEvent =
+        final PullRequestRescopedEvent pullRequestRescopedEvent =
             (PullRequestRescopedEvent) pullRequestEvent;
         variables.put(
             PULL_REQUEST_PREVIOUS_FROM_HASH,

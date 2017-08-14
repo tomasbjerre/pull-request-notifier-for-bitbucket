@@ -66,6 +66,7 @@
    <li><b>${PULL_REQUEST_VERSION}</b> Example: 1</li>
    <li><b>${PULL_REQUEST_COMMENT_TEXT}</b> Example: A comment</li>
    <li><b>${PULL_REQUEST_COMMENT_ACTION}</b> Example: ADDED, DELETED, EDITED, REPLIED</li>
+   <li><b>${PULL_REQUEST_COMMENT_ID}</b> Example: 1234</li>
    <li><b>${BUTTON_TRIGGER_TITLE}</b> Example: Trigger Notification</li>
    <li><b>${BUTTON_FORM_DATA}</b> The form data that was submitted</li>
    <li><b>${INJECTION_URL_VALUE}</b> If injection URL configured</li>
