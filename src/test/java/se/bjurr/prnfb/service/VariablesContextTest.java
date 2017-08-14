@@ -83,8 +83,8 @@ public class VariablesContextTest {
     assertThat(actual.get(PULL_REQUEST_COMMENT_TEXT).get()) //
         .isEqualTo("The comment");
     assertThat(actual.get(PULL_REQUEST_COMMENT_ACTION).get()) //
-    .isEqualTo("ADDED");
+        .isEqualTo("ADDED");
     assertThat(actual.get(PULL_REQUEST_COMMENT_ID).get()) //
-    .isEqualTo("0");
+        .isEqualTo("0");
   }
 }
