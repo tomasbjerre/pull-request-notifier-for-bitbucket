@@ -23,6 +23,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
+import com.atlassian.bitbucket.scm.ScmService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -70,6 +71,7 @@ public class PrnfbPullRequestEventListenerTest {
   @Mock private PullRequestService pullRequestService;
   @Mock private PrnfbRenderer renderer;
   @Mock private SettingsService settingsService;
+  @Mock private ScmService scmService;
   private Boolean shouldAcceptAnyCertificate;
   private PrnfbPullRequestEventListener sut;
   @Mock private PullRequestRef toRef;
@@ -101,7 +103,8 @@ public class PrnfbPullRequestEventListenerTest {
             pullRequestService,
             executorService,
             settingsService,
-            securityService);
+            securityService,
+            scmService);
     setInvoker(
         new Invoker() {
           @Override
