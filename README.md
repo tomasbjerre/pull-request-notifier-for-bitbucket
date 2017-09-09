@@ -115,7 +115,11 @@ The filter text as well as the URL support variables. These are:
 
 The ${PULL_REQUEST_USER...} contains information about the user who issued the event. Who commented it, who rejected it, who approved it...
 
-You may want to use [Violation Comments to Bitbucket Server plugin](https://wiki.jenkins-ci.org/display/JENKINS/Violation+Comments+to+Bitbucket+Server+Plugin) and/or [StashNotifier plugin](https://wiki.jenkins-ci.org/display/JENKINS/StashNotifier+Plugin) to report results back to Bitbucket.
+You may want to use these Jenkins plugins if you are notifying Jenkins:
+
+ * [Generic Webhook Trigger Plugin](https://wiki.jenkins.io/display/JENKINS/Generic+Webhook+Trigger+Plugin) To trigger the build.
+ * [Violation Comments to Bitbucket Server Plugin](https://wiki.jenkins-ci.org/display/JENKINS/Violation+Comments+to+Bitbucket+Server+Plugin) to report results form static code analysis.
+ * [StashNotifier Plugin](https://wiki.jenkins-ci.org/display/JENKINS/StashNotifier+Plugin) to report build status back to Bitbucket Server.
 
 ### Integration guides
 

@@ -6,7 +6,7 @@ Changelog of Pull Request Notifier for Bitbucket.
 ### No issue
   doc
   
-  [31f2aefdac00099](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/31f2aefdac00099) Tomas Bjerre *2017-08-14 18:54:10*
+  [a18440409a538b4](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/a18440409a538b4) Tomas Bjerre *2017-08-14 18:54:35*
 
 ## 3.13
 ### No issue
