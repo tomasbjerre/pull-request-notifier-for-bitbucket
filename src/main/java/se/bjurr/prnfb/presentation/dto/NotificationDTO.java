@@ -37,7 +37,7 @@ public class NotificationDTO implements Comparable<NotificationDTO>, Restricted 
   private TRIGGER_IF_MERGE triggerIfCanMerge;
   private List<String> triggerIgnoreStateList;
   private List<String> triggers;
-  private boolean forceMergeOnRescope;
+  private boolean updatePullRequestRefs;
   private String url;
   private String user;
   private UUID uuid;
@@ -192,7 +192,7 @@ public class NotificationDTO implements Comparable<NotificationDTO>, Restricted 
     } else if (!triggers.equals(other.triggers)) {
       return false;
     }
-    if (forceMergeOnRescope != other.forceMergeOnRescope) {
+    if (updatePullRequestRefs != other.updatePullRequestRefs) {
       return false;
     }
     if (url == null) {
@@ -293,8 +293,8 @@ public class NotificationDTO implements Comparable<NotificationDTO>, Restricted 
     return this.triggers;
   }
 
-  public boolean isForceMergeOnRescope() {
-    return this.forceMergeOnRescope;
+  public boolean isUpdatePullRequestRefs() {
+    return this.updatePullRequestRefs;
   }
 
   public String getUrl() {
@@ -334,7 +334,7 @@ public class NotificationDTO implements Comparable<NotificationDTO>, Restricted 
     result =
         prime * result + (triggerIgnoreStateList == null ? 0 : triggerIgnoreStateList.hashCode());
     result = prime * result + (triggers == null ? 0 : triggers.hashCode());
-    result = prime * result + (forceMergeOnRescope ? 1 : 0);
+    result = prime * result + (updatePullRequestRefs ? 1 : 0);
     result = prime * result + (url == null ? 0 : url.hashCode());
     result = prime * result + (user == null ? 0 : user.hashCode());
     result = prime * result + (uuid == null ? 0 : uuid.hashCode());
@@ -413,8 +413,8 @@ public class NotificationDTO implements Comparable<NotificationDTO>, Restricted 
     this.triggers = triggers;
   }
 
-  public void setForceMergeOnRescope(boolean forceMergeOnRescope) {
-    this.forceMergeOnRescope = forceMergeOnRescope;
+  public void setUpdatePullRequestRefs(boolean updatePullRequestRefs) {
+    this.updatePullRequestRefs = updatePullRequestRefs;
   }
 
   public void setUrl(String url) {
@@ -481,8 +481,8 @@ public class NotificationDTO implements Comparable<NotificationDTO>, Restricted 
         + triggerIgnoreStateList
         + ", triggers="
         + triggers
-        + ", forceMergeOnRescope="
-        + forceMergeOnRescope
+        + ", updatePullRequestRefs="
+        + updatePullRequestRefs
         + ", url="
         + url
         + ", user="

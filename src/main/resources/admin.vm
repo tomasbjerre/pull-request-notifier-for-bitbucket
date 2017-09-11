@@ -462,10 +462,13 @@
 
   <fieldset class="group">
    <legend>
-    <span>Force Merge on Rescope</span>
+    <span>Update Pull Request References</span>
    </legend>
    <div class="checkbox">
-    <input class="checkbox" type="checkbox" name="forceMergeOnRescope" value="true">
+    <input class="checkbox" type="checkbox" name="updatePullRequestRefs" value="true">&nbsp;
+   </div>
+   <div class="description">
+     Will update refs/pull-requests/{id}/from and refs/pull-requests/{id}/merge references in Git when Pull Request is rescoped.
    </div>
   </fieldset>
 

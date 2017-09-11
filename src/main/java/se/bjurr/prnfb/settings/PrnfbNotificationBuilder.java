@@ -39,7 +39,7 @@ public class PrnfbNotificationBuilder {
       TRIGGER_IF_MERGE triggerIfCanMerge,
       List<PullRequestState> triggerIgnoreStateList,
       List<PrnfbPullRequestAction> triggers,
-      boolean forceMergeOnRescope,
+      boolean updatePullRequestRefs,
       String url,
       String user,
       UUID uuid,
@@ -63,7 +63,7 @@ public class PrnfbNotificationBuilder {
     this.triggerIfCanMerge = triggerIfCanMerge;
     this.triggerIgnoreStateList = triggerIgnoreStateList;
     this.triggers = triggers;
-    this.forceMergeOnRescope = forceMergeOnRescope;
+    this.updatePullRequestRefs = updatePullRequestRefs;
     this.url = url;
     this.user = user;
     this.uuid = uuid;
@@ -77,7 +77,7 @@ public class PrnfbNotificationBuilder {
     b.uuid = from.getUuid();
     b.password = from.getPassword().orNull();
     b.triggers = from.getTriggers();
-    b.forceMergeOnRescope = from.isForceMergeOnRescope();
+    b.updatePullRequestRefs = from.isUpdatePullRequestRefs();
     b.url = from.getUrl();
     b.user = from.getUser().orNull();
     b.filterRegexp = from.getFilterRegexp().orNull();
@@ -119,7 +119,7 @@ public class PrnfbNotificationBuilder {
   private TRIGGER_IF_MERGE triggerIfCanMerge;
   private List<PullRequestState> triggerIgnoreStateList = newArrayList();
   private List<PrnfbPullRequestAction> triggers = newArrayList();
-  private boolean forceMergeOnRescope;
+  private boolean updatePullRequestRefs;
   private String url;
   private String user;
   private UUID uuid;
@@ -214,8 +214,8 @@ public class PrnfbNotificationBuilder {
     return this.triggers;
   }
 
-  public boolean isForceMergeOnRescope() {
-    return this.forceMergeOnRescope;
+  public boolean isUpdatePullRequestRefs() {
+    return this.updatePullRequestRefs;
   }
 
   public String getUrl() {
@@ -250,8 +250,8 @@ public class PrnfbNotificationBuilder {
     return this;
   }
 
-  public PrnfbNotificationBuilder setForceMergeOnRescope(boolean forceMergeOnRescope) {
-    this.forceMergeOnRescope = forceMergeOnRescope;
+  public PrnfbNotificationBuilder setUpdatePullRequestRefs(boolean updatePullRequestRefs) {
+    this.updatePullRequestRefs = updatePullRequestRefs;
     return this;
   }
 
@@ -335,8 +335,8 @@ public class PrnfbNotificationBuilder {
     return this;
   }
 
-  public PrnfbNotificationBuilder withForceMergeOnRescope(boolean forceMergeOnRescope) {
-    this.forceMergeOnRescope = forceMergeOnRescope;
+  public PrnfbNotificationBuilder withUpdatePullRequestRefs(boolean updatePullRequestRefs) {
+    this.updatePullRequestRefs = updatePullRequestRefs;
     return this;
   }
 

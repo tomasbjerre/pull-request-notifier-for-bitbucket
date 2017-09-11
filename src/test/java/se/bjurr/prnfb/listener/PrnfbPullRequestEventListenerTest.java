@@ -20,11 +20,9 @@ import static se.bjurr.prnfb.settings.TRIGGER_IF_MERGE.NOT_CONFLICTING;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
-import com.atlassian.bitbucket.event.pull.PullRequestRescopedEvent;
 import com.atlassian.bitbucket.scm.Command;
 import com.atlassian.bitbucket.scm.ScmService;
 import com.atlassian.bitbucket.scm.pull.ScmPullRequestCommandFactory;
@@ -177,7 +175,7 @@ public class PrnfbPullRequestEventListenerTest {
         prnfbNotificationBuilder(notification1) //
             .withUrl("http://not2.com/") //
             .withTrigger(PrnfbPullRequestAction.RESCOPED_FROM) //
-            .withForceMergeOnRescope(true) //
+            .withUpdatePullRequestRefs(true) //
             .build();
     List<PrnfbNotification> notifications =
         newArrayList(notification1, notification2, notification3);
@@ -511,7 +509,8 @@ public class PrnfbPullRequestEventListenerTest {
   }
 
   @Test
-  public void testThatTryMergeIsCalledWhenForceMergeOnRescopeEnabled() throws ValidationException {
+  public void testThatTryMergeIsCalledWhenUpdatePullRequestRefsEnabled()
+      throws ValidationException {
     when(scmService.getPullRequestCommandFactory(any(PullRequest.class)))
         .thenReturn(pullRequestCommandFactory);
     when(pullRequestCommandFactory.tryMerge(any(PullRequest.class))).thenReturn(pullRequestCommand);

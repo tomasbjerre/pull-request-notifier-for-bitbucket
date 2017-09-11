@@ -119,7 +119,7 @@ public class PrnfbPullRequestEventListener {
       try {
         if (!pullRequest.isClosed()
             && pullRequestEvent.getAction().equals(PullRequestAction.RESCOPED)
-            && notification.isForceMergeOnRescope()
+            && notification.isUpdatePullRequestRefs()
             && !mergePerformed) {
           mergePerformed = true;
           try {
