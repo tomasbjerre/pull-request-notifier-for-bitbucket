@@ -460,6 +460,15 @@
     </div>
    </fieldset>
 
+  <fieldset class="group">
+   <legend>
+    <span>Force Merge on Rescope</span>
+   </legend>
+   <div class="checkbox">
+    <input class="checkbox" type="checkbox" name="forceMergeOnRescope" value="true">
+   </div>
+  </fieldset>
+
    <h4>Injection URL</h4>
    <p>Optional configuration for retrieving a value from a pre URL invocation. A Jenkins installation may require the value of <i>http://JENKINS/crumbIssuer/api/xml?xpath=//crumb/text()</i> to be used in a request.</p>
    <fieldset class="group">

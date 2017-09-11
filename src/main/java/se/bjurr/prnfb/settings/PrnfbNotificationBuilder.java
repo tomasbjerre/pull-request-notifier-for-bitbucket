@@ -39,6 +39,7 @@ public class PrnfbNotificationBuilder {
       TRIGGER_IF_MERGE triggerIfCanMerge,
       List<PullRequestState> triggerIgnoreStateList,
       List<PrnfbPullRequestAction> triggers,
+      boolean forceMergeOnRescope,
       String url,
       String user,
       UUID uuid,
@@ -62,6 +63,7 @@ public class PrnfbNotificationBuilder {
     this.triggerIfCanMerge = triggerIfCanMerge;
     this.triggerIgnoreStateList = triggerIgnoreStateList;
     this.triggers = triggers;
+    this.forceMergeOnRescope = forceMergeOnRescope;
     this.url = url;
     this.user = user;
     this.uuid = uuid;
@@ -75,6 +77,7 @@ public class PrnfbNotificationBuilder {
     b.uuid = from.getUuid();
     b.password = from.getPassword().orNull();
     b.triggers = from.getTriggers();
+    b.forceMergeOnRescope = from.isForceMergeOnRescope();
     b.url = from.getUrl();
     b.user = from.getUser().orNull();
     b.filterRegexp = from.getFilterRegexp().orNull();
@@ -116,6 +119,7 @@ public class PrnfbNotificationBuilder {
   private TRIGGER_IF_MERGE triggerIfCanMerge;
   private List<PullRequestState> triggerIgnoreStateList = newArrayList();
   private List<PrnfbPullRequestAction> triggers = newArrayList();
+  private boolean forceMergeOnRescope;
   private String url;
   private String user;
   private UUID uuid;
@@ -210,6 +214,10 @@ public class PrnfbNotificationBuilder {
     return this.triggers;
   }
 
+  public boolean isForceMergeOnRescope() {
+    return this.forceMergeOnRescope;
+  }
+
   public String getUrl() {
     return this.url;
   }
@@ -239,6 +247,11 @@ public class PrnfbNotificationBuilder {
 
   public PrnfbNotificationBuilder setTriggers(List<PrnfbPullRequestAction> triggers) {
     this.triggers = triggers;
+    return this;
+  }
+
+  public PrnfbNotificationBuilder setForceMergeOnRescope(boolean forceMergeOnRescope) {
+    this.forceMergeOnRescope = forceMergeOnRescope;
     return this;
   }
 
@@ -319,6 +332,11 @@ public class PrnfbNotificationBuilder {
 
   public PrnfbNotificationBuilder withTrigger(PrnfbPullRequestAction trigger) {
     this.triggers.add(trigger);
+    return this;
+  }
+
+  public PrnfbNotificationBuilder withForceMergeOnRescope(boolean forceMergeOnRescope) {
+    this.forceMergeOnRescope = forceMergeOnRescope;
     return this;
   }
 

@@ -16,6 +16,7 @@ import static se.bjurr.prnfb.settings.TRIGGER_IF_MERGE.NOT_CONFLICTING;
 import java.util.concurrent.ExecutorService;
 
 import com.atlassian.bitbucket.ServiceException;
+import com.atlassian.bitbucket.pull.PullRequestAction;
 import com.atlassian.bitbucket.scm.Command;
 import com.atlassian.bitbucket.scm.ScmService;
 import com.atlassian.bitbucket.scm.pull.ScmPullRequestCommandFactory;
@@ -106,29 +107,32 @@ public class PrnfbPullRequestEventListener {
   private void handleEvent(final PullRequestEvent pullRequestEvent) {
 
     PullRequest pullRequest = pullRequestEvent.getPullRequest();
+    final PrnfbSettingsData settings = settingsService.getPrnfbSettingsData();
+    final ClientKeyStore clientKeyStore = new ClientKeyStore(settings);
 
-    if (pullRequest.isClosed()
-        && pullRequestEvent instanceof PullRequestCommentEvent) {
+    if (pullRequest.isClosed() && pullRequestEvent instanceof PullRequestCommentEvent) {
       return;
     }
 
-    if (!pullRequest.isClosed()
-        && pullRequestEvent instanceof PullRequestRescopedEvent) {
-      try {
-        ScmPullRequestCommandFactory scmPullRequestCommandFactory =
-                scmService.getPullRequestCommandFactory(pullRequest);
-        Command<?> command;
-        command = scmPullRequestCommandFactory.tryMerge(pullRequest);
-        command.call();
-      } catch (ServiceException se) {
-        LOG.warn("Merge check failed " + pullRequest, se);
-      }
-    }
-
-    final PrnfbSettingsData settings = settingsService.getPrnfbSettingsData();
-    final ClientKeyStore clientKeyStore = new ClientKeyStore(settings);
     for (final PrnfbNotification notification : settingsService.getNotifications()) {
+      boolean mergePerformed = false;
       try {
+        if (!pullRequest.isClosed()
+            && pullRequestEvent.getAction().equals(PullRequestAction.RESCOPED)
+            && notification.isForceMergeOnRescope()
+            && !mergePerformed) {
+          mergePerformed = true;
+          try {
+            ScmPullRequestCommandFactory scmPullRequestCommandFactory =
+                scmService.getPullRequestCommandFactory(pullRequest);
+            Command<?> command;
+            command = scmPullRequestCommandFactory.tryMerge(pullRequest);
+            command.call();
+          } catch (ServiceException se) {
+            LOG.warn("Merge check failed " + pullRequest, se);
+          }
+        }
+
         handleEventNotification(pullRequestEvent, settings, clientKeyStore, notification);
       } catch (final Exception e) {
         LOG.error("Unable to handle notification " + notification, e);

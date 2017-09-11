@@ -39,6 +39,7 @@ public class NotificationTransformer {
     to.setTriggerIfCanMerge(from.getTriggerIfCanMerge());
     to.setTriggerIgnoreStateList(toPullRequestStateStrings(from.getTriggerIgnoreStateList()));
     to.setTriggers(toStrings(from.getTriggers()));
+    to.setForceMergeOnRescope(from.isForceMergeOnRescope());
     to.setUrl(from.getUrl());
     to.setUser(UNCHANGED);
     to.setPassword(UNCHANGED);
@@ -75,6 +76,7 @@ public class NotificationTransformer {
         .withProxySchema(from.getProxySchema()) //
         .withProxyUser(from.getProxyUser()) //
         .setTriggers(toPrnfbPullRequestActions(from.getTriggers())) //
+        .withForceMergeOnRescope(from.isForceMergeOnRescope()) //
         .withTriggerIfCanMerge(from.getTriggerIfCanMerge()) //
         .setTriggerIgnoreState(toPullRequestStates(from.getTriggerIgnoreStateList())) //
         .withUrl(from.getUrl()) //

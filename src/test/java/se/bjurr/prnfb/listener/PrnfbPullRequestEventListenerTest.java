@@ -1,13 +1,13 @@
 package se.bjurr.prnfb.listener;
 
 import static com.atlassian.bitbucket.pull.PullRequestAction.OPENED;
+import static com.atlassian.bitbucket.pull.PullRequestAction.RESCOPED;
 import static com.atlassian.bitbucket.pull.PullRequestState.DECLINED;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static se.bjurr.prnfb.listener.PrnfbPullRequestAction.APPROVED;
 import static se.bjurr.prnfb.listener.PrnfbPullRequestAction.RESCOPED_FROM;
@@ -20,10 +20,14 @@ import static se.bjurr.prnfb.settings.TRIGGER_IF_MERGE.NOT_CONFLICTING;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
+import com.atlassian.bitbucket.event.pull.PullRequestRescopedEvent;
+import com.atlassian.bitbucket.scm.Command;
 import com.atlassian.bitbucket.scm.ScmService;
+import com.atlassian.bitbucket.scm.pull.ScmPullRequestCommandFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -64,14 +68,19 @@ public class PrnfbPullRequestEventListenerTest {
   private final List<UrlInvoker> invokedUrls = newArrayList();
   private PrnfbNotification notification1;
   private PrnfbNotification notification2;
+  private PrnfbNotification notification3;
   private PrnfbSettingsData pluginSettingsData;
   @Mock private PrnfbRendererFactory prnfbRendererFactory;
   @Mock private PullRequest pullRequest;
   @Mock private PullRequestEvent pullRequestOpenedEvent;
+  @Mock private PullRequestEvent pullRequestRescopedEvent;
   @Mock private PullRequestService pullRequestService;
   @Mock private PrnfbRenderer renderer;
   @Mock private SettingsService settingsService;
   @Mock private ScmService scmService;
+  @Mock private ScmPullRequestCommandFactory pullRequestCommandFactory;
+  @Mock private Command pullRequestCommand;
+
   private Boolean shouldAcceptAnyCertificate;
   private PrnfbPullRequestEventListener sut;
   @Mock private PullRequestRef toRef;
@@ -142,6 +151,13 @@ public class PrnfbPullRequestEventListenerTest {
     when(pullRequestOpenedEvent.getAction()) //
         .thenReturn(OPENED);
 
+    when(pullRequestRescopedEvent.getPullRequest()) //
+        .thenReturn(pullRequest);
+    when(pullRequestRescopedEvent.getPullRequest().isClosed()) //
+        .thenReturn(false);
+    when(pullRequestRescopedEvent.getAction()) //
+        .thenReturn(RESCOPED);
+
     pluginSettingsData =
         prnfbSettingsDataBuilder() //
             .build();
@@ -157,7 +173,14 @@ public class PrnfbPullRequestEventListenerTest {
         prnfbNotificationBuilder(notification1) //
             .withUrl("http://not2.com/") //
             .build();
-    List<PrnfbNotification> notifications = newArrayList(notification1, notification2);
+    notification3 =
+        prnfbNotificationBuilder(notification1) //
+            .withUrl("http://not2.com/") //
+            .withTrigger(PrnfbPullRequestAction.RESCOPED_FROM) //
+            .withForceMergeOnRescope(true) //
+            .build();
+    List<PrnfbNotification> notifications =
+        newArrayList(notification1, notification2, notification3);
     when(settingsService.getNotifications()) //
         .thenReturn(notifications);
 
@@ -485,5 +508,14 @@ public class PrnfbPullRequestEventListenerTest {
     sut.handleEventAsync(pullRequestOpenedEvent);
 
     assertInvokedUrls("http://not1.com/", "http://not2.com/");
+  }
+
+  @Test
+  public void testThatTryMergeIsCalledWhenForceMergeOnRescopeEnabled() throws ValidationException {
+    when(scmService.getPullRequestCommandFactory(any(PullRequest.class)))
+        .thenReturn(pullRequestCommandFactory);
+    when(pullRequestCommandFactory.tryMerge(any(PullRequest.class))).thenReturn(pullRequestCommand);
+    sut.handleEventAsync(pullRequestRescopedEvent);
+    verify(pullRequestCommand, times(1)).call();
   }
 }

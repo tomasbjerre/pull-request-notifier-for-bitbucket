@@ -37,6 +37,7 @@ public class NotificationDTO implements Comparable<NotificationDTO>, Restricted 
   private TRIGGER_IF_MERGE triggerIfCanMerge;
   private List<String> triggerIgnoreStateList;
   private List<String> triggers;
+  private boolean forceMergeOnRescope;
   private String url;
   private String user;
   private UUID uuid;
@@ -191,6 +192,9 @@ public class NotificationDTO implements Comparable<NotificationDTO>, Restricted 
     } else if (!triggers.equals(other.triggers)) {
       return false;
     }
+    if (forceMergeOnRescope != other.forceMergeOnRescope) {
+      return false;
+    }
     if (url == null) {
       if (other.url != null) {
         return false;
@@ -289,6 +293,10 @@ public class NotificationDTO implements Comparable<NotificationDTO>, Restricted 
     return this.triggers;
   }
 
+  public boolean isForceMergeOnRescope() {
+    return this.forceMergeOnRescope;
+  }
+
   public String getUrl() {
     return this.url;
   }
@@ -326,6 +334,7 @@ public class NotificationDTO implements Comparable<NotificationDTO>, Restricted 
     result =
         prime * result + (triggerIgnoreStateList == null ? 0 : triggerIgnoreStateList.hashCode());
     result = prime * result + (triggers == null ? 0 : triggers.hashCode());
+    result = prime * result + (forceMergeOnRescope ? 1 : 0);
     result = prime * result + (url == null ? 0 : url.hashCode());
     result = prime * result + (user == null ? 0 : user.hashCode());
     result = prime * result + (uuid == null ? 0 : uuid.hashCode());
@@ -404,6 +413,10 @@ public class NotificationDTO implements Comparable<NotificationDTO>, Restricted 
     this.triggers = triggers;
   }
 
+  public void setForceMergeOnRescope(boolean forceMergeOnRescope) {
+    this.forceMergeOnRescope = forceMergeOnRescope;
+  }
+
   public void setUrl(String url) {
     this.url = url;
   }
@@ -468,6 +481,8 @@ public class NotificationDTO implements Comparable<NotificationDTO>, Restricted 
         + triggerIgnoreStateList
         + ", triggers="
         + triggers
+        + ", forceMergeOnRescope="
+        + forceMergeOnRescope
         + ", url="
         + url
         + ", user="
