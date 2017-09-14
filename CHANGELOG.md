@@ -4,6 +4,34 @@ Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
 ### No issue
+  Update UI & related references for better wording
+  
+  [cd4e861886977c5](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/cd4e861886977c5) Richard Bywater *2017-09-11 05:13:21*
+
+  Add forceMergeOnRescope option and unit tests
+  
+  [3e251862569df08](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/3e251862569df08) Richard Bywater *2017-09-11 01:42:52*
+
+  Doc
+  
+  [955985dc28a5a71](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/955985dc28a5a71) Tomas Bjerre *2017-09-09 05:16:17*
+
+  Change to force Bitbucket to perform merge
+
+As per its current design, when you push updates to a pull request,
+Bitbucket does not try and merge the updates until (usually) the user
+visits the Pull Request UI page.
+
+This means that if you notify, say, Jenkins to try and build your update
+PR, it will in fact only build the last version that has been looked at
+within the UI.
+
+This change causes Bitbucket to try and do the merge prior to notifying
+in order to have updated the Git references with the latest commits for
+the external system to fetch and act on.
+  
+  [38dcd14bdf1bd69](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/38dcd14bdf1bd69) Richard Bywater *2017-09-08 04:31:32*
+
   doc
   
   [a18440409a538b4](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/a18440409a538b4) Tomas Bjerre *2017-08-14 18:54:35*
