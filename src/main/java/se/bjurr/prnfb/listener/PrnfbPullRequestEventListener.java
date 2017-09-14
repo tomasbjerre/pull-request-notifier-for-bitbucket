@@ -15,6 +15,11 @@ import static se.bjurr.prnfb.settings.TRIGGER_IF_MERGE.NOT_CONFLICTING;
 
 import java.util.concurrent.ExecutorService;
 
+import com.atlassian.bitbucket.ServiceException;
+import com.atlassian.bitbucket.pull.PullRequestAction;
+import com.atlassian.bitbucket.scm.Command;
+import com.atlassian.bitbucket.scm.ScmService;
+import com.atlassian.bitbucket.scm.pull.ScmPullRequestCommandFactory;
 import org.slf4j.Logger;
 
 import se.bjurr.prnfb.http.ClientKeyStore;
@@ -68,6 +73,7 @@ public class PrnfbPullRequestEventListener {
   private final PrnfbRendererFactory prnfbRendererFactory;
   private final PullRequestService pullRequestService;
   private final SecurityService securityService;
+  private final ScmService scmService;
 
   private final SettingsService settingsService;
 
@@ -76,12 +82,14 @@ public class PrnfbPullRequestEventListener {
       PullRequestService pullRequestService,
       ExecutorService executorService,
       SettingsService settingsService,
-      SecurityService securityService) {
+      SecurityService securityService,
+      ScmService scmService) {
     this.prnfbRendererFactory = prnfbRendererFactory;
     this.pullRequestService = pullRequestService;
     this.executorService = executorService;
     this.settingsService = settingsService;
     this.securityService = securityService;
+    this.scmService = scmService;
   }
 
   private Invoker createInvoker() {
@@ -97,14 +105,34 @@ public class PrnfbPullRequestEventListener {
   }
 
   private void handleEvent(final PullRequestEvent pullRequestEvent) {
-    if (pullRequestEvent.getPullRequest().isClosed()
-        && pullRequestEvent instanceof PullRequestCommentEvent) {
-      return;
-    }
+
+    PullRequest pullRequest = pullRequestEvent.getPullRequest();
     final PrnfbSettingsData settings = settingsService.getPrnfbSettingsData();
     final ClientKeyStore clientKeyStore = new ClientKeyStore(settings);
+
+    if (pullRequest.isClosed() && pullRequestEvent instanceof PullRequestCommentEvent) {
+      return;
+    }
+
     for (final PrnfbNotification notification : settingsService.getNotifications()) {
+      boolean mergePerformed = false;
       try {
+        if (!pullRequest.isClosed()
+            && pullRequestEvent.getAction().equals(PullRequestAction.RESCOPED)
+            && notification.isUpdatePullRequestRefs()
+            && !mergePerformed) {
+          mergePerformed = true;
+          try {
+            ScmPullRequestCommandFactory scmPullRequestCommandFactory =
+                scmService.getPullRequestCommandFactory(pullRequest);
+            Command<?> command;
+            command = scmPullRequestCommandFactory.tryMerge(pullRequest);
+            command.call();
+          } catch (ServiceException se) {
+            LOG.warn("Merge check failed " + pullRequest, se);
+          }
+        }
+
         handleEventNotification(pullRequestEvent, settings, clientKeyStore, notification);
       } catch (final Exception e) {
         LOG.error("Unable to handle notification " + notification, e);

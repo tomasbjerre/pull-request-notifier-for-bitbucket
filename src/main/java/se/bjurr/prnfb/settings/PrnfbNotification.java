@@ -44,6 +44,7 @@ public class PrnfbNotification implements HasUuid, Restricted {
   private final TRIGGER_IF_MERGE triggerIfCanMerge;
   private final List<PullRequestState> triggerIgnoreStateList;
   private final List<PrnfbPullRequestAction> triggers;
+  private final boolean updatePullRequestRefs;
   private final String url;
   private final String user;
   private final UUID uuid;
@@ -87,6 +88,7 @@ public class PrnfbNotification implements HasUuid, Restricted {
     if (this.triggers.isEmpty()) {
       throw new ValidationException("triggers", "At least one trigger must be selected.");
     }
+    this.updatePullRequestRefs = builder.isUpdatePullRequestRefs();
     this.filterString = emptyToNull(nullToEmpty(builder.getFilterString()).trim());
     this.filterRegexp = emptyToNull(nullToEmpty(builder.getFilterRegexp()).trim());
     this.name = firstNonNull(emptyToNull(nullToEmpty(builder.getName()).trim()), DEFAULT_NAME);
@@ -229,6 +231,9 @@ public class PrnfbNotification implements HasUuid, Restricted {
     } else if (!triggers.equals(other.triggers)) {
       return false;
     }
+    if (updatePullRequestRefs != other.updatePullRequestRefs) {
+      return false;
+    }
     if (url == null) {
       if (other.url != null) {
         return false;
@@ -331,6 +336,10 @@ public class PrnfbNotification implements HasUuid, Restricted {
     return this.triggers;
   }
 
+  public boolean isUpdatePullRequestRefs() {
+    return this.updatePullRequestRefs;
+  }
+
   public String getUrl() {
     return this.url;
   }
@@ -368,6 +377,7 @@ public class PrnfbNotification implements HasUuid, Restricted {
     result =
         prime * result + (triggerIgnoreStateList == null ? 0 : triggerIgnoreStateList.hashCode());
     result = prime * result + (triggers == null ? 0 : triggers.hashCode());
+    result = prime * result + (updatePullRequestRefs ? 1 : 0);
     result = prime * result + (url == null ? 0 : url.hashCode());
     result = prime * result + (user == null ? 0 : user.hashCode());
     result = prime * result + (uuid == null ? 0 : uuid.hashCode());
@@ -412,6 +422,8 @@ public class PrnfbNotification implements HasUuid, Restricted {
         + triggerIgnoreStateList
         + ", triggers="
         + triggers
+        + ", updatePullRequestRefs="
+        + updatePullRequestRefs
         + ", url="
         + url
         + ", user="

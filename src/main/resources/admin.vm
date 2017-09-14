@@ -460,6 +460,18 @@
     </div>
    </fieldset>
 
+  <fieldset class="group">
+   <legend>
+    <span>Update Pull Request References</span>
+   </legend>
+   <div class="checkbox">
+    <input class="checkbox" type="checkbox" name="updatePullRequestRefs" value="true">&nbsp;
+   </div>
+   <div class="description">
+     Will update refs/pull-requests/{id}/from and refs/pull-requests/{id}/merge references in Git when Pull Request is rescoped.
+   </div>
+  </fieldset>
+
    <h4>Injection URL</h4>
    <p>Optional configuration for retrieving a value from a pre URL invocation. A Jenkins installation may require the value of <i>http://JENKINS/crumbIssuer/api/xml?xpath=//crumb/text()</i> to be used in a request.</p>
    <fieldset class="group">
