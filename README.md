@@ -12,16 +12,16 @@ The original use case was to trigger Jenkins jobs to build and verify pull reque
 The Pull Request Notifier for Bitbucket Server can:
 
 * Invoke any URL, or set of URL:s, when a pull request event happens.
- * With variables available to add necessary parameters.
- * HTTP POST, PUT, GET and DELETE. POST and PUT also supports rendered post content. 
+  * With variables available to add necessary parameters.
+  * HTTP POST, PUT, GET and DELETE. POST and PUT also supports rendered post content.
 * Be configured to trigger on any [pull request event](https://developer.atlassian.com/static/javadoc/stash.old-perms-pre-feb4/2.0.1/api/reference/com/atlassian/stash/event/pull/package-summary.html). Including extended events:
- * RESCOPED_FROM, when source branch change
- * RESCOPED_TO, when target branch change
- * BUTTON_TRIGGER, when trigger button in pull request view is pressed
+  * RESCOPED_FROM, when source branch change
+  * RESCOPED_TO, when target branch change
+  * BUTTON_TRIGGER, when trigger button in pull request view is pressed
 * Can invoke CSRF protected systems, using the ${INJECTION_URL_VALUE} variable. How to to that with Jenkins is described below.
 * Be configured to only trigger if the pull request matches a filter. A filter text is constructed with any combination of the variables and then a regexp is constructed to match that text.
 * Add buttons to pull request view in Bitbucket Server. And map those buttons to URL invocations. This can be done by setting the filter string to ${BUTTON_TRIGGER_TITLE} and the filter regexp to title of button.
- * Buttons can have forms associated with them, and then submit the form data using the ${BUTTON_FORM_DATA} variable.
+  * Buttons can have forms associated with them, and then submit the form data using the ${BUTTON_FORM_DATA} variable.
 * Authenticate with HTTP basic authentication.
 * Optionally allow any SSL certificate.
 * Use custom SSL key store, type and password.
@@ -29,13 +29,13 @@ The Pull Request Notifier for Bitbucket Server can:
 * Can optionally use proxy to connect
 * Can let users and/or admins do configuration. Or restrict configuration to just system admins. A user will have to browse to the configuration page at `http://domain/bitbucket/plugins/servlet/prnfb/admin`.
 * Can enable trigger
- * If PR has, or has no, conflicts
- * Only if PR has conflicts
- * Only if PR has no conflicts
+  * If PR has, or has no, conflicts
+  * Only if PR has conflicts
+  * Only if PR has no conflicts
 * Nice configuration GUI.
- * Global at */bitbucket/plugins/servlet/prnfb/admin*
- * Project level at */bitbucket/plugins/servlet/prnfb/admin/PROJECT_1*
- * Repo level at */bitbucket/plugins/servlet/prnfb/admin/PROJECT_1/rep_1*
+  * Global at */bitbucket/plugins/servlet/prnfb/admin*
+  * Project level at */bitbucket/plugins/servlet/prnfb/admin/PROJECT_1*
+  * Repo level at */bitbucket/plugins/servlet/prnfb/admin/PROJECT_1/rep_1*
 
 The plugin has its own implementation to create the RESCOPED_FROM and RESCOPED_TO events. RESCOPED is transformed to RESCOPED_TO if target branch changed, RESCOPED_FROM if source branch, or both, changed.
 
