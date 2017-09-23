@@ -4,7 +4,7 @@ Parameterized Jenkins jobs can be triggered remotely by invoking a URL. How you 
 The job that you want to trigger must have:
  * *This build is parameterized* checkbox checked.
  * *Trigger builds remotely* checkbox checked.
-  * You may, or may not, use a token here.
+   * You may, or may not, use a token here.
 
 There is a full job-dsl for this in [here](https://github.com/jenkinsci/violation-comments-to-stash-plugin).
 
@@ -33,8 +33,8 @@ If you need ***authentication***, add your username and password in *Basic authe
 
 If you are using a ***CSRF*** protection in Jenkins, you can use the **Injection URL** feature.
  * Set **Injection URL** field to `http://JENKINS_HOSTNAME/crumbIssuer/api/xml?xpath=//crumb/text()`.
-  * You may get an error like *primitive XPath result sets forbidden; implement jenkins.security.SecureRequester*. If so, you can set Injection URL to `http://JENKINS/crumbIssuer/api/xml?xpath=//crumb` in combination with regular expression `<crumb>([^<]*)</crumb>`.
-  * A third option is to checkout [this](https://wiki.jenkins-ci.org/display/JENKINS/Secure+Requester+Whitelist+Plugin) Jenkins plugin.
+   * You may get an error like *primitive XPath result sets forbidden; implement jenkins.security.SecureRequester*. If so, you can set Injection URL to `http://JENKINS/crumbIssuer/api/xml?xpath=//crumb` in combination with regular expression `<crumb>([^<]*)</crumb>`.
+   * A third option is to checkout [this](https://wiki.jenkins-ci.org/display/JENKINS/Secure+Requester+Whitelist+Plugin) Jenkins plugin.
  * In the headers section, set header **Jenkins-Crumb** with value **${INJECTION_URL_VALUE}**. The `Jenkins-Crumb` header name was previously just `.crumb`, use whatever the `curl` command responded with above.
 
 You may trigger the build with `GET` or `POST`.
