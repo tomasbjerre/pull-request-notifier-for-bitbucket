@@ -2,7 +2,14 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
-## Unreleased
+## 3.15
+### GitHub [#251](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/251) Plugin causing crash and stopping pushing to bitbucket after upgrading.
+  Removing migration code for legacy settings 
+
+Removing code that looks for, and migrates, legacy settings (Stash 3.x) to Bitbucket Server (4.x and 5.x).
+  
+  [0a8120390898728](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/0a8120390898728) Tomas Bjerre *2017-10-06 15:40:37*
+
 ### No issue
   inject leading spaces so markdown list elements nest/indent as intended
   
