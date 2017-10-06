@@ -19,22 +19,14 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
-import se.bjurr.prnfb.presentation.dto.ON_OR_OFF;
 import se.bjurr.prnfb.settings.HasUuid;
 import se.bjurr.prnfb.settings.PrnfbButton;
 import se.bjurr.prnfb.settings.PrnfbNotification;
-import se.bjurr.prnfb.settings.PrnfbNotificationBuilder;
 import se.bjurr.prnfb.settings.PrnfbSettings;
 import se.bjurr.prnfb.settings.PrnfbSettingsData;
-import se.bjurr.prnfb.settings.TRIGGER_IF_MERGE;
 import se.bjurr.prnfb.settings.USER_LEVEL;
 import se.bjurr.prnfb.settings.ValidationException;
-import se.bjurr.prnfb.settings.legacy.AdminFormValues.BUTTON_VISIBILITY;
-import se.bjurr.prnfb.settings.legacy.Header;
-import se.bjurr.prnfb.settings.legacy.SettingsStorage;
 
-import com.atlassian.bitbucket.pull.PullRequestState;
 import com.atlassian.bitbucket.user.SecurityService;
 import com.atlassian.bitbucket.util.Operation;
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
@@ -308,33 +300,15 @@ public class SettingsService {
   }
 
   private PrnfbSettings doGetPrnfbSettings() {
-    Object storedSettings = this.pluginSettings.get(STORAGE_KEY);
+    final Object storedSettings = this.pluginSettings.get(STORAGE_KEY);
     if (storedSettings == null) {
-      this.logger.info("No settings found for " + STORAGE_KEY + ", looking for legacy settings.");
-      if (this.pluginSettings.get(se.bjurr.prnfb.settings.legacy.SettingsStorage.STORAGE_KEY)
-              != null
-          || this.pluginSettings.get(
-                  se.bjurr.prnfb.settings.legacy.SettingsStorage.STORAGE_KEY_PRNFS)
-              != null) {
-        try {
-          this.logger.info("Using legacy settings.");
-          final se.bjurr.prnfb.settings.legacy.PrnfbSettings legacySettings =
-              SettingsStorage.getPrnfbSettings(this.pluginSettings);
-          final PrnfbSettings fromLegacy = settingsFromLegacy(legacySettings);
-          doSetPrnfbSettings(fromLegacy);
-          storedSettings = this.pluginSettings.get(STORAGE_KEY);
-        } catch (final Exception e) {
-          this.logger.error("", e);
-        }
-      } else {
-        this.logger.info("Creating new default settings.");
-        return prnfbSettingsBuilder() //
-            .setPrnfbSettingsData( //
-                prnfbSettingsDataBuilder() //
-                    .setAdminRestriction(USER_LEVEL.ADMIN) //
-                    .build()) //
-            .build();
-      }
+      this.logger.info("Creating new default settings.");
+      return prnfbSettingsBuilder() //
+          .setPrnfbSettingsData( //
+              prnfbSettingsDataBuilder() //
+                  .setAdminRestriction(USER_LEVEL.ADMIN) //
+                  .build()) //
+          .build();
     }
     return gson.fromJson(storedSettings.toString(), PrnfbSettings.class);
   }
@@ -370,97 +344,6 @@ public class SettingsService {
                 return SettingsService.this.transactionTemplate.execute(transactionCallback);
               }
             });
-  }
-
-  private PrnfbSettings settingsFromLegacy(
-      se.bjurr.prnfb.settings.legacy.PrnfbSettings oldSettings) {
-    final String ks = oldSettings.getKeyStore().orNull();
-    final String ksp = oldSettings.getKeyStorePassword().orNull();
-    final String kst = oldSettings.getKeyStoreType();
-    USER_LEVEL adminRestr = USER_LEVEL.SYSTEM_ADMIN;
-    if (oldSettings.isAdminsAllowed()) {
-      adminRestr = USER_LEVEL.ADMIN;
-    }
-    if (oldSettings.isUsersAllowed()) {
-      adminRestr = USER_LEVEL.EVERYONE;
-    }
-
-    final boolean shouldAcceptAnyCertificate = false;
-
-    final List<PrnfbButton> newButtons = newArrayList();
-    for (final se.bjurr.prnfb.settings.legacy.PrnfbButton oldButton : oldSettings.getButtons()) {
-      USER_LEVEL userLevel = USER_LEVEL.SYSTEM_ADMIN;
-      if (oldButton.getVisibility() == BUTTON_VISIBILITY.ADMIN) {
-        userLevel = USER_LEVEL.ADMIN;
-      }
-      if (oldButton.getVisibility() == BUTTON_VISIBILITY.EVERYONE) {
-        userLevel = USER_LEVEL.EVERYONE;
-      }
-      newButtons.add(
-          new PrnfbButton(
-              UUID.randomUUID(),
-              oldButton.getTitle(),
-              userLevel,
-              ON_OR_OFF.off,
-              null,
-              null,
-              "confirmationText",
-              null));
-    }
-
-    final List<PrnfbNotification> newNotifications = newArrayList();
-    for (final se.bjurr.prnfb.settings.legacy.PrnfbNotification oldNotification :
-        oldSettings.getNotifications()) {
-      try {
-        final PrnfbNotificationBuilder builder =
-            prnfbNotificationBuilder() //
-                .withFilterRegexp(oldNotification.getFilterRegexp().orNull()) //
-                .withFilterString(oldNotification.getFilterString().orNull()) //
-                .withInjectionUrl(oldNotification.getInjectionUrl().orNull()) //
-                .withInjectionUrlRegexp(oldNotification.getInjectionUrlRegexp().orNull()) //
-                .withMethod(oldNotification.getMethod()) //
-                .withName(oldNotification.getName()) //
-                .withPassword(oldNotification.getPassword().orNull()) //
-                .withPostContent(oldNotification.getPostContent().orNull()) //
-                .withProxyPassword(oldNotification.getProxyPassword().orNull()) //
-                .withProxyPort(oldNotification.getProxyPort()) //
-                .withProxyServer(oldNotification.getProxyServer().orNull()) //
-                .withProxyUser(oldNotification.getProxyUser().orNull()) //
-                .withTriggerIfCanMerge(
-                    TRIGGER_IF_MERGE.valueOf(oldNotification.getTriggerIfCanMerge().name())) //
-                .withUrl(oldNotification.getUrl()) //
-                .withUser(oldNotification.getUser().orNull());
-
-        for (final Header h : oldNotification.getHeaders()) {
-          builder.withHeader(h.getName(), h.getValue());
-        }
-
-        for (final PullRequestState t : oldNotification.getTriggerIgnoreStateList()) {
-          builder.withTriggerIgnoreState(t);
-        }
-
-        for (final PrnfbPullRequestAction t : oldNotification.getTriggers()) {
-          builder.withTrigger(t);
-        }
-
-        newNotifications.add(builder.build());
-      } catch (final ValidationException e) {
-        this.logger.error("", e);
-      }
-    }
-
-    return prnfbSettingsBuilder() //
-        .setPrnfbSettingsData( //
-            prnfbSettingsDataBuilder() //
-                .setAdminRestriction(adminRestr) //
-                .setKeyStore(ks) //
-                .setKeyStorePassword(ksp) //
-                .setKeyStoreType(kst) //
-                .setShouldAcceptAnyCertificate(shouldAcceptAnyCertificate) //
-                .build()) //
-        .setButtons(newButtons) //
-        .setNotifications(newNotifications) //
-        .build();
   }
 
   private Predicate<HasUuid> withUuid(UUID uuid) {

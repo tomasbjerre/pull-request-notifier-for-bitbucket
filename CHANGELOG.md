@@ -2,6 +2,16 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## Unreleased
+### No issue
+  inject leading spaces so markdown list elements nest/indent as intended
+  
+  [5fc911633acc3cb](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/5fc911633acc3cb) Kevin Goodwin *2017-09-23 04:01:08*
+
+  Doc
+  
+  [515cbe1b1a88624](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/515cbe1b1a88624) Tomas Bjerre *2017-09-14 17:38:03*
+
 ## 3.14
 ### No issue
   Doc
