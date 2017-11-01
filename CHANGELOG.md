@@ -2,6 +2,12 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## Unreleased
+### No issue
+  Doc
+  
+  [d52398cd9b66ea6](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/d52398cd9b66ea6) Tomas Bjerre *2017-10-06 15:45:02*
+
 ## 3.15
 ### GitHub [#251](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/251) Plugin causing crash and stopping pushing to bitbucket after upgrading.
   Removing migration code for legacy settings 

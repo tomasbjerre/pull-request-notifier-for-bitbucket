@@ -93,7 +93,7 @@ public class PrnfbRendererTest {
             HttpResponse response = null;
             try {
               response = new HttpResponse(new URI("http://fake.om/"), 200, "theResponse");
-            } catch (URISyntaxException e) {
+            } catch (final URISyntaxException e) {
               e.printStackTrace();
             }
             toInvoke.setResponse(response);
@@ -104,7 +104,7 @@ public class PrnfbRendererTest {
 
   @Test
   public void testThatEverythingCanBeRendered() throws UnsupportedEncodingException {
-    String actual =
+    final String actual =
         sut.getRenderedStringResolved(
             "asd ${" + EVERYTHING_URL.name() + "} asd",
             encodeFor,
@@ -121,7 +121,7 @@ public class PrnfbRendererTest {
                 shouldAcceptAnyCertificate,
                 securityService));
 
-    for (PrnfbVariable v : PrnfbVariable.values()) {
+    for (final PrnfbVariable v : PrnfbVariable.values()) {
       if (v != EVERYTHING_URL && v != PULL_REQUEST_DESCRIPTION) {
         assertThat(actual) //
             .containsOnlyOnce(v.name() + "=${" + v.name() + "}") //
@@ -136,7 +136,7 @@ public class PrnfbRendererTest {
 
   @Test
   public void testThatDollarInStringCanBeRendered() throws UnsupportedEncodingException {
-    String actual =
+    final String actual =
         sut.getRenderedStringResolved(
             "asd ${" + PULL_REQUEST_TITLE.name() + "} asd",
             encodeFor,
@@ -150,7 +150,7 @@ public class PrnfbRendererTest {
 
   @Test
   public void testThatIfAVariableChrashesOnResolveItWillBeEmpty() {
-    String actual =
+    final String actual =
         sut.render(
             "my ${" + PULL_REQUEST_AUTHOR_EMAIL + "} string",
             encodeFor,
@@ -168,7 +168,7 @@ public class PrnfbRendererTest {
         .thenReturn(user);
     when(pullRequest.getAuthor().getUser().getEmailAddress()) //
         .thenReturn(null);
-    String actual =
+    final String actual =
         sut.render(
             "my ${" + PULL_REQUEST_AUTHOR_EMAIL + "} string",
             encodeFor,
@@ -196,7 +196,7 @@ public class PrnfbRendererTest {
             variables,
             securityService);
 
-    String actual =
+    final String actual =
         sut.render(
             "my ${" + INJECTION_URL_VALUE + "} string",
             encodeFor,
@@ -209,7 +209,7 @@ public class PrnfbRendererTest {
   @Test
   public void testThatMergeCommitCanBeRenderedIfExists() {
     variables.put(PULL_REQUEST_MERGE_COMMIT, Suppliers.ofInstance("mergeHash"));
-    String actual =
+    final String actual =
         sut.render(
             "my ${" + PULL_REQUEST_MERGE_COMMIT + "} string",
             encodeFor,
@@ -221,7 +221,7 @@ public class PrnfbRendererTest {
 
   @Test
   public void testThatMergeCommitCanBeRenderedIfNotExists() {
-    String actual =
+    final String actual =
         sut.render(
             "my ${" + PULL_REQUEST_MERGE_COMMIT + "} string",
             encodeFor,
@@ -233,7 +233,7 @@ public class PrnfbRendererTest {
 
   @Test
   public void testThatStringCanBeRendered() {
-    String actual =
+    final String actual =
         sut.render(
             "my ${" + PULL_REQUEST_FROM_HASH + "} string",
             encodeFor,
@@ -246,7 +246,7 @@ public class PrnfbRendererTest {
   @Test
   public void testThatStringCanBeRenderedForUrl() {
     variables.put(PULL_REQUEST_COMMENT_TEXT, Suppliers.ofInstance("the comment"));
-    String actual =
+    final String actual =
         sut.render(
             "my ${" + PULL_REQUEST_COMMENT_TEXT + "} string",
             ENCODE_FOR.URL,
@@ -254,5 +254,18 @@ public class PrnfbRendererTest {
             shouldAcceptAnyCertificate);
     assertThat(actual) //
         .isEqualTo("my the+comment string");
+  }
+
+  @Test
+  public void testThatStringCanBeRenderedForHtml() {
+    variables.put(PULL_REQUEST_COMMENT_TEXT, Suppliers.ofInstance("the\ncomment \""));
+    final String actual =
+        sut.render(
+            "my ${" + PULL_REQUEST_COMMENT_TEXT + "} string",
+            ENCODE_FOR.HTML,
+            clientKeyStore,
+            shouldAcceptAnyCertificate);
+    assertThat(actual) //
+        .isEqualTo("my the<br />comment &quot; string");
   }
 }

@@ -83,18 +83,18 @@ public class PrnfbRenderer {
     if (encodeFor == URL) {
       try {
         replaceWith = encode(resolved, UTF_8.name());
-      } catch (UnsupportedEncodingException e) {
+      } catch (final UnsupportedEncodingException e) {
         propagate(e);
       }
     } else if (encodeFor == HTML) {
-      replaceWith = StringEscapeUtils.escapeHtml4(resolved);
+      replaceWith = StringEscapeUtils.escapeHtml4(resolved).replaceAll("(\r\n|\n)", "<br />");
     } else {
       replaceWith = resolved;
     }
     try {
       replaceWith = Matcher.quoteReplacement(replaceWith);
       string = string.replaceAll(regExpStr, replaceWith);
-    } catch (IllegalArgumentException e) {
+    } catch (final IllegalArgumentException e) {
       throw new RuntimeException("Tried to replace " + regExpStr + " with " + replaceWith, e);
     }
     return string;
@@ -146,7 +146,7 @@ public class PrnfbRenderer {
         if (resolved == null) {
           resolved = "";
         }
-      } catch (Exception e) {
+      } catch (final Exception e) {
         LOG.error("Error when resolving " + variable, e);
       }
       return getRenderedStringResolved(string, encodeFor, regExpStr, resolved);
