@@ -2,8 +2,12 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
-## Unreleased
+## 3.16
 ### No issue
+  Encoding HTML newline as <br/>
+  
+  [86ebeb88aa7a97b](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/86ebeb88aa7a97b) Tomas Bjerre *2017-11-01 16:42:09*
+
   Doc
   
   [d52398cd9b66ea6](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/d52398cd9b66ea6) Tomas Bjerre *2017-10-06 15:45:02*
