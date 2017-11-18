@@ -15,13 +15,13 @@ import java.net.URL;
 import java.util.List;
 import java.util.UUID;
 
-import se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD;
-import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
-import se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR;
-
 import com.atlassian.bitbucket.pull.PullRequestState;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Optional;
+
+import se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD;
+import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
+import se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR;
 
 public class PrnfbNotification implements HasUuid, Restricted {
 
@@ -50,8 +50,9 @@ public class PrnfbNotification implements HasUuid, Restricted {
   private final UUID uuid;
   private final ENCODE_FOR postContentEncoding;
   private final String proxySchema;
+  private final String httpVersion;
 
-  public PrnfbNotification(PrnfbNotificationBuilder builder) throws ValidationException {
+  public PrnfbNotification(final PrnfbNotificationBuilder builder) throws ValidationException {
     this.uuid = firstNonNull(builder.getUUID(), randomUUID());
     this.proxyUser = emptyToNull(nullToEmpty(builder.getProxyUser()).trim());
     this.proxyPassword = emptyToNull(nullToEmpty(builder.getProxyPassword()).trim());
@@ -96,10 +97,11 @@ public class PrnfbNotification implements HasUuid, Restricted {
     this.injectionUrlRegexp = emptyToNull(nullToEmpty(builder.getInjectionUrlRegexp()).trim());
     this.triggerIgnoreStateList = builder.getTriggerIgnoreStateList();
     this.postContentEncoding = firstNonNull(builder.getPostContentEncoding(), NONE);
+    this.httpVersion = builder.getHttpVersion();
   }
 
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(final Object obj) {
     if (this == obj) {
       return true;
     }
@@ -129,6 +131,13 @@ public class PrnfbNotification implements HasUuid, Restricted {
         return false;
       }
     } else if (!headers.equals(other.headers)) {
+      return false;
+    }
+    if (httpVersion == null) {
+      if (other.httpVersion != null) {
+        return false;
+      }
+    } else if (!httpVersion.equals(other.httpVersion)) {
       return false;
     }
     if (injectionUrl == null) {
@@ -191,6 +200,13 @@ public class PrnfbNotification implements HasUuid, Restricted {
         return false;
       }
     } else if (!proxyPort.equals(other.proxyPort)) {
+      return false;
+    }
+    if (proxySchema == null) {
+      if (other.proxySchema != null) {
+        return false;
+      }
+    } else if (!proxySchema.equals(other.proxySchema)) {
       return false;
     }
     if (proxyServer == null) {
@@ -360,6 +376,7 @@ public class PrnfbNotification implements HasUuid, Restricted {
     result = prime * result + (filterRegexp == null ? 0 : filterRegexp.hashCode());
     result = prime * result + (filterString == null ? 0 : filterString.hashCode());
     result = prime * result + (headers == null ? 0 : headers.hashCode());
+    result = prime * result + (httpVersion == null ? 0 : httpVersion.hashCode());
     result = prime * result + (injectionUrl == null ? 0 : injectionUrl.hashCode());
     result = prime * result + (injectionUrlRegexp == null ? 0 : injectionUrlRegexp.hashCode());
     result = prime * result + (method == null ? 0 : method.hashCode());
@@ -370,6 +387,7 @@ public class PrnfbNotification implements HasUuid, Restricted {
     result = prime * result + (projectKey == null ? 0 : projectKey.hashCode());
     result = prime * result + (proxyPassword == null ? 0 : proxyPassword.hashCode());
     result = prime * result + (proxyPort == null ? 0 : proxyPort.hashCode());
+    result = prime * result + (proxySchema == null ? 0 : proxySchema.hashCode());
     result = prime * result + (proxyServer == null ? 0 : proxyServer.hashCode());
     result = prime * result + (proxyUser == null ? 0 : proxyUser.hashCode());
     result = prime * result + (repositorySlug == null ? 0 : repositorySlug.hashCode());
@@ -377,7 +395,7 @@ public class PrnfbNotification implements HasUuid, Restricted {
     result =
         prime * result + (triggerIgnoreStateList == null ? 0 : triggerIgnoreStateList.hashCode());
     result = prime * result + (triggers == null ? 0 : triggers.hashCode());
-    result = prime * result + (updatePullRequestRefs ? 1 : 0);
+    result = prime * result + (updatePullRequestRefs ? 1231 : 1237);
     result = prime * result + (url == null ? 0 : url.hashCode());
     result = prime * result + (user == null ? 0 : user.hashCode());
     result = prime * result + (uuid == null ? 0 : uuid.hashCode());
@@ -432,10 +450,18 @@ public class PrnfbNotification implements HasUuid, Restricted {
         + uuid
         + ", postContentEncoding="
         + postContentEncoding
+        + ", proxySchema="
+        + proxySchema
+        + ", httpVersion="
+        + httpVersion
         + "]";
   }
 
   public ENCODE_FOR getPostContentEncoding() {
     return MoreObjects.firstNonNull(this.postContentEncoding, ENCODE_FOR.NONE);
+  }
+
+  public String getHttpVersion() {
+    return httpVersion;
   }
 }

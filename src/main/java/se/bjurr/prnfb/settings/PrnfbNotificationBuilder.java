@@ -9,11 +9,11 @@ import static se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD.GET;
 import java.util.List;
 import java.util.UUID;
 
+import com.atlassian.bitbucket.pull.PullRequestState;
+
 import se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD;
 import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
 import se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR;
-
-import com.atlassian.bitbucket.pull.PullRequestState;
 
 public class PrnfbNotificationBuilder {
   public static PrnfbNotificationBuilder prnfbNotificationBuilder() {
@@ -21,30 +21,31 @@ public class PrnfbNotificationBuilder {
   }
 
   public PrnfbNotificationBuilder(
-      String filterRegexp,
-      String filterString,
-      List<PrnfbHeader> headers,
-      String injectionUrl,
-      String injectionUrlRegexp,
-      HTTP_METHOD method,
-      String name,
-      String password,
-      String postContent,
-      String projectKey,
-      String proxyPassword,
-      Integer proxyPort,
-      String proxyServer,
-      String proxyUser,
-      String repositorySlug,
-      TRIGGER_IF_MERGE triggerIfCanMerge,
-      List<PullRequestState> triggerIgnoreStateList,
-      List<PrnfbPullRequestAction> triggers,
-      boolean updatePullRequestRefs,
-      String url,
-      String user,
-      UUID uuid,
-      ENCODE_FOR postContentEncoding,
-      String proxySchema) {
+      final String filterRegexp,
+      final String filterString,
+      final List<PrnfbHeader> headers,
+      final String injectionUrl,
+      final String injectionUrlRegexp,
+      final HTTP_METHOD method,
+      final String name,
+      final String password,
+      final String postContent,
+      final String projectKey,
+      final String proxyPassword,
+      final Integer proxyPort,
+      final String proxyServer,
+      final String proxyUser,
+      final String repositorySlug,
+      final TRIGGER_IF_MERGE triggerIfCanMerge,
+      final List<PullRequestState> triggerIgnoreStateList,
+      final List<PrnfbPullRequestAction> triggers,
+      final boolean updatePullRequestRefs,
+      final String url,
+      final String user,
+      final UUID uuid,
+      final ENCODE_FOR postContentEncoding,
+      final String proxySchema,
+      final String httpVersion) {
     this.filterRegexp = filterRegexp;
     this.filterString = filterString;
     this.headers = headers;
@@ -69,9 +70,10 @@ public class PrnfbNotificationBuilder {
     this.uuid = uuid;
     this.postContentEncoding = postContentEncoding;
     this.proxySchema = proxySchema;
+    this.httpVersion = httpVersion;
   }
 
-  public static PrnfbNotificationBuilder prnfbNotificationBuilder(PrnfbNotification from) {
+  public static PrnfbNotificationBuilder prnfbNotificationBuilder(final PrnfbNotification from) {
     final PrnfbNotificationBuilder b = new PrnfbNotificationBuilder();
 
     b.uuid = from.getUuid();
@@ -98,6 +100,7 @@ public class PrnfbNotificationBuilder {
     b.injectionUrlRegexp = from.getInjectionUrlRegexp().orNull();
     b.triggerIfCanMerge = from.getTriggerIfCanMerge();
     b.postContentEncoding = from.getPostContentEncoding();
+    b.httpVersion = from.getHttpVersion();
     return b;
   }
 
@@ -125,6 +128,7 @@ public class PrnfbNotificationBuilder {
   private UUID uuid;
   private ENCODE_FOR postContentEncoding;
   private String proxySchema;
+  private String httpVersion;
 
   private PrnfbNotificationBuilder() {
     this.uuid = randomUUID();
@@ -234,144 +238,154 @@ public class PrnfbNotificationBuilder {
     return this.uuid;
   }
 
-  public PrnfbNotificationBuilder setHeaders(List<PrnfbHeader> headers) {
+  public PrnfbNotificationBuilder setHeaders(final List<PrnfbHeader> headers) {
     this.headers = headers;
     return this;
   }
 
   public PrnfbNotificationBuilder setTriggerIgnoreState(
-      List<PullRequestState> triggerIgnoreStateList) {
+      final List<PullRequestState> triggerIgnoreStateList) {
     this.triggerIgnoreStateList = triggerIgnoreStateList;
     return this;
   }
 
-  public PrnfbNotificationBuilder setTriggers(List<PrnfbPullRequestAction> triggers) {
+  public PrnfbNotificationBuilder setTriggers(final List<PrnfbPullRequestAction> triggers) {
     this.triggers = triggers;
     return this;
   }
 
-  public PrnfbNotificationBuilder setUpdatePullRequestRefs(boolean updatePullRequestRefs) {
+  public PrnfbNotificationBuilder setUpdatePullRequestRefs(final boolean updatePullRequestRefs) {
     this.updatePullRequestRefs = updatePullRequestRefs;
     return this;
   }
 
-  public PrnfbNotificationBuilder withFilterRegexp(String filterRegexp) {
+  public PrnfbNotificationBuilder withFilterRegexp(final String filterRegexp) {
     this.filterRegexp = emptyToNull(filterRegexp);
     return this;
   }
 
-  public PrnfbNotificationBuilder withFilterString(String filterString) {
+  public PrnfbNotificationBuilder withFilterString(final String filterString) {
     this.filterString = emptyToNull(filterString);
     return this;
   }
 
-  public PrnfbNotificationBuilder withHeader(String name, String value) {
+  public PrnfbNotificationBuilder withHeader(final String name, final String value) {
     this.headers.add(new PrnfbHeader(name, value));
     return this;
   }
 
-  public PrnfbNotificationBuilder withInjectionUrl(String injectionUrl) {
+  public PrnfbNotificationBuilder withInjectionUrl(final String injectionUrl) {
     this.injectionUrl = emptyToNull(injectionUrl);
     return this;
   }
 
-  public PrnfbNotificationBuilder withInjectionUrlRegexp(String injectionUrlRegexp) {
+  public PrnfbNotificationBuilder withInjectionUrlRegexp(final String injectionUrlRegexp) {
     this.injectionUrlRegexp = emptyToNull(injectionUrlRegexp);
     return this;
   }
 
-  public PrnfbNotificationBuilder withMethod(HTTP_METHOD method) {
+  public PrnfbNotificationBuilder withMethod(final HTTP_METHOD method) {
     this.method = firstNonNull(method, GET);
     return this;
   }
 
-  public PrnfbNotificationBuilder withName(String name) {
+  public PrnfbNotificationBuilder withName(final String name) {
     this.name = name;
     return this;
   }
 
-  public PrnfbNotificationBuilder withPassword(String password) {
+  public PrnfbNotificationBuilder withPassword(final String password) {
     this.password = emptyToNull(password);
     return this;
   }
 
-  public PrnfbNotificationBuilder withPostContent(String postContent) {
+  public PrnfbNotificationBuilder withPostContent(final String postContent) {
     this.postContent = emptyToNull(postContent);
     return this;
   }
 
-  public PrnfbNotificationBuilder withProjectKey(String projectKey) {
+  public PrnfbNotificationBuilder withProjectKey(final String projectKey) {
     this.projectKey = projectKey;
     return this;
   }
 
-  public PrnfbNotificationBuilder withProxyPassword(String s) {
+  public PrnfbNotificationBuilder withProxyPassword(final String s) {
     this.proxyPassword = emptyToNull(s);
     return this;
   }
 
-  public PrnfbNotificationBuilder withProxyPort(Integer s) {
+  public PrnfbNotificationBuilder withProxyPort(final Integer s) {
     this.proxyPort = s;
     return this;
   }
 
-  public PrnfbNotificationBuilder withProxyServer(String s) {
+  public PrnfbNotificationBuilder withProxyServer(final String s) {
     this.proxyServer = emptyToNull(s);
     return this;
   }
 
-  public PrnfbNotificationBuilder withProxyUser(String s) {
+  public PrnfbNotificationBuilder withProxyUser(final String s) {
     this.proxyUser = emptyToNull(s);
     return this;
   }
 
-  public PrnfbNotificationBuilder withRepositorySlug(String repositorySlug) {
+  public PrnfbNotificationBuilder withRepositorySlug(final String repositorySlug) {
     this.repositorySlug = repositorySlug;
     return this;
   }
 
-  public PrnfbNotificationBuilder withTrigger(PrnfbPullRequestAction trigger) {
+  public PrnfbNotificationBuilder withTrigger(final PrnfbPullRequestAction trigger) {
     this.triggers.add(trigger);
     return this;
   }
 
-  public PrnfbNotificationBuilder withUpdatePullRequestRefs(boolean updatePullRequestRefs) {
+  public PrnfbNotificationBuilder withUpdatePullRequestRefs(final boolean updatePullRequestRefs) {
     this.updatePullRequestRefs = updatePullRequestRefs;
     return this;
   }
 
-  public PrnfbNotificationBuilder withTriggerIfCanMerge(TRIGGER_IF_MERGE triggerIfCanMerge) {
+  public PrnfbNotificationBuilder withTriggerIfCanMerge(final TRIGGER_IF_MERGE triggerIfCanMerge) {
     this.triggerIfCanMerge = triggerIfCanMerge;
     return this;
   }
 
-  public PrnfbNotificationBuilder withTriggerIgnoreState(PullRequestState triggerIgnoreState) {
+  public PrnfbNotificationBuilder withTriggerIgnoreState(
+      final PullRequestState triggerIgnoreState) {
     this.triggerIgnoreStateList.add(triggerIgnoreState);
     return this;
   }
 
-  public PrnfbNotificationBuilder withUrl(String url) {
+  public PrnfbNotificationBuilder withUrl(final String url) {
     this.url = url;
     return this;
   }
 
-  public PrnfbNotificationBuilder withUser(String user) {
+  public PrnfbNotificationBuilder withUser(final String user) {
     this.user = emptyToNull(user);
     return this;
   }
 
-  public PrnfbNotificationBuilder withPostContentEncoding(ENCODE_FOR postContentEncoding) {
+  public PrnfbNotificationBuilder withPostContentEncoding(final ENCODE_FOR postContentEncoding) {
     this.postContentEncoding = postContentEncoding;
     return this;
   }
 
-  public PrnfbNotificationBuilder withUuid(UUID uuid) {
+  public PrnfbNotificationBuilder withUuid(final UUID uuid) {
     this.uuid = uuid;
     return this;
   }
 
-  public PrnfbNotificationBuilder withProxySchema(String proxySchema) {
+  public PrnfbNotificationBuilder withProxySchema(final String proxySchema) {
     this.proxySchema = proxySchema;
+    return this;
+  }
+
+  public String getHttpVersion() {
+    return httpVersion;
+  }
+
+  public PrnfbNotificationBuilder withHttpVersion(final String httpVersion) {
+    this.httpVersion = httpVersion;
     return this;
   }
 }

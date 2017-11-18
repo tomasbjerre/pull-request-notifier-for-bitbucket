@@ -7,6 +7,8 @@ import static se.bjurr.prnfb.settings.PrnfbSettings.UNCHANGED;
 
 import java.util.List;
 
+import com.atlassian.bitbucket.pull.PullRequestState;
+
 import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
 import se.bjurr.prnfb.presentation.dto.HeaderDTO;
 import se.bjurr.prnfb.presentation.dto.NotificationDTO;
@@ -14,12 +16,10 @@ import se.bjurr.prnfb.settings.PrnfbHeader;
 import se.bjurr.prnfb.settings.PrnfbNotification;
 import se.bjurr.prnfb.settings.ValidationException;
 
-import com.atlassian.bitbucket.pull.PullRequestState;
-
 public class NotificationTransformer {
 
-  public static NotificationDTO toNotificationDto(PrnfbNotification from) {
-    NotificationDTO to = new NotificationDTO();
+  public static NotificationDTO toNotificationDto(final PrnfbNotification from) {
+    final NotificationDTO to = new NotificationDTO();
     to.setProjectKey(from.getProjectKey().orNull());
     to.setRepositorySlug(from.getRepositorySlug().orNull());
     to.setFilterRegexp(from.getFilterRegexp().orNull());
@@ -44,20 +44,22 @@ public class NotificationTransformer {
     to.setUser(UNCHANGED);
     to.setPassword(UNCHANGED);
     to.setUuid(from.getUuid());
+    to.setHttpVersion(from.getHttpVersion());
     return to;
   }
 
-  public static List<NotificationDTO> toNotificationDtoList(Iterable<PrnfbNotification> from) {
-    List<NotificationDTO> to = newArrayList();
+  public static List<NotificationDTO> toNotificationDtoList(
+      final Iterable<PrnfbNotification> from) {
+    final List<NotificationDTO> to = newArrayList();
     if (from != null) {
-      for (PrnfbNotification n : from) {
+      for (final PrnfbNotification n : from) {
         to.add(toNotificationDto(n));
       }
     }
     return to;
   }
 
-  public static PrnfbNotification toPrnfbNotification(NotificationDTO from)
+  public static PrnfbNotification toPrnfbNotification(final NotificationDTO from)
       throws ValidationException {
     return prnfbNotificationBuilder() //
         .withFilterRegexp(from.getFilterRegexp()) //
@@ -84,14 +86,15 @@ public class NotificationTransformer {
         .withUuid(from.getUuid()) //
         .withRepositorySlug(from.getRepositorySlug().orNull()) //
         .withProjectKey(from.getProjectKey().orNull()) //
+        .withHttpVersion(from.getHttpVersion())
         .build();
   }
 
-  private static List<HeaderDTO> toHeaders(List<PrnfbHeader> headers) {
-    List<HeaderDTO> to = newArrayList();
+  private static List<HeaderDTO> toHeaders(final List<PrnfbHeader> headers) {
+    final List<HeaderDTO> to = newArrayList();
     if (headers != null) {
-      for (PrnfbHeader h : headers) {
-        HeaderDTO t = new HeaderDTO();
+      for (final PrnfbHeader h : headers) {
+        final HeaderDTO t = new HeaderDTO();
         t.setName(h.getName());
         t.setValue(h.getValue());
         to.add(t);
@@ -100,10 +103,10 @@ public class NotificationTransformer {
     return to;
   }
 
-  private static List<PrnfbHeader> toHeaders(NotificationDTO from) {
-    List<PrnfbHeader> to = newArrayList();
+  private static List<PrnfbHeader> toHeaders(final NotificationDTO from) {
+    final List<PrnfbHeader> to = newArrayList();
     if (from.getHeaders() != null) {
-      for (HeaderDTO headerDto : from.getHeaders()) {
+      for (final HeaderDTO headerDto : from.getHeaders()) {
         if (!isNullOrEmpty(headerDto.getName()) && !isNullOrEmpty(headerDto.getValue())) {
           to.add(new PrnfbHeader(headerDto.getName(), headerDto.getValue()));
         }
@@ -112,40 +115,41 @@ public class NotificationTransformer {
     return to;
   }
 
-  private static List<PrnfbPullRequestAction> toPrnfbPullRequestActions(List<String> strings) {
-    List<PrnfbPullRequestAction> to = newArrayList();
+  private static List<PrnfbPullRequestAction> toPrnfbPullRequestActions(
+      final List<String> strings) {
+    final List<PrnfbPullRequestAction> to = newArrayList();
     if (strings != null) {
-      for (String from : strings) {
+      for (final String from : strings) {
         to.add(PrnfbPullRequestAction.valueOf(from));
       }
     }
     return to;
   }
 
-  private static List<PullRequestState> toPullRequestStates(List<String> strings) {
-    List<PullRequestState> to = newArrayList();
+  private static List<PullRequestState> toPullRequestStates(final List<String> strings) {
+    final List<PullRequestState> to = newArrayList();
     if (strings != null) {
-      for (String from : strings) {
+      for (final String from : strings) {
         to.add(PullRequestState.valueOf(from));
       }
     }
     return to;
   }
 
-  private static List<String> toPullRequestStateStrings(List<PullRequestState> list) {
-    List<String> to = newArrayList();
+  private static List<String> toPullRequestStateStrings(final List<PullRequestState> list) {
+    final List<String> to = newArrayList();
     if (list != null) {
-      for (Enum<?> e : list) {
+      for (final Enum<?> e : list) {
         to.add(e.name());
       }
     }
     return to;
   }
 
-  private static List<String> toStrings(List<PrnfbPullRequestAction> list) {
-    List<String> to = newArrayList();
+  private static List<String> toStrings(final List<PrnfbPullRequestAction> list) {
+    final List<String> to = newArrayList();
     if (list != null) {
-      for (Enum<?> e : list) {
+      for (final Enum<?> e : list) {
         to.add(e.name());
       }
     }

@@ -8,12 +8,12 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.google.common.base.Optional;
+
 import se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD;
 import se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR;
 import se.bjurr.prnfb.settings.Restricted;
 import se.bjurr.prnfb.settings.TRIGGER_IF_MERGE;
-
-import com.google.common.base.Optional;
 
 @XmlRootElement
 @XmlAccessorType(FIELD)
@@ -42,18 +42,19 @@ public class NotificationDTO implements Comparable<NotificationDTO>, Restricted 
   private String user;
   private UUID uuid;
   private ENCODE_FOR postContentEncoding;
+  private String httpVersion;
 
-  public void setPostContentEncoding(ENCODE_FOR postContentEncoding) {
+  public void setPostContentEncoding(final ENCODE_FOR postContentEncoding) {
     this.postContentEncoding = postContentEncoding;
   }
 
   @Override
-  public int compareTo(NotificationDTO o) {
+  public int compareTo(final NotificationDTO o) {
     return this.name.compareTo(o.name);
   }
 
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(final Object obj) {
     if (this == obj) {
       return true;
     }
@@ -63,7 +64,7 @@ public class NotificationDTO implements Comparable<NotificationDTO>, Restricted 
     if (getClass() != obj.getClass()) {
       return false;
     }
-    NotificationDTO other = (NotificationDTO) obj;
+    final NotificationDTO other = (NotificationDTO) obj;
     if (filterRegexp == null) {
       if (other.filterRegexp != null) {
         return false;
@@ -83,6 +84,13 @@ public class NotificationDTO implements Comparable<NotificationDTO>, Restricted 
         return false;
       }
     } else if (!headers.equals(other.headers)) {
+      return false;
+    }
+    if (httpVersion == null) {
+      if (other.httpVersion != null) {
+        return false;
+      }
+    } else if (!httpVersion.equals(other.httpVersion)) {
       return false;
     }
     if (injectionUrl == null) {
@@ -316,6 +324,7 @@ public class NotificationDTO implements Comparable<NotificationDTO>, Restricted 
     result = prime * result + (filterRegexp == null ? 0 : filterRegexp.hashCode());
     result = prime * result + (filterString == null ? 0 : filterString.hashCode());
     result = prime * result + (headers == null ? 0 : headers.hashCode());
+    result = prime * result + (httpVersion == null ? 0 : httpVersion.hashCode());
     result = prime * result + (injectionUrl == null ? 0 : injectionUrl.hashCode());
     result = prime * result + (injectionUrlRegexp == null ? 0 : injectionUrlRegexp.hashCode());
     result = prime * result + (method == null ? 0 : method.hashCode());
@@ -334,98 +343,98 @@ public class NotificationDTO implements Comparable<NotificationDTO>, Restricted 
     result =
         prime * result + (triggerIgnoreStateList == null ? 0 : triggerIgnoreStateList.hashCode());
     result = prime * result + (triggers == null ? 0 : triggers.hashCode());
-    result = prime * result + (updatePullRequestRefs ? 1 : 0);
+    result = prime * result + (updatePullRequestRefs ? 1231 : 1237);
     result = prime * result + (url == null ? 0 : url.hashCode());
     result = prime * result + (user == null ? 0 : user.hashCode());
     result = prime * result + (uuid == null ? 0 : uuid.hashCode());
     return result;
   }
 
-  public void setFilterRegexp(String filterRegexp) {
+  public void setFilterRegexp(final String filterRegexp) {
     this.filterRegexp = filterRegexp;
   }
 
-  public void setFilterString(String filterString) {
+  public void setFilterString(final String filterString) {
     this.filterString = filterString;
   }
 
-  public void setHeaders(List<HeaderDTO> headers) {
+  public void setHeaders(final List<HeaderDTO> headers) {
     this.headers = headers;
   }
 
-  public void setInjectionUrl(String injectionUrl) {
+  public void setInjectionUrl(final String injectionUrl) {
     this.injectionUrl = injectionUrl;
   }
 
-  public void setInjectionUrlRegexp(String injectionUrlRegexp) {
+  public void setInjectionUrlRegexp(final String injectionUrlRegexp) {
     this.injectionUrlRegexp = injectionUrlRegexp;
   }
 
-  public void setMethod(HTTP_METHOD method) {
+  public void setMethod(final HTTP_METHOD method) {
     this.method = method;
   }
 
-  public void setName(String name) {
+  public void setName(final String name) {
     this.name = name;
   }
 
-  public void setPassword(String password) {
+  public void setPassword(final String password) {
     this.password = password;
   }
 
-  public void setPostContent(String postContent) {
+  public void setPostContent(final String postContent) {
     this.postContent = postContent;
   }
 
-  public void setProjectKey(String projectKey) {
+  public void setProjectKey(final String projectKey) {
     this.projectKey = projectKey;
   }
 
-  public void setProxyPassword(String proxyPassword) {
+  public void setProxyPassword(final String proxyPassword) {
     this.proxyPassword = proxyPassword;
   }
 
-  public void setProxyPort(Integer proxyPort) {
+  public void setProxyPort(final Integer proxyPort) {
     this.proxyPort = proxyPort;
   }
 
-  public void setProxyServer(String proxyServer) {
+  public void setProxyServer(final String proxyServer) {
     this.proxyServer = proxyServer;
   }
 
-  public void setProxyUser(String proxyUser) {
+  public void setProxyUser(final String proxyUser) {
     this.proxyUser = proxyUser;
   }
 
-  public void setRepositorySlug(String repositorySlug) {
+  public void setRepositorySlug(final String repositorySlug) {
     this.repositorySlug = repositorySlug;
   }
 
-  public void setTriggerIfCanMerge(TRIGGER_IF_MERGE triggerIfCanMerge) {
+  public void setTriggerIfCanMerge(final TRIGGER_IF_MERGE triggerIfCanMerge) {
     this.triggerIfCanMerge = triggerIfCanMerge;
   }
 
-  public void setTriggerIgnoreStateList(List<String> triggerIgnoreStateList) {
+  public void setTriggerIgnoreStateList(final List<String> triggerIgnoreStateList) {
     this.triggerIgnoreStateList = triggerIgnoreStateList;
   }
 
-  public void setTriggers(List<String> triggers) {
+  public void setTriggers(final List<String> triggers) {
     this.triggers = triggers;
   }
 
-  public void setUpdatePullRequestRefs(boolean updatePullRequestRefs) {
+  public void setUpdatePullRequestRefs(final boolean updatePullRequestRefs) {
     this.updatePullRequestRefs = updatePullRequestRefs;
   }
 
-  public void setUrl(String url) {
+  public void setUrl(final String url) {
     this.url = url;
   }
 
-  public void setUser(String user) {
+  public void setUser(final String user) {
     this.user = user;
   }
 
-  public void setUuid(UUID uuid) {
+  public void setUuid(final UUID uuid) {
     this.uuid = uuid;
   }
 
@@ -433,12 +442,20 @@ public class NotificationDTO implements Comparable<NotificationDTO>, Restricted 
     return postContentEncoding;
   }
 
-  public void setProxySchema(String proxySchema) {
+  public void setProxySchema(final String proxySchema) {
     this.proxySchema = proxySchema;
   }
 
   public String getProxySchema() {
     return proxySchema;
+  }
+
+  public String getHttpVersion() {
+    return httpVersion;
+  }
+
+  public void setHttpVersion(final String httpVersion) {
+    this.httpVersion = httpVersion;
   }
 
   @Override
@@ -491,6 +508,8 @@ public class NotificationDTO implements Comparable<NotificationDTO>, Restricted 
         + uuid
         + ", postContentEncoding="
         + postContentEncoding
+        + ", httpVersion="
+        + httpVersion
         + "]";
   }
 }

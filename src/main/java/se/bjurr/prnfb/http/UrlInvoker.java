@@ -7,6 +7,8 @@ import static com.google.common.base.Throwables.propagate;
 import static com.google.common.collect.Lists.newArrayList;
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static javax.xml.bind.DatatypeConverter.printBase64Binary;
+import static org.apache.http.HttpVersion.HTTP_1_0;
+import static org.apache.http.HttpVersion.HTTP_1_1;
 import static org.slf4j.LoggerFactory.getLogger;
 import static se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD.GET;
 import static se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD.POST;
@@ -24,6 +26,8 @@ import javax.net.ssl.SSLContext;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
+import org.apache.http.HttpVersion;
+import org.apache.http.ProtocolVersion;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
@@ -73,7 +77,7 @@ public class UrlInvoker {
   private static final Logger LOG = getLogger(UrlInvoker.class);
 
   @VisibleForTesting
-  public static String getHeaderValue(PrnfbHeader header) {
+  public static String getHeaderValue(final PrnfbHeader header) {
     return header.getValue();
   }
 
@@ -95,10 +99,11 @@ public class UrlInvoker {
   private boolean shouldAcceptAnyCertificate;
 
   private String urlParam;
+  private ProtocolVersion httpVersion = HttpVersion.HTTP_1_0;
 
   UrlInvoker() {}
 
-  public UrlInvoker appendBasicAuth(PrnfbNotification notification) {
+  public UrlInvoker appendBasicAuth(final PrnfbNotification notification) {
     if (notification.getUser().isPresent() && notification.getPassword().isPresent()) {
       final String userpass = notification.getUser().get() + ":" + notification.getPassword().get();
       final String basicAuth = "Basic " + new String(printBase64Binary(userpass.getBytes(UTF_8)));
@@ -155,14 +160,26 @@ public class UrlInvoker {
     return this.urlParam;
   }
 
+  public UrlInvoker setHttpVersion(final String httpVersion) {
+    if (httpVersion == null || httpVersion.equals("HTTP_1_0")) {
+      this.httpVersion = HTTP_1_0;
+    } else if (httpVersion.equals("HTTP_1_1")) {
+      this.httpVersion = HTTP_1_1;
+    } else {
+      this.httpVersion = HTTP_1_0;
+    }
+    return this;
+  }
+
   public HttpResponse invoke() {
     LOG.info("Url: \"" + this.urlParam + "\"");
 
-    HttpRequestBase httpRequestBase = newHttpRequestBase();
+    final HttpRequestBase httpRequestBase = newHttpRequestBase();
     configureUrl(httpRequestBase);
     addHeaders(httpRequestBase);
+    httpRequestBase.setProtocolVersion(httpVersion);
 
-    HttpClientBuilder builder = HttpClientBuilder.create();
+    final HttpClientBuilder builder = HttpClientBuilder.create();
     configureSsl(builder);
     configureProxy(builder);
 
@@ -176,7 +193,7 @@ public class UrlInvoker {
     return this.response;
   }
 
-  public void setResponse(HttpResponse response) {
+  public void setResponse(final HttpResponse response) {
     this.response = response;
   }
 
@@ -185,7 +202,7 @@ public class UrlInvoker {
     return this.shouldAcceptAnyCertificate;
   }
 
-  public UrlInvoker shouldAcceptAnyCertificate(boolean shouldAcceptAnyCertificate) {
+  public UrlInvoker shouldAcceptAnyCertificate(final boolean shouldAcceptAnyCertificate) {
     this.shouldAcceptAnyCertificate = shouldAcceptAnyCertificate;
     return this;
   }
@@ -205,58 +222,58 @@ public class UrlInvoker {
     return getProxyHost().isPresent() && getProxyPort().isPresent() && getProxyPort().get() > 0;
   }
 
-  public UrlInvoker withClientKeyStore(ClientKeyStore clientKeyStore) {
+  public UrlInvoker withClientKeyStore(final ClientKeyStore clientKeyStore) {
     this.clientKeyStore = clientKeyStore;
     return this;
   }
 
-  public UrlInvoker withHeader(String name, String value) {
+  public UrlInvoker withHeader(final String name, final String value) {
     this.headers.add(new PrnfbHeader(name, value));
     return this;
   }
 
-  public UrlInvoker withMethod(HTTP_METHOD method) {
+  public UrlInvoker withMethod(final HTTP_METHOD method) {
     this.method = method;
     return this;
   }
 
-  public UrlInvoker withPostContent(Optional<String> postContent) {
+  public UrlInvoker withPostContent(final Optional<String> postContent) {
     this.postContent = postContent;
     return this;
   }
 
-  public UrlInvoker withProxyPassword(Optional<String> proxyPassword) {
+  public UrlInvoker withProxyPassword(final Optional<String> proxyPassword) {
     this.proxyPassword = proxyPassword;
     return this;
   }
 
-  public UrlInvoker withProxyPort(Integer proxyPort) {
+  public UrlInvoker withProxyPort(final Integer proxyPort) {
     this.proxyPort = fromNullable(proxyPort);
     return this;
   }
 
-  public UrlInvoker withProxySchema(Optional<String> proxySchema) {
+  public UrlInvoker withProxySchema(final Optional<String> proxySchema) {
     this.proxySchema = proxySchema;
     return this;
   }
 
-  public UrlInvoker withProxyServer(Optional<String> proxyHost) {
+  public UrlInvoker withProxyServer(final Optional<String> proxyHost) {
     this.proxyHost = proxyHost;
     return this;
   }
 
-  public UrlInvoker withProxyUser(Optional<String> proxyUser) {
+  public UrlInvoker withProxyUser(final Optional<String> proxyUser) {
     this.proxyUser = proxyUser;
     return this;
   }
 
-  public UrlInvoker withUrlParam(String urlParam) {
+  public UrlInvoker withUrlParam(final String urlParam) {
     this.urlParam = urlParam.replaceAll("\\s", "%20");
     return this;
   }
 
-  private void addHeaders(HttpRequestBase httpRequestBase) {
-    for (PrnfbHeader header : this.headers) {
+  private void addHeaders(final HttpRequestBase httpRequestBase) {
+    for (final PrnfbHeader header : this.headers) {
 
       if (header.getName().equals(AUTHORIZATION)) {
         LOG.debug("header: \"" + header.getName() + "\" value: \"**********\"");
@@ -268,20 +285,20 @@ public class UrlInvoker {
     }
   }
 
-  private void configureUrl(HttpRequestBase httpRequestBase) {
+  private void configureUrl(final HttpRequestBase httpRequestBase) {
     try {
       httpRequestBase.setURI(new URI(this.urlParam));
-    } catch (URISyntaxException e) {
+    } catch (final URISyntaxException e) {
       propagate(e);
     }
   }
 
   private SSLContextBuilder doAcceptAnyCertificate(SSLContextBuilder customContext)
       throws Exception {
-    TrustStrategy easyStrategy =
+    final TrustStrategy easyStrategy =
         new TrustStrategy() {
           @Override
-          public boolean isTrusted(X509Certificate[] chain, String authType) {
+          public boolean isTrusted(final X509Certificate[] chain, final String authType) {
             return true;
           }
         };
@@ -291,7 +308,7 @@ public class UrlInvoker {
   }
 
   private SSLContext newSslContext() throws Exception {
-    SSLContextBuilder sslContextBuilder = SSLContexts.custom();
+    final SSLContextBuilder sslContextBuilder = SSLContexts.custom();
     if (this.shouldAcceptAnyCertificate) {
       doAcceptAnyCertificate(sslContextBuilder);
       if (this.clientKeyStore.getKeyStore().isPresent()) {
@@ -308,16 +325,16 @@ public class UrlInvoker {
   }
 
   @VisibleForTesting
-  HttpClientBuilder configureProxy(HttpClientBuilder builder) {
+  HttpClientBuilder configureProxy(final HttpClientBuilder builder) {
     if (!shouldUseProxy()) {
       return builder;
     }
 
     if (this.proxyUser.isPresent() && this.proxyPassword.isPresent()) {
-      String username = this.proxyUser.get();
-      String password = this.proxyPassword.get();
-      UsernamePasswordCredentials creds = new UsernamePasswordCredentials(username, password);
-      CredentialsProvider credsProvider = new BasicCredentialsProvider();
+      final String username = this.proxyUser.get();
+      final String password = this.proxyPassword.get();
+      final UsernamePasswordCredentials creds = new UsernamePasswordCredentials(username, password);
+      final CredentialsProvider credsProvider = new BasicCredentialsProvider();
       credsProvider.setCredentials(
           new AuthScope(this.proxyHost.get(), this.proxyPort.get()), creds);
       builder.setDefaultCredentialsProvider(credsProvider);
@@ -331,22 +348,22 @@ public class UrlInvoker {
   }
 
   @VisibleForTesting
-  HttpClientBuilder configureSsl(HttpClientBuilder builder) {
+  HttpClientBuilder configureSsl(final HttpClientBuilder builder) {
     if (shouldUseSsl()) {
       try {
-        SSLContext s = newSslContext();
-        SSLConnectionSocketFactory sslConnSocketFactory = new SSLConnectionSocketFactory(s);
+        final SSLContext s = newSslContext();
+        final SSLConnectionSocketFactory sslConnSocketFactory = new SSLConnectionSocketFactory(s);
         builder.setSSLSocketFactory(sslConnSocketFactory);
 
-        Registry<ConnectionSocketFactory> registry =
+        final Registry<ConnectionSocketFactory> registry =
             RegistryBuilder.<ConnectionSocketFactory>create()
                 .register("https", sslConnSocketFactory)
                 .build();
 
-        HttpClientConnectionManager ccm = new BasicHttpClientConnectionManager(registry);
+        final HttpClientConnectionManager ccm = new BasicHttpClientConnectionManager(registry);
 
         builder.setConnectionManager(ccm);
-      } catch (Exception e) {
+      } catch (final Exception e) {
         propagate(e);
       }
     }
@@ -354,7 +371,7 @@ public class UrlInvoker {
   }
 
   @VisibleForTesting
-  HttpResponse doInvoke(HttpRequestBase httpRequestBase, HttpClientBuilder builder) {
+  HttpResponse doInvoke(final HttpRequestBase httpRequestBase, final HttpClientBuilder builder) {
     CloseableHttpResponse httpResponse = null;
     try {
       httpResponse =
@@ -362,13 +379,13 @@ public class UrlInvoker {
               .build() //
               .execute(httpRequestBase);
 
-      HttpEntity entity = httpResponse.getEntity();
+      final HttpEntity entity = httpResponse.getEntity();
       String entityString = "";
       if (entity != null) {
         entityString = EntityUtils.toString(entity, UTF_8);
       }
-      URI uri = httpRequestBase.getURI();
-      int statusCode = httpResponse.getStatusLine().getStatusCode();
+      final URI uri = httpRequestBase.getURI();
+      final int statusCode = httpResponse.getStatusLine().getStatusCode();
       return new HttpResponse(uri, statusCode, entityString);
     } catch (final Exception e) {
       LOG.error("", e);
@@ -377,7 +394,7 @@ public class UrlInvoker {
         if (httpResponse != null) {
           httpResponse.close();
         }
-      } catch (IOException e) {
+      } catch (final IOException e) {
         propagate(e);
       }
     }
@@ -386,8 +403,8 @@ public class UrlInvoker {
 
   @VisibleForTesting
   HttpEntityEnclosingRequestBase newHttpEntityEnclosingRequestBase(
-      HTTP_METHOD method, String entity) {
-    HttpEntityEnclosingRequestBase entityEnclosing =
+      final HTTP_METHOD method, final String entity) {
+    final HttpEntityEnclosingRequestBase entityEnclosing =
         new HttpEntityEnclosingRequestBase() {
           @Override
           public String getMethod() {
@@ -409,7 +426,7 @@ public class UrlInvoker {
   }
 
   @VisibleForTesting
-  HttpRequestBase newHttpRequestBase(HTTP_METHOD method) {
+  HttpRequestBase newHttpRequestBase(final HTTP_METHOD method) {
     return new HttpRequestBase() {
       @Override
       public String getMethod() {

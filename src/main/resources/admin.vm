@@ -578,6 +578,22 @@
    </fieldset>
 
    <fieldset class="group">
+    <legend>
+     <span>HTTP Version</span>
+    </legend>
+    <div class="radio">
+     <label>
+      <input class="radio" type="radio" name="httpVersion" value="HTTP_1_0"> HTTP 1.0
+     </label>
+    </div>
+    <div class="radio">
+     <label>
+      <input class="radio" type="radio" name="httpVersion" value="HTTP_1_1"> HTTP 1.1
+     </label>
+    </div>
+   </fieldset>
+
+   <fieldset class="group">
     <div class="field-group">
      <label>Post content</label>
      <textarea class="textarea" rows="6" name="postContent"></textarea>

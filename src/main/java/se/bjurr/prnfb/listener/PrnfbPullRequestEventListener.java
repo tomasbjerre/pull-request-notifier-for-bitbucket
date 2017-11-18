@@ -15,12 +15,33 @@ import static se.bjurr.prnfb.settings.TRIGGER_IF_MERGE.NOT_CONFLICTING;
 
 import java.util.concurrent.ExecutorService;
 
+import org.slf4j.Logger;
+
 import com.atlassian.bitbucket.ServiceException;
+import com.atlassian.bitbucket.event.pull.PullRequestCommentAddedEvent;
+import com.atlassian.bitbucket.event.pull.PullRequestCommentDeletedEvent;
+import com.atlassian.bitbucket.event.pull.PullRequestCommentEditedEvent;
+import com.atlassian.bitbucket.event.pull.PullRequestCommentEvent;
+import com.atlassian.bitbucket.event.pull.PullRequestCommentRepliedEvent;
+import com.atlassian.bitbucket.event.pull.PullRequestDeclinedEvent;
+import com.atlassian.bitbucket.event.pull.PullRequestEvent;
+import com.atlassian.bitbucket.event.pull.PullRequestMergedEvent;
+import com.atlassian.bitbucket.event.pull.PullRequestOpenedEvent;
+import com.atlassian.bitbucket.event.pull.PullRequestParticipantStatusUpdatedEvent;
+import com.atlassian.bitbucket.event.pull.PullRequestReopenedEvent;
+import com.atlassian.bitbucket.event.pull.PullRequestRescopedEvent;
+import com.atlassian.bitbucket.event.pull.PullRequestUpdatedEvent;
+import com.atlassian.bitbucket.pull.PullRequest;
 import com.atlassian.bitbucket.pull.PullRequestAction;
+import com.atlassian.bitbucket.pull.PullRequestService;
 import com.atlassian.bitbucket.scm.Command;
 import com.atlassian.bitbucket.scm.ScmService;
 import com.atlassian.bitbucket.scm.pull.ScmPullRequestCommandFactory;
-import org.slf4j.Logger;
+import com.atlassian.bitbucket.user.SecurityService;
+import com.atlassian.bitbucket.util.Operation;
+import com.atlassian.event.api.EventListener;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Optional;
 
 import se.bjurr.prnfb.http.ClientKeyStore;
 import se.bjurr.prnfb.http.HttpResponse;
@@ -38,34 +59,13 @@ import se.bjurr.prnfb.settings.PrnfbNotification;
 import se.bjurr.prnfb.settings.PrnfbSettingsData;
 import se.bjurr.prnfb.settings.TRIGGER_IF_MERGE;
 
-import com.atlassian.bitbucket.event.pull.PullRequestCommentAddedEvent;
-import com.atlassian.bitbucket.event.pull.PullRequestCommentDeletedEvent;
-import com.atlassian.bitbucket.event.pull.PullRequestCommentEditedEvent;
-import com.atlassian.bitbucket.event.pull.PullRequestCommentEvent;
-import com.atlassian.bitbucket.event.pull.PullRequestCommentRepliedEvent;
-import com.atlassian.bitbucket.event.pull.PullRequestDeclinedEvent;
-import com.atlassian.bitbucket.event.pull.PullRequestEvent;
-import com.atlassian.bitbucket.event.pull.PullRequestMergedEvent;
-import com.atlassian.bitbucket.event.pull.PullRequestOpenedEvent;
-import com.atlassian.bitbucket.event.pull.PullRequestParticipantStatusUpdatedEvent;
-import com.atlassian.bitbucket.event.pull.PullRequestReopenedEvent;
-import com.atlassian.bitbucket.event.pull.PullRequestRescopedEvent;
-import com.atlassian.bitbucket.event.pull.PullRequestUpdatedEvent;
-import com.atlassian.bitbucket.pull.PullRequest;
-import com.atlassian.bitbucket.pull.PullRequestService;
-import com.atlassian.bitbucket.user.SecurityService;
-import com.atlassian.bitbucket.util.Operation;
-import com.atlassian.event.api.EventListener;
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Optional;
-
 public class PrnfbPullRequestEventListener {
 
   private static final Logger LOG = getLogger(PrnfbPullRequestEventListener.class);
   private static Invoker mockedInvoker = null;
 
   @VisibleForTesting
-  public static void setInvoker(Invoker invoker) {
+  public static void setInvoker(final Invoker invoker) {
     PrnfbPullRequestEventListener.mockedInvoker = invoker;
   }
 
@@ -78,12 +78,12 @@ public class PrnfbPullRequestEventListener {
   private final SettingsService settingsService;
 
   public PrnfbPullRequestEventListener(
-      PrnfbRendererFactory prnfbRendererFactory,
-      PullRequestService pullRequestService,
-      ExecutorService executorService,
-      SettingsService settingsService,
-      SecurityService securityService,
-      ScmService scmService) {
+      final PrnfbRendererFactory prnfbRendererFactory,
+      final PullRequestService pullRequestService,
+      final ExecutorService executorService,
+      final SettingsService settingsService,
+      final SecurityService securityService,
+      final ScmService scmService) {
     this.prnfbRendererFactory = prnfbRendererFactory;
     this.pullRequestService = pullRequestService;
     this.executorService = executorService;
@@ -98,7 +98,7 @@ public class PrnfbPullRequestEventListener {
     }
     return new Invoker() {
       @Override
-      public HttpResponse invoke(UrlInvoker urlInvoker) {
+      public HttpResponse invoke(final UrlInvoker urlInvoker) {
         return urlInvoker.invoke();
       }
     };
@@ -106,7 +106,7 @@ public class PrnfbPullRequestEventListener {
 
   private void handleEvent(final PullRequestEvent pullRequestEvent) {
 
-    PullRequest pullRequest = pullRequestEvent.getPullRequest();
+    final PullRequest pullRequest = pullRequestEvent.getPullRequest();
     final PrnfbSettingsData settings = settingsService.getPrnfbSettingsData();
     final ClientKeyStore clientKeyStore = new ClientKeyStore(settings);
 
@@ -123,12 +123,12 @@ public class PrnfbPullRequestEventListener {
             && !mergePerformed) {
           mergePerformed = true;
           try {
-            ScmPullRequestCommandFactory scmPullRequestCommandFactory =
+            final ScmPullRequestCommandFactory scmPullRequestCommandFactory =
                 scmService.getPullRequestCommandFactory(pullRequest);
             Command<?> command;
             command = scmPullRequestCommandFactory.tryMerge(pullRequest);
             command.call();
-          } catch (ServiceException se) {
+          } catch (final ServiceException se) {
             LOG.warn("Merge check failed " + pullRequest, se);
           }
         }
@@ -143,7 +143,7 @@ public class PrnfbPullRequestEventListener {
   private void handleEventNotification(
       final PullRequestEvent pullRequestEvent,
       final PrnfbSettingsData settings,
-      ClientKeyStore clientKeyStore,
+      final ClientKeyStore clientKeyStore,
       final PrnfbNotification notification) {
     final PrnfbPullRequestAction action = fromPullRequestEvent(pullRequestEvent, notification);
     final VariablesContext variables =
@@ -178,19 +178,20 @@ public class PrnfbPullRequestEventListener {
   }
 
   @VisibleForTesting
-  boolean ignoreBecauseOfConflicting(TRIGGER_IF_MERGE triggerIfCanMerge, boolean isConflicted) {
+  boolean ignoreBecauseOfConflicting(
+      final TRIGGER_IF_MERGE triggerIfCanMerge, final boolean isConflicted) {
     return triggerIfCanMerge == NOT_CONFLICTING && isConflicted
         || //
         triggerIfCanMerge == CONFLICTING && !isConflicted;
   }
 
   public boolean isNotificationTriggeredByAction(
-      PrnfbNotification notification,
-      PrnfbPullRequestAction pullRequestAction,
-      PrnfbRenderer renderer,
-      PullRequest pullRequest,
-      ClientKeyStore clientKeyStore,
-      Boolean shouldAcceptAnyCertificate) {
+      final PrnfbNotification notification,
+      final PrnfbPullRequestAction pullRequestAction,
+      final PrnfbRenderer renderer,
+      final PullRequest pullRequest,
+      final ClientKeyStore clientKeyStore,
+      final Boolean shouldAcceptAnyCertificate) {
     if (!notification.getTriggers().contains(pullRequestAction)) {
       return FALSE;
     }
@@ -242,7 +243,7 @@ public class PrnfbPullRequestEventListener {
     return TRUE;
   }
 
-  private boolean hasConflicts(PullRequest pullRequest) {
+  private boolean hasConflicts(final PullRequest pullRequest) {
     return securityService //
         .withPermission(ADMIN, "Can merge") //
         .call(
@@ -259,11 +260,11 @@ public class PrnfbPullRequestEventListener {
 
   public NotificationResponse notify(
       final PrnfbNotification notification,
-      PrnfbPullRequestAction pullRequestAction,
-      PullRequest pullRequest,
-      PrnfbRenderer renderer,
-      ClientKeyStore clientKeyStore,
-      Boolean shouldAcceptAnyCertificate) {
+      final PrnfbPullRequestAction pullRequestAction,
+      final PullRequest pullRequest,
+      final PrnfbRenderer renderer,
+      final ClientKeyStore clientKeyStore,
+      final Boolean shouldAcceptAnyCertificate) {
     if (!isNotificationTriggeredByAction(
         notification,
         pullRequestAction,
@@ -324,53 +325,55 @@ public class PrnfbPullRequestEventListener {
                     .withProxySchema(notification.getProxySchema()) //
                     .withProxyUser(notification.getProxyUser()) //
                     .withProxyPassword(notification.getProxyPassword()) //
-                    .shouldAcceptAnyCertificate(shouldAcceptAnyCertificate));
+                    .shouldAcceptAnyCertificate(shouldAcceptAnyCertificate) //
+                    .setHttpVersion(notification.getHttpVersion()) //
+                );
 
     return new NotificationResponse(notification.getUuid(), notification.getName(), httpResponse);
   }
 
   @EventListener
-  public void onEvent(PullRequestParticipantStatusUpdatedEvent e) {
+  public void onEvent(final PullRequestParticipantStatusUpdatedEvent e) {
     handleEventAsync(e);
   }
 
   @EventListener
-  public void onEvent(PullRequestCommentAddedEvent e) {
+  public void onEvent(final PullRequestCommentAddedEvent e) {
     handleEventAsync(e);
   }
 
   @EventListener
-  public void onEvent(PullRequestCommentDeletedEvent e) {
+  public void onEvent(final PullRequestCommentDeletedEvent e) {
     handleEventAsync(e);
   }
 
   @EventListener
-  public void onEvent(PullRequestCommentEditedEvent e) {
+  public void onEvent(final PullRequestCommentEditedEvent e) {
     handleEventAsync(e);
   }
 
   @EventListener
-  public void onEvent(PullRequestCommentRepliedEvent e) {
+  public void onEvent(final PullRequestCommentRepliedEvent e) {
     handleEventAsync(e);
   }
 
   @EventListener
-  public void onEvent(PullRequestDeclinedEvent e) {
+  public void onEvent(final PullRequestDeclinedEvent e) {
     handleEventAsync(e);
   }
 
   @EventListener
-  public void onEvent(PullRequestMergedEvent e) {
+  public void onEvent(final PullRequestMergedEvent e) {
     handleEventAsync(e);
   }
 
   @EventListener
-  public void onEvent(PullRequestOpenedEvent e) {
+  public void onEvent(final PullRequestOpenedEvent e) {
     handleEventAsync(e);
   }
 
   @EventListener
-  public void onEvent(PullRequestReopenedEvent e) {
+  public void onEvent(final PullRequestReopenedEvent e) {
     handleEventAsync(e);
   }
 
@@ -380,7 +383,7 @@ public class PrnfbPullRequestEventListener {
   }
 
   @EventListener
-  public void onEvent(PullRequestUpdatedEvent e) {
+  public void onEvent(final PullRequestUpdatedEvent e) {
     handleEventAsync(e);
   }
 }

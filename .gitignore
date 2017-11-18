@@ -7,4 +7,5 @@ target
 node_modules
 opt
 atlassian-plugin-sdk-tgz
-
+.idea
+*iml
