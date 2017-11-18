@@ -2,13 +2,13 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
-## Unreleased
+## 3.17
 ### GitHub [#257](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/257) Bitbucket - OpenShift Integration
   Adding HTTP 1.1 support 
 
 Hopefully solves OpenShift integration problem.
   
-  [843d85974970009](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/843d85974970009) Tomas Bjerre *2017-11-18 17:25:41*
+  [2665e48c9472020](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/2665e48c9472020) Tomas Bjerre *2017-11-18 17:29:10*
 
 ### No issue
   Doc
