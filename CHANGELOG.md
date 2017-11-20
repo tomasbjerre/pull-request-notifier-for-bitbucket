@@ -3,10 +3,16 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
+### No issue
+  Doc
+  
+  [f6397349f717ed0](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/f6397349f717ed0) Tomas Bjerre *2017-11-20 19:24:00*
+
+## 3.18
 ### GitHub [#259](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/259) Trigger for pull request DELETE
   Support for delete-event
   
-  [02351bb60c95058](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/02351bb60c95058) Tomas Bjerre *2017-11-20 19:14:02*
+  [117a2e4a11d8f88](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/117a2e4a11d8f88) Tomas Bjerre *2017-11-20 19:15:24*
 
 ### No issue
   Doc
