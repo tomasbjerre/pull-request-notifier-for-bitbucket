@@ -2,6 +2,17 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## Unreleased
+### GitHub [#259](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/259) Trigger for pull request DELETE
+  Support for delete-event
+  
+  [02351bb60c95058](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/02351bb60c95058) Tomas Bjerre *2017-11-20 19:14:02*
+
+### No issue
+  Doc
+  
+  [e3ab153867fabb3](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/e3ab153867fabb3) Tomas Bjerre *2017-11-18 17:31:17*
+
 ## 3.17
 ### GitHub [#257](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/257) Bitbucket - OpenShift Integration
   Adding HTTP 1.1 support 

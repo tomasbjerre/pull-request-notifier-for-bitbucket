@@ -17,6 +17,22 @@ import java.util.concurrent.ExecutorService;
 
 import org.slf4j.Logger;
 
+import se.bjurr.prnfb.http.ClientKeyStore;
+import se.bjurr.prnfb.http.HttpResponse;
+import se.bjurr.prnfb.http.Invoker;
+import se.bjurr.prnfb.http.NotificationResponse;
+import se.bjurr.prnfb.http.UrlInvoker;
+import se.bjurr.prnfb.service.PrnfbRenderer;
+import se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR;
+import se.bjurr.prnfb.service.PrnfbRendererFactory;
+import se.bjurr.prnfb.service.SettingsService;
+import se.bjurr.prnfb.service.VariablesContext;
+import se.bjurr.prnfb.service.VariablesContext.VariablesContextBuilder;
+import se.bjurr.prnfb.settings.PrnfbHeader;
+import se.bjurr.prnfb.settings.PrnfbNotification;
+import se.bjurr.prnfb.settings.PrnfbSettingsData;
+import se.bjurr.prnfb.settings.TRIGGER_IF_MERGE;
+
 import com.atlassian.bitbucket.ServiceException;
 import com.atlassian.bitbucket.event.pull.PullRequestCommentAddedEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestCommentDeletedEvent;
@@ -24,6 +40,7 @@ import com.atlassian.bitbucket.event.pull.PullRequestCommentEditedEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestCommentEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestCommentRepliedEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestDeclinedEvent;
+import com.atlassian.bitbucket.event.pull.PullRequestDeletedEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestMergedEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestOpenedEvent;
@@ -42,22 +59,6 @@ import com.atlassian.bitbucket.util.Operation;
 import com.atlassian.event.api.EventListener;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
-
-import se.bjurr.prnfb.http.ClientKeyStore;
-import se.bjurr.prnfb.http.HttpResponse;
-import se.bjurr.prnfb.http.Invoker;
-import se.bjurr.prnfb.http.NotificationResponse;
-import se.bjurr.prnfb.http.UrlInvoker;
-import se.bjurr.prnfb.service.PrnfbRenderer;
-import se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR;
-import se.bjurr.prnfb.service.PrnfbRendererFactory;
-import se.bjurr.prnfb.service.SettingsService;
-import se.bjurr.prnfb.service.VariablesContext;
-import se.bjurr.prnfb.service.VariablesContext.VariablesContextBuilder;
-import se.bjurr.prnfb.settings.PrnfbHeader;
-import se.bjurr.prnfb.settings.PrnfbNotification;
-import se.bjurr.prnfb.settings.PrnfbSettingsData;
-import se.bjurr.prnfb.settings.TRIGGER_IF_MERGE;
 
 public class PrnfbPullRequestEventListener {
 
@@ -354,6 +355,11 @@ public class PrnfbPullRequestEventListener {
 
   @EventListener
   public void onEvent(final PullRequestCommentRepliedEvent e) {
+    handleEventAsync(e);
+  }
+
+  @EventListener
+  public void onEvent(final PullRequestDeletedEvent e) {
     handleEventAsync(e);
   }
 

@@ -1,14 +1,15 @@
 package se.bjurr.prnfb.listener;
 
+import se.bjurr.prnfb.settings.PrnfbNotification;
+
 import com.atlassian.bitbucket.event.pull.PullRequestEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestRescopedEvent;
-
-import se.bjurr.prnfb.settings.PrnfbNotification;
 
 public enum PrnfbPullRequestAction {
   APPROVED, //
   BUTTON_TRIGGER, //
   COMMENTED, //
+  DELETED, //
   DECLINED, //
   MERGED, //
   OPENED, //
@@ -23,12 +24,12 @@ public enum PrnfbPullRequestAction {
   public static PrnfbPullRequestAction fromPullRequestEvent(
       PullRequestEvent event, PrnfbNotification notification) {
     if (event instanceof PullRequestRescopedEvent) {
-      PullRequestRescopedEvent rescopedEvent = (PullRequestRescopedEvent) event;
-      boolean toChanged =
+      final PullRequestRescopedEvent rescopedEvent = (PullRequestRescopedEvent) event;
+      final boolean toChanged =
           !rescopedEvent
               .getPreviousToHash()
               .equals(rescopedEvent.getPullRequest().getToRef().getLatestCommit());
-      boolean fromChanged =
+      final boolean fromChanged =
           !rescopedEvent
               .getPreviousFromHash()
               .equals(rescopedEvent.getPullRequest().getFromRef().getLatestCommit());

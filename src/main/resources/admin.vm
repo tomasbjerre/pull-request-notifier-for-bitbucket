@@ -424,6 +424,10 @@
     </div>
     <div class="checkbox">
      <label>
+      <input class="checkbox" type="checkbox" name="triggers[]" value="DELETED">DELETED</label>
+    </div>
+    <div class="checkbox">
+     <label>
       <input class="checkbox" type="checkbox" name="triggers[]" value="MERGED">MERGED</label>
     </div>
     <div class="checkbox">
