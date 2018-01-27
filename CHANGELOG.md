@@ -4,6 +4,12 @@ Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
 ### No issue
+  Using Findbugs 3.0.0
+
+ * Because latest gives error on mvn deploy.
+  
+  [db0f61a3771b5b0](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/db0f61a3771b5b0) Tomas Bjerre *2018-01-27 12:51:09*
+
   Bitbucket 5.7.0
   
   [97a2d280192bde5](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/97a2d280192bde5) Tomas Bjerre *2018-01-27 10:02:19*
