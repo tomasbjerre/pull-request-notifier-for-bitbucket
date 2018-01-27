@@ -6,7 +6,13 @@ Changelog of Pull Request Notifier for Bitbucket.
 ### No issue
   Bitbucket 5.7.0
   
-  [373f9ba41304d79](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/373f9ba41304d79) Tomas Bjerre *2018-01-27 09:25:18*
+  [97a2d280192bde5](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/97a2d280192bde5) Tomas Bjerre *2018-01-27 10:02:19*
+
+  uses jQuery.remove() for greater protability
+
+Internet Explorer's HTMLButtonElement doesn't support a .remove() function, but jQuery can remove the element across browsers.
+  
+  [56742667e87ca6b](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/56742667e87ca6b) Matthew Hitchens *2018-01-25 18:43:26*
 
   Doc
   
