@@ -13,7 +13,7 @@ define('plugin/prnfb/pr-triggerbutton', [
   var buttonText = $(auiButton).text().trim();
   if (buttonText === '' || buttonText === 'pr-triggerbutton') {
    //An empty button is added by 'client-web-item' in atlassian-plugin.xml
-   auiButton.remove();
+   $(auiButton).remove();
   }
  });
 
