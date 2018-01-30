@@ -15,6 +15,8 @@ import static se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD.GET;
 import static se.bjurr.prnfb.service.RepoProtocol.http;
 import static se.bjurr.prnfb.service.RepoProtocol.ssh;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -1362,7 +1364,26 @@ public enum PrnfbVariable {
                 if (allUrls.isEmpty()) {
                   return "";
                 }
-                return allUrls.iterator().next();
+                final String rawUrlString = allUrls.iterator().next();
+                try {
+                  final URI uri = new URI(rawUrlString);
+                  if (uri.getUserInfo() == null) {
+                    return rawUrlString;
+                  } else {
+                    final URI stripped =
+                        new URI(
+                            uri.getScheme(),
+                            null,
+                            uri.getHost(),
+                            uri.getPort(),
+                            uri.getPath(),
+                            uri.getQuery(),
+                            uri.getFragment());
+                    return stripped.toASCIIString();
+                  }
+                } catch (NullPointerException | URISyntaxException e) {
+                  throw new RuntimeException(e);
+                }
               }
             });
   }
