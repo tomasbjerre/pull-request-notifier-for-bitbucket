@@ -2,6 +2,19 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## Unreleased
+### GitHub [#284](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/284) Username and password leaked to the logs
+  Avoiding printing password in log
+  
+  [68100b9220ba10a](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/68100b9220ba10a) Tomas Bjerre *2018-05-05 11:09:48*
+
+### No issue
+  Fix visible "pr-triggerbutton"
+
+"pr-triggerbutton" button wouldn't get removed if the pull request wasn't in OPEN state.
+  
+  [81c7b9d898bdc70](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/81c7b9d898bdc70) Ömer Faruk *2018-05-04 14:50:47*
+
 ## 3.20
 ### GitHub [#229](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/229) PULL_REQUEST_{TO,FROM}_{HTTP,SSH}_CLONE_URL variables contains username
   Proposed URI reconstruction to remove username from PULL_REQUEST_{TO_FROM}_{HTTP,SSH}_CLONE_URL

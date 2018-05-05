@@ -136,7 +136,12 @@ public class PrnfbPullRequestEventListener {
 
         handleEventNotification(pullRequestEvent, settings, clientKeyStore, notification);
       } catch (final Exception e) {
-        LOG.error("Unable to handle notification " + notification, e);
+        LOG.error(
+            "Unable to handle notification "
+                + notification.getUuid()
+                + " "
+                + notification.getName(),
+            e);
       }
     }
   }
