@@ -295,6 +295,8 @@ define('plugin/prnfb/pr-triggerbutton', [
  });
 });
 
-AJS.$(document).ready(function() {
- require('plugin/prnfb/pr-triggerbutton');
+require(['bitbucket/util/events'], function(events) { 
+ events.on('bitbucket.internal.feature.repositories.recent.loaded', function() {
+  require('plugin/prnfb/pr-triggerbutton');
+ })
 });
