@@ -2,6 +2,12 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## Unreleased
+### GitHub [#229](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/229) PULL_REQUEST_{TO,FROM}_{HTTP,SSH}_CLONE_URL variables contains username
+  Only stripping username from HTTP clone URL
+  
+  [cdef245857ee5ab](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/cdef245857ee5ab) Tomas Bjerre *2018-06-07 15:52:14*
+
 ## 3.21
 ### GitHub [#284](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/284) Username and password leaked to the logs
   Avoiding printing password in log

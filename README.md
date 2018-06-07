@@ -91,7 +91,7 @@ The filter text as well as the URL support variables. These are:
 | `${PULL_REQUEST_PARTICIPANTS_EMAIL}` | Example: `admin@example.com,user@example.com` |
 | `${PULL_REQUEST_MERGE_COMMIT}` | Hash of merged commit (only available for merged-event). |
 | `${PULL_REQUEST_FROM_SSH_CLONE_URL}` | Example: `ssh://git@localhost:7999/project_1/rep_1` |
-| `${PULL_REQUEST_FROM_HTTP_CLONE_URL}` | Example: `http://admin@localhost:7990/bitbucket/scm/project_1/rep_1.git` |
+| `${PULL_REQUEST_FROM_HTTP_CLONE_URL}` | Example: `http://localhost:7990/bitbucket/scm/project_1/rep_1.git` |
 | `${PULL_REQUEST_FROM_HASH}` | Example: `6053a1eaa1c009dd11092d09a72f3c41af1b59ad` |
 | `${PULL_REQUEST_PREVIOUS_FROM_HASH}` | Example: `6053a1eaa1c009dd11092d09a72f3c41af1b59ad` |
 | `${PULL_REQUEST_FROM_ID}` | Example: `refs/heads/branchmodmerge` |
@@ -102,7 +102,7 @@ The filter text as well as the URL support variables. These are:
 | `${PULL_REQUEST_FROM_REPO_PROJECT_KEY}` | Example: `PROJECT_1` |
 | `${PULL_REQUEST_FROM_REPO_SLUG}` | Example: `rep_1` |
 | `${PULL_REQUEST_TO_SSH_CLONE_URL}` | Example: `ssh://git@localhost:7999/project_1/rep_1` |
-| `${PULL_REQUEST_TO_HTTP_CLONE_URL}` | Example: `http://admin@localhost:7990/bitbucket/scm/project_1/rep_1.git` |
+| `${PULL_REQUEST_TO_HTTP_CLONE_URL}` | Example: `http://localhost:7990/bitbucket/scm/project_1/rep_1.git` |
 | `${PULL_REQUEST_TO_HASH}` | Example: `6053a1eaa1c009dd11092d09a72f3c41af1b59ad` |
 | `${PULL_REQUEST_PREVIOUS_TO_HASH}` | Example: `6053a1eaa1c009dd11092d09a72f3c41af1b59ad` |
 | `${PULL_REQUEST_TO_ID}` | Example: `refs/heads/branchmodmerge` |
