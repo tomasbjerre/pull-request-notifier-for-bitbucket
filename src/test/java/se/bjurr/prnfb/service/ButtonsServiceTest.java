@@ -14,13 +14,6 @@ import static se.bjurr.prnfb.test.Podam.populatedInstanceOf;
 import static se.bjurr.prnfb.transformer.ButtonTransformer.toPrnfbButton;
 import static se.bjurr.prnfb.transformer.NotificationTransformer.toPrnfbNotification;
 
-import java.util.List;
-import java.util.UUID;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-
 import com.atlassian.bitbucket.auth.AuthenticationContext;
 import com.atlassian.bitbucket.project.Project;
 import com.atlassian.bitbucket.pull.PullRequest;
@@ -30,7 +23,11 @@ import com.atlassian.bitbucket.repository.Repository;
 import com.atlassian.bitbucket.repository.RepositoryService;
 import com.atlassian.bitbucket.server.ApplicationPropertiesService;
 import com.google.common.collect.Lists;
-
+import java.util.List;
+import java.util.UUID;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
 import se.bjurr.prnfb.http.ClientKeyStore;
 import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
 import se.bjurr.prnfb.listener.PrnfbPullRequestEventListener;

@@ -1,10 +1,9 @@
 package se.bjurr.prnfb.service;
 
-import java.util.Set;
-
 import com.atlassian.bitbucket.permission.Permission;
 import com.atlassian.bitbucket.user.EscalatedSecurityContext;
 import com.atlassian.bitbucket.util.Operation;
+import java.util.Set;
 
 public class MockedEscalatedSecurityContext implements EscalatedSecurityContext {
 

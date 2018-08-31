@@ -6,7 +6,6 @@ import static com.google.common.base.Strings.emptyToNull;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import se.bjurr.prnfb.presentation.dto.ButtonFormType;
 
 public class PrnfbButtonFormElement {

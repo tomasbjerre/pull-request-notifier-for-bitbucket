@@ -5,18 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static se.bjurr.prnfb.service.PrnfbVariable.EVERYTHING_URL;
 import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_DESCRIPTION;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.Map;
-
-import org.junit.Test;
-
-import se.bjurr.prnfb.http.ClientKeyStore;
-import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
-import se.bjurr.prnfb.settings.PrnfbNotification;
-
 import com.atlassian.bitbucket.pull.PullRequest;
 import com.atlassian.bitbucket.repository.RepositoryService;
 import com.atlassian.bitbucket.server.ApplicationPropertiesService;
@@ -25,6 +13,15 @@ import com.atlassian.bitbucket.user.SecurityService;
 import com.google.common.base.Supplier;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Map;
+import org.junit.Test;
+import se.bjurr.prnfb.http.ClientKeyStore;
+import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
+import se.bjurr.prnfb.settings.PrnfbNotification;
 
 public class PrnfbVariableTest {
 

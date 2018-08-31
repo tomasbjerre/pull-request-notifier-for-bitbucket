@@ -1,9 +1,8 @@
 package se.bjurr.prnfb.listener;
 
-import se.bjurr.prnfb.settings.PrnfbNotification;
-
 import com.atlassian.bitbucket.event.pull.PullRequestEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestRescopedEvent;
+import se.bjurr.prnfb.settings.PrnfbNotification;
 
 public enum PrnfbPullRequestAction {
   APPROVED, //

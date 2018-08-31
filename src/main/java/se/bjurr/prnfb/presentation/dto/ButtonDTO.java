@@ -2,17 +2,14 @@ package se.bjurr.prnfb.presentation.dto;
 
 import static javax.xml.bind.annotation.XmlAccessType.FIELD;
 
+import com.google.common.base.Optional;
+import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import com.google.common.base.Optional;
-import com.google.gson.reflect.TypeToken;
-
 import se.bjurr.prnfb.settings.Restricted;
 import se.bjurr.prnfb.settings.USER_LEVEL;
 

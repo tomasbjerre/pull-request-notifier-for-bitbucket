@@ -6,14 +6,12 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static se.bjurr.prnfb.listener.PrnfbPullRequestAction.BUTTON_TRIGGER;
 
-import java.util.List;
-import java.util.UUID;
-
 import com.atlassian.bitbucket.pull.PullRequest;
 import com.atlassian.bitbucket.pull.PullRequestService;
 import com.atlassian.bitbucket.repository.Repository;
 import com.google.common.annotations.VisibleForTesting;
-
+import java.util.List;
+import java.util.UUID;
 import se.bjurr.prnfb.http.ClientKeyStore;
 import se.bjurr.prnfb.http.NotificationResponse;
 import se.bjurr.prnfb.listener.PrnfbPullRequestAction;

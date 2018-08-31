@@ -2,18 +2,18 @@ package se.bjurr.prnfb.presentation;
 
 import static com.google.common.base.Throwables.propagate;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.Response.ok;
-import static javax.ws.rs.core.Response.status;
 import static javax.ws.rs.core.Response.Status.OK;
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
+import static javax.ws.rs.core.Response.ok;
+import static javax.ws.rs.core.Response.status;
 import static se.bjurr.prnfb.transformer.NotificationTransformer.toNotificationDto;
 import static se.bjurr.prnfb.transformer.NotificationTransformer.toNotificationDtoList;
 import static se.bjurr.prnfb.transformer.NotificationTransformer.toPrnfbNotification;
 
+import com.atlassian.annotations.security.XsrfProtectionExcluded;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -22,14 +22,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
-
 import se.bjurr.prnfb.presentation.dto.NotificationDTO;
 import se.bjurr.prnfb.service.SettingsService;
 import se.bjurr.prnfb.service.UserCheckService;
 import se.bjurr.prnfb.settings.PrnfbNotification;
 import se.bjurr.prnfb.settings.USER_LEVEL;
-
-import com.atlassian.annotations.security.XsrfProtectionExcluded;
 
 @Path("/settings/notifications")
 public class NotificationServlet {

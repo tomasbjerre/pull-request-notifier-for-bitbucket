@@ -6,13 +6,6 @@ import static com.google.common.base.Throwables.propagate;
 import static com.google.common.collect.ImmutableMap.of;
 import static com.google.common.collect.Maps.newHashMap;
 
-import java.net.URI;
-import java.util.Map;
-
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.atlassian.bitbucket.project.Project;
 import com.atlassian.bitbucket.project.ProjectService;
 import com.atlassian.bitbucket.repository.Repository;
@@ -23,7 +16,11 @@ import com.atlassian.sal.api.user.UserProfile;
 import com.atlassian.templaterenderer.TemplateRenderer;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
-
+import java.net.URI;
+import java.util.Map;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import se.bjurr.prnfb.service.UserCheckService;
 
 public class GlobalAdminServlet extends HttpServlet {

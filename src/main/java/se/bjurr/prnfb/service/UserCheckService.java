@@ -9,15 +9,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 import static se.bjurr.prnfb.settings.USER_LEVEL.ADMIN;
 import static se.bjurr.prnfb.settings.USER_LEVEL.EVERYONE;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
-import org.slf4j.Logger;
-
-import se.bjurr.prnfb.settings.Restricted;
-import se.bjurr.prnfb.settings.USER_LEVEL;
-
 import com.atlassian.bitbucket.permission.PermissionService;
 import com.atlassian.bitbucket.project.Project;
 import com.atlassian.bitbucket.project.ProjectService;
@@ -29,6 +20,11 @@ import com.atlassian.sal.api.user.UserKey;
 import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.sal.api.user.UserProfile;
 import com.google.common.annotations.VisibleForTesting;
+import java.util.List;
+import javax.annotation.Nullable;
+import org.slf4j.Logger;
+import se.bjurr.prnfb.settings.Restricted;
+import se.bjurr.prnfb.settings.USER_LEVEL;
 
 public class UserCheckService {
   private static final Logger LOG = getLogger(UserCheckService.class);

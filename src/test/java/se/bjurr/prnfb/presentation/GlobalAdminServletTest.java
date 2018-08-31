@@ -5,10 +5,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-
 import com.atlassian.bitbucket.project.Project;
 import com.atlassian.bitbucket.project.ProjectService;
 import com.atlassian.bitbucket.repository.Repository;
@@ -16,7 +12,9 @@ import com.atlassian.bitbucket.repository.RepositoryService;
 import com.atlassian.sal.api.auth.LoginUriProvider;
 import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.templaterenderer.TemplateRenderer;
-
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
 import se.bjurr.prnfb.service.UserCheckService;
 
 public class GlobalAdminServletTest {

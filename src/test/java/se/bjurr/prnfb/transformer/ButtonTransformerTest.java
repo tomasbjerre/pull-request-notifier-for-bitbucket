@@ -12,9 +12,7 @@ import static se.bjurr.prnfb.transformer.SettingsTransformer.toPrnfbSettingsData
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.junit.Test;
-
 import se.bjurr.prnfb.presentation.dto.ButtonFormElementDTO;
 import se.bjurr.prnfb.presentation.dto.SettingsDataDTO;
 import se.bjurr.prnfb.settings.ValidationException;

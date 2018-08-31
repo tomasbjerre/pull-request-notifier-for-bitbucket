@@ -6,7 +6,6 @@ import static se.bjurr.prnfb.transformer.ButtonTransformer.toButtonDto;
 import static se.bjurr.prnfb.transformer.ButtonTransformer.toPrnfbButton;
 
 import org.junit.Test;
-
 import se.bjurr.prnfb.presentation.dto.ButtonDTO;
 import se.bjurr.prnfb.settings.ValidationException;
 

@@ -6,11 +6,9 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.util.UUID.randomUUID;
 import static se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD.GET;
 
+import com.atlassian.bitbucket.pull.PullRequestState;
 import java.util.List;
 import java.util.UUID;
-
-import com.atlassian.bitbucket.pull.PullRequestState;
-
 import se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD;
 import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
 import se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR;

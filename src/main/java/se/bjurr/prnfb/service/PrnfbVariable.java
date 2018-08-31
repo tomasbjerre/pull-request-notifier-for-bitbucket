@@ -10,19 +10,10 @@ import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Ordering.usingToString;
 import static com.google.common.collect.Sets.newTreeSet;
 import static java.util.regex.Pattern.compile;
-import static se.bjurr.prnfb.http.UrlInvoker.urlInvoker;
 import static se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD.GET;
+import static se.bjurr.prnfb.http.UrlInvoker.urlInvoker;
 import static se.bjurr.prnfb.service.RepoProtocol.http;
 import static se.bjurr.prnfb.service.RepoProtocol.ssh;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
 
 import com.atlassian.bitbucket.permission.Permission;
 import com.atlassian.bitbucket.pull.PullRequest;
@@ -39,7 +30,14 @@ import com.atlassian.bitbucket.util.Operation;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
-
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
 import se.bjurr.prnfb.http.ClientKeyStore;
 import se.bjurr.prnfb.http.HttpResponse;
 import se.bjurr.prnfb.http.Invoker;

@@ -5,10 +5,8 @@ import static com.google.common.collect.Lists.newArrayList;
 import static se.bjurr.prnfb.settings.PrnfbNotificationBuilder.prnfbNotificationBuilder;
 import static se.bjurr.prnfb.settings.PrnfbSettings.UNCHANGED;
 
-import java.util.List;
-
 import com.atlassian.bitbucket.pull.PullRequestState;
-
+import java.util.List;
 import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
 import se.bjurr.prnfb.presentation.dto.HeaderDTO;
 import se.bjurr.prnfb.presentation.dto.NotificationDTO;

@@ -8,15 +8,6 @@ import static se.bjurr.prnfb.settings.USER_LEVEL.ADMIN;
 import static se.bjurr.prnfb.settings.USER_LEVEL.EVERYONE;
 import static se.bjurr.prnfb.settings.USER_LEVEL.SYSTEM_ADMIN;
 
-import java.util.Set;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Matchers;
-import org.mockito.Mock;
-
-import se.bjurr.prnfb.settings.Restricted;
-
 import com.atlassian.bitbucket.permission.Permission;
 import com.atlassian.bitbucket.permission.PermissionService;
 import com.atlassian.bitbucket.project.ProjectService;
@@ -28,6 +19,12 @@ import com.atlassian.sal.api.user.UserKey;
 import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.sal.api.user.UserProfile;
 import com.google.common.base.Optional;
+import java.util.Set;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Matchers;
+import org.mockito.Mock;
+import se.bjurr.prnfb.settings.Restricted;
 
 public class UserCheckServiceTest {
   private final EscalatedSecurityContext escalatedSecurityContext =

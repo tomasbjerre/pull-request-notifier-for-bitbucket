@@ -18,21 +18,30 @@ import static se.bjurr.prnfb.settings.TRIGGER_IF_MERGE.ALWAYS;
 import static se.bjurr.prnfb.settings.TRIGGER_IF_MERGE.CONFLICTING;
 import static se.bjurr.prnfb.settings.TRIGGER_IF_MERGE.NOT_CONFLICTING;
 
+import com.atlassian.bitbucket.event.pull.PullRequestCommentAddedEvent;
+import com.atlassian.bitbucket.event.pull.PullRequestEvent;
+import com.atlassian.bitbucket.project.Project;
+import com.atlassian.bitbucket.pull.PullRequest;
+import com.atlassian.bitbucket.pull.PullRequestRef;
+import com.atlassian.bitbucket.pull.PullRequestService;
+import com.atlassian.bitbucket.repository.Repository;
+import com.atlassian.bitbucket.scm.Command;
+import com.atlassian.bitbucket.scm.ScmService;
+import com.atlassian.bitbucket.scm.pull.ScmPullRequestCommandFactory;
+import com.atlassian.bitbucket.user.ApplicationUser;
+import com.atlassian.bitbucket.user.EscalatedSecurityContext;
+import com.atlassian.bitbucket.user.SecurityService;
+import com.google.common.base.Function;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-
-import com.atlassian.bitbucket.scm.Command;
-import com.atlassian.bitbucket.scm.ScmService;
-import com.atlassian.bitbucket.scm.pull.ScmPullRequestCommandFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-
 import se.bjurr.prnfb.http.ClientKeyStore;
 import se.bjurr.prnfb.http.HttpResponse;
 import se.bjurr.prnfb.http.Invoker;
@@ -45,18 +54,6 @@ import se.bjurr.prnfb.service.VariablesContext;
 import se.bjurr.prnfb.settings.PrnfbNotification;
 import se.bjurr.prnfb.settings.PrnfbSettingsData;
 import se.bjurr.prnfb.settings.ValidationException;
-
-import com.atlassian.bitbucket.event.pull.PullRequestCommentAddedEvent;
-import com.atlassian.bitbucket.event.pull.PullRequestEvent;
-import com.atlassian.bitbucket.project.Project;
-import com.atlassian.bitbucket.pull.PullRequest;
-import com.atlassian.bitbucket.pull.PullRequestRef;
-import com.atlassian.bitbucket.pull.PullRequestService;
-import com.atlassian.bitbucket.repository.Repository;
-import com.atlassian.bitbucket.user.ApplicationUser;
-import com.atlassian.bitbucket.user.EscalatedSecurityContext;
-import com.atlassian.bitbucket.user.SecurityService;
-import com.google.common.base.Function;
 
 public class PrnfbPullRequestEventListenerTest {
 

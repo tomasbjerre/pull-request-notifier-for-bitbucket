@@ -14,6 +14,8 @@ import static se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD.GET;
 import static se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD.POST;
 import static se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD.PUT;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Optional;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,9 +23,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.cert.X509Certificate;
 import java.util.List;
-
 import javax.net.ssl.SSLContext;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpVersion;
@@ -49,10 +49,6 @@ import org.apache.http.ssl.SSLContexts;
 import org.apache.http.ssl.TrustStrategy;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
-
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Optional;
-
 import se.bjurr.prnfb.settings.PrnfbHeader;
 import se.bjurr.prnfb.settings.PrnfbNotification;
 

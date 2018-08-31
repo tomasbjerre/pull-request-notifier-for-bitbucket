@@ -10,19 +10,16 @@ import static se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD.PUT;
 import static se.bjurr.prnfb.listener.PrnfbPullRequestAction.APPROVED;
 import static se.bjurr.prnfb.settings.PrnfbNotificationBuilder.prnfbNotificationBuilder;
 
+import com.google.common.base.Optional;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.junit.Before;
 import org.junit.Test;
-
 import se.bjurr.prnfb.settings.PrnfbNotification;
-
-import com.google.common.base.Optional;
 
 public class UrlInvokerTest {
 

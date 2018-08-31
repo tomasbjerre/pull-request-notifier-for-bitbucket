@@ -10,16 +10,6 @@ import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_COMMENT_ID;
 import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_COMMENT_TEXT;
 import static se.bjurr.prnfb.service.PrnfbVariable.PULL_REQUEST_MERGE_COMMIT;
 
-import java.util.Map;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-
-import se.bjurr.prnfb.service.VariablesContext.VariablesContextBuilder;
-import se.bjurr.prnfb.settings.PrnfbButton;
-import se.bjurr.prnfb.settings.ValidationException;
-
 import com.atlassian.bitbucket.comment.Comment;
 import com.atlassian.bitbucket.commit.MinimalCommit;
 import com.atlassian.bitbucket.event.pull.PullRequestCommentAddedEvent;
@@ -27,6 +17,13 @@ import com.atlassian.bitbucket.event.pull.PullRequestCommentEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestEvent;
 import com.atlassian.bitbucket.event.pull.PullRequestMergedEvent;
 import com.google.common.base.Supplier;
+import java.util.Map;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import se.bjurr.prnfb.service.VariablesContext.VariablesContextBuilder;
+import se.bjurr.prnfb.settings.PrnfbButton;
+import se.bjurr.prnfb.settings.ValidationException;
 
 public class VariablesContextTest {
 

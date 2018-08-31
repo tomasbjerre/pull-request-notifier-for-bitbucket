@@ -2,14 +2,12 @@ package se.bjurr.prnfb.http;
 
 import static com.google.common.base.Optional.fromNullable;
 
+import com.google.common.base.Optional;
 import java.io.File;
 import java.io.FileInputStream;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
-
 import se.bjurr.prnfb.settings.PrnfbSettingsData;
-
-import com.google.common.base.Optional;
 
 /**
  * A keystore based on the definition from the application properties.<br>

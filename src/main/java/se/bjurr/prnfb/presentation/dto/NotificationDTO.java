@@ -2,14 +2,11 @@ package se.bjurr.prnfb.presentation.dto;
 
 import static javax.xml.bind.annotation.XmlAccessType.FIELD;
 
+import com.google.common.base.Optional;
 import java.util.List;
 import java.util.UUID;
-
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import com.google.common.base.Optional;
-
 import se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD;
 import se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR;
 import se.bjurr.prnfb.settings.Restricted;

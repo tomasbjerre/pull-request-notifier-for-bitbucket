@@ -5,7 +5,6 @@ import static se.bjurr.prnfb.settings.PrnfbSettingsBuilder.prnfbSettingsBuilder;
 import static se.bjurr.prnfb.settings.PrnfbSettingsDataBuilder.prnfbSettingsDataBuilder;
 
 import org.junit.Test;
-
 import se.bjurr.prnfb.settings.PrnfbSettings;
 
 public class ClientKeyStoreTest {

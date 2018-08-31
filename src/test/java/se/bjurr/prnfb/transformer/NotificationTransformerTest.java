@@ -9,12 +9,10 @@ import static se.bjurr.prnfb.test.Podam.populatedInstanceOf;
 import static se.bjurr.prnfb.transformer.NotificationTransformer.toNotificationDto;
 import static se.bjurr.prnfb.transformer.NotificationTransformer.toPrnfbNotification;
 
+import com.google.common.collect.Lists;
 import org.junit.Test;
-
 import se.bjurr.prnfb.presentation.dto.NotificationDTO;
 import se.bjurr.prnfb.settings.ValidationException;
-
-import com.google.common.collect.Lists;
 
 public class NotificationTransformerTest {
   @Test

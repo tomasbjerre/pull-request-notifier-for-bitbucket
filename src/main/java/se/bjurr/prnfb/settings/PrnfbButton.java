@@ -5,12 +5,10 @@ import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.base.Strings.emptyToNull;
 import static java.util.UUID.randomUUID;
 
+import com.google.common.base.Optional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import com.google.common.base.Optional;
-
 import se.bjurr.prnfb.presentation.dto.ON_OR_OFF;
 
 public class PrnfbButton implements HasUuid, Restricted {

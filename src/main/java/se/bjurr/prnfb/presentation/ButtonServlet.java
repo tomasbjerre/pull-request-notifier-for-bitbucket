@@ -2,20 +2,22 @@ package se.bjurr.prnfb.presentation;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.Response.ok;
-import static javax.ws.rs.core.Response.status;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static javax.ws.rs.core.Response.Status.OK;
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
+import static javax.ws.rs.core.Response.ok;
+import static javax.ws.rs.core.Response.status;
 import static se.bjurr.prnfb.transformer.ButtonTransformer.toButtonDto;
 import static se.bjurr.prnfb.transformer.ButtonTransformer.toButtonDtoList;
 import static se.bjurr.prnfb.transformer.ButtonTransformer.toPrnfbButton;
 import static se.bjurr.prnfb.transformer.ButtonTransformer.toTriggerResultDto;
 
+import com.atlassian.annotations.security.XsrfProtectionExcluded;
+import com.google.common.base.Optional;
+import com.google.common.collect.Iterables;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -26,7 +28,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-
 import se.bjurr.prnfb.http.NotificationResponse;
 import se.bjurr.prnfb.presentation.dto.ButtonDTO;
 import se.bjurr.prnfb.presentation.dto.ButtonFormElementDTO;
@@ -38,10 +39,6 @@ import se.bjurr.prnfb.service.SettingsService;
 import se.bjurr.prnfb.service.UserCheckService;
 import se.bjurr.prnfb.settings.PrnfbButton;
 import se.bjurr.prnfb.settings.USER_LEVEL;
-
-import com.atlassian.annotations.security.XsrfProtectionExcluded;
-import com.google.common.base.Optional;
-import com.google.common.collect.Iterables;
 
 @Path("/settings/buttons")
 public class ButtonServlet {

@@ -11,14 +11,12 @@ import static se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD.GET;
 import static se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR.NONE;
 import static se.bjurr.prnfb.settings.TRIGGER_IF_MERGE.ALWAYS;
 
-import java.net.URL;
-import java.util.List;
-import java.util.UUID;
-
 import com.atlassian.bitbucket.pull.PullRequestState;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Optional;
-
+import java.net.URL;
+import java.util.List;
+import java.util.UUID;
 import se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD;
 import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
 import se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR;

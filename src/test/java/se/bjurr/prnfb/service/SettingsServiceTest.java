@@ -13,18 +13,6 @@ import static se.bjurr.prnfb.settings.USER_LEVEL.ADMIN;
 import static se.bjurr.prnfb.settings.USER_LEVEL.EVERYONE;
 import static se.bjurr.prnfb.test.Podam.populatedInstanceOf;
 
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-
-import se.bjurr.prnfb.presentation.dto.ON_OR_OFF;
-import se.bjurr.prnfb.settings.PrnfbButton;
-import se.bjurr.prnfb.settings.PrnfbNotification;
-import se.bjurr.prnfb.settings.PrnfbSettings;
-import se.bjurr.prnfb.settings.ValidationException;
-
 import com.atlassian.bitbucket.permission.Permission;
 import com.atlassian.bitbucket.user.EscalatedSecurityContext;
 import com.atlassian.bitbucket.user.SecurityService;
@@ -32,6 +20,15 @@ import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.transaction.TransactionCallback;
 import com.atlassian.sal.api.transaction.TransactionTemplate;
 import com.google.gson.Gson;
+import java.util.List;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import se.bjurr.prnfb.presentation.dto.ON_OR_OFF;
+import se.bjurr.prnfb.settings.PrnfbButton;
+import se.bjurr.prnfb.settings.PrnfbNotification;
+import se.bjurr.prnfb.settings.PrnfbSettings;
+import se.bjurr.prnfb.settings.ValidationException;
 
 public class SettingsServiceTest {
   private EscalatedSecurityContext escalatedSecurityContext;

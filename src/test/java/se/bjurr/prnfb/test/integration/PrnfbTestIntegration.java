@@ -13,17 +13,15 @@ import static se.bjurr.prnfb.listener.PrnfbPullRequestAction.COMMENTED;
 import static se.bjurr.prnfb.settings.USER_LEVEL.ADMIN;
 import static se.bjurr.prnfb.settings.USER_LEVEL.EVERYONE;
 
-import org.junit.Before;
-
-import se.bjurr.prnfb.presentation.dto.ButtonDTO;
-import se.bjurr.prnfb.presentation.dto.NotificationDTO;
-import se.bjurr.prnfb.presentation.dto.SettingsDataDTO;
-
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.builder.RequestSpecBuilder;
 import com.jayway.restassured.builder.ResponseSpecBuilder;
 import com.jayway.restassured.filter.log.LogDetail;
 import com.jayway.restassured.response.Response;
+import org.junit.Before;
+import se.bjurr.prnfb.presentation.dto.ButtonDTO;
+import se.bjurr.prnfb.presentation.dto.NotificationDTO;
+import se.bjurr.prnfb.presentation.dto.SettingsDataDTO;
 
 public class PrnfbTestIntegration {
   @Before

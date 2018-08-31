@@ -2,9 +2,8 @@ package se.bjurr.prnfb.service;
 
 import static com.google.common.collect.Maps.newHashMap;
 
-import java.util.Map;
-
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
+import java.util.Map;
 
 public class PluginSettingsMap implements PluginSettings {
 

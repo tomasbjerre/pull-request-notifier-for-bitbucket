@@ -13,20 +13,6 @@ import static se.bjurr.prnfb.settings.PrnfbSettings.UNCHANGED;
 import static se.bjurr.prnfb.settings.PrnfbSettingsBuilder.prnfbSettingsBuilder;
 import static se.bjurr.prnfb.settings.PrnfbSettingsDataBuilder.prnfbSettingsDataBuilder;
 
-import java.util.List;
-import java.util.UUID;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import se.bjurr.prnfb.settings.HasUuid;
-import se.bjurr.prnfb.settings.PrnfbButton;
-import se.bjurr.prnfb.settings.PrnfbNotification;
-import se.bjurr.prnfb.settings.PrnfbSettings;
-import se.bjurr.prnfb.settings.PrnfbSettingsData;
-import se.bjurr.prnfb.settings.USER_LEVEL;
-import se.bjurr.prnfb.settings.ValidationException;
-
 import com.atlassian.bitbucket.user.SecurityService;
 import com.atlassian.bitbucket.util.Operation;
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
@@ -37,6 +23,17 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.gson.Gson;
+import java.util.List;
+import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import se.bjurr.prnfb.settings.HasUuid;
+import se.bjurr.prnfb.settings.PrnfbButton;
+import se.bjurr.prnfb.settings.PrnfbNotification;
+import se.bjurr.prnfb.settings.PrnfbSettings;
+import se.bjurr.prnfb.settings.PrnfbSettingsData;
+import se.bjurr.prnfb.settings.USER_LEVEL;
+import se.bjurr.prnfb.settings.ValidationException;
 
 public class SettingsService {
 

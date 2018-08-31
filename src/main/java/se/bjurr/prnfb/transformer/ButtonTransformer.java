@@ -6,15 +6,13 @@ import static se.bjurr.prnfb.presentation.dto.ButtonDTO.BUTTON_FORM_LIST_DTO_TYP
 import static se.bjurr.prnfb.presentation.dto.ButtonFormType.checkbox;
 import static se.bjurr.prnfb.presentation.dto.ButtonFormType.radio;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import com.google.common.annotations.VisibleForTesting;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import se.bjurr.prnfb.http.NotificationResponse;
 import se.bjurr.prnfb.presentation.dto.ButtonDTO;
 import se.bjurr.prnfb.presentation.dto.ButtonFormElementDTO;

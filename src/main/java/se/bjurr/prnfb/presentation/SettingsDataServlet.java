@@ -1,29 +1,27 @@
 package se.bjurr.prnfb.presentation;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 import static javax.ws.rs.core.Response.noContent;
 import static javax.ws.rs.core.Response.ok;
 import static javax.ws.rs.core.Response.status;
-import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 import static se.bjurr.prnfb.transformer.SettingsTransformer.toDto;
 import static se.bjurr.prnfb.transformer.SettingsTransformer.toPrnfbSettingsData;
 
+import com.atlassian.annotations.security.XsrfProtectionExcluded;
+import com.google.common.base.Optional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
-
 import se.bjurr.prnfb.presentation.dto.SettingsDataDTO;
 import se.bjurr.prnfb.service.SettingsService;
 import se.bjurr.prnfb.service.UserCheckService;
 import se.bjurr.prnfb.settings.PrnfbSettingsData;
 import se.bjurr.prnfb.settings.Restricted;
 import se.bjurr.prnfb.settings.USER_LEVEL;
-
-import com.atlassian.annotations.security.XsrfProtectionExcluded;
-import com.google.common.base.Optional;
 
 @Path("/settings")
 public class SettingsDataServlet {
