@@ -2,11 +2,11 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
-## Unreleased
+## 3.23
 ### GitHub [#303](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/303) Post content encoding issue for single quote 
   Adding option to encode variables for JSON
   
-  [1f22177444553b7](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/1f22177444553b7) Tomas Bjerre *2018-09-28 14:49:20*
+  [eddca4a77dcb732](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/eddca4a77dcb732) Tomas Bjerre *2018-09-28 14:50:33*
 
 ### No issue
   Updating fmt-plugin
