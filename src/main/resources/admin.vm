@@ -619,6 +619,11 @@
       <input class="radio" type="radio" name="postContentEncoding" value="HTML"> Encode as HTML
      </label>
     </div>
+    <div class="radio">
+     <label>
+      <input class="radio" type="radio" name="postContentEncoding" value="JSON"> Encode as JSON
+     </label>
+    </div>
    </fieldset>
 
    <h4>Headers</h4>

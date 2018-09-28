@@ -2,6 +2,17 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## Unreleased
+### GitHub [#303](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/303) Post content encoding issue for single quote 
+  Adding option to encode variables for JSON
+  
+  [1f22177444553b7](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/1f22177444553b7) Tomas Bjerre *2018-09-28 14:49:20*
+
+### No issue
+  Updating fmt-plugin
+  
+  [d8a31bd9402b106](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/d8a31bd9402b106) Tomas Bjerre *2018-08-31 07:02:13*
+
 ## 3.22
 ### GitHub [#229](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/229) PULL_REQUEST_{TO,FROM}_{HTTP,SSH}_CLONE_URL variables contains username
   Only stripping username from HTTP clone URL

@@ -141,7 +141,7 @@
    <plugin>
     <groupId>se.bjurr.gitchangelog</groupId>
     <artifactId>git-changelog-maven-plugin</artifactId>
-    <version>1.52</version>
+    <version>${changelog.version}</version>
     <executions>
      <execution>
       <id>GenerateGitChangelog</id>
@@ -243,7 +243,7 @@ Changelog of Pull Request Notifier for Bitbucket.
    <plugin>
     <groupId>com.coveo</groupId>
     <artifactId>fmt-maven-plugin</artifactId>
-    <version>2.5.1</version>
+    <version>${fmt.version}</version>
     <executions>
      <execution>
       <goals>
@@ -273,7 +273,7 @@ Changelog of Pull Request Notifier for Bitbucket.
    <plugin>
     <groupId>se.bjurr.violations</groupId>
     <artifactId>violations-maven-plugin</artifactId>
-    <version>1.3</version>
+    <version>${violations.version}</version>
     <configuration>
      <maxViolations>99999999</maxViolations>
      <minSeverity>INFO</minSeverity>
@@ -327,6 +327,9 @@ Changelog of Pull Request Notifier for Bitbucket.
  </profiles>
 
  <properties>
+  <changelog.version>1.54</changelog.version>
+  <fmt.version>2.5.1</fmt.version>
+  <violations.version>1.13</violations.version>
   <bitbucket.version>5.13.1</bitbucket.version>
   <bitbucket.data.version>${bitbucket.version}</bitbucket.data.version>
   <quick.reload.version>2.0.0</quick.reload.version>

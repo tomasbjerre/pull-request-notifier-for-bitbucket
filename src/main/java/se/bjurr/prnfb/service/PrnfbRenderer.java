@@ -5,7 +5,9 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Throwables.propagate;
 import static java.net.URLEncoder.encode;
 import static org.slf4j.LoggerFactory.getLogger;
+import static se.bjurr.prnfb.service.JsonEscaper.jsonEscape;
 import static se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR.HTML;
+import static se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR.JSON;
 import static se.bjurr.prnfb.service.PrnfbRenderer.ENCODE_FOR.URL;
 import static se.bjurr.prnfb.service.PrnfbVariable.EVERYTHING_URL;
 
@@ -29,7 +31,8 @@ public class PrnfbRenderer {
   public enum ENCODE_FOR {
     NONE,
     URL,
-    HTML
+    HTML,
+    JSON
   }
 
   private static final Logger LOG = getLogger(PrnfbRenderer.class);
@@ -85,6 +88,8 @@ public class PrnfbRenderer {
       }
     } else if (encodeFor == HTML) {
       replaceWith = StringEscapeUtils.escapeHtml4(resolved).replaceAll("(\r\n|\n)", "<br />");
+    } else if (encodeFor == JSON) {
+      replaceWith = jsonEscape(resolved);
     } else {
       replaceWith = resolved;
     }
