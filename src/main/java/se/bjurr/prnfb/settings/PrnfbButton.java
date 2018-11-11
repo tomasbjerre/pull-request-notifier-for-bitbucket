@@ -21,6 +21,7 @@ public class PrnfbButton implements HasUuid, Restricted {
   private final USER_LEVEL userLevel;
   private final UUID uuid;
   private final String confirmationText;
+  private final String redirectUrl;
 
   public PrnfbButton(
       UUID uuid,
@@ -30,6 +31,7 @@ public class PrnfbButton implements HasUuid, Restricted {
       String projectKey,
       String repositorySlug,
       String confirmationText,
+      String redirectUrl,
       List<PrnfbButtonFormElement> buttonFormElementList) {
     this.uuid = firstNonNull(uuid, randomUUID());
     this.name = name;
@@ -38,6 +40,7 @@ public class PrnfbButton implements HasUuid, Restricted {
     this.repositorySlug = emptyToNull(repositorySlug);
     this.projectKey = emptyToNull(projectKey);
     this.confirmationText = emptyToNull(confirmationText);
+    this.redirectUrl = emptyToNull(redirectUrl);
     this.buttonFormElementList =
         firstNonNull(buttonFormElementList, new ArrayList<PrnfbButtonFormElement>());
   }
@@ -75,6 +78,10 @@ public class PrnfbButton implements HasUuid, Restricted {
   @Override
   public UUID getUuid() {
     return this.uuid;
+  }
+
+  public String getRedirectUrl() {
+    return redirectUrl;
   }
 
   @Override
@@ -137,6 +144,13 @@ public class PrnfbButton implements HasUuid, Restricted {
     } else if (!uuid.equals(other.uuid)) {
       return false;
     }
+    if (redirectUrl == null) {
+      if (other.redirectUrl != null) {
+        return false;
+      }
+    } else if (!redirectUrl.equals(other.redirectUrl)) {
+      return false;
+    }
     return true;
   }
 
@@ -153,6 +167,7 @@ public class PrnfbButton implements HasUuid, Restricted {
     result = prime * result + (repositorySlug == null ? 0 : repositorySlug.hashCode());
     result = prime * result + (userLevel == null ? 0 : userLevel.hashCode());
     result = prime * result + (uuid == null ? 0 : uuid.hashCode());
+    result = prime * result + (redirectUrl == null ? 0 : redirectUrl.hashCode());
     return result;
   }
 
@@ -174,6 +189,8 @@ public class PrnfbButton implements HasUuid, Restricted {
         + uuid
         + ", confirmationText="
         + confirmationText
+        + ", redirectUrl="
+        + redirectUrl
         + "]";
   }
 }

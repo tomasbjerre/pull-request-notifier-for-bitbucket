@@ -34,6 +34,7 @@ public class ButtonDTO implements Comparable<ButtonDTO>, Restricted {
   private USER_LEVEL userLevel;
   private UUID uuid;
   private String confirmationText;
+  private String redirectUrl;
 
   public void setConfirmationText(String confirmationText) {
     this.confirmationText = confirmationText;
@@ -115,6 +116,13 @@ public class ButtonDTO implements Comparable<ButtonDTO>, Restricted {
     } else if (!uuid.equals(other.uuid)) {
       return false;
     }
+    if (redirectUrl == null) {
+      if (other.redirectUrl != null) {
+        return false;
+      }
+    } else if (!redirectUrl.equals(other.redirectUrl)) {
+      return false;
+    }
     return true;
   }
 
@@ -152,6 +160,10 @@ public class ButtonDTO implements Comparable<ButtonDTO>, Restricted {
     return this.uuid;
   }
 
+  public String getRedirectUrl() {
+    return this.redirectUrl;
+  }
+
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -165,6 +177,7 @@ public class ButtonDTO implements Comparable<ButtonDTO>, Restricted {
     result = prime * result + (repositorySlug == null ? 0 : repositorySlug.hashCode());
     result = prime * result + (userLevel == null ? 0 : userLevel.hashCode());
     result = prime * result + (uuid == null ? 0 : uuid.hashCode());
+    result = prime * result + (redirectUrl == null ? 0 : redirectUrl.hashCode());
     return result;
   }
 
@@ -204,6 +217,10 @@ public class ButtonDTO implements Comparable<ButtonDTO>, Restricted {
     this.uuid = uuid;
   }
 
+  public void setRedirectUrl(String redirectUrl) {
+    this.redirectUrl = redirectUrl;
+  }
+
   @Override
   public String toString() {
     return "ButtonDTO [buttonFormList="
@@ -224,6 +241,8 @@ public class ButtonDTO implements Comparable<ButtonDTO>, Restricted {
         + uuid
         + ", confirmationText="
         + confirmationText
+        + ", redirectUrl="
+        + redirectUrl
         + "]";
   }
 }

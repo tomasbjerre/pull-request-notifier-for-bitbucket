@@ -292,6 +292,12 @@
      <div class="description">Optional. If not empty, a form will be rendered from this JSON. This is documented <a href="https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket" target="_blank">here</a>.</div>
     </div>
 
+    <div class="field-group">
+     <label>Redirect URL</label>
+     <input class="text long-field" type="text" name="redirectUrl"></input>
+     <div class="description">Optional. If not empty, a redirect will be performed after the notification's URL invocation has resolved.</div>
+    </div>
+
     <div class="aui-buttons">
      <button class="aui-button aui-button-primary">Save</button>
      <button class="aui-button aui-button" name="delete">Delete</button>
@@ -647,7 +653,6 @@
     <button class="aui-button aui-button-primary">Save</button>
     <button class="aui-button aui-button" name="delete">Delete</button>
    </div>
-   </fieldset>
   </form>
  </div>
 
