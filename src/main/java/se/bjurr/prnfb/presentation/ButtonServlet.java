@@ -150,9 +150,9 @@ public class ButtonServlet {
     final List<PrnfbButton> buttons = buttonsService.getButtons(repositoryId, pullRequestId);
     final List<ButtonDTO> dtos = toButtonDtoList(buttons);
     Collections.sort(dtos);
-
-    populateButtonFormDtoList(repositoryId, pullRequestId, dtos);
-
+    for (final ButtonDTO dto : dtos) {
+      renderButtonDtoList(repositoryId, pullRequestId, dto);
+    }
     return ok(dtos, APPLICATION_JSON).build();
   }
 
@@ -179,22 +179,26 @@ public class ButtonServlet {
     return ok(dto, APPLICATION_JSON).build();
   }
 
-  private void populateButtonFormDtoList(
-      Integer repositoryId, Long pullRequestId, List<ButtonDTO> dtos) {
-    for (final ButtonDTO dto : dtos) {
-      final PrnfbRendererWrapper renderer =
-          buttonsService.getRenderer(repositoryId, pullRequestId, dto.getUuid());
-      final List<ButtonFormElementDTO> buttonFormDtoList = dto.getButtonFormList();
-      if (buttonFormDtoList != null) {
-        for (final ButtonFormElementDTO buttonFormElementDto : buttonFormDtoList) {
-          final String defaultValue = buttonFormElementDto.getDefaultValue();
-          if (!isNullOrEmpty(defaultValue)) {
-            final String defaultValueRendered = renderer.render(defaultValue, ENCODE_FOR.NONE);
-            buttonFormElementDto.setDefaultValue(defaultValueRendered);
-          }
+  private void renderButtonDtoList(Integer repositoryId, Long pullRequestId, ButtonDTO dto) {
+    final PrnfbRendererWrapper renderer =
+        buttonsService.getRenderer(repositoryId, pullRequestId, dto.getUuid());
+
+    final List<ButtonFormElementDTO> buttonFormDtoList = dto.getButtonFormList();
+    if (buttonFormDtoList != null) {
+      for (final ButtonFormElementDTO buttonFormElementDto : buttonFormDtoList) {
+        final String defaultValue = buttonFormElementDto.getDefaultValue();
+        if (!isNullOrEmpty(defaultValue)) {
+          final String defaultValueRendered = renderer.render(defaultValue, ENCODE_FOR.NONE);
+          buttonFormElementDto.setDefaultValue(defaultValueRendered);
         }
-        dto.setButtonFormList(buttonFormDtoList);
       }
+      dto.setButtonFormList(buttonFormDtoList);
+    }
+
+    final String redirectUrl = dto.getRedirectUrl();
+    if (!isNullOrEmpty(redirectUrl)) {
+      final String redirectUrlRendered = renderer.render(redirectUrl, ENCODE_FOR.HTML);
+      dto.setRedirectUrl(redirectUrlRendered);
     }
   }
 }
