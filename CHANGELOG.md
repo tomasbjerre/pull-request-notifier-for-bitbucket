@@ -2,6 +2,12 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## Unreleased
+### GitHub [#308](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/pull/308) Add optional Redirect URL to button configuration
+  Add optional Redirect URL to button configuration ()
+  
+  [792a9b6f754a5d0](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/792a9b6f754a5d0) Trent Rand *2018-11-13 18:11:42*
+
 ## 3.23
 ### GitHub [#303](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/303) Post content encoding issue for single quote 
   Adding option to encode variables for JSON

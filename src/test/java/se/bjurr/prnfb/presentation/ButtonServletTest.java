@@ -92,6 +92,7 @@ public class ButtonServletTest {
     button.setConfirmation(ON_OR_OFF.off);
     button.setProjectKey("p1");
     button.setRepositorySlug("r1");
+    button.setRedirectUrl("http://www.example.com/");
     return button;
   }
 
@@ -105,6 +106,7 @@ public class ButtonServletTest {
             "p1",
             "r1",
             button.getConfirmationText(),
+            button.getRedirectUrl(),
             new ArrayList<>());
     return prnfbButton;
   }

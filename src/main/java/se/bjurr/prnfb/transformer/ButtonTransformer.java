@@ -34,6 +34,7 @@ public class ButtonTransformer {
     to.setName(from.getName());
     to.setUserLevel(from.getUserLevel());
     to.setUuid(from.getUuid());
+    to.setRedirectUrl(from.getRedirectUrl());
     to.setProjectKey(from.getProjectKey().orNull());
     to.setRepositorySlug(from.getRepositorySlug().orNull());
     to.setConfirmation(from.getConfirmation());
@@ -110,6 +111,7 @@ public class ButtonTransformer {
         buttonDto.getProjectKey().orNull(), //
         buttonDto.getRepositorySlug().orNull(), //
         buttonDto.getConfirmationText(), //
+        buttonDto.getRedirectUrl(), //
         buttonFormElement); //
   }
 
