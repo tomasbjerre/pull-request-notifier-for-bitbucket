@@ -251,14 +251,14 @@ define('plugin/prnfb/pr-triggerbutton', [
       });
 
       if (item.redirectUrl) {
-        redirect();
+       redirect();
       }
      };
 
      var redirect = function() {
-       disableButton();
-       window.location.replace(item.redirectUrl);
-     }
+      disableButton();
+      window.location.replace(item.redirectUrl);
+     };
 
      if (item.confirmationText || item.buttonFormList && item.buttonFormList.length > 0) {
       // Create the form and dialog     
