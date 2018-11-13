@@ -321,6 +321,7 @@ public class ButtonsServiceTest {
             buttonProjectKey,
             buttonRepositorySlug,
             "confirmationText",
+            null,
             null);
     when(this.repository.getProject()).thenReturn(this.project);
     when(this.repository.getProject().getKey()) //

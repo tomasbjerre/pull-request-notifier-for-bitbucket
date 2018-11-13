@@ -71,7 +71,7 @@ public class SettingsServiceTest {
   public void testThatButtonCanBeAddedUpdatedAndDeleted() {
     final PrnfbButton button1 =
         new PrnfbButton(
-            null, "title", EVERYONE, ON_OR_OFF.off, "p1", "r1", "confirmationText", null);
+            null, "title", EVERYONE, ON_OR_OFF.off, "p1", "r1", "confirmationText", null, null);
     assertThat(this.sut.getButtons()) //
         .isEmpty();
 
@@ -81,7 +81,7 @@ public class SettingsServiceTest {
 
     final PrnfbButton button2 =
         new PrnfbButton(
-            null, "title", EVERYONE, ON_OR_OFF.off, "p1", "r1", "confirmationText", null);
+            null, "title", EVERYONE, ON_OR_OFF.off, "p1", "r1", "confirmationText", null, null);
     this.sut.addOrUpdateButton(button2);
     assertThat(this.sut.getButtons()) //
         .containsExactly(button1, button2);
@@ -95,6 +95,7 @@ public class SettingsServiceTest {
             "p1",
             "r1",
             "confirmationText",
+            null,
             null);
     this.sut.addOrUpdateButton(updated);
     assertThat(this.sut.getButtons()) //
