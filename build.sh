@@ -1,5 +1,5 @@
 #!/bin/bash
 npm install
-grunt
+node_modules/.bin/grunt
 #atlas-mvn versions:update-properties
 atlas-mvn package verify
