@@ -1,5 +1,5 @@
 # Jenkins
-Parameterized Jenkins jobs can be triggered remotely by invoking a URL. How you trigger your Jennkins installation may vary depending on how it is configured. Here is, probably, the most complicated scenario where there is CSRF protection and authentication requirements.
+Parameterized Jenkins jobs can be triggered remotely by invoking a URL. How you trigger your Jenkins installation may vary depending on how it is configured. Here is, probably, the most complicated scenario where there is CSRF protection and authentication requirements.
 
 The job that you want to trigger must have:
  * *This build is parameterized* checkbox checked.
