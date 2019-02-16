@@ -2,6 +2,17 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## Unreleased
+### GitHub [#316](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/pull/316) Update README_jenkins.md
+  Update README_jenkins.md ()
+  
+  [a66210fb34fbc46](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/a66210fb34fbc46) Anton Kazakov *2019-01-20 15:37:19*
+
+### No issue
+  Updating build script
+  
+  [6528d86c783c172](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/6528d86c783c172) Tomas Bjerre *2018-11-30 18:58:02*
+
 ## 3.24
 ### GitHub [#308](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/pull/308) Add optional Redirect URL to button configuration
   Add optional Redirect URL to button configuration ()
