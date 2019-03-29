@@ -11,6 +11,7 @@ If things don't work as you expect, perhaps you should file an issue. But first,
  * If the system you are trying to notify does not seem to get notified:
   * Check that the triggered URL looks as expected. You can do that by invoking https://requestb.in/ and inspect its results.
   * Try to SSH to the Bitbucket Server machine and run same URL with Curl to make sure it's not a firewall issue.
+  * Enable runtime debug logging of 'se.bjurr.prnfb.http.UrlInvoker' following https://confluence.atlassian.com/bitbucketserver/bitbucket-server-debug-logging-776640147.html
 
 If you do not have access to the server log files, one idea is to:
 
