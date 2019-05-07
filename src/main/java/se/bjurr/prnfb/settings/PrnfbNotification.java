@@ -29,6 +29,8 @@ public class PrnfbNotification implements HasUuid, Restricted {
   private final List<PrnfbHeader> headers;
   private final String injectionUrl;
   private final String injectionUrlRegexp;
+  private final String variableName;
+  private final String variableRegex;
   private final HTTP_METHOD method;
   private final String name;
   private final String password;
@@ -93,6 +95,8 @@ public class PrnfbNotification implements HasUuid, Restricted {
     this.name = firstNonNull(emptyToNull(nullToEmpty(builder.getName()).trim()), DEFAULT_NAME);
     this.injectionUrl = emptyToNull(nullToEmpty(builder.getInjectionUrl()).trim());
     this.injectionUrlRegexp = emptyToNull(nullToEmpty(builder.getInjectionUrlRegexp()).trim());
+    this.variableName = emptyToNull(nullToEmpty(builder.getVariableName()).trim());
+    this.variableRegex = emptyToNull(nullToEmpty(builder.getVariableRegex()).trim());
     this.triggerIgnoreStateList = builder.getTriggerIgnoreStateList();
     this.postContentEncoding = firstNonNull(builder.getPostContentEncoding(), NONE);
     this.httpVersion = builder.getHttpVersion();
@@ -150,6 +154,20 @@ public class PrnfbNotification implements HasUuid, Restricted {
         return false;
       }
     } else if (!injectionUrlRegexp.equals(other.injectionUrlRegexp)) {
+      return false;
+    }
+    if (variableName == null) {
+      if (other.variableName != null) {
+        return false;
+      }
+    } else if (!variableName.equals(other.variableName)) {
+      return false;
+    }
+    if (variableRegex == null) {
+      if (other.variableRegex != null) {
+        return false;
+      }
+    } else if (!variableRegex.equals(other.variableRegex)) {
       return false;
     }
     if (method != other.method) {
@@ -292,6 +310,14 @@ public class PrnfbNotification implements HasUuid, Restricted {
     return fromNullable(this.injectionUrlRegexp);
   }
 
+  public Optional<String> getVariableName() {
+    return fromNullable(this.variableName);
+  }
+
+  public Optional<String> getVariableRegex() {
+    return fromNullable(this.variableRegex);
+  }
+
   public HTTP_METHOD getMethod() {
     return this.method;
   }
@@ -377,6 +403,8 @@ public class PrnfbNotification implements HasUuid, Restricted {
     result = prime * result + (httpVersion == null ? 0 : httpVersion.hashCode());
     result = prime * result + (injectionUrl == null ? 0 : injectionUrl.hashCode());
     result = prime * result + (injectionUrlRegexp == null ? 0 : injectionUrlRegexp.hashCode());
+    result = prime * result + (variableName == null ? 0 : variableName.hashCode());
+    result = prime * result + (variableRegex == null ? 0 : variableRegex.hashCode());
     result = prime * result + (method == null ? 0 : method.hashCode());
     result = prime * result + (name == null ? 0 : name.hashCode());
     result = prime * result + (password == null ? 0 : password.hashCode());
@@ -412,6 +440,10 @@ public class PrnfbNotification implements HasUuid, Restricted {
         + injectionUrl
         + ", injectionUrlRegexp="
         + injectionUrlRegexp
+        + ", variableName="
+        + variableName
+        + ", variableRegex="
+        + variableRegex
         + ", method="
         + method
         + ", name="

@@ -70,6 +70,7 @@
    <li><b>${BUTTON_TRIGGER_TITLE}</b> Example: Trigger Notification</li>
    <li><b>${BUTTON_FORM_DATA}</b> The form data that was submitted</li>
    <li><b>${INJECTION_URL_VALUE}</b> If injection URL configured</li>
+   <li><b>${VARIABLE_REGEX_MATCH}</b> If variable regex is configured</li>
    <li><b>${PULL_REQUEST_USER_DISPLAY_NAME}</b> Example: Some User</li>
    <li><b>${PULL_REQUEST_USER_EMAIL_ADDRESS}</b> Example: some.user@bitbucket.domain</li>
    <li><b>${PULL_REQUEST_USER_ID}</b> Example: 1</li>
@@ -494,6 +495,21 @@
      <label>Injection URL regexp </label>
      <input class="text long-field" type="text" name="injectionUrlRegexp">
      <div class="description">Optional regular expression to extract part of response as value of <b>${INJECTION_URL_VALUE}</b> variable.</div>
+    </div>
+   </fieldset>
+
+   <h4>Variable Regex Match</h4>
+   <p>Apply custom regex to a variable. Uses first capture group if one is provided.</p>
+   <fieldset class="group">
+    <div class="field-group">
+     <label>Variable Name </label>
+     <input class="text long-field" type="text" name="variableName">
+     <div class="description"></div>
+    </div>
+    <div class="field-group">
+     <label>Variable Regex </label>
+     <input class="text long-field" type="text" name="variableRegex">
+     <div class="description">Regular expression to match against the variable value.</div>
     </div>
    </fieldset>
 

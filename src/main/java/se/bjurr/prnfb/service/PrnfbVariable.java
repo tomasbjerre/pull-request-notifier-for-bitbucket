@@ -89,6 +89,56 @@ public enum PrnfbVariable {
           return on('&').join(parts);
         }
       }),
+  VARIABLE_REGEX_MATCH(
+      new PrnfbVariableResolver() {
+        @Override
+        public String resolve(
+            final PullRequest pullRequest,
+            final PrnfbPullRequestAction pullRequestAction,
+            final ApplicationUser applicationUser,
+            final RepositoryService repositoryService,
+            final ApplicationPropertiesService propertiesService,
+            final PrnfbNotification prnfbNotification,
+            final Map<PrnfbVariable, Supplier<String>> variables,
+            final ClientKeyStore clientKeyStore,
+            final boolean shouldAcceptAnyCertificate,
+            final SecurityService securityService) {
+          if (prnfbNotification == null || !prnfbNotification.getVariableName().isPresent()) {
+            return "";
+          }
+          final String variableName = prnfbNotification.getVariableName().get();
+          String variableValue = "";
+          for (final PrnfbVariable v : PrnfbVariable.values()) {
+            if (v.name().equals(variableName) && v != VARIABLE_REGEX_MATCH) {
+              variableValue =
+                  v.resolve(
+                      pullRequest,
+                      pullRequestAction,
+                      applicationUser,
+                      repositoryService,
+                      propertiesService,
+                      prnfbNotification,
+                      variables,
+                      clientKeyStore,
+                      shouldAcceptAnyCertificate,
+                      securityService);
+            }
+          }
+          if (prnfbNotification.getVariableRegex().isPresent()) {
+            final Matcher m =
+                compile(prnfbNotification.getVariableRegex().get()).matcher(variableValue);
+            if (!m.find()) {
+              return "";
+            }
+            if (m.groupCount() == 0) {
+              return m.group();
+            }
+            return m.group(1);
+          } else {
+            return variableValue;
+          }
+        }
+      }),
   INJECTION_URL_VALUE(
       new PrnfbVariableResolver() {
         @Override

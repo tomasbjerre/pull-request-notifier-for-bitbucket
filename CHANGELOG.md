@@ -2,6 +2,45 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## Unreleased
+### GitHub [#1](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/1) Finish GUI
+  Add link to bitbucket debug logging doc () ()
+
+Bitbucket makes it easy to add debug logging for specific loggers once you know what to look for.
+  
+  [c5eac08e7f6dd49](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/c5eac08e7f6dd49) Dave Neeley *2019-03-29 17:13:31*
+
+### GitHub [#316](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/pull/316) Update README_jenkins.md
+  Update README_jenkins.md ()
+  
+  [a66210fb34fbc46](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/a66210fb34fbc46) Anton Kazakov *2019-01-20 15:37:19*
+
+### GitHub [#325](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/pull/325) Add link to bitbucket debug logging doc
+  Add link to bitbucket debug logging doc () ()
+
+Bitbucket makes it easy to add debug logging for specific loggers once you know what to look for.
+  
+  [c5eac08e7f6dd49](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/c5eac08e7f6dd49) Dave Neeley *2019-03-29 17:13:31*
+
+### GitHub [#326](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/pull/326) Add Azure Pipelines documentation
+  Add Azure Pipelines documentation ()
+  
+  [f6836b09b4d371b](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/f6836b09b4d371b) Dave Neeley *2019-03-29 21:17:29*
+
+### GitHub [#327](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/pull/327) Update Azure Pipelines Sample to set branch of pull request
+  Update Azure Pipelines Sample to set branch of pull request ()
+
+* Trigger builds on branches
+
+* triggerInfo is returned by later api calls, properties are not
+  
+  [ab5e796b5352e5e](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/ab5e796b5352e5e) Dave Neeley *2019-03-30 05:28:11*
+
+### No issue
+  Updating build script
+  
+  [6528d86c783c172](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/6528d86c783c172) Tomas Bjerre *2018-11-30 18:58:02*
+
 ## 3.24
 ### GitHub [#308](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/pull/308) Add optional Redirect URL to button configuration
   Add optional Redirect URL to button configuration ()
