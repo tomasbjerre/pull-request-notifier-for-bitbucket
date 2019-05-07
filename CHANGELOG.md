@@ -2,7 +2,7 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
-## Unreleased
+## 3.25
 ### GitHub [#1](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/1) Finish GUI
   Add link to bitbucket debug logging doc () ()
 
@@ -35,6 +35,16 @@ Bitbucket makes it easy to add debug logging for specific loggers once you know 
 * triggerInfo is returned by later api calls, properties are not
   
   [ab5e796b5352e5e](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/ab5e796b5352e5e) Dave Neeley *2019-03-30 05:28:11*
+
+### GitHub [#333](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/333) Use regex to match parts of a variable value
+  Add new variable for storing a regex match on another variable value.  ()
+  
+  [c8cb7b1d6f4dcb8](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/c8cb7b1d6f4dcb8) DJ Sprouse *2019-05-07 17:57:37*
+
+### GitHub [#334](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/pull/334) Add new variable for storing a regex match on another variable value #333
+  Add new variable for storing a regex match on another variable value.  ()
+  
+  [c8cb7b1d6f4dcb8](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/c8cb7b1d6f4dcb8) DJ Sprouse *2019-05-07 17:57:37*
 
 ### No issue
   Updating build script
