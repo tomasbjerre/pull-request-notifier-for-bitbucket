@@ -20,6 +20,8 @@ public class NotificationDTO implements Comparable<NotificationDTO>, Restricted 
   private List<HeaderDTO> headers;
   private String injectionUrl;
   private String injectionUrlRegexp;
+  private String variableName;
+  private String variableRegex;
   private HTTP_METHOD method;
   private String name;
   private String password;
@@ -102,6 +104,20 @@ public class NotificationDTO implements Comparable<NotificationDTO>, Restricted 
         return false;
       }
     } else if (!injectionUrlRegexp.equals(other.injectionUrlRegexp)) {
+      return false;
+    }
+    if (variableName == null) {
+      if (other.variableName != null) {
+        return false;
+      }
+    } else if (!variableName.equals(other.variableName)) {
+      return false;
+    }
+    if (variableRegex == null) {
+      if (other.variableRegex != null) {
+        return false;
+      }
+    } else if (!variableRegex.equals(other.variableRegex)) {
       return false;
     }
     if (method != other.method) {
@@ -244,6 +260,14 @@ public class NotificationDTO implements Comparable<NotificationDTO>, Restricted 
     return this.injectionUrlRegexp;
   }
 
+  public String getVariableName() {
+    return this.variableName;
+  }
+
+  public String getVariableRegex() {
+    return this.variableRegex;
+  }
+
   public HTTP_METHOD getMethod() {
     return this.method;
   }
@@ -324,6 +348,8 @@ public class NotificationDTO implements Comparable<NotificationDTO>, Restricted 
     result = prime * result + (httpVersion == null ? 0 : httpVersion.hashCode());
     result = prime * result + (injectionUrl == null ? 0 : injectionUrl.hashCode());
     result = prime * result + (injectionUrlRegexp == null ? 0 : injectionUrlRegexp.hashCode());
+    result = prime * result + (variableName == null ? 0 : variableName.hashCode());
+    result = prime * result + (variableRegex == null ? 0 : variableRegex.hashCode());
     result = prime * result + (method == null ? 0 : method.hashCode());
     result = prime * result + (name == null ? 0 : name.hashCode());
     result = prime * result + (password == null ? 0 : password.hashCode());
@@ -365,6 +391,14 @@ public class NotificationDTO implements Comparable<NotificationDTO>, Restricted 
 
   public void setInjectionUrlRegexp(final String injectionUrlRegexp) {
     this.injectionUrlRegexp = injectionUrlRegexp;
+  }
+
+  public void setVariableName(final String variableName) {
+    this.variableName = variableName;
+  }
+
+  public void setVariableRegex(final String variableRegex) {
+    this.variableRegex = variableRegex;
   }
 
   public void setMethod(final HTTP_METHOD method) {
@@ -467,6 +501,10 @@ public class NotificationDTO implements Comparable<NotificationDTO>, Restricted 
         + injectionUrl
         + ", injectionUrlRegexp="
         + injectionUrlRegexp
+        + ", variableName="
+        + variableName
+        + ", variableRegex="
+        + variableRegex
         + ", method="
         + method
         + ", name="

@@ -24,6 +24,8 @@ public class NotificationTransformer {
     to.setFilterString(from.getFilterString().orNull());
     to.setInjectionUrl(from.getInjectionUrl().orNull());
     to.setInjectionUrlRegexp(from.getInjectionUrlRegexp().orNull());
+    to.setVariableName(from.getVariableName().orNull());
+    to.setVariableRegex(from.getVariableRegex().orNull());
     to.setMethod(from.getMethod());
     to.setName(from.getName());
     to.setHeaders(toHeaders(from.getHeaders()));
@@ -65,6 +67,8 @@ public class NotificationTransformer {
         .setHeaders(toHeaders(from)) //
         .withInjectionUrl(from.getInjectionUrl()) //
         .withInjectionUrlRegexp(from.getInjectionUrlRegexp()) //
+        .withVariableName(from.getVariableName()) //
+        .withVariableRegex(from.getVariableRegex()) //
         .withMethod(from.getMethod()) //
         .withName(from.getName()) //
         .withPassword(from.getPassword()) //

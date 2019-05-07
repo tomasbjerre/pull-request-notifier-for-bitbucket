@@ -24,6 +24,8 @@ public class PrnfbNotificationBuilder {
       final List<PrnfbHeader> headers,
       final String injectionUrl,
       final String injectionUrlRegexp,
+      final String variableName,
+      final String variableRegex,
       final HTTP_METHOD method,
       final String name,
       final String password,
@@ -49,6 +51,8 @@ public class PrnfbNotificationBuilder {
     this.headers = headers;
     this.injectionUrl = injectionUrl;
     this.injectionUrlRegexp = injectionUrlRegexp;
+    this.variableName = variableName;
+    this.variableRegex = variableRegex;
     this.method = method;
     this.name = name;
     this.password = password;
@@ -96,6 +100,8 @@ public class PrnfbNotificationBuilder {
     b.name = from.getName();
     b.injectionUrl = from.getInjectionUrl().orNull();
     b.injectionUrlRegexp = from.getInjectionUrlRegexp().orNull();
+    b.variableName = from.getVariableName().orNull();
+    b.variableRegex = from.getVariableRegex().orNull();
     b.triggerIfCanMerge = from.getTriggerIfCanMerge();
     b.postContentEncoding = from.getPostContentEncoding();
     b.httpVersion = from.getHttpVersion();
@@ -107,6 +113,8 @@ public class PrnfbNotificationBuilder {
   private List<PrnfbHeader> headers = newArrayList();
   private String injectionUrl;
   private String injectionUrlRegexp;
+  private String variableName;
+  private String variableRegex;
   private HTTP_METHOD method;
   private String name;
   private String password;
@@ -158,6 +166,14 @@ public class PrnfbNotificationBuilder {
 
   public String getInjectionUrlRegexp() {
     return this.injectionUrlRegexp;
+  }
+
+  public String getVariableName() {
+    return this.variableName;
+  }
+
+  public String getVariableRegex() {
+    return this.variableRegex;
   }
 
   public HTTP_METHOD getMethod() {
@@ -279,6 +295,16 @@ public class PrnfbNotificationBuilder {
 
   public PrnfbNotificationBuilder withInjectionUrlRegexp(final String injectionUrlRegexp) {
     this.injectionUrlRegexp = emptyToNull(injectionUrlRegexp);
+    return this;
+  }
+
+  public PrnfbNotificationBuilder withVariableName(final String variableName) {
+    this.variableName = emptyToNull(variableName);
+    return this;
+  }
+
+  public PrnfbNotificationBuilder withVariableRegex(final String variableRegex) {
+    this.variableRegex = emptyToNull(variableRegex);
     return this;
   }
 

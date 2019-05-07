@@ -56,6 +56,7 @@ The filter text as well as the URL support variables. These are:
 | `${BUTTON_TRIGGER_TITLE}` | Example: `Trigger Notification` |
 | `${BUTTON_FORM_DATA}` | The form data that was submitted |
 | `${INJECTION_URL_VALUE}` | Value retrieved from any URL |
+| `${VARIABLE_REGEX_MATCH}` | The result of custom regex applied to a variable |
 | `${PULL_REQUEST_URL}` | Example: `http://localhost:7990/projects/PROJECT_1/repos/rep_1/pull-requests/1` |
 | `${PULL_REQUEST_USER_DISPLAY_NAME}` | Example: `Some User` |
 | `${PULL_REQUEST_USER_EMAIL_ADDRESS}` | Example: `some.user@bitbucket.domain` |
