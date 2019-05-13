@@ -26,7 +26,6 @@ public class PrnfbNotification implements HasUuid, Restricted {
   private static final String DEFAULT_NAME = "Notification";
   private final String filterRegexp;
   private final String filterString;
-  private final List<PrnfbHeader> headers;
   private final String injectionUrl;
   private final String injectionUrlRegexp;
   private final String variableName;
@@ -59,7 +58,6 @@ public class PrnfbNotification implements HasUuid, Restricted {
     this.proxyServer = emptyToNull(nullToEmpty(builder.getProxyServer()).trim());
     this.proxySchema = emptyToNull(nullToEmpty(builder.getProxySchema()).trim());
     this.proxyPort = builder.getProxyPort();
-    this.headers = checkNotNull(builder.getHeaders());
     this.postContent = emptyToNull(nullToEmpty(builder.getPostContent()).trim());
     this.method = firstNonNull(builder.getMethod(), GET);
     this.triggerIfCanMerge = firstNonNull(builder.getTriggerIfCanMerge(), ALWAYS);
@@ -126,13 +124,6 @@ public class PrnfbNotification implements HasUuid, Restricted {
         return false;
       }
     } else if (!filterString.equals(other.filterString)) {
-      return false;
-    }
-    if (headers == null) {
-      if (other.headers != null) {
-        return false;
-      }
-    } else if (!headers.equals(other.headers)) {
       return false;
     }
     if (httpVersion == null) {
@@ -298,10 +289,6 @@ public class PrnfbNotification implements HasUuid, Restricted {
     return fromNullable(this.filterString);
   }
 
-  public List<PrnfbHeader> getHeaders() {
-    return this.headers;
-  }
-
   public Optional<String> getInjectionUrl() {
     return fromNullable(this.injectionUrl);
   }
@@ -399,7 +386,6 @@ public class PrnfbNotification implements HasUuid, Restricted {
     int result = 1;
     result = prime * result + (filterRegexp == null ? 0 : filterRegexp.hashCode());
     result = prime * result + (filterString == null ? 0 : filterString.hashCode());
-    result = prime * result + (headers == null ? 0 : headers.hashCode());
     result = prime * result + (httpVersion == null ? 0 : httpVersion.hashCode());
     result = prime * result + (injectionUrl == null ? 0 : injectionUrl.hashCode());
     result = prime * result + (injectionUrlRegexp == null ? 0 : injectionUrlRegexp.hashCode());
@@ -434,8 +420,6 @@ public class PrnfbNotification implements HasUuid, Restricted {
         + filterRegexp
         + ", filterString="
         + filterString
-        + ", headers="
-        + headers
         + ", injectionUrl="
         + injectionUrl
         + ", injectionUrlRegexp="

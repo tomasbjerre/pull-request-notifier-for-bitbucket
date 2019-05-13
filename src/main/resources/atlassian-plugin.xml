@@ -66,6 +66,7 @@
   <resource type="download" name="utils.js" location="utils.js" />
   <resource type="download" name="pr-triggerbutton.js" location="/pr-triggerbutton.js" />
   <dependency>com.atlassian.bitbucket.bitbucket-web-plugin:global</dependency>
+  <dependency>com.atlassian.auiplugin:ajs</dependency>
   <context>bitbucket.page.pullRequest.view</context>
  </web-resource>
 </atlassian-plugin>

@@ -1,6 +1,6 @@
 define('plugin/prnfb/admin', [
  'jquery',
- 'aui',
+ '@atlassian/aui',
  'plugin/prnfb/utils'
 ], function($, AJS, utils) {
  var settingsAdminUrlPostUrl = AJS.contextPath() + "/rest/prnfb-admin/1.0/settings";

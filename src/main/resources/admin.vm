@@ -648,23 +648,6 @@
     </div>
    </fieldset>
 
-   <h4>Headers</h4>
-   <p>Optional HTTP headers to send with URL.</p>
-   <fieldset class="group">
-    <legend>
-     <span>Headers</span>
-    </legend>
-    <script type="text/x-template" title="header-template">
-     <div class="field-group listfield">
-      <input class="text text-field" type="text" name="headers[][name]" value="{name}">
-      <input class="text text-field" type="text" name="headers[][value]" value="{value}">
-     </div>
-    </script>
-    <div class="listfields template" data-template="header-template" data-field="headers" data-target=".listfields" data-empty="{'name':'','value':''}">
-
-    </div>
-   </fieldset>
-
    <div class="aui-buttons">
     <button class="aui-button aui-button-primary">Save</button>
     <button class="aui-button aui-button" name="delete">Delete</button>
