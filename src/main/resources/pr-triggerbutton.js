@@ -1,6 +1,6 @@
 define('plugin/prnfb/pr-triggerbutton', [
  'jquery',
- 'aui',
+ '@atlassian/aui',
  'bitbucket/util/state',
  'underscore',
  'plugin/prnfb/3rdparty'
@@ -304,8 +304,6 @@ define('plugin/prnfb/pr-triggerbutton', [
  });
 });
 
-require(['bitbucket/util/events'], function(events) {
- events.on('bitbucket.internal.feature.repositories.recent.loaded', function() {
+AJS.$(document).ready(function() {
   require('plugin/prnfb/pr-triggerbutton');
- });
 });

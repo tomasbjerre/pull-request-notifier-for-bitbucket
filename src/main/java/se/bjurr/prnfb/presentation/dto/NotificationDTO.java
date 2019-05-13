@@ -17,7 +17,6 @@ import se.bjurr.prnfb.settings.TRIGGER_IF_MERGE;
 public class NotificationDTO implements Comparable<NotificationDTO>, Restricted {
   private String filterRegexp;
   private String filterString;
-  private List<HeaderDTO> headers;
   private String injectionUrl;
   private String injectionUrlRegexp;
   private String variableName;
@@ -76,13 +75,6 @@ public class NotificationDTO implements Comparable<NotificationDTO>, Restricted 
         return false;
       }
     } else if (!filterString.equals(other.filterString)) {
-      return false;
-    }
-    if (headers == null) {
-      if (other.headers != null) {
-        return false;
-      }
-    } else if (!headers.equals(other.headers)) {
       return false;
     }
     if (httpVersion == null) {
@@ -248,10 +240,6 @@ public class NotificationDTO implements Comparable<NotificationDTO>, Restricted 
     return this.filterString;
   }
 
-  public List<HeaderDTO> getHeaders() {
-    return this.headers;
-  }
-
   public String getInjectionUrl() {
     return this.injectionUrl;
   }
@@ -344,7 +332,6 @@ public class NotificationDTO implements Comparable<NotificationDTO>, Restricted 
     int result = 1;
     result = prime * result + (filterRegexp == null ? 0 : filterRegexp.hashCode());
     result = prime * result + (filterString == null ? 0 : filterString.hashCode());
-    result = prime * result + (headers == null ? 0 : headers.hashCode());
     result = prime * result + (httpVersion == null ? 0 : httpVersion.hashCode());
     result = prime * result + (injectionUrl == null ? 0 : injectionUrl.hashCode());
     result = prime * result + (injectionUrlRegexp == null ? 0 : injectionUrlRegexp.hashCode());
@@ -379,10 +366,6 @@ public class NotificationDTO implements Comparable<NotificationDTO>, Restricted 
 
   public void setFilterString(final String filterString) {
     this.filterString = filterString;
-  }
-
-  public void setHeaders(final List<HeaderDTO> headers) {
-    this.headers = headers;
   }
 
   public void setInjectionUrl(final String injectionUrl) {
@@ -495,8 +478,6 @@ public class NotificationDTO implements Comparable<NotificationDTO>, Restricted 
         + filterRegexp
         + ", filterString="
         + filterString
-        + ", headers="
-        + headers
         + ", injectionUrl="
         + injectionUrl
         + ", injectionUrlRegexp="

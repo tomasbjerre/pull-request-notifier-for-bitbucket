@@ -130,11 +130,6 @@
    <version>6.0.2.RELEASE</version>
    <scope>test</scope>
   </dependency>
-  <dependency>
-   <groupId>com.jayway.restassured</groupId>
-   <artifactId>rest-assured</artifactId>
-   <scope>test</scope>
-  </dependency>
  </dependencies>
  <build>
   <plugins>
@@ -330,9 +325,9 @@ Changelog of Pull Request Notifier for Bitbucket.
   <changelog.version>1.54</changelog.version>
   <fmt.version>2.5.1</fmt.version>
   <violations.version>1.13</violations.version>
-  <bitbucket.version>5.13.1</bitbucket.version>
+  <bitbucket.version>6.1.2</bitbucket.version>
   <bitbucket.data.version>${bitbucket.version}</bitbucket.data.version>
   <quick.reload.version>2.0.0</quick.reload.version>
-  <amps.version>6.3.6</amps.version>
+  <amps.version>8.0.0</amps.version>
  </properties>
 </project>

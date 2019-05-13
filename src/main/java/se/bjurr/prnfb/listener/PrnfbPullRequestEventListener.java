@@ -52,7 +52,6 @@ import se.bjurr.prnfb.service.PrnfbRendererFactory;
 import se.bjurr.prnfb.service.SettingsService;
 import se.bjurr.prnfb.service.VariablesContext;
 import se.bjurr.prnfb.service.VariablesContext.VariablesContextBuilder;
-import se.bjurr.prnfb.settings.PrnfbHeader;
 import se.bjurr.prnfb.settings.PrnfbNotification;
 import se.bjurr.prnfb.settings.PrnfbSettingsData;
 import se.bjurr.prnfb.settings.TRIGGER_IF_MERGE;
@@ -312,13 +311,6 @@ public class PrnfbPullRequestEventListener {
             .withMethod(notification.getMethod()) //
             .withPostContent(postContent) //
             .appendBasicAuth(notification);
-    for (final PrnfbHeader header : notification.getHeaders()) {
-      urlInvoker //
-          .withHeader(
-          header.getName(),
-          renderer.render(
-              header.getValue(), ENCODE_FOR.NONE, clientKeyStore, shouldAcceptAnyCertificate));
-    }
     final HttpResponse httpResponse =
         createInvoker()
             .invoke(

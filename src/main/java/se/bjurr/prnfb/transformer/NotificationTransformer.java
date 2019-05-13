@@ -1,6 +1,5 @@
 package se.bjurr.prnfb.transformer;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newArrayList;
 import static se.bjurr.prnfb.settings.PrnfbNotificationBuilder.prnfbNotificationBuilder;
 import static se.bjurr.prnfb.settings.PrnfbSettings.UNCHANGED;
@@ -8,9 +7,7 @@ import static se.bjurr.prnfb.settings.PrnfbSettings.UNCHANGED;
 import com.atlassian.bitbucket.pull.PullRequestState;
 import java.util.List;
 import se.bjurr.prnfb.listener.PrnfbPullRequestAction;
-import se.bjurr.prnfb.presentation.dto.HeaderDTO;
 import se.bjurr.prnfb.presentation.dto.NotificationDTO;
-import se.bjurr.prnfb.settings.PrnfbHeader;
 import se.bjurr.prnfb.settings.PrnfbNotification;
 import se.bjurr.prnfb.settings.ValidationException;
 
@@ -28,7 +25,6 @@ public class NotificationTransformer {
     to.setVariableRegex(from.getVariableRegex().orNull());
     to.setMethod(from.getMethod());
     to.setName(from.getName());
-    to.setHeaders(toHeaders(from.getHeaders()));
     to.setPostContent(from.getPostContent().orNull());
     to.setPostContentEncoding(from.getPostContentEncoding());
     to.setProxyPort(from.getProxyPort());
@@ -64,7 +60,6 @@ public class NotificationTransformer {
     return prnfbNotificationBuilder() //
         .withFilterRegexp(from.getFilterRegexp()) //
         .withFilterString(from.getFilterString()) //
-        .setHeaders(toHeaders(from)) //
         .withInjectionUrl(from.getInjectionUrl()) //
         .withInjectionUrlRegexp(from.getInjectionUrlRegexp()) //
         .withVariableName(from.getVariableName()) //
@@ -90,31 +85,6 @@ public class NotificationTransformer {
         .withProjectKey(from.getProjectKey().orNull()) //
         .withHttpVersion(from.getHttpVersion())
         .build();
-  }
-
-  private static List<HeaderDTO> toHeaders(final List<PrnfbHeader> headers) {
-    final List<HeaderDTO> to = newArrayList();
-    if (headers != null) {
-      for (final PrnfbHeader h : headers) {
-        final HeaderDTO t = new HeaderDTO();
-        t.setName(h.getName());
-        t.setValue(h.getValue());
-        to.add(t);
-      }
-    }
-    return to;
-  }
-
-  private static List<PrnfbHeader> toHeaders(final NotificationDTO from) {
-    final List<PrnfbHeader> to = newArrayList();
-    if (from.getHeaders() != null) {
-      for (final HeaderDTO headerDto : from.getHeaders()) {
-        if (!isNullOrEmpty(headerDto.getName()) && !isNullOrEmpty(headerDto.getValue())) {
-          to.add(new PrnfbHeader(headerDto.getName(), headerDto.getValue()));
-        }
-      }
-    }
-    return to;
   }
 
   private static List<PrnfbPullRequestAction> toPrnfbPullRequestActions(
