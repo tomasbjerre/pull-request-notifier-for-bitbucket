@@ -2,6 +2,16 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## 4.0
+### GitHub [#336](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/pull/336) Fixed deprecated dependencies for BBS6; removed Optional HTTP Headers
+  Stepping Major because of headers in
+  
+  [e758e2e03e21c06](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/e758e2e03e21c06) Tomas Bjerre *2019-05-13 16:06:10*
+
+  Fixed deprecated dependencies so plugin will work with BitBucket Server 6; removed Optional HTTP Headers section ()
+  
+  [99c3e1a18855927](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/99c3e1a18855927) rkw613 *2019-05-13 16:03:46*
+
 ## 3.25
 ### GitHub [#1](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/1) Finish GUI
   Add link to bitbucket debug logging doc () ()

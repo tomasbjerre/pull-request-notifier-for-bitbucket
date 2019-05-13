@@ -305,5 +305,5 @@ define('plugin/prnfb/pr-triggerbutton', [
 });
 
 AJS.$(document).ready(function() {
-  require('plugin/prnfb/pr-triggerbutton');
+ require('plugin/prnfb/pr-triggerbutton');
 });
