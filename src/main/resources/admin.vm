@@ -648,6 +648,18 @@
     </div>
    </fieldset>
 
+   <h4>Headers</h4>
+   <p>Optional HTTP headers to send with URL.</p>
+   <fieldset class="group">
+    <legend>
+     <span>Headers</span>
+    </legend>
+    <div class="field-group listfield">
+     <input class="text text-field" type="text" name="headers[][name]">
+     <input class="text text-field" type="text" name="headers[][value]">
+    </div>
+   </fieldset>
+
    <div class="aui-buttons">
     <button class="aui-button aui-button-primary">Save</button>
     <button class="aui-button aui-button" name="delete">Delete</button>

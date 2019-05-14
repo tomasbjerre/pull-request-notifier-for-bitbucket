@@ -159,6 +159,21 @@ define('plugin/prnfb/utils', [
   }
   $(formSelector).populate(data);
 
+  $(formSelector).find('.template').each(function(index, el) {
+   var template = $(el).data('template');
+   var field = $(el).data('field');
+   var target = $(el).data('target');
+   var emptyJson = $(el).data('empty').replace(/\'/g, '"');
+   var empty = JSON.parse(emptyJson);
+   var rendered = "";
+   if (data[field]) {
+    for (var i = 0; i < data[field].length; i++) {
+     rendered += AJS.template.load(template).fill(data[field][i]);
+    }
+   }
+   rendered += AJS.template.load(template).fill(empty);
+   $(target).html(rendered);
+  });
  }
 
  function clearForm(formSelector) {

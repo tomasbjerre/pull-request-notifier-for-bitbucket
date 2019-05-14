@@ -21,6 +21,7 @@ public class PrnfbNotificationBuilder {
   public PrnfbNotificationBuilder(
       final String filterRegexp,
       final String filterString,
+      final List<PrnfbHeader> headers,
       final String injectionUrl,
       final String injectionUrlRegexp,
       final String variableName,
@@ -47,6 +48,7 @@ public class PrnfbNotificationBuilder {
       final String httpVersion) {
     this.filterRegexp = filterRegexp;
     this.filterString = filterString;
+    this.headers = headers;
     this.injectionUrl = injectionUrl;
     this.injectionUrlRegexp = injectionUrlRegexp;
     this.variableName = variableName;
@@ -86,6 +88,7 @@ public class PrnfbNotificationBuilder {
     b.filterString = from.getFilterString().orNull();
     b.method = from.getMethod();
     b.postContent = from.getPostContent().orNull();
+    b.headers = from.getHeaders();
     b.triggerIgnoreStateList = from.getTriggerIgnoreStateList();
     b.proxyUser = from.getProxyUser().orNull();
     b.proxyPassword = from.getProxyPassword().orNull();
@@ -107,6 +110,7 @@ public class PrnfbNotificationBuilder {
 
   private String filterRegexp;
   private String filterString;
+  private List<PrnfbHeader> headers = newArrayList();
   private String injectionUrl;
   private String injectionUrlRegexp;
   private String variableName;
@@ -150,6 +154,10 @@ public class PrnfbNotificationBuilder {
 
   public String getFilterString() {
     return this.filterString;
+  }
+
+  public List<PrnfbHeader> getHeaders() {
+    return this.headers;
   }
 
   public String getInjectionUrl() {
@@ -244,6 +252,11 @@ public class PrnfbNotificationBuilder {
     return this.uuid;
   }
 
+  public PrnfbNotificationBuilder setHeaders(final List<PrnfbHeader> headers) {
+    this.headers = headers;
+    return this;
+  }
+
   public PrnfbNotificationBuilder setTriggerIgnoreState(
       final List<PullRequestState> triggerIgnoreStateList) {
     this.triggerIgnoreStateList = triggerIgnoreStateList;
@@ -267,6 +280,11 @@ public class PrnfbNotificationBuilder {
 
   public PrnfbNotificationBuilder withFilterString(final String filterString) {
     this.filterString = emptyToNull(filterString);
+    return this;
+  }
+
+  public PrnfbNotificationBuilder withHeader(final String name, final String value) {
+    this.headers.add(new PrnfbHeader(name, value));
     return this;
   }
 
