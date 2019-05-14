@@ -2,6 +2,14 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## 4.1
+### GitHub [#321](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/321) Bitbucket Server 6.0 support
+  Adding header support 
+
+Now supporting one header.
+  
+  [d43d29e0d4b9ea0](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/d43d29e0d4b9ea0) Tomas Bjerre *2019-05-14 14:21:31*
+
 ## 4.0
 ### GitHub [#336](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/pull/336) Fixed deprecated dependencies for BBS6; removed Optional HTTP Headers
   Stepping Major because of headers in
