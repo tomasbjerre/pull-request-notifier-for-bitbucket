@@ -322,12 +322,12 @@ Changelog of Pull Request Notifier for Bitbucket.
  </profiles>
 
  <properties>
-  <changelog.version>1.54</changelog.version>
-  <fmt.version>2.5.1</fmt.version>
-  <violations.version>1.13</violations.version>
-  <bitbucket.version>6.1.2</bitbucket.version>
+  <changelog.version>1.60</changelog.version>
+  <fmt.version>2.9</fmt.version>
+  <violations.version>1.21</violations.version>
+  <bitbucket.version>6.8.0-bbs-cdn-m1</bitbucket.version>
   <bitbucket.data.version>${bitbucket.version}</bitbucket.data.version>
   <quick.reload.version>2.0.0</quick.reload.version>
-  <amps.version>8.0.0</amps.version>
+  <amps.version>8.0.2</amps.version>
  </properties>
 </project>

@@ -1235,7 +1235,7 @@ and a lot easier to add multiple actions.
   [e8ecb22d8fe68b5](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/e8ecb22d8fe68b5) Tomas Bjerre *2015-09-26 10:42:43*
 
 ## 2.3
-### GitHub
+### GitHub [#72](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/72) buttons in configuration do NOT work
   Bugfix: Loading CSS and JS in admin-page
   
   [ef9fcc167f1daf5](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/ef9fcc167f1daf5) Tomas Bjerre *2015-09-25 16:58:04*
