@@ -2,6 +2,16 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
+## Unreleased
+### No issue
+  openjdk8
+  
+  [c9738266f4edb95](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/c9738266f4edb95) Tomas Bjerre *2019-09-27 17:22:21*
+
+  Updating dependencies
+  
+  [bd72d29a4ed6dea](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/bd72d29a4ed6dea) Tomas Bjerre *2019-09-27 17:15:14*
+
 ## 4.1
 ### GitHub [#321](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/321) Bitbucket Server 6.0 support
   Adding header support 
