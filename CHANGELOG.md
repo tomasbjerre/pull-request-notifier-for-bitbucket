@@ -4,9 +4,17 @@ Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
 ### No issue
+  doc
+  
+  [c83497209554f52](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/c83497209554f52) Tomas Bjerre *2019-10-01 14:33:50*
+
+  Create FUNDING.yml
+  
+  [f6d05825447b146](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/f6d05825447b146) Tomas Bjerre *2019-09-28 06:46:20*
+
   openjdk8
   
-  [c9738266f4edb95](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/c9738266f4edb95) Tomas Bjerre *2019-09-27 17:22:21*
+  [e5a3b338c4cd69d](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/e5a3b338c4cd69d) Tomas Bjerre *2019-09-27 17:47:57*
 
   Updating dependencies
   

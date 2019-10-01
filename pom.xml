@@ -6,9 +6,16 @@
  <artifactId>pull-request-notifier-for-bitbucket</artifactId>
  <version>4.2-SNAPSHOT</version>
  <organization>
-  <name>Tomas Bjerre</name>
-  <url>http://bjurr.se/</url>
+  <name>Tomas Bjerre AB</name>
+  <url>https://tomasbjerreab.se/</url>
  </organization>
+ <licenses>
+  <license>
+   <name>The Apache Software License, Version 2.0</name>
+   <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+   <distribution>repo</distribution>
+  </license>
+ </licenses>
  <name>pull-request-notifier-for-bitbucket</name>
  <description>This is the Pull Request Notifier for Atlassian Bitbucket. See https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket for documentation and source code.</description>
  <packaging>atlassian-plugin</packaging>
