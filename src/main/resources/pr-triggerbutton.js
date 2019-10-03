@@ -3,9 +3,10 @@ define('plugin/prnfb/pr-triggerbutton', [
  '@atlassian/aui',
  'bitbucket/util/state',
  'underscore',
- 'plugin/prnfb/3rdparty'
-], function($, AJS, pageState, _, thirdParty) {
- var buttonsAdminUrl = AJS.contextPath() + "/rest/prnfb-admin/1.0/settings/buttons";
+ 'plugin/prnfb/3rdparty',
+ 'wrm/context-path'
+], function($, AJS, pageState, _, thirdParty, contextPath) {
+ var buttonsAdminUrl = contextPath + "/rest/prnfb-admin/1.0/settings/buttons";
 
  var waiting = '<span class="aui-icon aui-icon-wait aui-icon-small">Wait</span>';
  var $buttonArea = $('#pull-request-header-more').find('.aui-button').first().closest('ul');

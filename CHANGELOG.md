@@ -4,6 +4,16 @@ Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
 ### No issue
+  Removing deprecated dependency on AJS.contextPath()
+  
+  [1ed35c86b06ea32](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/1ed35c86b06ea32) Tomas Bjerre *2019-10-03 14:19:07*
+
+  Correcting custom keystore
+
+Using custom keystore even if "Accept Any Certificate" is disabled.
+  
+  [17972362e075e99](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/17972362e075e99) Tomas Bjerre *2019-10-03 14:09:30*
+
   doc
   
   [0965b48f845c45b](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/0965b48f845c45b) Tomas Bjerre *2019-10-01 14:37:09*
