@@ -6,7 +6,7 @@ Changelog of Pull Request Notifier for Bitbucket.
 ### No issue
   doc
   
-  [c83497209554f52](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/c83497209554f52) Tomas Bjerre *2019-10-01 14:33:50*
+  [0965b48f845c45b](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/0965b48f845c45b) Tomas Bjerre *2019-10-01 14:37:09*
 
   Create FUNDING.yml
   

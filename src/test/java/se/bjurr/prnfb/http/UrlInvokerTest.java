@@ -3,6 +3,7 @@ package se.bjurr.prnfb.http;
 import static com.google.common.base.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD.DELETE;
 import static se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD.GET;
 import static se.bjurr.prnfb.http.UrlInvoker.HTTP_METHOD.POST;
@@ -31,11 +32,12 @@ public class UrlInvokerTest {
     this.urlInvoker =
         new UrlInvoker() {
           @Override
-          HttpResponse doInvoke(HttpRequestBase httpRequest, HttpClientBuilder builder) {
+          HttpResponse doInvoke(
+              final HttpRequestBase httpRequest, final HttpClientBuilder builder) {
             UrlInvokerTest.this.httpRequestBase = httpRequest;
             try {
               return new HttpResponse(new URI("http://fake.com"), 200, "");
-            } catch (URISyntaxException e) {
+            } catch (final URISyntaxException e) {
               e.printStackTrace();
               return null;
             }
@@ -60,7 +62,7 @@ public class UrlInvokerTest {
 
   @Test
   public void testThatHeadersAreAddedForBasicAuth() throws Exception {
-    PrnfbNotification notification =
+    final PrnfbNotification notification =
         prnfbNotificationBuilder() //
             .withUrl("http://url.com/") //
             .withUser("user") //
@@ -82,7 +84,7 @@ public class UrlInvokerTest {
 
   @Test
   public void testThatHttpEntityEnclosingRequestBaseCanBeCreatedAsPOSTWithoutContent() {
-    HttpRequestBase response =
+    final HttpRequestBase response =
         this.urlInvoker //
             .withMethod(POST) //
             .newHttpRequestBase();
@@ -95,7 +97,7 @@ public class UrlInvokerTest {
 
   @Test
   public void testThatHttpEntityEnclosingRequestBaseCanBeCreatedAsPUTWithContent() {
-    HttpRequestBase response =
+    final HttpRequestBase response =
         this.urlInvoker //
             .withMethod(PUT) //
             .withPostContent(Optional.of("some content")) //
@@ -103,14 +105,14 @@ public class UrlInvokerTest {
 
     assertThat(response.getMethod()) //
         .isEqualTo(PUT.name());
-    HttpEntityEnclosingRequestBase c = (HttpEntityEnclosingRequestBase) response;
+    final HttpEntityEnclosingRequestBase c = (HttpEntityEnclosingRequestBase) response;
     assertThat(c.getEntity().getContentLength()) //
         .isGreaterThan(0);
   }
 
   @Test
   public void testThatHttpRequestBaseCanBeCreatedWithDelete() {
-    HttpRequestBase response =
+    final HttpRequestBase response =
         this.urlInvoker //
             .withMethod(DELETE) //
             .newHttpRequestBase();
@@ -123,43 +125,37 @@ public class UrlInvokerTest {
 
   @Test
   public void testThatNoneSslCanBeConfigured() throws Exception {
-    HttpClientBuilder mockedBuilder = mock(HttpClientBuilder.class);
+    final HttpClientBuilder mockedBuilder = mock(HttpClientBuilder.class);
 
     this.urlInvoker //
         .withUrlParam("http://url.com/") //
         .configureSsl(mockedBuilder);
-
-    // verify(mockedBuilder, times(0)).setSSLSocketFactory(Matchers.any());
   }
 
   @Test
   public void testThatProxyIsConfiguredIfThereIsAHostAndPort() throws Exception {
-    HttpClientBuilder mockedBuilder = mock(HttpClientBuilder.class);
+    final HttpClientBuilder mockedBuilder = mock(HttpClientBuilder.class);
 
     this.urlInvoker //
         .withUrlParam("http://url.com/") //
         .withProxyServer(of("http://proxy.com/")) //
         .withProxyPort(123) //
         .configureProxy(mockedBuilder);
-
-    // verify(mockedBuilder, times(1)).setProxy(Matchers.any());
   }
 
   @Test
   public void testThatProxyIsNotConfiguredIfThereIsNoHost() throws Exception {
-    HttpClientBuilder mockedBuilder = mock(HttpClientBuilder.class);
+    final HttpClientBuilder mockedBuilder = mock(HttpClientBuilder.class);
 
     this.urlInvoker //
         .withUrlParam("http://url.com/") //
         .withProxyPort(123) //
         .configureProxy(mockedBuilder);
-
-    // verify(mockedBuilder, times(0)).setProxy(Matchers.any());
   }
 
   @Test
   public void testThatProxyUserIsConfiguredIfItIsSet() throws Exception {
-    HttpClientBuilder mockedBuilder = mock(HttpClientBuilder.class);
+    final HttpClientBuilder mockedBuilder = mock(HttpClientBuilder.class);
 
     this.urlInvoker //
         .withUrlParam("http://url.com/") //
@@ -168,15 +164,11 @@ public class UrlInvokerTest {
         .withProxyUser(of("u")) //
         .withProxyPassword(of("p")) //
         .configureProxy(mockedBuilder);
-
-    // verify(mockedBuilder,
-    // times(1)).setDefaultCredentialsProvider(Matchers.any());
-    // verify(mockedBuilder, times(1)).setProxy(Matchers.any());
   }
 
   @Test
   public void testThatProxyUserIsNotConfiguredIfNoPasswordSet() throws Exception {
-    HttpClientBuilder mockedBuilder = mock(HttpClientBuilder.class);
+    final HttpClientBuilder mockedBuilder = mock(HttpClientBuilder.class);
 
     this.urlInvoker //
         .withUrlParam("http://url.com/") //
@@ -184,21 +176,19 @@ public class UrlInvokerTest {
         .withProxyPort(123) //
         .withProxyUser(of("u")) //
         .configureProxy(mockedBuilder);
-
-    // verify(mockedBuilder,
-    // times(0)).setDefaultCredentialsProvider(Matchers.any());
-    // verify(mockedBuilder, times(1)).setProxy(Matchers.any());
   }
 
   @Test
   public void testThatSslCanBeConfigured() throws Exception {
-    HttpClientBuilder mockedBuilder = mock(HttpClientBuilder.class);
+    final HttpClientBuilder mockedBuilder = mock(HttpClientBuilder.class);
+    final ClientKeyStore clientKeyStore = mock(ClientKeyStore.class);
+
+    when(clientKeyStore.getKeyStore()).thenReturn(Optional.absent());
 
     this.urlInvoker //
         .withUrlParam("https://url.com/") //
+        .withClientKeyStore(clientKeyStore) //
         .configureSsl(mockedBuilder);
-
-    // verify(mockedBuilder).setSSLSocketFactory(Matchers.any());
   }
 
   @Test

@@ -307,10 +307,10 @@ public class UrlInvoker {
     final SSLContextBuilder sslContextBuilder = SSLContexts.custom();
     if (this.shouldAcceptAnyCertificate) {
       doAcceptAnyCertificate(sslContextBuilder);
-      if (this.clientKeyStore.getKeyStore().isPresent()) {
-        sslContextBuilder.loadKeyMaterial(
-            this.clientKeyStore.getKeyStore().get(), this.clientKeyStore.getPassword());
-      }
+    }
+    if (this.clientKeyStore.getKeyStore().isPresent()) {
+      sslContextBuilder.loadKeyMaterial(
+          this.clientKeyStore.getKeyStore().get(), this.clientKeyStore.getPassword());
     }
 
     return sslContextBuilder.build();
