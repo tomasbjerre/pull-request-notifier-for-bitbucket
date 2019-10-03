@@ -34,6 +34,7 @@
  <web-resource name="Admin Web Resources" key="resources">
   <dependency>com.atlassian.auiplugin:ajs</dependency>
   <dependency>com.atlassian.plugins.atlassian-plugins-webresource-plugin:context-path</dependency>
+  <dependency>com.atlassian.auiplugin:template</dependency>
   <resource type="download" name="3rdparty.js" location="3rdparty.js" />
   <resource type="download" name="utils.js" location="utils.js" />
   <resource type="download" name="admin.js" location="admin.js" />

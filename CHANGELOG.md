@@ -3,11 +3,18 @@
 Changelog of Pull Request Notifier for Bitbucket.
 
 ## Unreleased
-### No issue
+### GitHub [#347](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/347) Configuration UI is broken - Uncaught Error: plugin/prnfb/admin missing aui
+  Loading deprecated AJS.template manually 
+
+As suggested: https://community.developer.atlassian.com/t/how-to-get-ajs-contextpath-in-aui-8/32202/6
+  
+  [543fcea9c89cc4a](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/543fcea9c89cc4a) Tomas Bjerre *2019-10-03 14:32:09*
+
   Removing deprecated dependency on AJS.contextPath()
   
-  [1ed35c86b06ea32](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/1ed35c86b06ea32) Tomas Bjerre *2019-10-03 14:19:07*
+  [d9e2479b08e69f7](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/d9e2479b08e69f7) Tomas Bjerre *2019-10-03 14:25:43*
 
+### No issue
   Correcting custom keystore
 
 Using custom keystore even if "Accept Any Certificate" is disabled.
