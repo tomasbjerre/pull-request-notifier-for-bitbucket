@@ -1,5 +1,11 @@
 # Pull Request Notifier for Bitbucket Server [![Build Status](https://travis-ci.org/tomasbjerre/pull-request-notifier-for-bitbucket.svg?branch=master)](https://travis-ci.org/tomasbjerre/pull-request-notifier-for-bitbucket)
 
+
+**This project is sort of deprecated. See: https://community.developer.atlassian.com/t/eula-and-data-center-for-free-apps/26062**
+
+------------------------
+
+
 This is a Bitbucket Server plugin that can invoke custom URL:s, supporting variables, when configured events occur on pull requests in Bitbucket Server. It can notify Jenkins, Bamboo, TeamCity, HipChat and many more!
 
 The original use case was to trigger Jenkins jobs to build and verify pull requests but it can trigger any system. The plugin can notify any system that can be notified with a URL.

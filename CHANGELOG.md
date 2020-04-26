@@ -8,11 +8,16 @@ Changelog of Pull Request Notifier for Bitbucket.
 
 As suggested: https://community.developer.atlassian.com/t/how-to-get-ajs-contextpath-in-aui-8/32202/6
   
-  [543fcea9c89cc4a](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/543fcea9c89cc4a) Tomas Bjerre *2019-10-03 14:32:09*
+  [7faa33725bab2dd](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/7faa33725bab2dd) Tomas Bjerre *2019-10-03 14:37:56*
 
   Removing deprecated dependency on AJS.contextPath()
   
   [d9e2479b08e69f7](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/d9e2479b08e69f7) Tomas Bjerre *2019-10-03 14:25:43*
+
+### GitHub [#355](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/pull/355) Upgraded findbugs-maven-plugin, 3.0.0 has issues with newer Maven ver…
+  Upgraded findbugs-maven-plugin, 3.0.0 has issues with newer Maven versions ()
+  
+  [e06f971ca6b2f05](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/e06f971ca6b2f05) Mads Opheim *2019-10-10 14:15:44*
 
 ### No issue
   Correcting custom keystore
