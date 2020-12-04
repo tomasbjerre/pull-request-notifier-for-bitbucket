@@ -1,13 +1,13 @@
 define('plugin/prnfb/utils', [
  'jquery',
  'plugin/prnfb/3rdparty',
- 'wrm/context-path'
-], function($, trdparty, contextPath) {
+ 'bitbucket/util/server'
+], function($, trdparty, srv) {
 
  function postForm(url, formSelector, whenDone) {
   $('.statusresponse').empty();
   var jsonString = $(formSelector).serializeJSON();
-  $.ajax({
+  srv.ajax({
    url: url,
    type: "POST",
    contentType: "application/json; charset=utf-8",
@@ -60,9 +60,12 @@ define('plugin/prnfb/utils', [
  }
 
  function getProjects(whenDone) {
-  var projectsUrl = contextPath + "/rest/api/1.0/projects?limit=999999";
-  $.getJSON(projectsUrl, function(data) {
-   whenDone(data);
+  var projectsUrl = "/rest/api/1.0/projects?limit=999999";
+  srv.rest ({
+    url : projectsUrl,
+    success: function(data) {
+        whenDone(data);
+    }
   });
  }
 
@@ -91,10 +94,13 @@ define('plugin/prnfb/utils', [
    whenDone();
    return;
   }
-  var reposUrl = contextPath + "/rest/api/1.0/projects/" + projectKey + "/repos?limit=999999";
-  $.getJSON(reposUrl, function(data) {
-   whenDone(data);
-  });
+  var reposUrl = "/rest/api/1.0/projects/" + projectKey + "/repos?limit=999999";
+  srv.rest ({
+      url : reposUrl,
+      success: function(data) {
+          whenDone(data);
+      }
+    });
  }
 
  function setupProjectAndRepoSettingsInForm($form, hasProjectAndRepo) {
@@ -249,7 +255,7 @@ define('plugin/prnfb/utils', [
    e.preventDefault();
    var uuid = $(formSelector).find('[name=uuid]').val();
    if (uuid) {
-    $.ajax({
+    srv.ajax({
      url: postUrl + '/' + uuid,
      type: 'DELETE',
      success: function(result) {

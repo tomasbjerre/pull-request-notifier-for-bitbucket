@@ -1,26 +1,17 @@
-define('plugin/prnfb/pr-triggerbutton', [
+require([
+ '@atlassian/clientside-extensions-registry',
  'jquery',
  '@atlassian/aui',
- 'bitbucket/util/state',
  'underscore',
  'plugin/prnfb/3rdparty',
- 'wrm/context-path'
-], function($, AJS, pageState, _, thirdParty, contextPath) {
- var buttonsAdminUrl = contextPath + "/rest/prnfb-admin/1.0/settings/buttons";
+ 'bitbucket/util/server',
+ '@bitbucket/apps/pull-requests/initial-data'
+], function(registry, $, AJS, _, thirdParty, srv, prData) {
+ var prId = prData.pullRequest.id
+ var repoId = prData.repository.id
+ var buttonsAdminUrl = "/rest/prnfb-admin/1.0/settings/buttons";
 
  var waiting = '<span class="aui-icon aui-icon-wait aui-icon-small">Wait</span>';
- var $buttonArea = $('#pull-request-header-more').find('.aui-button').first().closest('ul');
- $buttonArea.find('.aui-button').each(function(index, auiButton) {
-  var buttonText = $(auiButton).text().trim();
-  if (buttonText === '' || buttonText === 'pr-triggerbutton') {
-   //An empty button is added by 'client-web-item' in atlassian-plugin.xml
-   $(auiButton).remove();
-  }
- });
-
- var buttonTemplate = function(name) {
-  return $('<li><button class="aui-button aui-button-link prnfb-button" role="menuitem">' + name + '</button></li>');
- };
 
  var dialogTemplate = function(name, content) {
   var escapedName = _.escape(name);
@@ -185,7 +176,7 @@ define('plugin/prnfb/pr-triggerbutton', [
      });
     } else {
      AJS.flag({
-      close: 'auto',
+      close: 'manual',
       type: 'error',
       title: notificationResponse.notificationName.replace(/<script>/g, 'script'),
       body: '<p>' + notificationResponse.status + ' ' + notificationResponse.uri + '</p>' +
@@ -205,106 +196,81 @@ define('plugin/prnfb/pr-triggerbutton', [
   }
  };
 
- function loadSettingsAndShowButtons() {
-  $.get(buttonsAdminUrl + '/repository/' + pageState.getRepository().id + '/pullrequest/' + pageState.getPullRequest().id, function(settings) {
-   $buttonArea.find('.prnfb-button').remove();
-   settings.forEach(function(item) {
-    var $buttonDropdownItem = buttonTemplate(item.name.replace(/<script>/g, 'script'));
-    $buttonDropdownItem.click(function() {
-     var $this = $(this);
-
-     var enableButton = function() {
-      $this.removeAttr("disabled");
-      $this.removeAttr("aria-disabled");
-      $this.find("span").remove();
-     };
-     var disableButton = function() {
-      $this.attr("disabled", "disabled");
-      $this.attr("aria-disabled", "true");
-      $this.prepend(waiting);
-     };
-
-     var submitButton = function(formResult) {
-      disableButton();
-      $.ajax({
-       "type": "POST",
-       "url": buttonsAdminUrl + '/' + item.uuid + '/press/repository/' + pageState.getRepository().id + '/pullrequest/' + pageState.getPullRequest().id,
-       "data": {
-        "form": formResult
-       },
-       "success": function(content) {
-        setTimeout(function() {
-         enableButton();
+ function submitButton(item, formResult) {
+   srv.ajax({
+     "type": "POST",
+     "url": buttonsAdminUrl + '/' + item.uuid + '/press/repository/' + repoId +'/pullrequest/' + prId,
+     "data": {
+       "form": formResult
+     },
+     "success": function(content) {
+       setTimeout(function() {
          if (content.confirmation == "on") {
-          presentResult(content.notificationResponses);
+           presentResult(content.notificationResponses);
          }
-        }, 500);
-       },
-       "error": function(content) {
-        enableButton();
-        AJS.flag({
-         close: 'auto',
+       }, 500);
+     },
+     "error": function(content) {
+       AJS.flag({
+         close: 'manual',
          type: 'error',
          title: "Unknown error",
          body: '<p>' + content.status + '</p>' + '<p>Check the Bitbucket Server log for more details.</p>'
-        });
-       }
-      });
-
-      if (item.redirectUrl) {
-       redirect();
-      }
-     };
-
-     var redirect = function() {
-      disableButton();
-      window.location.replace(item.redirectUrl);
-     };
-
-     if (item.confirmationText || item.buttonFormList && item.buttonFormList.length > 0) {
-      // Create the form and dialog     
-      var confirmationText = confirmationTextTemplate(item.confirmationText);
-      var form = formTemplate(item.buttonFormList);
-      var formHtml = $("<div/>").append(confirmationText).append(form).html();
-      var $dialog = $(dialogTemplate(item.name, formHtml));
-      $dialog.appendTo($("body"));
-
-      var dialogRef = AJS.dialog2($dialog);
-
-      // When you submit the form, we will post to the server with all the
-      // form data.
-      AJS.$("#dialog-submit-button").click(function(e) {
-       var formResult = $dialog.find("form").serializeJSON();
-       e.preventDefault();
-       dialogRef.hide();
-
-       submitButton(formResult);
-      });
-      AJS.$("#dialog-close-button").click(function(e) {
-       e.preventDefault();
-       dialogRef.hide();
-      });
-      dialogRef.show();
-     } else {
-      submitButton(null);
+       });
      }
-
-    });
-    $buttonArea.append($buttonDropdownItem);
    });
+
+   if (item.redirectUrl) {
+     window.location.replace(item.redirectUrl);
+   }
+ }
+
+ function loadSettingsAndShowButtons() {
+  srv.rest({
+    url : buttonsAdminUrl + '/repository/' + repoId + '/pullrequest/' + prId,
+    success : function(settings) {
+     settings.forEach(function(item, index) {
+       registry.registerExtension(
+         'se.bjurr.prnfs.pull-request-notifier-for-stash:custom-buttons' + index,
+         function buttonFactory(extensionAPI, context) {
+           return {
+             type: 'button',
+             label: item.name,
+             onAction : function() {
+               if (item.confirmationText || item.buttonFormList && item.buttonFormList.length > 0) {
+                 // Create the form and dialog
+                 var confirmationText = confirmationTextTemplate(item.confirmationText);
+                 var form = formTemplate(item.buttonFormList);
+                 var formHtml = $("<div/>").append(confirmationText).append(form).html();
+                 var $dialog = $(dialogTemplate(item.name, formHtml));
+                 $dialog.appendTo($("body"));
+
+                 var dialogRef = AJS.dialog2($dialog);
+
+                 // When you submit the form, we will post to the server with all the form data.
+                 AJS.$("#dialog-submit-button").click(function(e) {
+                   var formResult = $dialog.find("form").serializeJSON();
+                   e.preventDefault();
+                   dialogRef.hide();
+                   submitButton(item, formResult);
+                 });
+                 AJS.$("#dialog-close-button").click(function(e) {
+                   e.preventDefault();
+                   dialogRef.hide();
+                 });
+                 dialogRef.show();
+               } else {
+                 submitButton(item, null);
+               }
+             }
+           };
+         }
+       );
+     });
+    }
   });
  }
 
  loadSettingsAndShowButtons();
 
- //If a reviewer approves the PR, then a button may become visible
- $('.aui-button.approve').click(function() {
-  setTimeout(function() {
-   loadSettingsAndShowButtons();
-  }, 1000);
- });
-});
-
-AJS.$(document).ready(function() {
- require('plugin/prnfb/pr-triggerbutton');
 });
