@@ -1,16 +1,15 @@
 define('plugin/prnfb/admin', [
  'jquery',
  '@atlassian/aui',
- 'plugin/prnfb/utils',
- 'wrm/context-path'
-], function($, AJS, utils, contextPath) {
- var settingsAdminUrlPostUrl = contextPath + "/rest/prnfb-admin/1.0/settings";
+ 'plugin/prnfb/utils'
+], function($, AJS, utils) {
+ var settingsAdminUrlPostUrl = "/rest/prnfb-admin/1.0/settings";
  var settingsAdminUrl = settingsAdminUrlPostUrl;
 
- var notificationsAdminUrlPostUrl = contextPath + "/rest/prnfb-admin/1.0/settings/notifications";
+ var notificationsAdminUrlPostUrl = "/rest/prnfb-admin/1.0/settings/notifications";
  var notificationsAdminUrl = notificationsAdminUrlPostUrl;
 
- var buttonsAdminUrlPostUrl = contextPath + "/rest/prnfb-admin/1.0/settings/buttons";
+ var buttonsAdminUrlPostUrl = "/rest/prnfb-admin/1.0/settings/buttons";
  var buttonsAdminUrl = buttonsAdminUrlPostUrl;
 
  var projectKey;
