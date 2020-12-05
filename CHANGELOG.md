@@ -2,7 +2,7 @@
 
 Changelog of Pull Request Notifier for Bitbucket.
 
-## Unreleased
+## 5.0
 ### GitHub [#347](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/issues/347) Configuration UI is broken - Uncaught Error: plugin/prnfb/admin missing aui
   Loading deprecated AJS.template manually 
 
@@ -20,6 +20,10 @@ As suggested: https://community.developer.atlassian.com/t/how-to-get-ajs-context
   [e06f971ca6b2f05](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/e06f971ca6b2f05) Mads Opheim *2019-10-10 14:15:44*
 
 ### GitHub [#372](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/pull/372) Changes for bitbucket 7+
+  Adjustments after merge of
+  
+  [86daca7399fb136](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/86daca7399fb136) Tomas Bjerre *2020-12-05 17:45:43*
+
   Changes for bitbucket 7+ ()
 
 Co-authored-by: sreer <RajeshKrishna.SreeramaKrishnan@in.pega.com>
