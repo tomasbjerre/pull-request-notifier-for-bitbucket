@@ -7,8 +7,8 @@ require([
  'bitbucket/util/server',
  '@bitbucket/apps/pull-requests/initial-data'
 ], function(registry, $, AJS, _, thirdParty, srv, prData) {
- var prId = prData.pullRequest.id
- var repoId = prData.repository.id
+ var prId = prData.pullRequest.id;
+ var repoId = prData.repository.id;
  var buttonsAdminUrl = "/rest/prnfb-admin/1.0/settings/buttons";
 
  var waiting = '<span class="aui-icon aui-icon-wait aui-icon-small">Wait</span>';
@@ -197,77 +197,77 @@ require([
  };
 
  function submitButton(item, formResult) {
-   srv.ajax({
-     "type": "POST",
-     "url": buttonsAdminUrl + '/' + item.uuid + '/press/repository/' + repoId +'/pullrequest/' + prId,
-     "data": {
-       "form": formResult
-     },
-     "success": function(content) {
-       setTimeout(function() {
-         if (content.confirmation == "on") {
-           presentResult(content.notificationResponses);
-         }
-       }, 500);
-     },
-     "error": function(content) {
-       AJS.flag({
-         close: 'manual',
-         type: 'error',
-         title: "Unknown error",
-         body: '<p>' + content.status + '</p>' + '<p>Check the Bitbucket Server log for more details.</p>'
-       });
+  srv.ajax({
+   "type": "POST",
+   "url": buttonsAdminUrl + '/' + item.uuid + '/press/repository/' + repoId + '/pullrequest/' + prId,
+   "data": {
+    "form": formResult
+   },
+   "success": function(content) {
+    setTimeout(function() {
+     if (content.confirmation == "on") {
+      presentResult(content.notificationResponses);
      }
-   });
-
-   if (item.redirectUrl) {
-     window.location.replace(item.redirectUrl);
+    }, 500);
+   },
+   "error": function(content) {
+    AJS.flag({
+     close: 'manual',
+     type: 'error',
+     title: "Unknown error",
+     body: '<p>' + content.status + '</p>' + '<p>Check the Bitbucket Server log for more details.</p>'
+    });
    }
+  });
+
+  if (item.redirectUrl) {
+   window.location.replace(item.redirectUrl);
+  }
  }
 
  function loadSettingsAndShowButtons() {
   srv.rest({
-    url : buttonsAdminUrl + '/repository/' + repoId + '/pullrequest/' + prId,
-    success : function(settings) {
-     settings.forEach(function(item, index) {
-       registry.registerExtension(
-         'se.bjurr.prnfs.pull-request-notifier-for-stash:custom-buttons' + index,
-         function buttonFactory(extensionAPI, context) {
-           return {
-             type: 'button',
-             label: item.name,
-             onAction : function() {
-               if (item.confirmationText || item.buttonFormList && item.buttonFormList.length > 0) {
-                 // Create the form and dialog
-                 var confirmationText = confirmationTextTemplate(item.confirmationText);
-                 var form = formTemplate(item.buttonFormList);
-                 var formHtml = $("<div/>").append(confirmationText).append(form).html();
-                 var $dialog = $(dialogTemplate(item.name, formHtml));
-                 $dialog.appendTo($("body"));
+   url: buttonsAdminUrl + '/repository/' + repoId + '/pullrequest/' + prId,
+   success: function(settings) {
+    settings.forEach(function(item, index) {
+     registry.registerExtension(
+      'se.bjurr.prnfs.pull-request-notifier-for-stash:custom-buttons' + index,
+      function buttonFactory(extensionAPI, context) {
+       return {
+        type: 'button',
+        label: item.name,
+        onAction: function() {
+         if (item.confirmationText || item.buttonFormList && item.buttonFormList.length > 0) {
+          // Create the form and dialog
+          var confirmationText = confirmationTextTemplate(item.confirmationText);
+          var form = formTemplate(item.buttonFormList);
+          var formHtml = $("<div/>").append(confirmationText).append(form).html();
+          var $dialog = $(dialogTemplate(item.name, formHtml));
+          $dialog.appendTo($("body"));
 
-                 var dialogRef = AJS.dialog2($dialog);
+          var dialogRef = AJS.dialog2($dialog);
 
-                 // When you submit the form, we will post to the server with all the form data.
-                 AJS.$("#dialog-submit-button").click(function(e) {
-                   var formResult = $dialog.find("form").serializeJSON();
-                   e.preventDefault();
-                   dialogRef.hide();
-                   submitButton(item, formResult);
-                 });
-                 AJS.$("#dialog-close-button").click(function(e) {
-                   e.preventDefault();
-                   dialogRef.hide();
-                 });
-                 dialogRef.show();
-               } else {
-                 submitButton(item, null);
-               }
-             }
-           };
+          // When you submit the form, we will post to the server with all the form data.
+          AJS.$("#dialog-submit-button").click(function(e) {
+           var formResult = $dialog.find("form").serializeJSON();
+           e.preventDefault();
+           dialogRef.hide();
+           submitButton(item, formResult);
+          });
+          AJS.$("#dialog-close-button").click(function(e) {
+           e.preventDefault();
+           dialogRef.hide();
+          });
+          dialogRef.show();
+         } else {
+          submitButton(item, null);
          }
-       );
-     });
-    }
+        }
+       };
+      }
+     );
+    });
+   }
   });
  }
 

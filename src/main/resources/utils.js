@@ -61,11 +61,11 @@ define('plugin/prnfb/utils', [
 
  function getProjects(whenDone) {
   var projectsUrl = "/rest/api/1.0/projects?limit=999999";
-  srv.rest ({
-    url : projectsUrl,
-    success: function(data) {
-        whenDone(data);
-    }
+  srv.rest({
+   url: projectsUrl,
+   success: function(data) {
+    whenDone(data);
+   }
   });
  }
 
@@ -95,12 +95,12 @@ define('plugin/prnfb/utils', [
    return;
   }
   var reposUrl = "/rest/api/1.0/projects/" + projectKey + "/repos?limit=999999";
-  srv.rest ({
-      url : reposUrl,
-      success: function(data) {
-          whenDone(data);
-      }
-    });
+  srv.rest({
+   url: reposUrl,
+   success: function(data) {
+    whenDone(data);
+   }
+  });
  }
 
  function setupProjectAndRepoSettingsInForm($form, hasProjectAndRepo) {

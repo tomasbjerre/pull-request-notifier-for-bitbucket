@@ -19,7 +19,18 @@ As suggested: https://community.developer.atlassian.com/t/how-to-get-ajs-context
   
   [e06f971ca6b2f05](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/e06f971ca6b2f05) Mads Opheim *2019-10-10 14:15:44*
 
+### GitHub [#372](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/pull/372) Changes for bitbucket 7+
+  Changes for bitbucket 7+ ()
+
+Co-authored-by: sreer <RajeshKrishna.SreeramaKrishnan@in.pega.com>
+  
+  [7de2b9c500cbe8a](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/7de2b9c500cbe8a) Rajesh Krishna *2020-12-05 17:41:51*
+
 ### No issue
+  doc
+  
+  [ec660104ede0b3c](https://github.com/tomasbjerre/pull-request-notifier-for-bitbucket/commit/ec660104ede0b3c) Tomas Bjerre *2020-04-26 05:54:39*
+
   Correcting custom keystore
 
 Using custom keystore even if "Accept Any Certificate" is disabled.
